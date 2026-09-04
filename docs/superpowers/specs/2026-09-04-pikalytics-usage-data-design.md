@@ -110,22 +110,33 @@ confirm the literal wire format before writing any parsing code:
 - **Not found** (`GET /ai/pokedex/battledataregmbs3/Nonexistamon`) — HTTP 404,
   plain-text body `Pokemon not found`. Detected via status code alone; the body
   text is irrelevant.
-- **Hyphenated form** (`GET /ai/pokedex/battledataregmbs3/Rotom-Wash`) — HTTP 200,
-  identical section structure, confirming the hyphen-join slug transform works for
-  at least this form.
+- **Form/Mega slugs** (`GET .../Rotom-Wash`, `.../Abomasnow-Mega`,
+  `.../Charizard-Mega-X`, `.../Charizard-Mega-Y`) — all HTTP 200 with the same
+  section structure. Each of these is exactly this project's existing
+  `pipeline.fetch_pokeapi.resolve_pokeapi_name(display_name)` slug
+  (`"rotom-wash"`, `"abomasnow-mega"`, `"charizard-mega-x"`), **title-cased word by
+  word**. This means Pikalytics' slug format needs no new form-parsing logic at
+  all — `resolve_pokeapi_name` already correctly handles this project's
+  bracket-based forms (`"Ninetales [Alolan Form]"`), prefix-form species
+  (`"Wash Rotom"`), and `"Mega X"`/`"Mega X"`/`"Mega Y"` naming, all already tested
+  in `tests/test_fetch_pokeapi.py`. Reusing it here means `resolve_pikalytics_slug`
+  is a thin wrapper, not a parallel reimplementation.
+  One confirmed miss: `resolve_pokeapi_name("Aegislash [Blade Forme]")` gives
+  `"aegislash-blade"` → `"Aegislash-Blade"`, which 404s on Pikalytics (plausibly
+  because Aegislash's Blade Forme is an in-battle transformation rather than a
+  Pokedex entry Pikalytics tracks separately, not a slug-format bug) — an expected
+  "no usage data for this one" outcome, not a defect to chase.
 
 ## Pipeline (`pipeline/fetch_pikalytics.py`)
 
 Mirrors the existing `pipeline/fetch_pokeapi.py` shape and conventions:
 
-- `resolve_pikalytics_slug(display_name: str) -> str` — best-effort transform from
-  this project's display-name format to Pikalytics' URL slug. Confirmed empirically:
-  hyphenated/regional forms use hyphens directly (`"Rotom-Wash"`,
-  `"Ninetales-Alola"`), which differs from this project's own bracket-based display
-  names (`"Rotom [Wash]"`, `"Meowstic [Female]"`). The transform strips brackets and
-  joins with a hyphen (`"Rotom [Wash]"` → `"Rotom-Wash"`). Not every species will
-  resolve correctly on the first try — see "Fetch behavior" below for how a bad
-  guess is handled.
+- `resolve_pikalytics_slug(display_name: str) -> str` — `resolve_pokeapi_name(display_name)`
+  (imported from `pipeline.fetch_pokeapi`), then title-cased word by word on `-`
+  (`"rotom-wash"` → `"Rotom-Wash"`, `"charizard-mega-x"` → `"Charizard-Mega-X"`).
+  Not every species will resolve correctly on the first try (see the Aegislash
+  case above) — a 404 for any reason is handled identically as "no usage data,"
+  never as an error to retry or chase (see `fetch_pikalytics_usage` below).
 - `fetch_pikalytics_usage(display_name: str, session=None) -> dict | None` — fetches
   and parses one species' usage page. Returns `None` on a 404 rather than raising:
   missing usage data for a fringe pick is an **expected, acceptable outcome** here,
