@@ -78,7 +78,8 @@ def fetch_pokemon_data(display_name: str, session=None) -> dict:
         if s["stat"]["name"] in _STAT_NAME_MAP
     }
     learnset = [m["move"]["name"] for m in payload["moves"]]
-    return {"base_stats": base_stats, "learnset": learnset}
+    abilities = [a["ability"]["name"] for a in payload["abilities"]]
+    return {"base_stats": base_stats, "learnset": learnset, "abilities": abilities}
 
 
 import json

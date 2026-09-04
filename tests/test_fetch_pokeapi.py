@@ -45,6 +45,10 @@ _SAMPLE_POKEAPI_RESPONSE = {
         {"move": {"name": "ice-punch"}},
         {"move": {"name": "wood-hammer"}},
     ],
+    "abilities": [
+        {"ability": {"name": "snow-warning"}},
+        {"ability": {"name": "soundproof"}},
+    ],
 }
 
 def test_fetch_pokemon_data_parses_stats_and_learnset():
@@ -55,6 +59,7 @@ def test_fetch_pokemon_data_parses_stats_and_learnset():
         "sp_attack": 92, "sp_defense": 85, "speed": 60,
     }
     assert result["learnset"] == ["ice-punch", "wood-hammer"]
+    assert result["abilities"] == ["snow-warning", "soundproof"]
 
 def test_fetch_pokemon_data_raises_on_http_error():
     session = MagicMock()
