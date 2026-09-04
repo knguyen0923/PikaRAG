@@ -70,6 +70,10 @@ def calculate_damage(move: dict, attacker: dict, defender: dict, context: dict) 
     modifier_low = stab * type_effectiveness * 0.85
     modifier_high = stab * type_effectiveness * 1.0
 
+    spread_modifier = 0.75 if context.get("is_spread_target") and context.get("is_doubles") else 1.0
+    modifier_low *= spread_modifier
+    modifier_high *= spread_modifier
+
     min_damage = max(1, math.floor(base_damage * modifier_low)) if type_effectiveness > 0 else 0
     max_damage = max(1, math.floor(base_damage * modifier_high)) if type_effectiveness > 0 else 0
 

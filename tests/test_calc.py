@@ -1,3 +1,4 @@
+import math
 from damage_calc.calc import calculate_stat, calculate_damage
 
 
@@ -84,3 +85,36 @@ def test_stat_stage_negative_attack_reduces_damage():
     result_intimidated = calculate_damage(move, attacker_intimidated, defender, _BASE_CONTEXT)
 
     assert result_intimidated.max_damage < result_neutral.max_damage
+
+
+def test_spread_move_applies_075_multiplier_in_doubles():
+    move = {"name": "Earthquake", "type": "Ground", "category": "Physical", "power": 100, "accuracy": 100, "pp": 10, "effect": None}
+    stats = {"hp": 100, "attack": 100, "defense": 100, "sp_attack": 100, "sp_defense": 100, "speed": 100}
+    attacker = _make_combatant(stats, types=["Ground"])
+    defender = _make_combatant(stats, types=["Water"])
+
+    single_target_context = {**_BASE_CONTEXT, "is_spread_target": False}
+    spread_context = {**_BASE_CONTEXT, "is_spread_target": True}
+
+    single = calculate_damage(move, attacker, defender, single_target_context)
+    spread = calculate_damage(move, attacker, defender, spread_context)
+
+    assert spread.max_damage < single.max_damage
+    assert spread.max_damage == math.floor(single.max_damage * 0.75) or spread.max_damage == math.floor(single.max_damage * 0.75) - 1
+
+
+def test_tera_type_changes_effectiveness_and_stab():
+    # Attacker is pure Normal but Tera'd into Fighting; move is Fighting-type
+    # Fighting is 2x vs Normal defender base type... use a defender that's Rock (Fighting is 2x vs Rock)
+    move = {"name": "Close Combat", "type": "Fighting", "category": "Physical", "power": 120, "accuracy": 100, "pp": 8, "effect": None}
+    stats = {"hp": 100, "attack": 100, "defense": 100, "sp_attack": 100, "sp_defense": 100, "speed": 100}
+    attacker_no_tera = _make_combatant(stats, types=["Normal"], tera_type=None)
+    attacker_tera_fighting = _make_combatant(stats, types=["Normal"], tera_type="Fighting")
+    defender = _make_combatant(stats, types=["Rock"])
+
+    no_tera = calculate_damage(move, attacker_no_tera, defender, _BASE_CONTEXT)
+    tera = calculate_damage(move, attacker_tera_fighting, defender, _BASE_CONTEXT)
+
+    # No Tera: no STAB (Normal attacker using Fighting move), just 2x type effectiveness vs Rock
+    # Tera Fighting: STAB applies too (1.5x on top), so damage should be higher
+    assert tera.max_damage > no_tera.max_damage
