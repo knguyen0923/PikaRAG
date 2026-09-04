@@ -26,6 +26,7 @@ from rag.store import ChromaIndex
 
 PROCESSED_RECORDS_PATH = Path("data/processed/pokemon_records.json")
 VGC_MOVES_PATH = Path("data/source/vgc_moves.json")
+USAGE_DATA_PATH = Path("data/processed/pikalytics_usage.json")
 _COOLDOWN_SECONDS = 3.0
 
 _COMMAND_COLORS = {
@@ -45,7 +46,7 @@ def _embed(command_name: str, description: str) -> discord.Embed:
 
 
 def build_client(
-    index=None, answerer=None, records=None, moves=None
+    index=None, answerer=None, records=None, moves=None, usage=None
 ) -> tuple[discord.Client, app_commands.CommandTree]:
     intents = discord.Intents.default()
     client = discord.Client(intents=intents)
@@ -71,12 +72,12 @@ def build_client(
     @tree.command(name="stats", description="Look up a Pokemon's base stats, types, and abilities.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
     async def stats(interaction: discord.Interaction, name: str) -> None:
-        await interaction.response.send_message(embed=_embed("stats", stats_response(records, name)))
+        await interaction.response.send_message(embed=_embed("stats", stats_response(records, name, usage=usage)))
 
     @tree.command(name="moves", description="Look up a Pokemon's legal moveset.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
     async def moves_command(interaction: discord.Interaction, name: str) -> None:
-        await interaction.response.send_message(embed=_embed("moves", moves_response(records, name)))
+        await interaction.response.send_message(embed=_embed("moves", moves_response(records, name, usage=usage)))
 
     @tree.command(name="import", description="Import a full Pokemon team from Pokepaste text or a pokepast.es URL.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
@@ -208,6 +209,12 @@ def _load_moves() -> list:
     return json.loads(VGC_MOVES_PATH.read_text())["moves"]
 
 
+def _load_usage() -> dict:
+    if not USAGE_DATA_PATH.exists():
+        return {}
+    return json.loads(USAGE_DATA_PATH.read_text())
+
+
 def _build_real_index(records: list) -> ChromaIndex:
     # Fixed collection name: build() upserts, so restarting the bot refreshes
     # this same persisted collection in place instead of leaking a new one.
@@ -224,6 +231,7 @@ def main() -> None:
         answerer=HaikuAnswerer(),
         records=records,
         moves=_load_moves(),
+        usage=_load_usage(),
     )
     client.run(token)
 

@@ -50,3 +50,30 @@ def test_stats_response_not_found_suggests_close_matches():
 
     assert "not found" in response.lower() or "no pokemon" in response.lower()
     assert "Abomasnow" in response
+
+
+def test_stats_response_appends_common_build_when_usage_data_exists():
+    usage = {"Abomasnow": {
+        "moves": [], "abilities": [{"name": "Snow Warning", "usage_pct": 98.5}],
+        "items": [{"name": "Focus Sash", "usage_pct": 40.0}],
+    }}
+
+    response = stats_response(_RECORDS, "Abomasnow", usage=usage)
+
+    assert "Common build" in response
+    assert "40.0% Focus Sash" in response
+    assert "98.5% Snow Warning" in response
+
+
+def test_stats_response_omits_common_build_when_no_usage_data():
+    response = stats_response(_RECORDS, "Abomasnow", usage={})
+
+    assert "Common build" not in response
+
+
+def test_stats_response_usage_defaults_to_none_and_behaves_like_before():
+    with_default = stats_response(_RECORDS, "Abomasnow")
+    with_explicit_none = stats_response(_RECORDS, "Abomasnow", usage=None)
+
+    assert with_default == with_explicit_none
+    assert "Common build" not in with_default

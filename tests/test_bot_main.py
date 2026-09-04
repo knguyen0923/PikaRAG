@@ -374,6 +374,51 @@ def test_every_command_has_a_cooldown_check():
         assert len(command.checks) >= 1, f"/{name} has no cooldown check attached"
 
 
+def test_stats_command_uses_usage_data_when_provided():
+    records = [{
+        "name": "Abomasnow", "types": ["Grass", "Ice"],
+        "base_stats": {"hp": 90, "attack": 92, "defense": 75, "sp_attack": 92, "sp_defense": 85, "speed": 60},
+        "abilities": ["Snow Warning"], "learnset": ["Blizzard"], "legal_in": ["M-B"],
+    }]
+    usage = {"Abomasnow": {
+        "moves": [], "abilities": [{"name": "Snow Warning", "usage_pct": 98.5}],
+        "items": [{"name": "Focus Sash", "usage_pct": 40.0}],
+    }}
+
+    _client, tree = build_client(records=records, usage=usage)
+    stats_cmd = tree.get_command("stats")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(stats_cmd.callback(interaction, name="Abomasnow"))
+
+    sent_text = _extract_text(interaction.response.send_message)
+    assert "Common build" in sent_text
+
+
+def test_moves_command_uses_usage_data_when_provided():
+    records = [{
+        "name": "Abomasnow", "types": ["Grass", "Ice"],
+        "base_stats": {"hp": 90, "attack": 92, "defense": 75, "sp_attack": 92, "sp_defense": 85, "speed": 60},
+        "abilities": ["Snow Warning"], "learnset": ["Blizzard"], "legal_in": ["M-B"],
+    }]
+    usage = {"Abomasnow": {
+        "moves": [{"name": "Blizzard", "usage_pct": 91.2}], "abilities": [], "items": [],
+    }}
+
+    _client, tree = build_client(records=records, usage=usage)
+    moves_cmd = tree.get_command("moves")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(moves_cmd.callback(interaction, name="Abomasnow"))
+
+    sent_text = _extract_text(interaction.response.send_message)
+    assert "top moves" in sent_text.lower()
+
+
 def test_tree_error_handler_gives_a_friendly_message_on_cooldown():
     from discord import app_commands
     from discord.app_commands.checks import Cooldown
