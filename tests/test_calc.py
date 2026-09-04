@@ -118,3 +118,74 @@ def test_tera_type_changes_effectiveness_and_stab():
     # No Tera: no STAB (Normal attacker using Fighting move), just 2x type effectiveness vs Rock
     # Tera Fighting: STAB applies too (1.5x on top), so damage should be higher
     assert tera.max_damage > no_tera.max_damage
+
+
+def test_rain_boosts_water_move():
+    move = {"name": "Surf", "type": "Water", "category": "Special", "power": 90, "accuracy": 100, "pp": 15, "effect": None}
+    stats = {"hp": 100, "attack": 100, "defense": 100, "sp_attack": 100, "sp_defense": 100, "speed": 100}
+    attacker = _make_combatant(stats, types=["Water"])
+    defender = _make_combatant(stats, types=["Normal"])
+
+    no_weather = calculate_damage(move, attacker, defender, {**_BASE_CONTEXT, "weather": None})
+    rain = calculate_damage(move, attacker, defender, {**_BASE_CONTEXT, "weather": "Rain"})
+
+    assert rain.max_damage > no_weather.max_damage
+
+
+def test_sun_weakens_water_move():
+    move = {"name": "Surf", "type": "Water", "category": "Special", "power": 90, "accuracy": 100, "pp": 15, "effect": None}
+    stats = {"hp": 100, "attack": 100, "defense": 100, "sp_attack": 100, "sp_defense": 100, "speed": 100}
+    attacker = _make_combatant(stats, types=["Water"])
+    defender = _make_combatant(stats, types=["Normal"])
+
+    no_weather = calculate_damage(move, attacker, defender, {**_BASE_CONTEXT, "weather": None})
+    sun = calculate_damage(move, attacker, defender, {**_BASE_CONTEXT, "weather": "Sun"})
+
+    assert sun.max_damage < no_weather.max_damage
+
+
+def test_electric_terrain_boosts_electric_move():
+    move = {"name": "Thunderbolt", "type": "Electric", "category": "Special", "power": 90, "accuracy": 100, "pp": 15, "effect": None}
+    stats = {"hp": 100, "attack": 100, "defense": 100, "sp_attack": 100, "sp_defense": 100, "speed": 100}
+    attacker = _make_combatant(stats, types=["Electric"])
+    defender = _make_combatant(stats, types=["Water"])
+
+    no_terrain = calculate_damage(move, attacker, defender, {**_BASE_CONTEXT, "terrain": None})
+    terrain = calculate_damage(move, attacker, defender, {**_BASE_CONTEXT, "terrain": "Electric"})
+
+    assert terrain.max_damage > no_terrain.max_damage
+
+
+def test_reflect_halves_physical_damage():
+    move = {"name": "Tackle", "type": "Normal", "category": "Physical", "power": 40, "accuracy": 100, "pp": 35, "effect": None}
+    stats = {"hp": 100, "attack": 100, "defense": 100, "sp_attack": 100, "sp_defense": 100, "speed": 100}
+    attacker = _make_combatant(stats, types=["Normal"])
+    defender = _make_combatant(stats, types=["Water"])
+
+    no_screen = calculate_damage(move, attacker, defender, {**_BASE_CONTEXT, "screen": None})
+    reflect = calculate_damage(move, attacker, defender, {**_BASE_CONTEXT, "screen": "Reflect"})
+
+    assert reflect.max_damage < no_screen.max_damage
+
+
+def test_light_screen_does_not_affect_physical_damage():
+    move = {"name": "Tackle", "type": "Normal", "category": "Physical", "power": 40, "accuracy": 100, "pp": 35, "effect": None}
+    stats = {"hp": 100, "attack": 100, "defense": 100, "sp_attack": 100, "sp_defense": 100, "speed": 100}
+    attacker = _make_combatant(stats, types=["Normal"])
+    defender = _make_combatant(stats, types=["Water"])
+
+    no_screen = calculate_damage(move, attacker, defender, {**_BASE_CONTEXT, "screen": None})
+    light_screen = calculate_damage(move, attacker, defender, {**_BASE_CONTEXT, "screen": "Light Screen"})
+
+    assert light_screen.max_damage == no_screen.max_damage
+
+
+def test_ko_chance_true_when_max_damage_exceeds_remaining_hp():
+    move = {"name": "Close Combat", "type": "Fighting", "category": "Physical", "power": 120, "accuracy": 100, "pp": 8, "effect": None}
+    stats = {"hp": 100, "attack": 100, "defense": 100, "sp_attack": 100, "sp_defense": 100, "speed": 100}
+    attacker = _make_combatant(stats, types=["Fighting"])
+    defender = _make_combatant(stats, types=["Rock"])
+    defender["current_hp_fraction"] = 0.1
+
+    result = calculate_damage(move, attacker, defender, _BASE_CONTEXT)
+    assert result.is_ko_chance is True

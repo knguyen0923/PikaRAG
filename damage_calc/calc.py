@@ -74,6 +74,39 @@ def calculate_damage(move: dict, attacker: dict, defender: dict, context: dict) 
     modifier_low *= spread_modifier
     modifier_high *= spread_modifier
 
+    weather = context.get("weather")
+    if weather == "Rain":
+        if move["type"] == "Water":
+            modifier_low *= 1.5
+            modifier_high *= 1.5
+        elif move["type"] == "Fire":
+            modifier_low *= 0.5
+            modifier_high *= 0.5
+    elif weather == "Sun":
+        if move["type"] == "Fire":
+            modifier_low *= 1.5
+            modifier_high *= 1.5
+        elif move["type"] == "Water":
+            modifier_low *= 0.5
+            modifier_high *= 0.5
+
+    terrain = context.get("terrain")
+    _TERRAIN_TYPE_MAP = {"Electric": "Electric", "Grassy": "Grass", "Psychic": "Psychic"}
+    if terrain and _TERRAIN_TYPE_MAP.get(terrain) == move["type"]:
+        modifier_low *= 1.3
+        modifier_high *= 1.3
+
+    screen = context.get("screen")
+    screen_applies = (
+        (screen == "Reflect" and category == "Physical")
+        or (screen == "Light Screen" and category == "Special")
+        or (screen == "Aurora Veil")
+    )
+    if screen_applies:
+        screen_multiplier = 2 / 3 if context.get("is_doubles") else 0.5
+        modifier_low *= screen_multiplier
+        modifier_high *= screen_multiplier
+
     min_damage = max(1, math.floor(base_damage * modifier_low)) if type_effectiveness > 0 else 0
     max_damage = max(1, math.floor(base_damage * modifier_high)) if type_effectiveness > 0 else 0
 
