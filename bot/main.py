@@ -19,7 +19,7 @@ from bot.commands.team import (
     view_team_response,
 )
 from bot.pokepaste_fetch import PokepasteFetchError, resolve_pokepaste_text
-from bot.team_store import get_team, resolve_calc_overrides
+from bot.team_store import find_team_member, get_team, resolve_calc_overrides
 from rag.answer import HaikuAnswerer
 from rag.embed import SentenceTransformerEmbedder
 from rag.store import ChromaIndex
@@ -146,6 +146,12 @@ def build_client(
             screen=screen,
             spread=spread,
         )
+        # Only note stored-team usage on a successful calc -- not on a "not
+        # found"/"invalid EVs" error, where the note would be misleading.
+        if not response.startswith(("No ", "Invalid ")):
+            stored_names = [name for name in (attacker, defender) if find_team_member(user_id, name)]
+            if stored_names:
+                response += f" (using stored data for: {', '.join(stored_names)})"
         await interaction.response.send_message(response)
 
     @client.event

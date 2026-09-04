@@ -167,6 +167,63 @@ def test_calc_command_uses_a_stored_team_members_evs_and_item():
     assert _max_damage_from_calc_response(boosted_text) > _max_damage_from_calc_response(plain_text)
 
 
+def test_calc_command_notes_when_a_stored_team_member_was_used():
+    from bot.team_store import store_team
+
+    user_id = 9004
+    store_team(user_id, "mine", [{
+        "species": "Garchomp", "nickname": None, "gender": None, "item": "Life Orb",
+        "ability": "Rough Skin", "level": 50, "tera_type": None,
+        "evs": {"hp": 0, "attack": 252, "defense": 0, "sp_attack": 0, "sp_defense": 0, "speed": 0},
+        "ivs": {"hp": 31, "attack": 31, "defense": 31, "sp_attack": 31, "sp_defense": 31, "speed": 31},
+        "nature": "Adamant", "moves": ["Earthquake"],
+    }])
+
+    _client, tree = build_client(records=_CALC_TEST_RECORDS, moves=_CALC_TEST_MOVES)
+    calc_command = tree.get_command("calc")
+    interaction = MagicMock()
+    interaction.user.id = user_id
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(calc_command.callback(
+        interaction, attacker="Garchomp", defender="Garchomp", move="Earthquake",
+    ))
+
+    sent_text = interaction.response.send_message.call_args[0][0]
+    assert "using stored data" in sent_text.lower()
+    assert "Garchomp" in sent_text.split("using stored data")[1]
+
+
+def test_calc_command_omits_the_note_when_nothing_is_stored():
+    _client, tree = build_client(records=_CALC_TEST_RECORDS, moves=_CALC_TEST_MOVES)
+    calc_command = tree.get_command("calc")
+    interaction = MagicMock()
+    interaction.user.id = 9005
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(calc_command.callback(
+        interaction, attacker="Garchomp", defender="Garchomp", move="Earthquake",
+    ))
+
+    sent_text = interaction.response.send_message.call_args[0][0]
+    assert "using stored data" not in sent_text.lower()
+
+
+def test_calc_command_omits_the_note_on_an_error_response():
+    _client, tree = build_client(records=_CALC_TEST_RECORDS, moves=_CALC_TEST_MOVES)
+    calc_command = tree.get_command("calc")
+    interaction = MagicMock()
+    interaction.user.id = 9006
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(calc_command.callback(
+        interaction, attacker="Nonexistamon", defender="Garchomp", move="Earthquake",
+    ))
+
+    sent_text = interaction.response.send_message.call_args[0][0]
+    assert "using stored data" not in sent_text.lower()
+
+
 def test_ask_command_includes_stored_team_context():
     from unittest.mock import AsyncMock, MagicMock
     from bot.team_store import store_team
