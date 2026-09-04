@@ -125,3 +125,16 @@ pika-rag/
 - Discord bot (any part)
 - Pikalytics scraping / real usage stats / common spreads
 - Live deployment of anything — all verification is via `pytest`, no API keys required
+- Held-item damage multipliers (Life Orb, Choice Band, Assault Vest, etc.) — a combatant's
+  `item` field is accepted as an input for forward-compatibility but is not yet applied to
+  the damage calculation. Adding real item mechanics is a follow-up task, not a bug in this
+  slice.
+
+## Known gap (post-implementation, added after final review)
+
+Some Pokémon in `legal_pokemon_m-b.json` are Champions-format-original Mega Evolutions with
+no PokéAPI record under any name (PokéAPI's Mega roster stops at Gen 6/7's canonical set).
+These cannot be resolved by name-mapping fixes alone — the pipeline surfaces them in its
+`failed` list rather than fabricating data, but sourcing real stats for them (hand-authored?
+derived from base forme? a different data source?) is an open product decision for whoever
+picks up the next data-pipeline task.
