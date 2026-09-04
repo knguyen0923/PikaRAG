@@ -29,12 +29,16 @@ def resolve_pokepaste_text(pokepaste: str, session=None) -> str:
             f"'{pokepaste_original}' is not a pokepast.es URL -- only pokepast.es links can be fetched."
         )
 
+    owns_session = session is None
     session = session or requests.Session()
     url = pokepaste.rstrip("/") + "/raw"
     try:
         response = session.get(url, timeout=_REQUEST_TIMEOUT)
     except requests.exceptions.RequestException as e:
         raise PokepasteFetchError(f"Network error fetching '{pokepaste_original}': {e}") from e
+    finally:
+        if owns_session:
+            session.close()
     if response.status_code != 200:
         raise PokepasteFetchError(f"Could not fetch '{pokepaste_original}' (got HTTP {response.status_code}).")
     return response.text

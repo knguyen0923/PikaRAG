@@ -106,7 +106,7 @@ def _parse_block(block: str) -> dict:
     return member
 
 
-def parse_pokepaste(text: str) -> list:
+def parse_pokepaste(text: str) -> list[dict]:
     blocks = [b for b in re.split(r"\n\s*\n", text.strip()) if b.strip()]
     if not blocks:
         raise PokepasteParseError("No Pokemon found in the given text.")

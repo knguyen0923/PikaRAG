@@ -49,3 +49,22 @@ def test_network_error_raises_pokepaste_fetch_error():
 def test_non_pokepaste_host_is_rejected():
     with pytest.raises(PokepasteFetchError, match="pokepast.es"):
         resolve_pokepaste_text("https://evil.example.com/abc123")
+
+
+def test_a_self_created_session_is_closed_after_use(monkeypatch):
+    fake_session = MagicMock()
+    fake_session.get.return_value = MagicMock(status_code=200, text="Garchomp\n- Earthquake\n")
+    monkeypatch.setattr(requests, "Session", MagicMock(return_value=fake_session))
+
+    resolve_pokepaste_text("https://pokepast.es/abc123")
+
+    fake_session.close.assert_called_once()
+
+
+def test_an_injected_session_is_not_closed():
+    session = MagicMock()
+    session.get.return_value = MagicMock(status_code=200, text="Garchomp\n- Earthquake\n")
+
+    resolve_pokepaste_text("https://pokepast.es/abc123", session=session)
+
+    session.close.assert_not_called()

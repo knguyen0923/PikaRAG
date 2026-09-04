@@ -5,6 +5,7 @@ from damage_calc.data.natures import get_nature_modifiers
 from damage_calc.data.type_chart import ALL_TYPES
 
 _SIDE_LABELS = {"mine": "Your team", "opponent": "Opponent's team"}
+_POSSESSIVE_LABELS = {"mine": "your", "opponent": "the opponent's"}
 
 
 def format_team_block(team: list, label: str) -> str:
@@ -13,9 +14,10 @@ def format_team_block(team: list, label: str) -> str:
     lines = [f"{label}:"]
     for member in team:
         item = f" @ {member['item']}" if member["item"] else ""
+        ability = f" ({member['ability']})" if member["ability"] else ""
         tera = f" -- Tera {member['tera_type']}" if member["tera_type"] else ""
         moves = ", ".join(member["moves"]) if member["moves"] else "no known moves"
-        lines.append(f"- {member['species']}{item}{tera} -- {member['nature']} -- {moves}")
+        lines.append(f"- {member['species']}{item}{ability}{tera} -- {member['nature']} -- {moves}")
     return "\n".join(lines)
 
 
@@ -74,8 +76,7 @@ def import_team_response(records: list, moves: list, user_id: int, side: str, po
     except ValueError as e:
         return str(e)
 
-    label = "your" if side == "mine" else "the opponent's"
-    lines = [f"Loaded {len(members)} Pokemon into {label} team:"]
+    lines = [f"Loaded {len(members)} Pokemon into {_POSSESSIVE_LABELS[side]} team:"]
     lines.extend(f"- {m['species']}" for m in members)
     lines.extend(_format_warnings(warnings))
     return "\n".join(lines)
@@ -112,8 +113,7 @@ def scout_response(
     except ValueError as e:
         return str(e)
 
-    label = "your" if side == "mine" else "the opponent's"
     moves_text = ", ".join(stored["moves"]) if stored["moves"] else "no known moves"
-    lines = [f"Updated {stored['species']} in {label} team -- known moves: {moves_text}."]
+    lines = [f"Updated {stored['species']} in {_POSSESSIVE_LABELS[side]} team -- known moves: {moves_text}."]
     lines.extend(_format_warnings(warnings))
     return "\n".join(lines)

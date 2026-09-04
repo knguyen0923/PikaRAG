@@ -38,7 +38,16 @@ def test_format_team_block_lists_each_member():
     assert block.startswith("Your team:")
     assert "Abomasnow" in block
     assert "Focus Sash" in block
+    assert "Snow Warning" in block
     assert "Wood Hammer" in block
+
+
+def test_format_team_block_omits_ability_when_unknown():
+    member = dict(_ABOMASNOW_TEAM_MEMBER, ability=None)
+
+    block = format_team_block([member], "Opponent's team")
+
+    assert "None" not in block
 
 
 def test_view_team_response_reports_no_team_loaded():
