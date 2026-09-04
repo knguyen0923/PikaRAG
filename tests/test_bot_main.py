@@ -301,3 +301,36 @@ Adamant Nature
         return int(text.split(": ")[1].split("-")[1].split(" ")[0])
 
     assert _max_damage(boosted_text) > _max_damage(plain_text)
+
+
+def test_tree_error_handler_sends_a_friendly_message_when_not_yet_responded():
+    from discord import app_commands
+
+    _client, tree = build_client()
+    interaction = MagicMock()
+    interaction.response.is_done.return_value = False
+    interaction.response.send_message = AsyncMock()
+    interaction.followup.send = AsyncMock()
+
+    asyncio.run(tree.on_error(interaction, app_commands.AppCommandError("boom")))
+
+    interaction.response.send_message.assert_awaited_once()
+    interaction.followup.send.assert_not_called()
+    sent_text = interaction.response.send_message.call_args[0][0]
+    assert "boom" not in sent_text
+    assert "went wrong" in sent_text.lower()
+
+
+def test_tree_error_handler_uses_followup_when_already_responded():
+    from discord import app_commands
+
+    _client, tree = build_client()
+    interaction = MagicMock()
+    interaction.response.is_done.return_value = True
+    interaction.response.send_message = AsyncMock()
+    interaction.followup.send = AsyncMock()
+
+    asyncio.run(tree.on_error(interaction, app_commands.AppCommandError("boom")))
+
+    interaction.followup.send.assert_awaited_once()
+    interaction.response.send_message.assert_not_called()

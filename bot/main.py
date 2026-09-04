@@ -158,6 +158,16 @@ def build_client(
     async def on_ready() -> None:
         await tree.sync()
 
+    @tree.error
+    async def on_tree_error(interaction: discord.Interaction, error: app_commands.AppCommandError) -> None:
+        command_name = interaction.command.name if interaction.command else "?"
+        print(f"Unhandled error in /{command_name}: {error!r}")
+        message = "Something went wrong running that command. Please try again."
+        if interaction.response.is_done():
+            await interaction.followup.send(message)
+        else:
+            await interaction.response.send_message(message)
+
     return client, tree
 
 
