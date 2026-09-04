@@ -125,17 +125,27 @@ pika-rag/
 - Discord bot (any part)
 - Pikalytics scraping / real usage stats / common spreads
 - Live deployment of anything — all verification is via `pytest`, no API keys required
-- Held-item damage multipliers beyond the four implemented as a 2026-09-04 follow-up (Life
-  Orb, Choice Band, Choice Specs, Expert Belt — see `damage_calc/calc.py`). Everything else
-  (Assault Vest, Weakness Policy, type-boosting gems/plates, berries, etc.) still has its
-  `item` value accepted but ignored.
+- Held-item damage multipliers: implemented across two 2026-09-04 follow-ups — Life Orb,
+  Choice Band, Choice Specs, Expert Belt, then Assault Vest, type-boosting Gems/Plates,
+  Muscle Band, Wise Glasses, and the 18 type-resist berries (see `damage_calc/calc.py`).
+  Weakness Policy is deliberately still unimplemented: it boosts Atk/SpA *after* being hit
+  by a super-effective move, so it has no effect on the hit that triggers it — irrelevant to
+  a stateless single-hit calculator. Anything not listed above (Assault Vest excluded, e.g.
+  Eviolite, Light Clay, Leftovers) still has its `item` value accepted but ignored.
 
 ## Known gap (post-implementation, added after final review)
 
 The live 2026-09-04 pipeline run against PokéAPI resolved 314/315 legal Pokémon, including
 74/75 Mega Evolutions — PokéAPI does carry Champions-format Megas, so the resolver fixes in
-this fix wave were sufficient for the roster as a whole. The one holdout is `Mega Meowstic`:
+this fix wave were sufficient for the roster as a whole. The one holdout was `Mega Meowstic`:
 PokéAPI splits it into `meowstic-male-mega` / `meowstic-female-mega` with no gender-neutral
 slug, and the legal list specifies no gender — a genuine naming ambiguity, not a missing
-record. Resolving it needs either a gender default convention or a per-Pokémon override, and
-is an open product decision for whoever picks up the next data-pipeline task.
+record.
+
+**Resolved (2026-09-04 follow-up):** `fetch_pokeapi.py` now falls back, on a 404 for any
+`<species>-mega[-x/-y]` slug, to looking up the base species' own default variety (e.g.
+`meowstic` → default variety `meowstic-male`) and retrying with that gender spliced in
+(`meowstic-male-mega`) — the same default-gender convention the bare (non-Mega) form already
+follows via `_default_variety_slug`. This is a generic fallback, not a Meowstic-specific
+override, so it would apply to any other Pokémon PokeAPI happens to gender-split the same way.
+A live re-run now resolves all 315/315 legal Pokémon.

@@ -187,14 +187,46 @@ def test_fetch_falls_back_to_species_default_variety():
 
 
 def test_fetch_does_not_substitute_a_wrong_form_on_404():
-    # "meowstic-mega" 404s and is not a species name either, so the species
-    # lookup also 404s and we must fail loudly rather than silently fetch the
-    # unrelated default "meowstic-male".
+    # "mega-nonexistent" 404s, its bare species lookup 404s too (existing
+    # substitution fallback), and its base-species lookup 404s as well (the
+    # gendered-mega fallback) -- every avenue exhausted, so it must fail loudly.
     session = MagicMock()
-    session.get.side_effect = [MagicMock(status_code=404), MagicMock(status_code=404)]
+    session.get.side_effect = [
+        MagicMock(status_code=404), MagicMock(status_code=404), MagicMock(status_code=404),
+    ]
     with pytest.raises(PokeApiFetchError) as exc_info:
-        fetch_pokemon_data("Mega Meowstic", session=session)
-    assert "meowstic-mega" in str(exc_info.value)
+        fetch_pokemon_data("Mega Nonexistent", session=session)
+    assert "nonexistent-mega" in str(exc_info.value)
+
+
+def test_fetch_resolves_a_mega_form_pokeapi_splits_by_gender():
+    # PokeAPI has no genderless "meowstic-mega" -- only "meowstic-male-mega" /
+    # "meowstic-female-mega". A 404 on the direct mega slug, and on the
+    # (fruitless) species lookup for that same slug, falls back to the BASE
+    # species' own default variety ("meowstic-male") to pick a gender, mirroring
+    # how the bare (non-Mega) form already defaults to that same variety.
+    session = MagicMock()
+    mega_miss = MagicMock(status_code=404)
+    mega_species_miss = MagicMock(status_code=404)
+    base_species = MagicMock(status_code=200)
+    base_species.json.return_value = {
+        "varieties": [
+            {"is_default": True, "pokemon": {"name": "meowstic-male"}},
+            {"is_default": False, "pokemon": {"name": "meowstic-female"}},
+        ]
+    }
+    hit = MagicMock(status_code=200)
+    hit.json.return_value = _SAMPLE_POKEAPI_RESPONSE
+    session.get.side_effect = [mega_miss, mega_species_miss, base_species, hit]
+
+    result = fetch_pokemon_data("Mega Meowstic", session=session)
+
+    assert result["base_stats"]["hp"] == 90
+    urls = [c.args[0] for c in session.get.call_args_list]
+    assert urls[0].endswith("/pokemon/meowstic-mega")
+    assert urls[1].endswith("/pokemon-species/meowstic-mega")
+    assert urls[2].endswith("/pokemon-species/meowstic")
+    assert urls[3].endswith("/pokemon/meowstic-male-mega")
 
 
 def test_fetch_all_continues_after_request_exception(tmp_path):

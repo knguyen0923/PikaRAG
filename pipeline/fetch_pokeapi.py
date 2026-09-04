@@ -154,6 +154,36 @@ def _default_variety_slug(session, slug: str, display_name: str):
     return None
 
 
+_MEGA_SLUG_PATTERN = re.compile(r"^(.+)-mega(-[xy])?$")
+
+
+def _gendered_mega_variety_slug(session, mega_slug: str, display_name: str):
+    """Resolve a Mega slug PokeAPI splits by gender (e.g. Meowstic: no bare
+    "meowstic-mega", only "meowstic-male-mega" / "meowstic-female-mega") to
+    its default-gender variant, or None.
+
+    `_default_variety_slug` can't help here: it looks up a species by the
+    MEGA slug itself ("meowstic-mega"), which isn't a species name. This looks
+    up the BASE species ("meowstic") instead and mirrors whichever gender its
+    own default (non-Mega) variety already resolves to.
+    """
+    match = _MEGA_SLUG_PATTERN.match(mega_slug)
+    if not match:
+        return None
+    base, xy_suffix = match.group(1), match.group(2) or ""
+    response = _get(session, f"{POKEAPI_SPECIES_URL}/{base}", display_name, mega_slug)
+    if response.status_code != 200:
+        return None
+    for variety in response.json().get("varieties", []):
+        if variety.get("is_default"):
+            default_name = variety.get("pokemon", {}).get("name", "")
+            if default_name.startswith(f"{base}-"):
+                gender = default_name[len(base) + 1:]
+                if gender in ("male", "female"):
+                    return f"{base}-{gender}-mega{xy_suffix}"
+    return None
+
+
 def fetch_pokemon_data(display_name: str, session=None) -> dict:
     session = session or requests.Session()
     slug = resolve_pokeapi_name(display_name)
@@ -162,6 +192,11 @@ def fetch_pokemon_data(display_name: str, session=None) -> dict:
         fallback_slug = _default_variety_slug(session, slug, display_name)
         if fallback_slug:
             slug = fallback_slug
+            response = _get(session, f"{POKEAPI_BASE_URL}/{slug}", display_name, slug)
+    if response.status_code != 200:
+        gendered_slug = _gendered_mega_variety_slug(session, slug, display_name)
+        if gendered_slug:
+            slug = gendered_slug
             response = _get(session, f"{POKEAPI_BASE_URL}/{slug}", display_name, slug)
     if response.status_code != 200:
         raise PokeApiFetchError(
