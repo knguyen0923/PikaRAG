@@ -1,24 +1,36 @@
 import json
 from pathlib import Path
 
+from pipeline.cache_utils import simple_cache_filename
+
+LEGAL_POKEMON_GLOB = "legal_pokemon_*.json"
+
 
 def _load_json(path: Path):
     with open(path) as f:
         return json.load(f)
 
 
-def _simple_cache_filename(display_name: str) -> str:
-    slug = display_name.lower()
-    slug = slug.replace("[", "").replace("]", "")
-    slug = slug.replace(" ", "_")
-    return f"{slug}.json"
+def find_legal_pokemon_file(source_dir) -> Path:
+    """Locate the current regulation's legal-Pokemon source file.
+
+    Discovered by glob rather than hardcoded so that dropping in the next
+    regulation's file (legal_pokemon_m-c.json, ...) needs no code change.
+    """
+    source_dir = Path(source_dir)
+    matches = sorted(source_dir.glob(LEGAL_POKEMON_GLOB))
+    if not matches:
+        raise FileNotFoundError(
+            f"No file matching '{LEGAL_POKEMON_GLOB}' in {source_dir}"
+        )
+    return matches[-1]
 
 
 def build_records(source_dir: Path, raw_dir: Path) -> list:
     source_dir = Path(source_dir)
     raw_dir = Path(raw_dir)
 
-    legal_data = _load_json(source_dir / "legal_pokemon_m-b.json")
+    legal_data = _load_json(find_legal_pokemon_file(source_dir))
     moves_data = _load_json(source_dir / "vgc_moves.json")
     abilities_data = _load_json(source_dir / "vgc_abilities.json")
 
@@ -35,7 +47,7 @@ def build_records(source_dir: Path, raw_dir: Path) -> list:
 
     records = []
     for name in legal_data["legal_pokemon"]:
-        raw_path = raw_dir / _simple_cache_filename(name)
+        raw_path = raw_dir / simple_cache_filename(name)
         if not raw_path.exists():
             continue
         raw = _load_json(raw_path)

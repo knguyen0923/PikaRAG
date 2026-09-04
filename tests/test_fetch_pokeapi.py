@@ -19,10 +19,59 @@ def test_resolve_bracket_forme_name():
     assert resolve_pokeapi_name("Aegislash [Blade Forme]") == "aegislash-blade"
 
 def test_resolve_hisuian_form_name():
-    assert resolve_pokeapi_name("Arcanine [Hisuian Form]") == "arcanine-hisuian"
+    # PokeAPI uses the bare region stem "hisui", never the adjective "hisuian".
+    assert resolve_pokeapi_name("Arcanine [Hisuian Form]") == "arcanine-hisui"
 
 def test_resolve_female_form_name():
     assert resolve_pokeapi_name("Basculegion [Female]") == "basculegion-female"
+
+
+# --- Regression tests for categories verified against the live PokeAPI ---
+# Every expected slug below was confirmed to return HTTP 200 from
+# https://pokeapi.co/api/v2/pokemon/<slug> before being written down here.
+
+def test_resolve_name_with_period():
+    # "mr.-rime" (the old naive space->dash) is an invalid PokeAPI slug.
+    assert resolve_pokeapi_name("Mr. Rime") == "mr-rime"
+    assert resolve_pokeapi_name("Mr. Mime") == "mr-mime"
+    assert resolve_pokeapi_name("Mime Jr.") == "mime-jr"
+
+def test_resolve_apostrophe_name():
+    assert resolve_pokeapi_name("Farfetch'd") == "farfetchd"
+    assert resolve_pokeapi_name("Sirfetch’d") == "sirfetchd"
+
+def test_resolve_prefix_form_rotom():
+    # Form word comes BEFORE the species in the legal list; PokeAPI puts it after.
+    assert resolve_pokeapi_name("Heat Rotom") == "rotom-heat"
+    assert resolve_pokeapi_name("Wash Rotom") == "rotom-wash"
+    assert resolve_pokeapi_name("Frost Rotom") == "rotom-frost"
+    assert resolve_pokeapi_name("Fan Rotom") == "rotom-fan"
+    assert resolve_pokeapi_name("Mow Rotom") == "rotom-mow"
+
+def test_resolve_bracket_form_words_drop_the_form_noun():
+    assert resolve_pokeapi_name("Lycanroc [Dusk Form]") == "lycanroc-dusk"
+    assert resolve_pokeapi_name("Lycanroc [Midnight Form]") == "lycanroc-midnight"
+    assert resolve_pokeapi_name("Palafin [Hero Form]") == "palafin-hero"
+    assert resolve_pokeapi_name("Castform [Rainy Form]") == "castform-rainy"
+
+def test_resolve_regional_forms():
+    assert resolve_pokeapi_name("Ninetales [Alolan Form]") == "ninetales-alola"
+    assert resolve_pokeapi_name("Slowbro [Galarian Form]") == "slowbro-galar"
+    assert resolve_pokeapi_name("Typhlosion [Hisuian Form]") == "typhlosion-hisui"
+
+def test_resolve_nested_parenthetical_breed():
+    # Outer form goes through form-noun stripping ("Paldean Form" -> "paldea");
+    # the inner parenthetical keeps its noun ("Aqua Breed" -> "aqua-breed").
+    assert resolve_pokeapi_name("Tauros [Paldean Form (Aqua Breed)]") == "tauros-paldea-aqua-breed"
+    assert resolve_pokeapi_name("Tauros [Paldean Form (Blaze Breed)]") == "tauros-paldea-blaze-breed"
+    assert resolve_pokeapi_name("Tauros [Paldean Form (Combat Breed)]") == "tauros-paldea-combat-breed"
+
+def test_resolve_gourgeist_size_varieties():
+    # Three separate legal-list entries. PokeAPI names the largest size
+    # "super", not "jumbo"; large/small match verbatim.
+    assert resolve_pokeapi_name("Gourgeist [Jumbo Variety]") == "gourgeist-super"
+    assert resolve_pokeapi_name("Gourgeist [Large Variety]") == "gourgeist-large"
+    assert resolve_pokeapi_name("Gourgeist [Small Variety]") == "gourgeist-small"
 
 def _mock_session(pokemon_json):
     session = MagicMock()
@@ -96,7 +145,8 @@ def test_fetch_all_continues_after_one_failure(tmp_path):
     ok_response = MagicMock(status_code=200)
     ok_response.json.return_value = _SAMPLE_POKEAPI_RESPONSE
     fail_response = MagicMock(status_code=404)
-    session.get.side_effect = [fail_response, ok_response]
+    # 404 on the pokemon slug, then 404 on the species fallback lookup.
+    session.get.side_effect = [fail_response, fail_response, ok_response]
     summary = fetch_all(["Broken Name", "Absol"], cache_dir=tmp_path, session=session)
     assert summary["fetched"] == 1
     assert summary["failed"] == ["Broken Name"]
@@ -109,6 +159,43 @@ def test_fetch_pokemon_data_wraps_request_exception():
         fetch_pokemon_data("Abomasnow", session=session)
     assert "Network error fetching" in str(exc_info.value)
     assert isinstance(exc_info.value.__cause__, requests.exceptions.ConnectionError)
+
+def test_fetch_falls_back_to_species_default_variety():
+    # PokeAPI has no bare "lycanroc" Pokemon record; its default form lives at
+    # "lycanroc-midday". A 404 on a bare species slug retries via the species
+    # endpoint and follows the is_default variety.
+    session = MagicMock()
+    miss = MagicMock(status_code=404)
+    species = MagicMock(status_code=200)
+    species.json.return_value = {
+        "varieties": [
+            {"is_default": True, "pokemon": {"name": "lycanroc-midday"}},
+            {"is_default": False, "pokemon": {"name": "lycanroc-dusk"}},
+        ]
+    }
+    hit = MagicMock(status_code=200)
+    hit.json.return_value = _SAMPLE_POKEAPI_RESPONSE
+    session.get.side_effect = [miss, species, hit]
+
+    result = fetch_pokemon_data("Lycanroc", session=session)
+
+    assert result["base_stats"]["hp"] == 90
+    urls = [c.args[0] for c in session.get.call_args_list]
+    assert urls[0].endswith("/pokemon/lycanroc")
+    assert urls[1].endswith("/pokemon-species/lycanroc")
+    assert urls[2].endswith("/pokemon/lycanroc-midday")
+
+
+def test_fetch_does_not_substitute_a_wrong_form_on_404():
+    # "meowstic-mega" 404s and is not a species name either, so the species
+    # lookup also 404s and we must fail loudly rather than silently fetch the
+    # unrelated default "meowstic-male".
+    session = MagicMock()
+    session.get.side_effect = [MagicMock(status_code=404), MagicMock(status_code=404)]
+    with pytest.raises(PokeApiFetchError) as exc_info:
+        fetch_pokemon_data("Mega Meowstic", session=session)
+    assert "meowstic-mega" in str(exc_info.value)
+
 
 def test_fetch_all_continues_after_request_exception(tmp_path):
     session = MagicMock()
