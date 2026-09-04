@@ -346,3 +346,55 @@ def test_ko_chance_true_when_max_damage_exceeds_remaining_hp():
 
     result = calculate_damage(move, attacker, defender, _BASE_CONTEXT)
     assert result.is_ko_chance is True
+
+
+def test_life_orb_boosts_damage():
+    move = {"name": "Tackle", "type": "Normal", "category": "Physical", "power": 40, "accuracy": 100, "pp": 35, "effect": None}
+    attacker_no_item = _make_combatant(_NEUTRAL_STATS, types=["Normal"])
+    attacker_life_orb = _make_combatant(_NEUTRAL_STATS, types=["Normal"], item="Life Orb")
+    defender = _make_combatant(_NEUTRAL_STATS, types=["Water"])
+
+    no_item = calculate_damage(move, attacker_no_item, defender, _BASE_CONTEXT)
+    life_orb = calculate_damage(move, attacker_life_orb, defender, _BASE_CONTEXT)
+
+    assert life_orb.max_damage > no_item.max_damage
+
+
+def test_choice_band_boosts_physical_damage():
+    move = {"name": "Tackle", "type": "Normal", "category": "Physical", "power": 40, "accuracy": 100, "pp": 35, "effect": None}
+    attacker_no_item = _make_combatant(_NEUTRAL_STATS, types=["Normal"])
+    attacker_choice_band = _make_combatant(_NEUTRAL_STATS, types=["Normal"], item="Choice Band")
+    defender = _make_combatant(_NEUTRAL_STATS, types=["Water"])
+
+    no_item = calculate_damage(move, attacker_no_item, defender, _BASE_CONTEXT)
+    choice_band = calculate_damage(move, attacker_choice_band, defender, _BASE_CONTEXT)
+
+    assert choice_band.max_damage > no_item.max_damage
+
+
+def test_choice_specs_does_not_affect_physical_damage():
+    move = {"name": "Tackle", "type": "Normal", "category": "Physical", "power": 40, "accuracy": 100, "pp": 35, "effect": None}
+    attacker_no_item = _make_combatant(_NEUTRAL_STATS, types=["Normal"])
+    attacker_choice_specs = _make_combatant(_NEUTRAL_STATS, types=["Normal"], item="Choice Specs")
+    defender = _make_combatant(_NEUTRAL_STATS, types=["Water"])
+
+    no_item = calculate_damage(move, attacker_no_item, defender, _BASE_CONTEXT)
+    choice_specs = calculate_damage(move, attacker_choice_specs, defender, _BASE_CONTEXT)
+
+    assert choice_specs.max_damage == no_item.max_damage
+
+
+def test_expert_belt_boosts_only_super_effective_damage():
+    super_effective_move = {"name": "Close Combat", "type": "Fighting", "category": "Physical", "power": 120, "accuracy": 100, "pp": 8, "effect": None}
+    neutral_move = {"name": "Tackle", "type": "Normal", "category": "Physical", "power": 40, "accuracy": 100, "pp": 35, "effect": None}
+    attacker_no_item = _make_combatant(_NEUTRAL_STATS, types=["Fighting"])
+    attacker_expert_belt = _make_combatant(_NEUTRAL_STATS, types=["Fighting"], item="Expert Belt")
+    defender = _make_combatant(_NEUTRAL_STATS, types=["Rock"])
+
+    no_item = calculate_damage(super_effective_move, attacker_no_item, defender, _BASE_CONTEXT)
+    expert_belt = calculate_damage(super_effective_move, attacker_expert_belt, defender, _BASE_CONTEXT)
+    assert expert_belt.max_damage > no_item.max_damage
+
+    no_item_neutral = calculate_damage(neutral_move, attacker_no_item, defender, _BASE_CONTEXT)
+    expert_belt_neutral = calculate_damage(neutral_move, attacker_expert_belt, defender, _BASE_CONTEXT)
+    assert expert_belt_neutral.max_damage == no_item_neutral.max_damage

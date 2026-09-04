@@ -15,12 +15,21 @@ WEATHER_PENALTY_MULTIPLIER = 0.5  # Rain/Fire, Sun/Water
 TERRAIN_BOOST_MULTIPLIER = 1.3    # grounded attacker, matching terrain
 SCREEN_DOUBLES_MULTIPLIER = 2 / 3
 SCREEN_SINGLES_MULTIPLIER = 0.5
+LIFE_ORB_MULTIPLIER = 1.3
+EXPERT_BELT_MULTIPLIER = 1.2
+CHOICE_ITEM_STAT_MULTIPLIER = 1.5
 MIN_ROLL = 0.85
 MAX_ROLL = 1.00
 NEUTRAL_MULTIPLIER = 1.0
 
 # Terrain name -> the move type it boosts.
 _TERRAIN_TYPE_MAP = {"Electric": "Electric", "Grassy": "Grass", "Psychic": "Psychic"}
+
+# Held item -> the stat it multiplies (applied in the stat calc, same as a stat stage).
+_ITEM_STAT_BOOST = {
+    "Choice Band": ("attack", CHOICE_ITEM_STAT_MULTIPLIER),
+    "Choice Specs": ("sp_attack", CHOICE_ITEM_STAT_MULTIPLIER),
+}
 
 
 def calculate_stat(base: int, iv: int, ev: int, level: int, nature_modifier: float, stat_name: str) -> int:
@@ -60,6 +69,9 @@ def _effective_stat(combatant: dict, stat_name: str) -> int:
     if stat_name != "hp":
         stage = combatant["stat_stages"].get(stat_name, 0)
         stat = math.floor(stat * get_stage_multiplier(stage))
+        item_stat, item_multiplier = _ITEM_STAT_BOOST.get(combatant.get("item"), (None, None))
+        if item_stat == stat_name:
+            stat = math.floor(stat * item_multiplier)
     return stat
 
 
@@ -82,6 +94,7 @@ def _damage_at_roll(
     type_effectiveness: float,
     terrain_modifier: float,
     screen_modifier: float,
+    item_modifier: float,
 ) -> int:
     """Run the modifier chain for one damage roll.
 
@@ -96,6 +109,7 @@ def _damage_at_roll(
     damage = _apply_floor(damage, type_effectiveness)
     damage = _apply_floor(damage, terrain_modifier)
     damage = _apply_floor(damage, screen_modifier)
+    damage = _apply_floor(damage, item_modifier)
     return damage
 
 
@@ -170,6 +184,14 @@ def calculate_damage(move: dict, attacker: dict, defender: dict, context: dict) 
     else:
         screen_modifier = NEUTRAL_MULTIPLIER
 
+    attacker_item = attacker.get("item")
+    if attacker_item == "Life Orb":
+        item_modifier = LIFE_ORB_MULTIPLIER
+    elif attacker_item == "Expert Belt" and type_effectiveness > 1:
+        item_modifier = EXPERT_BELT_MULTIPLIER
+    else:
+        item_modifier = NEUTRAL_MULTIPLIER
+
     chain = dict(
         base_damage=base_damage,
         spread_modifier=spread_modifier,
@@ -178,6 +200,7 @@ def calculate_damage(move: dict, attacker: dict, defender: dict, context: dict) 
         type_effectiveness=type_effectiveness,
         terrain_modifier=terrain_modifier,
         screen_modifier=screen_modifier,
+        item_modifier=item_modifier,
     )
     min_damage = _damage_at_roll(roll=MIN_ROLL, **chain)
     max_damage = _damage_at_roll(roll=MAX_ROLL, **chain)

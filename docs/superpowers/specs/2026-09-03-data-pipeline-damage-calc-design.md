@@ -125,10 +125,10 @@ pika-rag/
 - Discord bot (any part)
 - Pikalytics scraping / real usage stats / common spreads
 - Live deployment of anything — all verification is via `pytest`, no API keys required
-- Held-item damage multipliers (Life Orb, Choice Band, Assault Vest, etc.) — a combatant's
-  `item` field is accepted as an input for forward-compatibility but is not yet applied to
-  the damage calculation. Adding real item mechanics is a follow-up task, not a bug in this
-  slice.
+- Held-item damage multipliers beyond the four implemented as a 2026-09-04 follow-up (Life
+  Orb, Choice Band, Choice Specs, Expert Belt — see `damage_calc/calc.py`). Everything else
+  (Assault Vest, Weakness Policy, type-boosting gems/plates, berries, etc.) still has its
+  `item` value accepted but ignored.
 
 ## Known gap (post-implementation, added after final review)
 
