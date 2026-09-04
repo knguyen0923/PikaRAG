@@ -22,17 +22,21 @@ show only base stats and the full legal learnset, not what's actually used in VG
 ## Scope
 
 In scope:
-- A new pipeline stage fetching per-species usage data (top moves, items, abilities,
-  and — best-effort — EV spreads) from Pikalytics' AI-facing endpoint, for the
-  current regulation's legal roster.
+- A new pipeline stage fetching per-species usage data (top moves, items, and
+  abilities) from Pikalytics' AI-facing endpoint, for the current regulation's
+  legal roster.
 - `/stats` augmented with a "Common build" line when usage data exists for that
   species.
 - `/moves` switched to show top moves by usage % when usage data exists, falling
   back to today's full-legal-learnset behavior otherwise.
 
 Explicitly out of scope:
-- Common teammates — the sample data had no reliable usage percentages attached to
-  teammate names, and neither `/stats` nor `/moves` needs them.
+- Common teammates — confirmed in the real response to have literal `undefined%`
+  usage values, and neither `/stats` nor `/moves` needs them.
+- EV spreads — confirmed in the real response: there is no EV data anywhere on the
+  page (see "Confirmed page format" below). The original design carried a
+  best-effort `evs` field for this; it's dropped entirely now that its absence is
+  confirmed rather than merely suspected.
 - Any change to `/calc`, `/import`, `/scout`, `/team`, `bot/team_store.py`,
   `bot/pokepaste.py`, or anything under `damage_calc/`. This feature is purely
   additive to `/stats` and `/moves`; the full existing test suite must pass
@@ -65,12 +69,8 @@ One usage record per species (only present for species Pikalytics has data for):
 ```python
 {
     "moves": [{"name": str, "usage_pct": float}, ...],       # top 6 by usage, sorted desc
-    "items": [{"name": str, "usage_pct": float}, ...],
-    "abilities": [{"name": str, "usage_pct": float}, ...],
-    "evs": [{"spread": str, "usage_pct": float}, ...],        # best-effort; empty list if
-                                                                # Pikalytics doesn't expose a
-                                                                # clean per-species EV table
-                                                                # (see "Known unknown" below)
+    "items": [{"name": str, "usage_pct": float}, ...],       # top 6 by usage, sorted desc
+    "abilities": [{"name": str, "usage_pct": float}, ...],   # all listed abilities, sorted desc
 }
 ```
 
@@ -78,17 +78,41 @@ Stored in `data/processed/pikalytics_usage.json` as `{species_name: usage_record
 species with no Pikalytics coverage simply have no key, which is how "no usage data"
 is represented throughout (no null placeholders).
 
-## Known unknown: exact page format
+## Confirmed page format
 
-Everything above about the shape of Pikalytics' `/ai/pokedex/<format>/<species>`
-response comes from a tool that fetches a page and has a small model *describe* it
-in Markdown — not the literal raw HTTP response body. The first implementation task
-must fetch a handful of real raw responses (`requests.get(url).text`) for known
-species and inspect them directly before writing the parser. If the real format
-differs meaningfully from what's described here (e.g. it's HTML tables rather than
-Markdown, or EV data truly isn't available per-species), the parser adapts to
-reality and this spec's `evs` field may end up permanently empty — that's an
-acceptable, already-anticipated outcome, not a spec violation.
+Fetched directly (`curl`, not a summarizing tool) against three real cases to
+confirm the literal wire format before writing any parsing code:
+
+- **Success** (`GET /ai/pokedex/battledataregmbs3/Garchomp`) — HTTP 200,
+  `content-type: text/markdown; charset=utf-8`. Body is plain Markdown with a
+  fixed section structure; the three sections this feature reads are exactly:
+  ```
+  ## Common Moves
+  - **Dragon Claw**: 89.4%
+  - **Rock Slide**: 82.0%
+  ...
+
+  ## Common Abilities
+  - **Rough Skin**: 98.5%
+  - **Sand Veil**: 1.5%
+
+  ## Common Items
+  - **Life Orb**: 51.5%
+  - **Sitrus Berry**: 13.6%
+  ...
+  ```
+  Each line is `- **<name>**: <percent>%`, one section per heading, sections
+  always appear in this order. A `## Common Teammates` section follows Items,
+  with every value literally the string `undefined%` — confirming it's unusable
+  and correctly out of scope. No EV data appears anywhere on the page — confirming
+  the original best-effort `evs` field would always have been empty, so it's
+  dropped from the data model entirely rather than kept as a permanently-empty field.
+- **Not found** (`GET /ai/pokedex/battledataregmbs3/Nonexistamon`) — HTTP 404,
+  plain-text body `Pokemon not found`. Detected via status code alone; the body
+  text is irrelevant.
+- **Hyphenated form** (`GET /ai/pokedex/battledataregmbs3/Rotom-Wash`) — HTTP 200,
+  identical section structure, confirming the hyphen-join slug transform works for
+  at least this form.
 
 ## Pipeline (`pipeline/fetch_pikalytics.py`)
 
@@ -126,8 +150,7 @@ commands.
 
 - `stats_response(records, name, usage=None)`: unchanged base-stats output, plus —
   only when `usage.get(record["name"])` exists — an appended line: `Common build:
-  51.5% Life Orb, 98.5% Rough Skin.` EVs are appended too if that list is non-empty,
-  omitted otherwise (see "Known unknown").
+  51.5% Life Orb, 98.5% Rough Skin.`
 - `moves_response(records, name, usage=None)`: when usage data with a non-empty
   `moves` list exists for the matched species, shows `Top moves (by usage): Dragon
   Claw 89.4%, Earthquake 76.2%, ...` instead of the full legal learnset. Falls back
