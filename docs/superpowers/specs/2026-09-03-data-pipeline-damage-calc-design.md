@@ -125,3 +125,17 @@ pika-rag/
 - Discord bot (any part)
 - Pikalytics scraping / real usage stats / common spreads
 - Live deployment of anything — all verification is via `pytest`, no API keys required
+- Held-item damage multipliers beyond the four implemented as a 2026-09-04 follow-up (Life
+  Orb, Choice Band, Choice Specs, Expert Belt — see `damage_calc/calc.py`). Everything else
+  (Assault Vest, Weakness Policy, type-boosting gems/plates, berries, etc.) still has its
+  `item` value accepted but ignored.
+
+## Known gap (post-implementation, added after final review)
+
+The live 2026-09-04 pipeline run against PokéAPI resolved 314/315 legal Pokémon, including
+74/75 Mega Evolutions — PokéAPI does carry Champions-format Megas, so the resolver fixes in
+this fix wave were sufficient for the roster as a whole. The one holdout is `Mega Meowstic`:
+PokéAPI splits it into `meowstic-male-mega` / `meowstic-female-mega` with no gender-neutral
+slug, and the legal list specifies no gender — a genuine naming ambiguity, not a missing
+record. Resolving it needs either a gender default convention or a per-Pokémon override, and
+is an open product decision for whoever picks up the next data-pipeline task.

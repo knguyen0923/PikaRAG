@@ -1,0 +1,17 @@
+{
+  "base_stats": {
+    "hp": 48,
+    "attack": 48,
+    "defense": 48,
+    "sp_attack": 48,
+    "sp_defense": 48,
+    "speed": 48
+  },
+  "learnset": [
+    "transform"
+  ],
+  "abilities": [
+    "limber",
+    "imposter"
+  ]
+}
