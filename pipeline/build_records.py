@@ -14,10 +14,6 @@ def _simple_cache_filename(display_name: str) -> str:
     return f"{slug}.json"
 
 
-def _title_case_slug(slug: str) -> str:
-    return " ".join(word.capitalize() for word in slug.split("-"))
-
-
 def build_records(source_dir: Path, raw_dir: Path) -> list:
     source_dir = Path(source_dir)
     raw_dir = Path(raw_dir)
@@ -50,8 +46,9 @@ def build_records(source_dir: Path, raw_dir: Path) -> list:
             if slug in move_names_by_slug
         })
         abilities = sorted({
-            ability_names_by_slug.get(slug, _title_case_slug(slug))
+            ability_names_by_slug[slug]
             for slug in raw.get("abilities", [])
+            if slug in ability_names_by_slug
         })
 
         records.append({

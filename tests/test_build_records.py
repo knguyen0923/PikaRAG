@@ -67,3 +67,23 @@ def test_write_processed_records_creates_valid_json(tmp_path):
     with open(out_path) as f:
         loaded = json.load(f)
     assert loaded == records
+
+def test_build_records_filters_abilities_against_vgc_abilities(tmp_path):
+    """Regression test: abilities not in vgc_abilities.json should be dropped."""
+    source_dir = _make_fixture_source(tmp_path)
+    raw_dir = tmp_path / "raw"
+    raw_dir.mkdir()
+    # Include an unlisted ability alongside the legal ones
+    _write_json(raw_dir / "abomasnow.json", {
+        "base_stats": {"hp": 90, "attack": 92, "defense": 75, "sp_attack": 92, "sp_defense": 85, "speed": 60},
+        "learnset": ["ice-punch", "wood-hammer", "solar-beam"],
+        "abilities": ["snow-warning", "soundproof", "some-unlisted-ability"],
+    })
+
+    records = build_records(source_dir, raw_dir)
+
+    assert len(records) == 1
+    record = records[0]
+    # Only the two listed abilities should be included; some-unlisted-ability must be dropped
+    assert set(record["abilities"]) == {"Snow Warning", "Soundproof"}
+    assert "some-unlisted-ability" not in record["abilities"]
