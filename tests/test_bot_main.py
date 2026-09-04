@@ -98,6 +98,27 @@ def test_team_view_command_is_registered_on_the_tree():
     assert "opponent" in commands["team"].description.lower() or "team" in commands["team"].description.lower()
 
 
+def test_import_command_reports_a_fetch_error_without_crashing(monkeypatch):
+    import bot.main as main_module
+    from bot.pokepaste_fetch import PokepasteFetchError
+
+    def _raise(*args, **kwargs):
+        raise PokepasteFetchError("Could not fetch 'https://pokepast.es/bad' (got HTTP 404).")
+
+    monkeypatch.setattr(main_module, "resolve_pokepaste_text", _raise)
+
+    _client, tree = build_client()
+    import_command = tree.get_command("import")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(import_command.callback(interaction, side="mine", pokepaste="https://pokepast.es/bad"))
+
+    sent_text = interaction.response.send_message.call_args[0][0]
+    assert "404" in sent_text
+
+
 _CALC_TEST_RECORDS = [{
     "name": "Garchomp", "types": ["Dragon", "Ground"],
     "base_stats": {"hp": 108, "attack": 130, "defense": 95, "sp_attack": 80, "sp_defense": 85, "speed": 102},
