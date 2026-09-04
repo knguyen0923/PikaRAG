@@ -1,4 +1,5 @@
 import uuid
+from typing import Optional
 
 import chromadb
 
@@ -8,7 +9,7 @@ from rag.embed import build_chunks
 class ChromaIndex:
     """Chroma-backed vector index over Pokemon record chunks."""
 
-    def __init__(self, embedder, client=None, collection_name: str | None = None):
+    def __init__(self, embedder, client=None, collection_name: Optional[str] = None):
         self._embedder = embedder
         self._client = client or chromadb.Client()
         # Default to a fresh collection per instance so unrelated indexes
