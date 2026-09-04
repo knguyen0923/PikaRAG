@@ -18,7 +18,7 @@ def test_url_is_fetched_from_the_raw_endpoint():
     result = resolve_pokepaste_text("https://pokepast.es/abc123", session=session)
 
     assert result == "Garchomp @ Life Orb\n- Earthquake\n"
-    session.get.assert_called_once_with("https://pokepast.es/abc123/raw")
+    session.get.assert_called_once_with("https://pokepast.es/abc123/raw", timeout=(5, 10))
 
 
 def test_trailing_slash_url_still_resolves_to_raw_endpoint():
@@ -27,7 +27,7 @@ def test_trailing_slash_url_still_resolves_to_raw_endpoint():
 
     resolve_pokepaste_text("https://pokepast.es/abc123/", session=session)
 
-    session.get.assert_called_once_with("https://pokepast.es/abc123/raw")
+    session.get.assert_called_once_with("https://pokepast.es/abc123/raw", timeout=(5, 10))
 
 
 def test_http_error_raises_pokepaste_fetch_error():
@@ -44,3 +44,8 @@ def test_network_error_raises_pokepaste_fetch_error():
 
     with pytest.raises(PokepasteFetchError, match="Network error"):
         resolve_pokepaste_text("https://pokepast.es/abc123", session=session)
+
+
+def test_non_pokepaste_host_is_rejected():
+    with pytest.raises(PokepasteFetchError, match="pokepast.es"):
+        resolve_pokepaste_text("https://evil.example.com/abc123")
