@@ -1,8 +1,16 @@
 import asyncio
 from unittest.mock import AsyncMock, MagicMock
 
+import discord
+
 from bot.commands.ping import ping_response
 from bot.main import build_client
+
+
+def _extract_text(mock_send) -> str:
+    """The description of the discord.Embed a send_message/followup.send call was given."""
+    _args, kwargs = mock_send.call_args
+    return kwargs["embed"].description
 
 
 def test_ping_response_is_pong():
@@ -69,9 +77,31 @@ def test_calc_command_actually_uses_the_moves_data_not_the_moves_command():
 
     asyncio.run(calc_cmd.callback(interaction, attacker="Garchomp", defender="Garchomp", move="Earthquake"))
 
-    sent_text = interaction.response.send_message.call_args[0][0]
+    sent_text = _extract_text(interaction.response.send_message)
     assert "Earthquake" in sent_text
     assert "damage" in sent_text.lower()
+
+
+def test_calc_command_sends_an_embed_with_the_calc_color():
+    records = [{
+        "name": "Garchomp", "types": ["Dragon", "Ground"],
+        "base_stats": {"hp": 108, "attack": 130, "defense": 95, "sp_attack": 80, "sp_defense": 85, "speed": 102},
+        "abilities": ["Rough Skin"], "learnset": ["Earthquake"], "legal_in": ["M-B"],
+    }]
+    moves = [{"name": "Earthquake", "type": "Ground", "category": "Physical", "power": 100, "accuracy": 100, "pp": 10, "effect": None}]
+
+    _client, tree = build_client(records=records, moves=moves)
+    calc_cmd = tree.get_command("calc")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(calc_cmd.callback(interaction, attacker="Garchomp", defender="Garchomp", move="Earthquake"))
+
+    _args, kwargs = interaction.response.send_message.call_args
+    embed = kwargs["embed"]
+    assert isinstance(embed, discord.Embed)
+    assert embed.color == discord.Color.red()
 
 
 def test_import_command_is_registered_on_the_tree():
@@ -117,7 +147,7 @@ def test_import_command_reports_a_fetch_error_without_crashing(monkeypatch):
     asyncio.run(import_command.callback(interaction, side="mine", pokepaste="https://pokepast.es/bad"))
 
     interaction.response.defer.assert_awaited_once()
-    sent_text = interaction.followup.send.call_args[0][0]
+    sent_text = _extract_text(interaction.followup.send)
     assert "404" in sent_text
 
 
@@ -159,7 +189,7 @@ def test_calc_command_uses_a_stored_team_members_evs_and_item():
         asyncio.run(calc_command.callback(
             interaction, attacker="Garchomp", defender="Garchomp", move="Earthquake",
         ))
-        return interaction.response.send_message.call_args[0][0]
+        return _extract_text(interaction.response.send_message)
 
     boosted_text = _run(boosted_user_id)
     plain_text = _run(plain_user_id)  # no team stored for this user -> neutral defaults
@@ -189,7 +219,7 @@ def test_calc_command_notes_when_a_stored_team_member_was_used():
         interaction, attacker="Garchomp", defender="Garchomp", move="Earthquake",
     ))
 
-    sent_text = interaction.response.send_message.call_args[0][0]
+    sent_text = _extract_text(interaction.response.send_message)
     assert "using stored data" in sent_text.lower()
     assert "Garchomp" in sent_text.split("using stored data")[1]
 
@@ -205,7 +235,7 @@ def test_calc_command_omits_the_note_when_nothing_is_stored():
         interaction, attacker="Garchomp", defender="Garchomp", move="Earthquake",
     ))
 
-    sent_text = interaction.response.send_message.call_args[0][0]
+    sent_text = _extract_text(interaction.response.send_message)
     assert "using stored data" not in sent_text.lower()
 
 
@@ -220,7 +250,7 @@ def test_calc_command_omits_the_note_on_an_error_response():
         interaction, attacker="Nonexistamon", defender="Garchomp", move="Earthquake",
     ))
 
-    sent_text = interaction.response.send_message.call_args[0][0]
+    sent_text = _extract_text(interaction.response.send_message)
     assert "using stored data" not in sent_text.lower()
 
 
@@ -284,8 +314,8 @@ def test_import_then_calc_uses_the_real_parsed_team_data():
         interaction.followup.send = AsyncMock()
         asyncio.run(cmd.callback(interaction, **kwargs))
         if interaction.followup.send.called:
-            return interaction.followup.send.call_args[0][0]
-        return interaction.response.send_message.call_args[0][0]
+            return _extract_text(interaction.followup.send)
+        return _extract_text(interaction.response.send_message)
 
     _run(import_command, user_id, side="mine", pokepaste="""Garchomp @ Life Orb
 Ability: Rough Skin
@@ -316,7 +346,7 @@ def test_tree_error_handler_sends_a_friendly_message_when_not_yet_responded():
 
     interaction.response.send_message.assert_awaited_once()
     interaction.followup.send.assert_not_called()
-    sent_text = interaction.response.send_message.call_args[0][0]
+    sent_text = _extract_text(interaction.response.send_message)
     assert "boom" not in sent_text
     assert "went wrong" in sent_text.lower()
 
@@ -356,6 +386,6 @@ def test_tree_error_handler_gives_a_friendly_message_on_cooldown():
     error = app_commands.CommandOnCooldown(Cooldown(1, 3.0), retry_after=2.5)
     asyncio.run(tree.on_error(interaction, error))
 
-    sent_text = interaction.response.send_message.call_args[0][0]
+    sent_text = _extract_text(interaction.response.send_message)
     assert "2.5" in sent_text
     assert "wait" in sent_text.lower() or "slow down" in sent_text.lower()

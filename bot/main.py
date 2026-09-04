@@ -28,6 +28,21 @@ PROCESSED_RECORDS_PATH = Path("data/processed/pokemon_records.json")
 VGC_MOVES_PATH = Path("data/source/vgc_moves.json")
 _COOLDOWN_SECONDS = 3.0
 
+_COMMAND_COLORS = {
+    "ping": discord.Color.light_grey(),
+    "ask": discord.Color.purple(),
+    "stats": discord.Color.blue(),
+    "moves": discord.Color.teal(),
+    "calc": discord.Color.red(),
+    "import": discord.Color.green(),
+    "scout": discord.Color.gold(),
+    "team": discord.Color.blurple(),
+}
+
+
+def _embed(command_name: str, description: str) -> discord.Embed:
+    return discord.Embed(description=description, color=_COMMAND_COLORS[command_name])
+
 
 def build_client(
     index=None, answerer=None, records=None, moves=None
@@ -39,7 +54,7 @@ def build_client(
     @tree.command(name="ping", description="Check that the bot is responsive.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
     async def ping(interaction: discord.Interaction) -> None:
-        await interaction.response.send_message(ping_response())
+        await interaction.response.send_message(embed=_embed("ping", ping_response()))
 
     @tree.command(name="ask", description="Ask a question about VGC Pokemon stats and movesets.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
@@ -50,19 +65,18 @@ def build_client(
             format_team_block(get_team(user_id, "opponent"), "Opponent's team"),
         ]
         extra_context = "\n\n".join(block for block in team_blocks if block) or None
-        await interaction.response.send_message(
-            await ask_response_async(index, answerer, question, extra_context=extra_context)
-        )
+        answer = await ask_response_async(index, answerer, question, extra_context=extra_context)
+        await interaction.response.send_message(embed=_embed("ask", answer))
 
     @tree.command(name="stats", description="Look up a Pokemon's base stats, types, and abilities.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
     async def stats(interaction: discord.Interaction, name: str) -> None:
-        await interaction.response.send_message(stats_response(records, name))
+        await interaction.response.send_message(embed=_embed("stats", stats_response(records, name)))
 
     @tree.command(name="moves", description="Look up a Pokemon's legal moveset.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
     async def moves_command(interaction: discord.Interaction, name: str) -> None:
-        await interaction.response.send_message(moves_response(records, name))
+        await interaction.response.send_message(embed=_embed("moves", moves_response(records, name)))
 
     @tree.command(name="import", description="Import a full Pokemon team from Pokepaste text or a pokepast.es URL.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
@@ -75,10 +89,10 @@ def build_client(
         try:
             raw_text = await asyncio.to_thread(resolve_pokepaste_text, pokepaste)
         except PokepasteFetchError as e:
-            await interaction.followup.send(str(e))
+            await interaction.followup.send(embed=_embed("import", str(e)))
             return
         response = import_team_response(records, moves, interaction.user.id, side, raw_text)
-        await interaction.followup.send(response)
+        await interaction.followup.send(embed=_embed("import", response))
 
     @tree.command(name="scout", description="Add or update one Pokemon in a stored team with only what you currently know.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
@@ -100,12 +114,12 @@ def build_client(
             move1=move1, move2=move2, move3=move3, move4=move4,
             side=side,
         )
-        await interaction.response.send_message(response)
+        await interaction.response.send_message(embed=_embed("scout", response))
 
     @tree.command(name="team", description="View the Pokemon currently stored for your team or the opponent's team.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
     async def team(interaction: discord.Interaction, side: Literal["mine", "opponent"]) -> None:
-        await interaction.response.send_message(view_team_response(interaction.user.id, side))
+        await interaction.response.send_message(embed=_embed("team", view_team_response(interaction.user.id, side)))
 
     @tree.command(name="calc", description="Calculate a damage range for attacker's move vs defender.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
@@ -161,7 +175,7 @@ def build_client(
             stored_names = [name for name in (attacker, defender) if find_team_member(user_id, name)]
             if stored_names:
                 response += f" (using stored data for: {', '.join(stored_names)})"
-        await interaction.response.send_message(response)
+        await interaction.response.send_message(embed=_embed("calc", response))
 
     @client.event
     async def on_ready() -> None:
@@ -172,13 +186,16 @@ def build_client(
         command_name = interaction.command.name if interaction.command else "?"
         if isinstance(error, app_commands.CommandOnCooldown):
             message = f"Slow down! Please wait {error.retry_after:.1f}s before using that again."
+            color = discord.Color.orange()
         else:
             print(f"Unhandled error in /{command_name}: {error!r}")
             message = "Something went wrong running that command. Please try again."
+            color = discord.Color.red()
+        embed = discord.Embed(description=message, color=color)
         if interaction.response.is_done():
-            await interaction.followup.send(message)
+            await interaction.followup.send(embed=embed)
         else:
-            await interaction.response.send_message(message)
+            await interaction.response.send_message(embed=embed)
 
     return client, tree
 
