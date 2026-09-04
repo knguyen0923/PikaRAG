@@ -136,8 +136,20 @@ a fully-imported one once it reaches `/calc`.
 ### `/team side:(mine|opponent)`
 
 View/recall: one line per stored Pokemon (species, item, Tera type, nature, known
-moves), plus any still-pending unmatched-name warnings for that side. An empty/
-never-loaded side reports that plainly and points at `/import` or `/scout`.
+moves). An empty/never-loaded side reports that plainly and points at `/import`
+or `/scout`.
+
+**Revised during final review (2026-09-04):** the original draft of this
+section also called for `/team` to re-surface "any still-pending unmatched-name
+warnings for that side." This was never implemented — warnings are already
+shown once, immediately, in `/import`'s and `/scout`'s own confirmation
+message, at the moment the unrecognized name is stored. Persisting them
+separately so `/team` could show them again would mean carrying warning state
+alongside every stored Pokemon and threading it through `format_team_block`,
+for a case that's already surfaced to the user at the moment it matters.
+Descoped rather than implemented; if a user wants to double-check a stored
+Pokemon's name later, `/team`'s existing species listing already lets them see
+exactly what's stored.
 
 ## Feeding `/calc`
 
@@ -222,7 +234,9 @@ addition otherwise.
   (no turn-order modeling), and the only IV deviations from 31 that actually change
   damage output (0 Atk to minimize confusion self-hit, etc.) are rare enough not to
   justify a whole new override surface in `/calc` right now. Parsed IVs are still
-  stored and shown in `/team` for completeness.
+  stored on the team-member record for completeness, even though `/team`'s
+  display (see "Commands") doesn't surface them — matching every other
+  VGC-standard-assumed field that isn't worth a dedicated display line.
 - A command to clear/reset a single scouted Pokemon or an entire side. Re-`/import`
   already replaces a side outright; nothing today removes a single `/scout`-added
   entry without doing that.
