@@ -1,3 +1,4 @@
+import asyncio
 import json
 import os
 from pathlib import Path
@@ -65,7 +66,7 @@ def build_client(
         pokepaste: str,
     ) -> None:
         try:
-            raw_text = resolve_pokepaste_text(pokepaste)
+            raw_text = await asyncio.to_thread(resolve_pokepaste_text, pokepaste)
         except PokepasteFetchError as e:
             await interaction.response.send_message(str(e))
             return
