@@ -1,3 +1,6 @@
+import asyncio
+from unittest.mock import AsyncMock, MagicMock
+
 from bot.commands.ping import ping_response
 from bot.main import build_client
 
@@ -44,3 +47,28 @@ def test_calc_command_is_registered_on_the_tree():
 
     assert "calc" in commands
     assert "damage" in commands["calc"].description.lower()
+
+
+def test_calc_command_actually_uses_the_moves_data_not_the_moves_command():
+    # Regression test: the /moves command handler used to be named `moves`,
+    # which rebound the `moves` closure variable to that Command object --
+    # any command defined after it (like /calc) that reads `moves` from the
+    # enclosing scope got the Command object instead of the move data list.
+    records = [{
+        "name": "Garchomp", "types": ["Dragon", "Ground"],
+        "base_stats": {"hp": 108, "attack": 130, "defense": 95, "sp_attack": 80, "sp_defense": 85, "speed": 102},
+        "abilities": ["Rough Skin"], "learnset": ["Earthquake"], "legal_in": ["M-B"],
+    }]
+    moves = [{"name": "Earthquake", "type": "Ground", "category": "Physical", "power": 100, "accuracy": 100, "pp": 10, "effect": None}]
+
+    _client, tree = build_client(records=records, moves=moves)
+    calc_cmd = tree.get_command("calc")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(calc_cmd.callback(interaction, attacker="Garchomp", defender="Garchomp", move="Earthquake"))
+
+    sent_text = interaction.response.send_message.call_args[0][0]
+    assert "Earthquake" in sent_text
+    assert "damage" in sent_text.lower()

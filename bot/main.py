@@ -39,7 +39,7 @@ def build_client(
         await interaction.response.send_message(stats_response(records, name))
 
     @tree.command(name="moves", description="Look up a Pokemon's legal moveset.")
-    async def moves(interaction: discord.Interaction, name: str) -> None:
+    async def moves_command(interaction: discord.Interaction, name: str) -> None:
         await interaction.response.send_message(moves_response(records, name))
 
     @tree.command(name="calc", description="Calculate a damage range for attacker's move vs defender.")
