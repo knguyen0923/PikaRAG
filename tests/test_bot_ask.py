@@ -82,3 +82,14 @@ def test_ask_response_async_does_not_block_the_event_loop():
 
     assert result == "answer"
     assert ticks >= 8
+
+
+def test_ask_response_prepends_extra_context_when_given():
+    index = _FakeIndex(context_matches=[{"text": "Gyarados base HP: 95.", "metadata": {}}])
+    answerer = _FakeAnswerer(response_text="answer")
+
+    ask_response(index, answerer, "How bulky is Gyarados?", extra_context="Your team: Gyarados")
+
+    question, context_block = answerer.calls[0]
+    assert context_block.startswith("Your team: Gyarados")
+    assert "Gyarados base HP: 95." in context_block
