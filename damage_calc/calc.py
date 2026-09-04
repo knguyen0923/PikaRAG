@@ -6,6 +6,23 @@ from damage_calc.data.natures import get_nature_modifiers
 from damage_calc.data.stat_stages import get_stage_multiplier
 
 
+# --- Damage modifier constants ---
+STAB_MULTIPLIER = 1.5
+NO_STAB_MULTIPLIER = 1.0
+SPREAD_MULTIPLIER = 0.75          # doubles, move hits more than one target
+WEATHER_BOOST_MULTIPLIER = 1.5    # Rain/Water, Sun/Fire
+WEATHER_PENALTY_MULTIPLIER = 0.5  # Rain/Fire, Sun/Water
+TERRAIN_BOOST_MULTIPLIER = 1.3    # grounded attacker, matching terrain
+SCREEN_DOUBLES_MULTIPLIER = 2 / 3
+SCREEN_SINGLES_MULTIPLIER = 0.5
+MIN_ROLL = 0.85
+MAX_ROLL = 1.00
+NEUTRAL_MULTIPLIER = 1.0
+
+# Terrain name -> the move type it boosts.
+_TERRAIN_TYPE_MAP = {"Electric": "Electric", "Grassy": "Grass", "Psychic": "Psychic"}
+
+
 def calculate_stat(base: int, iv: int, ev: int, level: int, nature_modifier: float, stat_name: str) -> int:
     core = math.floor((2 * base + iv + math.floor(ev / 4)) * level / 100)
     if stat_name == "hp":
@@ -46,10 +63,55 @@ def _effective_stat(combatant: dict, stat_name: str) -> int:
     return stat
 
 
+def _apply_floor(value: int, multiplier: float) -> int:
+    """Apply one modifier and truncate, as the games do at each chain step."""
+    return math.floor(value * multiplier)
+
+
+def _poke_round(value: float) -> int:
+    """Round half UP -- the games' rounding for the STAB step specifically."""
+    return math.floor(value + 0.5)
+
+
+def _damage_at_roll(
+    base_damage: int,
+    roll: float,
+    spread_modifier: float,
+    weather_modifier: float,
+    stab: float,
+    type_effectiveness: float,
+    terrain_modifier: float,
+    screen_modifier: float,
+) -> int:
+    """Run the modifier chain for one damage roll.
+
+    Real damage calculation truncates after EACH modifier rather than once at
+    the end, and the STAB step rounds half up instead of truncating. The order
+    below is the in-game order; changing it changes results in ~20-40% of cases.
+    """
+    damage = _apply_floor(base_damage, spread_modifier)
+    damage = _apply_floor(damage, weather_modifier)
+    damage = _apply_floor(damage, roll)
+    damage = _poke_round(damage * stab)
+    damage = _apply_floor(damage, type_effectiveness)
+    damage = _apply_floor(damage, terrain_modifier)
+    damage = _apply_floor(damage, screen_modifier)
+    return damage
+
+
 def calculate_damage(move: dict, attacker: dict, defender: dict, context: dict) -> DamageResult:
-    level = attacker["level"]
-    power = move["power"] or 0
     category = move["category"]
+
+    # Status moves and any 0-power move deal exactly zero damage; without this
+    # guard the final "minimum 1 damage" floor would report a few points for
+    # Protect, Tailwind, etc.
+    if category == "Status" or not move.get("power"):
+        return DamageResult(
+            min_damage=0, max_damage=0, min_percent=0.0, max_percent=0.0, is_ko_chance=False
+        )
+
+    level = attacker["level"]
+    power = move["power"]
 
     if category == "Physical":
         attack_stat = _effective_stat(attacker, "attack")
@@ -59,42 +121,41 @@ def calculate_damage(move: dict, attacker: dict, defender: dict, context: dict) 
         defense_stat = _effective_stat(defender, "sp_defense")
 
     attacker_types = [attacker["tera_type"]] if attacker["tera_type"] else attacker["record"]["types"]
-    stab = 1.5 if move["type"] in attacker_types else 1.0
+    stab = STAB_MULTIPLIER if move["type"] in attacker_types else NO_STAB_MULTIPLIER
 
-    type_effectiveness = get_effectiveness(move["type"], defender["record"]["types"])
+    # A Terastallized defender's defensive typing is REPLACED by its Tera type.
+    defender_types = [defender["tera_type"]] if defender["tera_type"] else defender["record"]["types"]
+    type_effectiveness = get_effectiveness(move["type"], defender_types)
 
     base_damage = math.floor(
         math.floor(math.floor(2 * level / 5 + 2) * power * attack_stat / defense_stat) / 50
     ) + 2
 
-    modifier_low = stab * type_effectiveness * 0.85
-    modifier_high = stab * type_effectiveness * 1.0
-
-    spread_modifier = 0.75 if context.get("is_spread_target") and context.get("is_doubles") else 1.0
-    modifier_low *= spread_modifier
-    modifier_high *= spread_modifier
+    spread_modifier = (
+        SPREAD_MULTIPLIER
+        if context.get("is_spread_target") and context.get("is_doubles")
+        else NEUTRAL_MULTIPLIER
+    )
 
     weather = context.get("weather")
+    weather_modifier = NEUTRAL_MULTIPLIER
     if weather == "Rain":
         if move["type"] == "Water":
-            modifier_low *= 1.5
-            modifier_high *= 1.5
+            weather_modifier = WEATHER_BOOST_MULTIPLIER
         elif move["type"] == "Fire":
-            modifier_low *= 0.5
-            modifier_high *= 0.5
+            weather_modifier = WEATHER_PENALTY_MULTIPLIER
     elif weather == "Sun":
         if move["type"] == "Fire":
-            modifier_low *= 1.5
-            modifier_high *= 1.5
+            weather_modifier = WEATHER_BOOST_MULTIPLIER
         elif move["type"] == "Water":
-            modifier_low *= 0.5
-            modifier_high *= 0.5
+            weather_modifier = WEATHER_PENALTY_MULTIPLIER
 
     terrain = context.get("terrain")
-    _TERRAIN_TYPE_MAP = {"Electric": "Electric", "Grassy": "Grass", "Psychic": "Psychic"}
-    if terrain and _TERRAIN_TYPE_MAP.get(terrain) == move["type"]:
-        modifier_low *= 1.3
-        modifier_high *= 1.3
+    terrain_modifier = (
+        TERRAIN_BOOST_MULTIPLIER
+        if terrain and _TERRAIN_TYPE_MAP.get(terrain) == move["type"]
+        else NEUTRAL_MULTIPLIER
+    )
 
     screen = context.get("screen")
     screen_applies = (
@@ -103,12 +164,30 @@ def calculate_damage(move: dict, attacker: dict, defender: dict, context: dict) 
         or (screen == "Aurora Veil")
     )
     if screen_applies:
-        screen_multiplier = 2 / 3 if context.get("is_doubles") else 0.5
-        modifier_low *= screen_multiplier
-        modifier_high *= screen_multiplier
+        screen_modifier = (
+            SCREEN_DOUBLES_MULTIPLIER if context.get("is_doubles") else SCREEN_SINGLES_MULTIPLIER
+        )
+    else:
+        screen_modifier = NEUTRAL_MULTIPLIER
 
-    min_damage = max(1, math.floor(base_damage * modifier_low)) if type_effectiveness > 0 else 0
-    max_damage = max(1, math.floor(base_damage * modifier_high)) if type_effectiveness > 0 else 0
+    chain = dict(
+        base_damage=base_damage,
+        spread_modifier=spread_modifier,
+        weather_modifier=weather_modifier,
+        stab=stab,
+        type_effectiveness=type_effectiveness,
+        terrain_modifier=terrain_modifier,
+        screen_modifier=screen_modifier,
+    )
+    min_damage = _damage_at_roll(roll=MIN_ROLL, **chain)
+    max_damage = _damage_at_roll(roll=MAX_ROLL, **chain)
+
+    # A fully immune matchup deals exactly zero; everything else deals at least 1.
+    if type_effectiveness == 0:
+        min_damage = max_damage = 0
+    else:
+        min_damage = max(1, min_damage)
+        max_damage = max(1, max_damage)
 
     defender_hp = _effective_stat(defender, "hp")
     remaining_hp = math.floor(defender_hp * defender["current_hp_fraction"])
