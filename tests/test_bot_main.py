@@ -199,3 +199,42 @@ def test_ask_command_includes_stored_team_context():
     asyncio.run(ask_command.callback(interaction, question="What's a good lead?"))
 
     assert "Garchomp" in captured["context_block"]
+
+
+def test_import_then_calc_uses_the_real_parsed_team_data():
+    records = [{
+        "name": "Garchomp", "types": ["Dragon", "Ground"],
+        "base_stats": {"hp": 108, "attack": 130, "defense": 95, "sp_attack": 80, "sp_defense": 85, "speed": 102},
+        "abilities": ["Rough Skin"], "learnset": ["Earthquake"], "legal_in": ["M-B"],
+    }]
+    moves_data = [
+        {"name": "Earthquake", "type": "Ground", "category": "Physical", "power": 100, "accuracy": 100, "pp": 10, "effect": None},
+    ]
+    _client, tree = build_client(records=records, moves=moves_data)
+    import_command = tree.get_command("import")
+    calc_command = tree.get_command("calc")
+
+    user_id = 20001
+    fresh_user_id = 20002
+
+    def _run(cmd, uid, **kwargs):
+        interaction = MagicMock()
+        interaction.user.id = uid
+        interaction.response.send_message = AsyncMock()
+        asyncio.run(cmd.callback(interaction, **kwargs))
+        return interaction.response.send_message.call_args[0][0]
+
+    _run(import_command, user_id, side="mine", pokepaste="""Garchomp @ Life Orb
+Ability: Rough Skin
+EVs: 0 HP / 252 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
+Adamant Nature
+- Earthquake
+""")
+
+    boosted_text = _run(calc_command, user_id, attacker="Garchomp", defender="Garchomp", move="Earthquake")
+    plain_text = _run(calc_command, fresh_user_id, attacker="Garchomp", defender="Garchomp", move="Earthquake")
+
+    def _max_damage(text):
+        return int(text.split(": ")[1].split("-")[1].split(" ")[0])
+
+    assert _max_damage(boosted_text) > _max_damage(plain_text)
