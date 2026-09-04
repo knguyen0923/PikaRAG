@@ -36,3 +36,11 @@ def test_moves_command_is_registered_on_the_tree():
 
     assert "moves" in commands
     assert "moveset" in commands["moves"].description.lower()
+
+
+def test_calc_command_is_registered_on_the_tree():
+    _client, tree = build_client()
+    commands = {command.name: command for command in tree.get_commands()}
+
+    assert "calc" in commands
+    assert "damage" in commands["calc"].description.lower()
