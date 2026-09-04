@@ -26,6 +26,7 @@ from rag.store import ChromaIndex
 
 PROCESSED_RECORDS_PATH = Path("data/processed/pokemon_records.json")
 VGC_MOVES_PATH = Path("data/source/vgc_moves.json")
+_COOLDOWN_SECONDS = 3.0
 
 
 def build_client(
@@ -36,10 +37,12 @@ def build_client(
     tree = app_commands.CommandTree(client)
 
     @tree.command(name="ping", description="Check that the bot is responsive.")
+    @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
     async def ping(interaction: discord.Interaction) -> None:
         await interaction.response.send_message(ping_response())
 
     @tree.command(name="ask", description="Ask a question about VGC Pokemon stats and movesets.")
+    @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
     async def ask(interaction: discord.Interaction, question: str) -> None:
         user_id = interaction.user.id
         team_blocks = [
@@ -52,14 +55,17 @@ def build_client(
         )
 
     @tree.command(name="stats", description="Look up a Pokemon's base stats, types, and abilities.")
+    @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
     async def stats(interaction: discord.Interaction, name: str) -> None:
         await interaction.response.send_message(stats_response(records, name))
 
     @tree.command(name="moves", description="Look up a Pokemon's legal moveset.")
+    @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
     async def moves_command(interaction: discord.Interaction, name: str) -> None:
         await interaction.response.send_message(moves_response(records, name))
 
     @tree.command(name="import", description="Import a full Pokemon team from Pokepaste text or a pokepast.es URL.")
+    @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
     async def import_team(
         interaction: discord.Interaction,
         side: Literal["mine", "opponent"],
@@ -75,6 +81,7 @@ def build_client(
         await interaction.followup.send(response)
 
     @tree.command(name="scout", description="Add or update one Pokemon in a stored team with only what you currently know.")
+    @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
     async def scout(
         interaction: discord.Interaction,
         species: str,
@@ -96,10 +103,12 @@ def build_client(
         await interaction.response.send_message(response)
 
     @tree.command(name="team", description="View the Pokemon currently stored for your team or the opponent's team.")
+    @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
     async def team(interaction: discord.Interaction, side: Literal["mine", "opponent"]) -> None:
         await interaction.response.send_message(view_team_response(interaction.user.id, side))
 
     @tree.command(name="calc", description="Calculate a damage range for attacker's move vs defender.")
+    @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
     async def calc(
         interaction: discord.Interaction,
         attacker: str,
@@ -161,8 +170,11 @@ def build_client(
     @tree.error
     async def on_tree_error(interaction: discord.Interaction, error: app_commands.AppCommandError) -> None:
         command_name = interaction.command.name if interaction.command else "?"
-        print(f"Unhandled error in /{command_name}: {error!r}")
-        message = "Something went wrong running that command. Please try again."
+        if isinstance(error, app_commands.CommandOnCooldown):
+            message = f"Slow down! Please wait {error.retry_after:.1f}s before using that again."
+        else:
+            print(f"Unhandled error in /{command_name}: {error!r}")
+            message = "Something went wrong running that command. Please try again."
         if interaction.response.is_done():
             await interaction.followup.send(message)
         else:

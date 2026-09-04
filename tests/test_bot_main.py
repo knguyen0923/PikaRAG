@@ -334,3 +334,28 @@ def test_tree_error_handler_uses_followup_when_already_responded():
 
     interaction.followup.send.assert_awaited_once()
     interaction.response.send_message.assert_not_called()
+
+
+def test_every_command_has_a_cooldown_check():
+    _client, tree = build_client()
+
+    for name in ("ping", "ask", "stats", "moves", "import", "scout", "team", "calc"):
+        command = tree.get_command(name)
+        assert len(command.checks) >= 1, f"/{name} has no cooldown check attached"
+
+
+def test_tree_error_handler_gives_a_friendly_message_on_cooldown():
+    from discord import app_commands
+    from discord.app_commands.checks import Cooldown
+
+    _client, tree = build_client()
+    interaction = MagicMock()
+    interaction.response.is_done.return_value = False
+    interaction.response.send_message = AsyncMock()
+
+    error = app_commands.CommandOnCooldown(Cooldown(1, 3.0), retry_after=2.5)
+    asyncio.run(tree.on_error(interaction, error))
+
+    sent_text = interaction.response.send_message.call_args[0][0]
+    assert "2.5" in sent_text
+    assert "wait" in sent_text.lower() or "slow down" in sent_text.lower()
