@@ -398,3 +398,121 @@ def test_expert_belt_boosts_only_super_effective_damage():
     no_item_neutral = calculate_damage(neutral_move, attacker_no_item, defender, _BASE_CONTEXT)
     expert_belt_neutral = calculate_damage(neutral_move, attacker_expert_belt, defender, _BASE_CONTEXT)
     assert expert_belt_neutral.max_damage == no_item_neutral.max_damage
+
+
+def test_assault_vest_reduces_special_damage_taken():
+    move = {"name": "Ember", "type": "Fire", "category": "Special", "power": 40, "accuracy": 100, "pp": 25, "effect": None}
+    attacker = _make_combatant(_NEUTRAL_STATS, types=["Fire"])
+    defender_no_item = _make_combatant(_NEUTRAL_STATS, types=["Normal"])
+    defender_assault_vest = _make_combatant(_NEUTRAL_STATS, types=["Normal"], item="Assault Vest")
+
+    no_item = calculate_damage(move, attacker, defender_no_item, _BASE_CONTEXT)
+    assault_vest = calculate_damage(move, attacker, defender_assault_vest, _BASE_CONTEXT)
+
+    assert assault_vest.max_damage < no_item.max_damage
+
+
+def test_matching_type_gem_boosts_damage():
+    move = {"name": "Surf", "type": "Water", "category": "Special", "power": 90, "accuracy": 100, "pp": 15, "effect": None}
+    attacker_no_item = _make_combatant(_NEUTRAL_STATS, types=["Water"])
+    attacker_gem = _make_combatant(_NEUTRAL_STATS, types=["Water"], item="Water Gem")
+    defender = _make_combatant(_NEUTRAL_STATS, types=["Normal"])
+
+    no_item = calculate_damage(move, attacker_no_item, defender, _BASE_CONTEXT)
+    gem = calculate_damage(move, attacker_gem, defender, _BASE_CONTEXT)
+
+    assert gem.max_damage > no_item.max_damage
+
+
+def test_mismatched_type_gem_does_not_boost_damage():
+    move = {"name": "Surf", "type": "Water", "category": "Special", "power": 90, "accuracy": 100, "pp": 15, "effect": None}
+    attacker_no_item = _make_combatant(_NEUTRAL_STATS, types=["Water"])
+    attacker_gem = _make_combatant(_NEUTRAL_STATS, types=["Water"], item="Fire Gem")
+    defender = _make_combatant(_NEUTRAL_STATS, types=["Normal"])
+
+    no_item = calculate_damage(move, attacker_no_item, defender, _BASE_CONTEXT)
+    gem = calculate_damage(move, attacker_gem, defender, _BASE_CONTEXT)
+
+    assert gem.max_damage == no_item.max_damage
+
+
+def test_matching_type_plate_boosts_damage():
+    move = {"name": "Surf", "type": "Water", "category": "Special", "power": 90, "accuracy": 100, "pp": 15, "effect": None}
+    attacker_no_item = _make_combatant(_NEUTRAL_STATS, types=["Water"])
+    attacker_plate = _make_combatant(_NEUTRAL_STATS, types=["Water"], item="Splash Plate")
+    defender = _make_combatant(_NEUTRAL_STATS, types=["Normal"])
+
+    no_item = calculate_damage(move, attacker_no_item, defender, _BASE_CONTEXT)
+    plate = calculate_damage(move, attacker_plate, defender, _BASE_CONTEXT)
+
+    assert plate.max_damage > no_item.max_damage
+
+
+def test_muscle_band_boosts_physical_but_not_special_damage():
+    physical_move = {"name": "Tackle", "type": "Normal", "category": "Physical", "power": 40, "accuracy": 100, "pp": 35, "effect": None}
+    special_move = {"name": "Ember", "type": "Fire", "category": "Special", "power": 40, "accuracy": 100, "pp": 25, "effect": None}
+    attacker_no_item = _make_combatant(_NEUTRAL_STATS, types=["Normal"])
+    attacker_muscle_band = _make_combatant(_NEUTRAL_STATS, types=["Normal"], item="Muscle Band")
+    defender = _make_combatant(_NEUTRAL_STATS, types=["Water"])
+
+    no_item = calculate_damage(physical_move, attacker_no_item, defender, _BASE_CONTEXT)
+    muscle_band = calculate_damage(physical_move, attacker_muscle_band, defender, _BASE_CONTEXT)
+    assert muscle_band.max_damage > no_item.max_damage
+
+    no_item_special = calculate_damage(special_move, attacker_no_item, defender, _BASE_CONTEXT)
+    muscle_band_special = calculate_damage(special_move, attacker_muscle_band, defender, _BASE_CONTEXT)
+    assert muscle_band_special.max_damage == no_item_special.max_damage
+
+
+def test_wise_glasses_boosts_special_but_not_physical_damage():
+    physical_move = {"name": "Tackle", "type": "Normal", "category": "Physical", "power": 40, "accuracy": 100, "pp": 35, "effect": None}
+    special_move = {"name": "Ember", "type": "Fire", "category": "Special", "power": 40, "accuracy": 100, "pp": 25, "effect": None}
+    attacker_no_item = _make_combatant(_NEUTRAL_STATS, types=["Fire"])
+    attacker_wise_glasses = _make_combatant(_NEUTRAL_STATS, types=["Fire"], item="Wise Glasses")
+    defender = _make_combatant(_NEUTRAL_STATS, types=["Water"])
+
+    no_item_special = calculate_damage(special_move, attacker_no_item, defender, _BASE_CONTEXT)
+    wise_glasses_special = calculate_damage(special_move, attacker_wise_glasses, defender, _BASE_CONTEXT)
+    assert wise_glasses_special.max_damage > no_item_special.max_damage
+
+    no_item_physical = calculate_damage(physical_move, attacker_no_item, defender, _BASE_CONTEXT)
+    wise_glasses_physical = calculate_damage(physical_move, attacker_wise_glasses, defender, _BASE_CONTEXT)
+    assert wise_glasses_physical.max_damage == no_item_physical.max_damage
+
+
+def test_matching_resist_berry_reduces_super_effective_damage():
+    move = {"name": "Ember", "type": "Fire", "category": "Special", "power": 40, "accuracy": 100, "pp": 25, "effect": None}
+    attacker = _make_combatant(_NEUTRAL_STATS, types=["Fire"])
+    defender_no_item = _make_combatant(_NEUTRAL_STATS, types=["Grass"])
+    defender_resist_berry = _make_combatant(_NEUTRAL_STATS, types=["Grass"], item="Occa Berry")
+
+    no_item = calculate_damage(move, attacker, defender_no_item, _BASE_CONTEXT)
+    resist_berry = calculate_damage(move, attacker, defender_resist_berry, _BASE_CONTEXT)
+
+    assert resist_berry.max_damage < no_item.max_damage
+
+
+def test_mismatched_resist_berry_does_not_reduce_damage():
+    move = {"name": "Ember", "type": "Fire", "category": "Special", "power": 40, "accuracy": 100, "pp": 25, "effect": None}
+    attacker = _make_combatant(_NEUTRAL_STATS, types=["Fire"])
+    defender_no_item = _make_combatant(_NEUTRAL_STATS, types=["Grass"])
+    defender_resist_berry = _make_combatant(_NEUTRAL_STATS, types=["Grass"], item="Wacan Berry")
+
+    no_item = calculate_damage(move, attacker, defender_no_item, _BASE_CONTEXT)
+    resist_berry = calculate_damage(move, attacker, defender_resist_berry, _BASE_CONTEXT)
+
+    assert resist_berry.max_damage == no_item.max_damage
+
+
+def test_chilan_berry_reduces_normal_type_damage_without_needing_super_effective():
+    # Normal-type moves are never super-effective against anything, so Chilan
+    # Berry is the one resist berry that applies unconditionally on a type match.
+    move = {"name": "Tackle", "type": "Normal", "category": "Physical", "power": 40, "accuracy": 100, "pp": 35, "effect": None}
+    attacker = _make_combatant(_NEUTRAL_STATS, types=["Normal"])
+    defender_no_item = _make_combatant(_NEUTRAL_STATS, types=["Water"])
+    defender_chilan_berry = _make_combatant(_NEUTRAL_STATS, types=["Water"], item="Chilan Berry")
+
+    no_item = calculate_damage(move, attacker, defender_no_item, _BASE_CONTEXT)
+    chilan_berry = calculate_damage(move, attacker, defender_chilan_berry, _BASE_CONTEXT)
+
+    assert chilan_berry.max_damage < no_item.max_damage

@@ -82,3 +82,15 @@ def test_calc_response_flags_a_ko_chance_against_low_defender_hp():
     )
 
     assert "ko chance" in response.lower()
+
+
+def test_calc_response_defender_item_reduces_damage():
+    def _max_damage(response: str) -> int:
+        return int(response.split(": ")[1].split("-")[1].split(" ")[0])
+
+    baseline = calc_response(_RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam")
+    with_vest = calc_response(
+        _RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam", defender_item="Assault Vest"
+    )
+
+    assert _max_damage(with_vest) < _max_damage(baseline)

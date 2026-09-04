@@ -48,6 +48,7 @@ def calc_response(
     attacker_tera: Optional[str] = None,
     defender_evs: str = "0/0/0/0/0/0",
     defender_nature: str = "Hardy",
+    defender_item: Optional[str] = None,
     defender_tera: Optional[str] = None,
     defender_hp_percent: int = 100,
     weather: Optional[str] = None,
@@ -77,7 +78,7 @@ def calc_response(
         return "Invalid defender EVs. Expected format: hp/atk/def/spa/spd/spe, e.g. 252/0/252/0/4/0."
 
     attacker = _build_combatant(attacker_record, parsed_attacker_evs, attacker_nature, attacker_item, attacker_tera)
-    defender = _build_combatant(defender_record, parsed_defender_evs, defender_nature, None, defender_tera)
+    defender = _build_combatant(defender_record, parsed_defender_evs, defender_nature, defender_item, defender_tera)
     defender["current_hp_fraction"] = defender_hp_percent / 100
 
     context = {

@@ -17,7 +17,13 @@ SCREEN_DOUBLES_MULTIPLIER = 2 / 3
 SCREEN_SINGLES_MULTIPLIER = 0.5
 LIFE_ORB_MULTIPLIER = 1.3
 EXPERT_BELT_MULTIPLIER = 1.2
+MUSCLE_BAND_MULTIPLIER = 1.1
+WISE_GLASSES_MULTIPLIER = 1.1
+RESIST_BERRY_MULTIPLIER = 0.5
 CHOICE_ITEM_STAT_MULTIPLIER = 1.5
+ASSAULT_VEST_MULTIPLIER = 1.5
+GEM_MULTIPLIER = 1.3
+PLATE_MULTIPLIER = 1.2
 MIN_ROLL = 0.85
 MAX_ROLL = 1.00
 NEUTRAL_MULTIPLIER = 1.0
@@ -29,6 +35,39 @@ _TERRAIN_TYPE_MAP = {"Electric": "Electric", "Grassy": "Grass", "Psychic": "Psyc
 _ITEM_STAT_BOOST = {
     "Choice Band": ("attack", CHOICE_ITEM_STAT_MULTIPLIER),
     "Choice Specs": ("sp_attack", CHOICE_ITEM_STAT_MULTIPLIER),
+    "Assault Vest": ("sp_defense", ASSAULT_VEST_MULTIPLIER),
+}
+
+# Held item -> move type it boosts. Gems/plates modify the move's base POWER
+# before the main damage formula runs, unlike Life Orb/Expert Belt which are
+# part of the final modifier group applied after (see calculate_damage).
+_GEM_TYPE = {
+    "Normal Gem": "Normal", "Fire Gem": "Fire", "Water Gem": "Water", "Electric Gem": "Electric",
+    "Grass Gem": "Grass", "Ice Gem": "Ice", "Fighting Gem": "Fighting", "Poison Gem": "Poison",
+    "Ground Gem": "Ground", "Flying Gem": "Flying", "Psychic Gem": "Psychic", "Bug Gem": "Bug",
+    "Rock Gem": "Rock", "Ghost Gem": "Ghost", "Dragon Gem": "Dragon", "Dark Gem": "Dark",
+    "Steel Gem": "Steel", "Fairy Gem": "Fairy",
+}
+_PLATE_TYPE = {
+    "Flame Plate": "Fire", "Splash Plate": "Water", "Zap Plate": "Electric",
+    "Meadow Plate": "Grass", "Icicle Plate": "Ice", "Fist Plate": "Fighting",
+    "Toxic Plate": "Poison", "Earth Plate": "Ground", "Sky Plate": "Flying",
+    "Mind Plate": "Psychic", "Insect Plate": "Bug", "Stone Plate": "Rock",
+    "Spooky Plate": "Ghost", "Draco Plate": "Dragon", "Dread Plate": "Dark",
+    "Iron Plate": "Steel", "Pixie Plate": "Fairy",
+}
+
+# Held item (defender) -> move type it halves damage from (single-use resist
+# berries, final modifier group). Chilan Berry is the one exception: it applies
+# to Normal-type moves regardless of effectiveness, since no type is ever
+# super-effective against Normal.
+_RESIST_BERRY_TYPE = {
+    "Occa Berry": "Fire", "Passho Berry": "Water", "Wacan Berry": "Electric",
+    "Rindo Berry": "Grass", "Yache Berry": "Ice", "Chople Berry": "Fighting",
+    "Kebia Berry": "Poison", "Shuca Berry": "Ground", "Coba Berry": "Flying",
+    "Payapa Berry": "Psychic", "Tanga Berry": "Bug", "Charti Berry": "Rock",
+    "Kasib Berry": "Ghost", "Haban Berry": "Dragon", "Colbur Berry": "Dark",
+    "Babiri Berry": "Steel", "Chilan Berry": "Normal", "Roseli Berry": "Fairy",
 }
 
 
@@ -126,6 +165,14 @@ def calculate_damage(move: dict, attacker: dict, defender: dict, context: dict) 
 
     level = attacker["level"]
     power = move["power"]
+    attacker_item = attacker.get("item")
+
+    power_modifier = NEUTRAL_MULTIPLIER
+    if _GEM_TYPE.get(attacker_item) == move["type"]:
+        power_modifier = GEM_MULTIPLIER
+    elif _PLATE_TYPE.get(attacker_item) == move["type"]:
+        power_modifier = PLATE_MULTIPLIER
+    power = _apply_floor(power, power_modifier)
 
     if category == "Physical":
         attack_stat = _effective_stat(attacker, "attack")
@@ -184,13 +231,20 @@ def calculate_damage(move: dict, attacker: dict, defender: dict, context: dict) 
     else:
         screen_modifier = NEUTRAL_MULTIPLIER
 
-    attacker_item = attacker.get("item")
     if attacker_item == "Life Orb":
         item_modifier = LIFE_ORB_MULTIPLIER
     elif attacker_item == "Expert Belt" and type_effectiveness > 1:
         item_modifier = EXPERT_BELT_MULTIPLIER
+    elif attacker_item == "Muscle Band" and category == "Physical":
+        item_modifier = MUSCLE_BAND_MULTIPLIER
+    elif attacker_item == "Wise Glasses" and category == "Special":
+        item_modifier = WISE_GLASSES_MULTIPLIER
     else:
         item_modifier = NEUTRAL_MULTIPLIER
+
+    resist_berry_type = _RESIST_BERRY_TYPE.get(defender.get("item"))
+    if resist_berry_type == move["type"] and (type_effectiveness > 1 or resist_berry_type == "Normal"):
+        item_modifier *= RESIST_BERRY_MULTIPLIER
 
     chain = dict(
         base_damage=base_damage,
