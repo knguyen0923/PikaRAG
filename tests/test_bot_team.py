@@ -114,3 +114,33 @@ def test_scout_response_flags_unmatched_species():
     response = scout_response(_RECORDS, _MOVES, 704, "Nonexistamon", side="opponent")
 
     assert "not recognized" in response.lower()
+
+
+def test_import_team_response_normalizes_unrecognized_nature():
+    response = import_team_response(_RECORDS, _MOVES, 605, "mine", "Abomasnow\nadamant Nature\n- Wood Hammer\n")
+
+    assert "not recognized" in response.lower()
+    assert get_team(605, "mine")[0]["nature"] == "Hardy"
+
+
+def test_import_team_response_normalizes_unrecognized_tera_type():
+    response = import_team_response(_RECORDS, _MOVES, 606, "mine", "Abomasnow\nTera Type: Banana\n- Wood Hammer\n")
+
+    assert "not recognized" in response.lower()
+    assert get_team(606, "mine")[0]["tera_type"] is None
+
+
+def test_scout_response_normalizes_unrecognized_tera_type():
+    response = scout_response(_RECORDS, _MOVES, 705, "Abomasnow", tera_type="Banana", side="opponent")
+
+    assert "not recognized" in response.lower()
+    assert get_team(705, "opponent")[0]["tera_type"] is None
+
+
+def test_scout_response_reports_team_full_without_crashing():
+    for i in range(6):
+        scout_response(_RECORDS, _MOVES, 706, f"Species{i}", side="opponent")
+
+    response = scout_response(_RECORDS, _MOVES, 706, "Species6", side="opponent")
+
+    assert "6" in response

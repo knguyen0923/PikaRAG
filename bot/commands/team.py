@@ -1,6 +1,8 @@
 from bot.pokemon_lookup import find_record, suggest_names
 from bot.pokepaste import parse_pokepaste, PokepasteParseError
 from bot.team_store import get_team, merge_scout, store_team
+from damage_calc.data.natures import get_nature_modifiers
+from damage_calc.data.type_chart import ALL_TYPES
 
 _SIDE_LABELS = {"mine": "Your team", "opponent": "Opponent's team"}
 
@@ -39,6 +41,15 @@ def _validate_member(records: list, moves: list, member: dict) -> list:
                 warnings.append(f"Move '{move_name}' not recognized. Did you mean: {', '.join(suggestions)}?")
             else:
                 warnings.append(f"Move '{move_name}' not recognized.")
+    if member["nature"] is not None:
+        try:
+            get_nature_modifiers(member["nature"])
+        except KeyError:
+            warnings.append(f"Nature '{member['nature']}' not recognized -- using Hardy instead.")
+            member["nature"] = "Hardy"
+    if member["tera_type"] is not None and member["tera_type"] not in ALL_TYPES:
+        warnings.append(f"Tera type '{member['tera_type']}' not recognized -- ignoring it.")
+        member["tera_type"] = None
     return warnings
 
 
