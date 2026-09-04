@@ -103,3 +103,18 @@ def test_unrecognized_line_raises_with_block_number():
 def test_empty_text_raises():
     with pytest.raises(PokepasteParseError, match="No Pokemon found"):
         parse_pokepaste("")
+
+
+def test_invalid_level_value_raises_pokepaste_parse_error():
+    with pytest.raises(PokepasteParseError):
+        parse_pokepaste("Garchomp\nLevel: abc\n- Tackle\n")
+
+
+def test_unknown_ev_stat_abbreviation_raises_pokepaste_parse_error():
+    with pytest.raises(PokepasteParseError):
+        parse_pokepaste("Garchomp\nEVs: 236 XYZ\n- Tackle\n")
+
+
+def test_malformed_ev_stat_entry_raises_pokepaste_parse_error():
+    with pytest.raises(PokepasteParseError):
+        parse_pokepaste("Garchomp\nEVs: HP\n- Tackle\n")

@@ -21,9 +21,13 @@ def _parse_stat_line(line: str) -> dict:
         part = part.strip()
         if not part:
             continue
-        amount_str, abbrev = part.split(" ", 1)
-        stat_name = _STAT_ABBREV[abbrev.strip().lower()]
-        stats[stat_name] = int(amount_str.strip())
+        try:
+            amount_str, abbrev = part.split(" ", 1)
+            amount = int(amount_str.strip())
+            stat_name = _STAT_ABBREV[abbrev.strip().lower()]
+        except (ValueError, KeyError) as e:
+            raise PokepasteParseError(f"Could not parse stat entry '{part}': {e}") from e
+        stats[stat_name] = amount
     return stats
 
 
@@ -80,7 +84,10 @@ def _parse_block(block: str) -> dict:
         elif line.startswith("Ability:"):
             member["ability"] = line.split(":", 1)[1].strip()
         elif line.startswith("Level:"):
-            member["level"] = int(line.split(":", 1)[1].strip())
+            try:
+                member["level"] = int(line.split(":", 1)[1].strip())
+            except ValueError as e:
+                raise PokepasteParseError(f"Invalid Level value in '{line}': {e}") from e
         elif line.startswith("Tera Type:"):
             member["tera_type"] = line.split(":", 1)[1].strip()
         elif line.startswith("EVs:"):
