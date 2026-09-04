@@ -65,13 +65,14 @@ def build_client(
         side: Literal["mine", "opponent"],
         pokepaste: str,
     ) -> None:
+        await interaction.response.defer()
         try:
             raw_text = await asyncio.to_thread(resolve_pokepaste_text, pokepaste)
         except PokepasteFetchError as e:
-            await interaction.response.send_message(str(e))
+            await interaction.followup.send(str(e))
             return
         response = import_team_response(records, moves, interaction.user.id, side, raw_text)
-        await interaction.response.send_message(response)
+        await interaction.followup.send(response)
 
     @tree.command(name="scout", description="Add or update one Pokemon in a stored team with only what you currently know.")
     async def scout(

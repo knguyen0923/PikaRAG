@@ -111,11 +111,13 @@ def test_import_command_reports_a_fetch_error_without_crashing(monkeypatch):
     import_command = tree.get_command("import")
     interaction = MagicMock()
     interaction.user.id = 1
-    interaction.response.send_message = AsyncMock()
+    interaction.response.defer = AsyncMock()
+    interaction.followup.send = AsyncMock()
 
     asyncio.run(import_command.callback(interaction, side="mine", pokepaste="https://pokepast.es/bad"))
 
-    sent_text = interaction.response.send_message.call_args[0][0]
+    interaction.response.defer.assert_awaited_once()
+    sent_text = interaction.followup.send.call_args[0][0]
     assert "404" in sent_text
 
 
@@ -221,7 +223,11 @@ def test_import_then_calc_uses_the_real_parsed_team_data():
         interaction = MagicMock()
         interaction.user.id = uid
         interaction.response.send_message = AsyncMock()
+        interaction.response.defer = AsyncMock()
+        interaction.followup.send = AsyncMock()
         asyncio.run(cmd.callback(interaction, **kwargs))
+        if interaction.followup.send.called:
+            return interaction.followup.send.call_args[0][0]
         return interaction.response.send_message.call_args[0][0]
 
     _run(import_command, user_id, side="mine", pokepaste="""Garchomp @ Life Orb
