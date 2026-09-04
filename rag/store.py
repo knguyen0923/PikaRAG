@@ -5,13 +5,21 @@ import chromadb
 
 from rag.embed import build_chunks
 
+DEFAULT_PERSIST_DIR = "data/chroma"
+
 
 class ChromaIndex:
     """Chroma-backed vector index over Pokemon record chunks."""
 
-    def __init__(self, embedder, client=None, collection_name: Optional[str] = None):
+    def __init__(
+        self,
+        embedder,
+        client=None,
+        collection_name: Optional[str] = None,
+        persist_directory: Optional[str] = None,
+    ):
         self._embedder = embedder
-        self._client = client or chromadb.Client()
+        self._client = client or chromadb.PersistentClient(path=persist_directory or DEFAULT_PERSIST_DIR)
         # Default to a fresh collection per instance so unrelated indexes
         # (e.g. across tests) never share state through Chroma's process-wide
         # default backend.

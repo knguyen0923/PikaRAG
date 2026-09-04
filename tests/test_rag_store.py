@@ -2,6 +2,7 @@ import re
 
 import chromadb
 
+import rag.store
 from rag.store import ChromaIndex
 
 _ABOMASNOW = {
@@ -86,3 +87,35 @@ def test_build_indexes_one_chunk_per_record_per_chunk_type():
     matches = index.query("Pokemon", n_results=10)
 
     assert len(matches) == 4
+
+
+def test_default_client_persists_data_across_instances_at_same_path(tmp_path):
+    persist_dir = tmp_path / "chroma"
+    embedder = _BagOfWordsEmbedder()
+
+    first = ChromaIndex(embedder=embedder, collection_name="pokemon", persist_directory=str(persist_dir))
+    first.build([_ABOMASNOW])
+
+    # A second instance, no client passed, pointed at the same directory --
+    # must see the first instance's data without rebuilding.
+    second = ChromaIndex(embedder=embedder, collection_name="pokemon", persist_directory=str(persist_dir))
+    matches = second.query("Abomasnow base stats", n_results=1)
+
+    assert matches[0]["metadata"]["pokemon"] == "Abomasnow"
+
+
+def test_default_persist_directory_used_when_none_given(monkeypatch):
+    captured = {}
+
+    class _StubPersistentClient:
+        def __init__(self, path):
+            captured["path"] = path
+
+        def get_or_create_collection(self, name):
+            return None
+
+    monkeypatch.setattr(rag.store.chromadb, "PersistentClient", _StubPersistentClient)
+
+    ChromaIndex(embedder=_BagOfWordsEmbedder())
+
+    assert captured["path"] == rag.store.DEFAULT_PERSIST_DIR
