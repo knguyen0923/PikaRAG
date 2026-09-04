@@ -100,6 +100,15 @@ def test_find_team_member_returns_none_when_not_found():
     assert find_team_member(303, "Nonexistent") is None
 
 
+def test_find_team_member_does_not_grow_the_store_for_unseen_users():
+    from bot.team_store import _store
+
+    untouched_user_id = 888888
+    find_team_member(untouched_user_id, "Nonexistent")
+
+    assert untouched_user_id not in _store
+
+
 def test_resolve_calc_overrides_uses_neutral_defaults_when_nothing_stored_or_explicit():
     evs, nature, item, tera = resolve_calc_overrides(401, "Nonexistent", None, None, None, None)
 

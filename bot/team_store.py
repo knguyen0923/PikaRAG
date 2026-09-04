@@ -44,7 +44,7 @@ def merge_scout(user_id: int, side: str, member: dict) -> dict:
 def find_team_member(user_id: int, name: str) -> Optional[dict]:
     target = name.strip().lower()
     for side in ("mine", "opponent"):
-        for member in _side_list(user_id, side):
+        for member in _store.get(user_id, {}).get(side, []):
             if member["species"].strip().lower() == target:
                 return member
     return None
