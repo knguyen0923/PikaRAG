@@ -61,7 +61,12 @@ class PokeApiFetchError(Exception):
 def fetch_pokemon_data(display_name: str, session=None) -> dict:
     session = session or requests.Session()
     slug = resolve_pokeapi_name(display_name)
-    response = session.get(f"{POKEAPI_BASE_URL}/{slug}")
+    try:
+        response = session.get(f"{POKEAPI_BASE_URL}/{slug}")
+    except requests.exceptions.RequestException as e:
+        raise PokeApiFetchError(
+            f"Network error fetching '{display_name}' (slug '{slug}'): {e}"
+        ) from e
     if response.status_code != 200:
         raise PokeApiFetchError(
             f"PokeAPI returned {response.status_code} for '{display_name}' (slug '{slug}')"

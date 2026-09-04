@@ -3,6 +3,7 @@ from unittest.mock import MagicMock
 import pytest
 from pipeline.fetch_pokeapi import fetch_pokemon_data, PokeApiFetchError
 import json
+import requests.exceptions
 
 def test_resolve_plain_name():
     assert resolve_pokeapi_name("Abomasnow") == "abomasnow"
@@ -94,4 +95,25 @@ def test_fetch_all_continues_after_one_failure(tmp_path):
     summary = fetch_all(["Broken Name", "Absol"], cache_dir=tmp_path, session=session)
     assert summary["fetched"] == 1
     assert summary["failed"] == ["Broken Name"]
+    assert (tmp_path / "absol.json").exists()
+
+def test_fetch_pokemon_data_wraps_request_exception():
+    session = MagicMock()
+    session.get.side_effect = requests.exceptions.ConnectionError("Connection refused")
+    with pytest.raises(PokeApiFetchError) as exc_info:
+        fetch_pokemon_data("Abomasnow", session=session)
+    assert "Network error fetching" in str(exc_info.value)
+    assert isinstance(exc_info.value.__cause__, requests.exceptions.ConnectionError)
+
+def test_fetch_all_continues_after_request_exception(tmp_path):
+    session = MagicMock()
+    ok_response = MagicMock(status_code=200)
+    ok_response.json.return_value = _SAMPLE_POKEAPI_RESPONSE
+    session.get.side_effect = [
+        requests.exceptions.Timeout("Request timed out"),
+        ok_response,
+    ]
+    summary = fetch_all(["Timeout Name", "Absol"], cache_dir=tmp_path, session=session)
+    assert summary["fetched"] == 1
+    assert summary["failed"] == ["Timeout Name"]
     assert (tmp_path / "absol.json").exists()
