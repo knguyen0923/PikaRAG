@@ -196,7 +196,7 @@ git commit -m "chore: scaffold project layout, move source JSONs into data/sourc
 **Interfaces:**
 - Consumes: `data/source/legal_pokemon_m-b.json` (`legal_pokemon` list of 315 names, as written by Task 1).
 - Produces:
-  - `resolve_pokeapi_name(display_name: str) -> str` — maps a name from the legal list (e.g. `"Mega Absol"`, `"Aegislash [Blade Forme]"`, `"Arcanine [Hisuian Form]"`) to a PokéAPI slug (e.g. `"absol-mega"`, `"aegislash-blade"`, `"arcanine-hisuian"`).
+  - `resolve_pokeapi_name(display_name: str) -> str` — maps a name from the legal list (e.g. `"Mega Absol"`, `"Aegislash [Blade Forme]"`, `"Arcanine [Hisuian Form]"`) to a PokéAPI slug (e.g. `"absol-mega"`, `"aegislash-blade"`, `"arcanine-hisui"`).
   - `fetch_pokemon_data(display_name: str, session=None) -> dict` — returns `{"base_stats": {...}, "learnset": [...]}` for one Pokémon, raising `PokeApiFetchError` on failure (never `requests` exceptions directly).
   - `fetch_all(legal_names: list[str], cache_dir: Path) -> dict` — iterates all names, writes one JSON file per Pokémon under `cache_dir` (e.g. `data/raw/abomasnow.json`), skips re-fetching if the cache file already exists, and returns a summary dict `{"fetched": int, "cached": int, "failed": list[str]}` — a failure on one Pokémon must not stop the rest.
 
@@ -220,7 +220,7 @@ def test_resolve_bracket_forme_name():
     assert resolve_pokeapi_name("Aegislash [Blade Forme]") == "aegislash-blade"
 
 def test_resolve_hisuian_form_name():
-    assert resolve_pokeapi_name("Arcanine [Hisuian Form]") == "arcanine-hisuian"
+    assert resolve_pokeapi_name("Arcanine [Hisuian Form]") == "arcanine-hisui"
 
 def test_resolve_female_form_name():
     assert resolve_pokeapi_name("Basculegion [Female]") == "basculegion-female"
@@ -239,7 +239,7 @@ import re
 
 _FORM_WORD_MAP = {
     "blade forme": "blade",
-    "hisuian form": "hisuian",
+    "hisuian form": "hisui",
     "galarian form": "galar",
     "alolan form": "alola",
     "paldean form": "paldea",
@@ -1068,15 +1068,15 @@ from damage_calc.calc import calculate_stat
 
 def test_hp_stat_formula():
     # base 90, 31 IV, 252 EV, level 50 -> floor((2*90 + 31 + 63) * 50 / 100) + 50 + 10
-    assert calculate_stat(90, 31, 252, 50, 1.0, "hp") == 191
+    assert calculate_stat(90, 31, 252, 50, 1.0, "hp") == 197
 
 def test_non_hp_stat_formula_neutral_nature():
     # base 92 attack, 31 IV, 252 EV, level 50, neutral nature
-    assert calculate_stat(92, 31, 252, 50, 1.0, "attack") == 130
+    assert calculate_stat(92, 31, 252, 50, 1.0, "attack") == 144
 
 def test_non_hp_stat_formula_boosting_nature():
     # same as above but with a 1.1 boosting nature multiplier
-    assert calculate_stat(92, 31, 252, 50, 1.1, "attack") == 143
+    assert calculate_stat(92, 31, 252, 50, 1.1, "attack") == 158
 ```
 
 - [ ] **Step 2: Run to verify failure**
