@@ -12,3 +12,11 @@ def test_ping_command_is_registered_on_the_tree():
 
     assert "ping" in commands
     assert commands["ping"].description == "Check that the bot is responsive."
+
+
+def test_ask_command_is_registered_on_the_tree():
+    _client, tree = build_client()
+    commands = {command.name: command for command in tree.get_commands()}
+
+    assert "ask" in commands
+    assert "question" in commands["ask"].description.lower()
