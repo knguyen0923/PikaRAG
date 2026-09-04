@@ -132,9 +132,10 @@ pika-rag/
 
 ## Known gap (post-implementation, added after final review)
 
-Some Pokémon in `legal_pokemon_m-b.json` are Champions-format-original Mega Evolutions with
-no PokéAPI record under any name (PokéAPI's Mega roster stops at Gen 6/7's canonical set).
-These cannot be resolved by name-mapping fixes alone — the pipeline surfaces them in its
-`failed` list rather than fabricating data, but sourcing real stats for them (hand-authored?
-derived from base forme? a different data source?) is an open product decision for whoever
-picks up the next data-pipeline task.
+The live 2026-09-04 pipeline run against PokéAPI resolved 314/315 legal Pokémon, including
+74/75 Mega Evolutions — PokéAPI does carry Champions-format Megas, so the resolver fixes in
+this fix wave were sufficient for the roster as a whole. The one holdout is `Mega Meowstic`:
+PokéAPI splits it into `meowstic-male-mega` / `meowstic-female-mega` with no gender-neutral
+slug, and the legal list specifies no gender — a genuine naming ambiguity, not a missing
+record. Resolving it needs either a gender default convention or a per-Pokémon override, and
+is an open product decision for whoever picks up the next data-pipeline task.
