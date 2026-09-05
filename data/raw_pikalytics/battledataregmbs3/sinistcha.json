@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Rage Powder",
+      "usage_pct": 99.2
+    },
+    {
+      "name": "Matcha Gotcha",
+      "usage_pct": 98.8
+    },
+    {
+      "name": "Life Dew",
+      "usage_pct": 58.7
+    },
+    {
+      "name": "Trick Room",
+      "usage_pct": 58.6
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 54.5
+    },
+    {
+      "name": "Strength Sap",
+      "usage_pct": 15.1
+    }
+  ],
+  "items": [
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 35.2
+    },
+    {
+      "name": "Kasib Berry",
+      "usage_pct": 30.4
+    },
+    {
+      "name": "Colbur Berry",
+      "usage_pct": 14.3
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 6.7
+    },
+    {
+      "name": "Coba Berry",
+      "usage_pct": 5.1
+    },
+    {
+      "name": "Occa Berry",
+      "usage_pct": 4.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Hospitality",
+      "usage_pct": 99.5
+    },
+    {
+      "name": "Heatproof",
+      "usage_pct": 0.5
+    }
+  ]
+}

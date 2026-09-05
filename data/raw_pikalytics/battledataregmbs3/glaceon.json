@@ -1,0 +1,48 @@
+{
+  "moves": [
+    {
+      "name": "Freeze-Dry",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Blizzard",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Ice Shard",
+      "usage_pct": 85.7
+    },
+    {
+      "name": "Detect",
+      "usage_pct": 51.0
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 30.6
+    },
+    {
+      "name": "Shadow Ball",
+      "usage_pct": 12.2
+    }
+  ],
+  "items": [
+    {
+      "name": "Never-Melt Ice",
+      "usage_pct": 87.8
+    },
+    {
+      "name": "Bright Powder",
+      "usage_pct": 12.2
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Snow Cloak",
+      "usage_pct": 81.6
+    },
+    {
+      "name": "Ice Body",
+      "usage_pct": 18.4
+    }
+  ]
+}

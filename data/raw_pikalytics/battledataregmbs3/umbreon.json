@@ -1,0 +1,48 @@
+{
+  "moves": [
+    {
+      "name": "Snarl",
+      "usage_pct": 69.8
+    },
+    {
+      "name": "Taunt",
+      "usage_pct": 62.0
+    },
+    {
+      "name": "Foul Play",
+      "usage_pct": 47.3
+    },
+    {
+      "name": "Moonlight",
+      "usage_pct": 45.7
+    },
+    {
+      "name": "Baby-Doll Eyes",
+      "usage_pct": 31.8
+    },
+    {
+      "name": "Detect",
+      "usage_pct": 30.2
+    }
+  ],
+  "items": [
+    {
+      "name": "Leftovers",
+      "usage_pct": 93.8
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 5.4
+    },
+    {
+      "name": "Chople Berry",
+      "usage_pct": 0.8
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Inner Focus",
+      "usage_pct": 100.0
+    }
+  ]
+}

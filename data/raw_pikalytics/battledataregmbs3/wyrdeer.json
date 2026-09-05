@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Trick Room",
+      "usage_pct": 72.8
+    },
+    {
+      "name": "Psyshield Bash",
+      "usage_pct": 64.9
+    },
+    {
+      "name": "Skill Swap",
+      "usage_pct": 46.6
+    },
+    {
+      "name": "Hypnosis",
+      "usage_pct": 34.6
+    },
+    {
+      "name": "Gravity",
+      "usage_pct": 32.5
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 25.1
+    }
+  ],
+  "items": [
+    {
+      "name": "Colbur Berry",
+      "usage_pct": 34.0
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 31.9
+    },
+    {
+      "name": "Mental Herb",
+      "usage_pct": 27.7
+    },
+    {
+      "name": "Twisted Spoon",
+      "usage_pct": 5.8
+    },
+    {
+      "name": "Wise Glasses",
+      "usage_pct": 0.5
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Intimidate",
+      "usage_pct": 75.9
+    },
+    {
+      "name": "Sap Sipper",
+      "usage_pct": 24.1
+    }
+  ]
+}

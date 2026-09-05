@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Hurricane",
+      "usage_pct": 98.9
+    },
+    {
+      "name": "Weather Ball",
+      "usage_pct": 87.7
+    },
+    {
+      "name": "Tailwind",
+      "usage_pct": 86.5
+    },
+    {
+      "name": "Wide Guard",
+      "usage_pct": 51.2
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 42.5
+    },
+    {
+      "name": "Muddy Water",
+      "usage_pct": 6.6
+    }
+  ],
+  "items": [
+    {
+      "name": "Focus Sash",
+      "usage_pct": 45.3
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 31.4
+    },
+    {
+      "name": "Damp Rock",
+      "usage_pct": 13.1
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 4.1
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 2.4
+    },
+    {
+      "name": "Mystic Water",
+      "usage_pct": 0.6
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Drizzle",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Keen Eye",
+      "usage_pct": 0.0
+    }
+  ]
+}

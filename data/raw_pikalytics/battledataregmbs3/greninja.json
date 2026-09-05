@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Ice Beam",
+      "usage_pct": 73.8
+    },
+    {
+      "name": "Dark Pulse",
+      "usage_pct": 57.9
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 56.3
+    },
+    {
+      "name": "Grass Knot",
+      "usage_pct": 26.2
+    },
+    {
+      "name": "Taunt",
+      "usage_pct": 25.4
+    },
+    {
+      "name": "Extrasensory",
+      "usage_pct": 25.4
+    }
+  ],
+  "items": [
+    {
+      "name": "Greninjite",
+      "usage_pct": 59.5
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 22.2
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 11.1
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 2.4
+    },
+    {
+      "name": "King's Rock",
+      "usage_pct": 0.8
+    },
+    {
+      "name": "Expert Belt",
+      "usage_pct": 0.8
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Protean",
+      "usage_pct": 89.7
+    },
+    {
+      "name": "Torrent",
+      "usage_pct": 10.3
+    }
+  ]
+}

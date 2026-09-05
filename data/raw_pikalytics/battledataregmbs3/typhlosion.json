@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Eruption",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Scorching Sands",
+      "usage_pct": 63.6
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 60.6
+    },
+    {
+      "name": "Heat Wave",
+      "usage_pct": 57.6
+    },
+    {
+      "name": "Solar Beam",
+      "usage_pct": 39.4
+    },
+    {
+      "name": "Shadow Ball",
+      "usage_pct": 33.3
+    }
+  ],
+  "items": [
+    {
+      "name": "Charcoal",
+      "usage_pct": 33.3
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 33.3
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 21.2
+    },
+    {
+      "name": "Wise Glasses",
+      "usage_pct": 9.1
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 3.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Flash Fire",
+      "usage_pct": 75.8
+    },
+    {
+      "name": "Blaze",
+      "usage_pct": 24.2
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "moves": [
+    {
+      "name": "Hyper Voice",
+      "usage_pct": 89.6
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 88.8
+    },
+    {
+      "name": "Psychic",
+      "usage_pct": 47.8
+    },
+    {
+      "name": "Psyshock",
+      "usage_pct": 42.4
+    },
+    {
+      "name": "Trick Room",
+      "usage_pct": 41.6
+    },
+    {
+      "name": "Vacuum Wave",
+      "usage_pct": 17.3
+    }
+  ],
+  "items": [
+    {
+      "name": "Gardevoirite",
+      "usage_pct": 89.9
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 7.3
+    },
+    {
+      "name": "Shell Bell",
+      "usage_pct": 0.9
+    },
+    {
+      "name": "Expert Belt",
+      "usage_pct": 0.9
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 0.8
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 0.2
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Trace",
+      "usage_pct": 72.5
+    },
+    {
+      "name": "Telepathy",
+      "usage_pct": 25.8
+    },
+    {
+      "name": "Synchronize",
+      "usage_pct": 1.7
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Leaf Storm",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Thunderbolt",
+      "usage_pct": 84.4
+    },
+    {
+      "name": "Volt Switch",
+      "usage_pct": 58.4
+    },
+    {
+      "name": "Will-O-Wisp",
+      "usage_pct": 51.9
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 46.8
+    },
+    {
+      "name": "Electroweb",
+      "usage_pct": 28.6
+    }
+  ],
+  "items": [
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 37.7
+    },
+    {
+      "name": "Expert Belt",
+      "usage_pct": 19.5
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 14.3
+    },
+    {
+      "name": "Yache Berry",
+      "usage_pct": 11.7
+    },
+    {
+      "name": "Wide Lens",
+      "usage_pct": 10.4
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 6.5
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Levitate",
+      "usage_pct": 100.0
+    }
+  ]
+}

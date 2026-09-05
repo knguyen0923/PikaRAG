@@ -1,0 +1,36 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "U-turn",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Poison Jab",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Drill Run",
+      "usage_pct": 50.0
+    },
+    {
+      "name": "Dual Wingbeat",
+      "usage_pct": 50.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Beedrillite",
+      "usage_pct": 100.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Swarm",
+      "usage_pct": 100.0
+    }
+  ]
+}

@@ -31,3 +31,38 @@ def test_moves_response_not_found_suggests_close_matches():
 
     assert "not found" in response.lower() or "no pokemon" in response.lower()
     assert "Abomasnow" in response
+
+
+def test_moves_response_shows_top_moves_when_usage_data_exists():
+    usage = {"Abomasnow": {
+        "moves": [{"name": "Blizzard", "usage_pct": 91.2}, {"name": "Wood Hammer", "usage_pct": 84.0}],
+        "abilities": [], "items": [],
+    }}
+
+    response = moves_response(_RECORDS, "Abomasnow", usage=usage)
+
+    assert "top moves" in response.lower()
+    assert "Blizzard 91.2%" in response
+    assert "Wood Hammer 84.0%" in response
+
+
+def test_moves_response_falls_back_to_full_learnset_when_no_usage_data():
+    response = moves_response(_RECORDS, "Abomasnow", usage={})
+
+    assert "legal moveset" in response.lower()
+
+
+def test_moves_response_falls_back_when_usage_entry_has_no_moves():
+    usage = {"Abomasnow": {"moves": [], "abilities": [], "items": []}}
+
+    response = moves_response(_RECORDS, "Abomasnow", usage=usage)
+
+    assert "legal moveset" in response.lower()
+
+
+def test_moves_response_usage_defaults_to_none_and_behaves_like_before():
+    with_default = moves_response(_RECORDS, "Abomasnow")
+    with_explicit_none = moves_response(_RECORDS, "Abomasnow", usage=None)
+
+    assert with_default == with_explicit_none
+    assert "legal moveset" in with_default.lower()

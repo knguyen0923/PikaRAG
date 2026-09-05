@@ -1,0 +1,48 @@
+{
+  "moves": [
+    {
+      "name": "Trick Room",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Poltergeist",
+      "usage_pct": 90.9
+    },
+    {
+      "name": "Earthquake",
+      "usage_pct": 87.9
+    },
+    {
+      "name": "Will-O-Wisp",
+      "usage_pct": 84.8
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 6.1
+    },
+    {
+      "name": "Destiny Bond",
+      "usage_pct": 6.1
+    }
+  ],
+  "items": [
+    {
+      "name": "Passho Berry",
+      "usage_pct": 84.8
+    },
+    {
+      "name": "Mental Herb",
+      "usage_pct": 12.1
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 3.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Wandering Spirit",
+      "usage_pct": 100.0
+    }
+  ]
+}

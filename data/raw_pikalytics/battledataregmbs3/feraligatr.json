@@ -1,0 +1,48 @@
+{
+  "moves": [
+    {
+      "name": "Liquidation",
+      "usage_pct": 89.4
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 85.9
+    },
+    {
+      "name": "Dragon Dance",
+      "usage_pct": 69.4
+    },
+    {
+      "name": "Ice Punch",
+      "usage_pct": 47.1
+    },
+    {
+      "name": "Double-Edge",
+      "usage_pct": 38.8
+    },
+    {
+      "name": "Aqua Jet",
+      "usage_pct": 15.3
+    }
+  ],
+  "items": [
+    {
+      "name": "Feraligite",
+      "usage_pct": 65.9
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 34.1
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Sheer Force",
+      "usage_pct": 96.5
+    },
+    {
+      "name": "Torrent",
+      "usage_pct": 3.5
+    }
+  ]
+}

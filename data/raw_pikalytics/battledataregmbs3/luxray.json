@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Superpower",
+      "usage_pct": 82.7
+    },
+    {
+      "name": "Ice Fang",
+      "usage_pct": 80.8
+    },
+    {
+      "name": "Wild Charge",
+      "usage_pct": 78.8
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 65.4
+    },
+    {
+      "name": "Psychic Fangs",
+      "usage_pct": 19.2
+    },
+    {
+      "name": "Supercell Slam",
+      "usage_pct": 19.2
+    }
+  ],
+  "items": [
+    {
+      "name": "Leftovers",
+      "usage_pct": 48.1
+    },
+    {
+      "name": "Quick Claw",
+      "usage_pct": 19.2
+    },
+    {
+      "name": "White Herb",
+      "usage_pct": 17.3
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 13.5
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 1.9
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Intimidate",
+      "usage_pct": 82.7
+    },
+    {
+      "name": "Guts",
+      "usage_pct": 17.3
+    }
+  ]
+}

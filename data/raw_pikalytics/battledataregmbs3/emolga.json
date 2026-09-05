@@ -1,0 +1,40 @@
+{
+  "moves": [
+    {
+      "name": "Nuzzle",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Encore",
+      "usage_pct": 50.0
+    },
+    {
+      "name": "Taunt",
+      "usage_pct": 50.0
+    },
+    {
+      "name": "Helping Hand",
+      "usage_pct": 50.0
+    },
+    {
+      "name": "Volt Switch",
+      "usage_pct": 50.0
+    },
+    {
+      "name": "Electroweb",
+      "usage_pct": 50.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Focus Sash",
+      "usage_pct": 100.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Static",
+      "usage_pct": 100.0
+    }
+  ]
+}

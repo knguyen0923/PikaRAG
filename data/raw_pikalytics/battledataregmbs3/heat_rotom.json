@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Overheat",
+      "usage_pct": 97.8
+    },
+    {
+      "name": "Volt Switch",
+      "usage_pct": 69.1
+    },
+    {
+      "name": "Will-O-Wisp",
+      "usage_pct": 48.6
+    },
+    {
+      "name": "Thunderbolt",
+      "usage_pct": 48.6
+    },
+    {
+      "name": "Discharge",
+      "usage_pct": 45.1
+    },
+    {
+      "name": "Electroweb",
+      "usage_pct": 38.3
+    }
+  ],
+  "items": [
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 69.5
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 20.0
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 3.5
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 2.4
+    },
+    {
+      "name": "Wide Lens",
+      "usage_pct": 2.4
+    },
+    {
+      "name": "Passho Berry",
+      "usage_pct": 0.7
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Levitate",
+      "usage_pct": 100.0
+    }
+  ]
+}

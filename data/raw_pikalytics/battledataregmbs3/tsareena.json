@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Triple Axel",
+      "usage_pct": 86.6
+    },
+    {
+      "name": "Trop Kick",
+      "usage_pct": 62.0
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 52.5
+    },
+    {
+      "name": "Low Kick",
+      "usage_pct": 48.2
+    },
+    {
+      "name": "Power Whip",
+      "usage_pct": 35.4
+    },
+    {
+      "name": "Taunt",
+      "usage_pct": 23.6
+    }
+  ],
+  "items": [
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 27.6
+    },
+    {
+      "name": "Wide Lens",
+      "usage_pct": 23.3
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 19.3
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 6.2
+    },
+    {
+      "name": "Miracle Seed",
+      "usage_pct": 5.5
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 5.3
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Queenly Majesty",
+      "usage_pct": 99.9
+    },
+    {
+      "name": "Leaf Guard",
+      "usage_pct": 0.1
+    }
+  ]
+}

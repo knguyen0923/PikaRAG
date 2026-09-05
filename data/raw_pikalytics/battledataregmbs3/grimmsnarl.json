@@ -1,0 +1,68 @@
+{
+  "moves": [
+    {
+      "name": "Light Screen",
+      "usage_pct": 87.0
+    },
+    {
+      "name": "Parting Shot",
+      "usage_pct": 82.8
+    },
+    {
+      "name": "Reflect",
+      "usage_pct": 81.8
+    },
+    {
+      "name": "Spirit Break",
+      "usage_pct": 61.9
+    },
+    {
+      "name": "Fake Out",
+      "usage_pct": 27.1
+    },
+    {
+      "name": "Scary Face",
+      "usage_pct": 22.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Light Clay",
+      "usage_pct": 83.0
+    },
+    {
+      "name": "Roseli Berry",
+      "usage_pct": 9.3
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 3.0
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 2.0
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 0.7
+    },
+    {
+      "name": "Black Glasses",
+      "usage_pct": 0.5
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Prankster",
+      "usage_pct": 99.6
+    },
+    {
+      "name": "Frisk",
+      "usage_pct": 0.3
+    },
+    {
+      "name": "Pickpocket",
+      "usage_pct": 0.1
+    }
+  ]
+}

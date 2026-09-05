@@ -1,0 +1,68 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 91.8
+    },
+    {
+      "name": "Sludge Bomb",
+      "usage_pct": 89.0
+    },
+    {
+      "name": "Draco Meteor",
+      "usage_pct": 61.5
+    },
+    {
+      "name": "Dragon Pulse",
+      "usage_pct": 39.0
+    },
+    {
+      "name": "Thunderbolt",
+      "usage_pct": 29.9
+    },
+    {
+      "name": "Flip Turn",
+      "usage_pct": 25.9
+    }
+  ],
+  "items": [
+    {
+      "name": "Dragalgite",
+      "usage_pct": 88.8
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 8.2
+    },
+    {
+      "name": "Wise Glasses",
+      "usage_pct": 1.3
+    },
+    {
+      "name": "Expert Belt",
+      "usage_pct": 0.8
+    },
+    {
+      "name": "Drampanite",
+      "usage_pct": 0.4
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 0.2
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Adaptability",
+      "usage_pct": 73.9
+    },
+    {
+      "name": "Poison Point",
+      "usage_pct": 22.9
+    },
+    {
+      "name": "Poison Touch",
+      "usage_pct": 3.2
+    }
+  ]
+}

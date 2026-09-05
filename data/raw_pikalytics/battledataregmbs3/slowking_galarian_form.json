@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Trick Room",
+      "usage_pct": 85.6
+    },
+    {
+      "name": "Acid Spray",
+      "usage_pct": 59.8
+    },
+    {
+      "name": "Psychic",
+      "usage_pct": 45.5
+    },
+    {
+      "name": "Rain Dance",
+      "usage_pct": 30.3
+    },
+    {
+      "name": "Chilly Reception",
+      "usage_pct": 28.8
+    },
+    {
+      "name": "Heal Pulse",
+      "usage_pct": 25.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Mental Herb",
+      "usage_pct": 29.5
+    },
+    {
+      "name": "Colbur Berry",
+      "usage_pct": 25.8
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 25.0
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 9.8
+    },
+    {
+      "name": "Quick Claw",
+      "usage_pct": 6.1
+    },
+    {
+      "name": "Shuca Berry",
+      "usage_pct": 2.3
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Regenerator",
+      "usage_pct": 100.0
+    }
+  ]
+}

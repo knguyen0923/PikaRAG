@@ -1,0 +1,44 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 91.8
+    },
+    {
+      "name": "Thunderbolt",
+      "usage_pct": 67.7
+    },
+    {
+      "name": "Flamethrower",
+      "usage_pct": 47.4
+    },
+    {
+      "name": "Giga Drain",
+      "usage_pct": 39.0
+    },
+    {
+      "name": "Dragon Pulse",
+      "usage_pct": 25.0
+    },
+    {
+      "name": "Discharge",
+      "usage_pct": 20.2
+    }
+  ],
+  "items": [
+    {
+      "name": "Eelektrossite",
+      "usage_pct": 99.8
+    },
+    {
+      "name": "Magnet",
+      "usage_pct": 0.2
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Levitate",
+      "usage_pct": 100.0
+    }
+  ]
+}

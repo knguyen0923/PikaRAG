@@ -1,0 +1,44 @@
+{
+  "moves": [
+    {
+      "name": "Rock Blast",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Pin Missile",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Close Combat",
+      "usage_pct": 73.7
+    },
+    {
+      "name": "Detect",
+      "usage_pct": 68.4
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 21.1
+    },
+    {
+      "name": "Brick Break",
+      "usage_pct": 18.4
+    }
+  ],
+  "items": [
+    {
+      "name": "Heracronite",
+      "usage_pct": 100.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Guts",
+      "usage_pct": 52.6
+    },
+    {
+      "name": "Moxie",
+      "usage_pct": 47.4
+    }
+  ]
+}

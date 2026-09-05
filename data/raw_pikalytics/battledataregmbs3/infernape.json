@@ -1,0 +1,52 @@
+{
+  "moves": [
+    {
+      "name": "Fire Punch",
+      "usage_pct": 93.8
+    },
+    {
+      "name": "Drain Punch",
+      "usage_pct": 81.3
+    },
+    {
+      "name": "Thunder Punch",
+      "usage_pct": 81.3
+    },
+    {
+      "name": "Swords Dance",
+      "usage_pct": 75.0
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 18.8
+    },
+    {
+      "name": "Fake Out",
+      "usage_pct": 12.5
+    }
+  ],
+  "items": [
+    {
+      "name": "Focus Sash",
+      "usage_pct": 81.3
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 12.5
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 6.3
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Iron Fist",
+      "usage_pct": 93.8
+    },
+    {
+      "name": "Blaze",
+      "usage_pct": 6.3
+    }
+  ]
+}

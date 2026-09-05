@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Flare Blitz",
+      "usage_pct": 99.2
+    },
+    {
+      "name": "Extreme Speed",
+      "usage_pct": 81.3
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 79.3
+    },
+    {
+      "name": "Head Smash",
+      "usage_pct": 62.5
+    },
+    {
+      "name": "Rock Slide",
+      "usage_pct": 45.9
+    },
+    {
+      "name": "Wild Charge",
+      "usage_pct": 6.7
+    }
+  ],
+  "items": [
+    {
+      "name": "Focus Sash",
+      "usage_pct": 56.0
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 16.1
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 7.8
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 7.1
+    },
+    {
+      "name": "Chople Berry",
+      "usage_pct": 5.2
+    },
+    {
+      "name": "Charcoal",
+      "usage_pct": 3.3
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Rock Head",
+      "usage_pct": 72.5
+    },
+    {
+      "name": "Intimidate",
+      "usage_pct": 27.5
+    }
+  ]
+}

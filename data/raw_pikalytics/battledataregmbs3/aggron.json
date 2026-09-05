@@ -1,0 +1,52 @@
+{
+  "moves": [
+    {
+      "name": "Body Press",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Heavy Slam",
+      "usage_pct": 98.6
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 97.1
+    },
+    {
+      "name": "Iron Defense",
+      "usage_pct": 72.9
+    },
+    {
+      "name": "Shadow Claw",
+      "usage_pct": 17.1
+    },
+    {
+      "name": "Curse",
+      "usage_pct": 10.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Aggronite",
+      "usage_pct": 98.6
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 1.4
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Sturdy",
+      "usage_pct": 81.4
+    },
+    {
+      "name": "Heavy Metal",
+      "usage_pct": 17.1
+    },
+    {
+      "name": "Rock Head",
+      "usage_pct": 1.4
+    }
+  ]
+}

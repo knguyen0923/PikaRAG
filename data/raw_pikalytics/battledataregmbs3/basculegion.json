@@ -1,0 +1,68 @@
+{
+  "moves": [
+    {
+      "name": "Last Respects",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Aqua Jet",
+      "usage_pct": 94.9
+    },
+    {
+      "name": "Wave Crash",
+      "usage_pct": 82.3
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 53.8
+    },
+    {
+      "name": "Flip Turn",
+      "usage_pct": 43.1
+    },
+    {
+      "name": "Liquidation",
+      "usage_pct": 17.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 44.7
+    },
+    {
+      "name": "Mystic Water",
+      "usage_pct": 19.6
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 17.6
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 11.8
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 4.7
+    },
+    {
+      "name": "Colbur Berry",
+      "usage_pct": 0.6
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Adaptability",
+      "usage_pct": 93.2
+    },
+    {
+      "name": "Swift Swim",
+      "usage_pct": 6.8
+    },
+    {
+      "name": "Mold Breaker",
+      "usage_pct": 0.0
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Bitter Blade",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 92.0
+    },
+    {
+      "name": "Shadow Sneak",
+      "usage_pct": 89.4
+    },
+    {
+      "name": "Bulk Up",
+      "usage_pct": 62.0
+    },
+    {
+      "name": "Swords Dance",
+      "usage_pct": 31.9
+    },
+    {
+      "name": "Poltergeist",
+      "usage_pct": 20.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Colbur Berry",
+      "usage_pct": 32.4
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 22.6
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 16.4
+    },
+    {
+      "name": "Charcoal",
+      "usage_pct": 11.1
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 7.2
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 3.8
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Flash Fire",
+      "usage_pct": 89.5
+    },
+    {
+      "name": "Weak Armor",
+      "usage_pct": 10.5
+    }
+  ]
+}

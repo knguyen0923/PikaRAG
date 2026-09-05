@@ -1,0 +1,32 @@
+{
+  "moves": [
+    {
+      "name": "Recover",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Wide Guard",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Body Press",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Ice Spinner",
+      "usage_pct": 100.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Leftovers",
+      "usage_pct": 100.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Sturdy",
+      "usage_pct": 100.0
+    }
+  ]
+}

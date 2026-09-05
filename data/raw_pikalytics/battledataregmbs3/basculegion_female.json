@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Muddy Water",
+      "usage_pct": 74.4
+    },
+    {
+      "name": "Shadow Ball",
+      "usage_pct": 72.1
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 68.6
+    },
+    {
+      "name": "Aqua Jet",
+      "usage_pct": 41.9
+    },
+    {
+      "name": "Ice Beam",
+      "usage_pct": 33.7
+    },
+    {
+      "name": "Last Respects",
+      "usage_pct": 27.9
+    }
+  ],
+  "items": [
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 32.9
+    },
+    {
+      "name": "Mystic Water",
+      "usage_pct": 25.6
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 21.7
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 15.5
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 2.3
+    },
+    {
+      "name": "Wacan Berry",
+      "usage_pct": 1.9
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Adaptability",
+      "usage_pct": 75.2
+    },
+    {
+      "name": "Swift Swim",
+      "usage_pct": 24.8
+    }
+  ]
+}

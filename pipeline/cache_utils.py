@@ -1,10 +1,10 @@
-"""Shared helpers for the raw PokeAPI cache layout.
+"""Shared helpers mapping a display name to a filesystem-safe cache filename.
 
-`fetch_pokeapi` writes the raw cache and `build_records` reads it back, so the
-display-name -> filename mapping is a contract between the two modules. It
-lives here so the two sides cannot drift: if they did, `build_records` would
-silently treat every Pokemon as "no raw cache" and emit zero records while
-both modules' own tests stayed green.
+Originally written as the contract between `fetch_pokeapi` (writes the raw
+cache) and `build_records` (reads it back) so the two sides cannot drift.
+Also reused by `fetch_pikalytics` for its own, differently-scoped raw cache
+under a different directory -- the filename mapping itself has no
+PokeAPI-specific behavior; only the directory each caller passes differs.
 """
 
 

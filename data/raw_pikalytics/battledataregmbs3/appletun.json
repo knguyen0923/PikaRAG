@@ -1,0 +1,44 @@
+{
+  "moves": [
+    {
+      "name": "Sunny Day",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Apple Acid",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 50.0
+    },
+    {
+      "name": "Dragon Pulse",
+      "usage_pct": 50.0
+    },
+    {
+      "name": "Draco Meteor",
+      "usage_pct": 50.0
+    },
+    {
+      "name": "Growth",
+      "usage_pct": 50.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 50.0
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 50.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Thick Fat",
+      "usage_pct": 100.0
+    }
+  ]
+}

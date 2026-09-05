@@ -1,0 +1,48 @@
+{
+  "moves": [
+    {
+      "name": "Trick Room",
+      "usage_pct": 90.2
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 73.2
+    },
+    {
+      "name": "Expanding Force",
+      "usage_pct": 59.8
+    },
+    {
+      "name": "Flash Cannon",
+      "usage_pct": 40.2
+    },
+    {
+      "name": "Energy Ball",
+      "usage_pct": 39.0
+    },
+    {
+      "name": "Psychic",
+      "usage_pct": 39.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Life Orb",
+      "usage_pct": 95.1
+    },
+    {
+      "name": "Iron Ball",
+      "usage_pct": 4.9
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Magic Guard",
+      "usage_pct": 98.8
+    },
+    {
+      "name": "Regenerator",
+      "usage_pct": 1.2
+    }
+  ]
+}

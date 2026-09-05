@@ -1,0 +1,32 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Sludge Bomb",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Giga Drain",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Leech Seed",
+      "usage_pct": 100.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Big Root",
+      "usage_pct": 100.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Poison Point",
+      "usage_pct": 100.0
+    }
+  ]
+}

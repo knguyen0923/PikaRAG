@@ -1,0 +1,52 @@
+{
+  "moves": [
+    {
+      "name": "Fake Out",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Close Combat",
+      "usage_pct": 96.8
+    },
+    {
+      "name": "Encore",
+      "usage_pct": 53.0
+    },
+    {
+      "name": "Triple Axel",
+      "usage_pct": 42.8
+    },
+    {
+      "name": "Giga Impact",
+      "usage_pct": 37.2
+    },
+    {
+      "name": "U-turn",
+      "usage_pct": 28.1
+    }
+  ],
+  "items": [
+    {
+      "name": "Lopunnite",
+      "usage_pct": 99.6
+    },
+    {
+      "name": "Venusaurite",
+      "usage_pct": 0.4
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Limber",
+      "usage_pct": 56.5
+    },
+    {
+      "name": "Cute Charm",
+      "usage_pct": 40.4
+    },
+    {
+      "name": "Klutz",
+      "usage_pct": 3.2
+    }
+  ]
+}

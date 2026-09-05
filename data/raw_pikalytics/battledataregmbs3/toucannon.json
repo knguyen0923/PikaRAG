@@ -1,0 +1,40 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Bullet Seed",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Beak Blast",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Rock Blast",
+      "usage_pct": 91.7
+    },
+    {
+      "name": "Tailwind",
+      "usage_pct": 8.3
+    }
+  ],
+  "items": [
+    {
+      "name": "Focus Sash",
+      "usage_pct": 91.7
+    },
+    {
+      "name": "King's Rock",
+      "usage_pct": 8.3
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Skill Link",
+      "usage_pct": 100.0
+    }
+  ]
+}

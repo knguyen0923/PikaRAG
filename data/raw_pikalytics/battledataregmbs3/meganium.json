@@ -1,0 +1,44 @@
+{
+  "moves": [
+    {
+      "name": "Solar Beam",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Weather Ball",
+      "usage_pct": 98.2
+    },
+    {
+      "name": "Dazzling Gleam",
+      "usage_pct": 97.0
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 92.5
+    },
+    {
+      "name": "Synthesis",
+      "usage_pct": 8.9
+    },
+    {
+      "name": "Earth Power",
+      "usage_pct": 2.2
+    }
+  ],
+  "items": [
+    {
+      "name": "Meganiumite",
+      "usage_pct": 100.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Overgrow",
+      "usage_pct": 71.0
+    },
+    {
+      "name": "Leaf Guard",
+      "usage_pct": 29.0
+    }
+  ]
+}

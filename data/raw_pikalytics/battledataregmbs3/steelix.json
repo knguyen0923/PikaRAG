@@ -1,0 +1,52 @@
+{
+  "moves": [
+    {
+      "name": "Heavy Slam",
+      "usage_pct": 83.3
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 77.8
+    },
+    {
+      "name": "Wide Guard",
+      "usage_pct": 55.6
+    },
+    {
+      "name": "High Horsepower",
+      "usage_pct": 50.0
+    },
+    {
+      "name": "Crunch",
+      "usage_pct": 27.8
+    },
+    {
+      "name": "Body Press",
+      "usage_pct": 22.2
+    }
+  ],
+  "items": [
+    {
+      "name": "Steelixite",
+      "usage_pct": 77.8
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 16.7
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 5.6
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Sturdy",
+      "usage_pct": 83.3
+    },
+    {
+      "name": "Sheer Force",
+      "usage_pct": 16.7
+    }
+  ]
+}

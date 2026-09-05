@@ -1,0 +1,32 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Sucker Punch",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Poison Jab",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Power Whip",
+      "usage_pct": 100.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Victreebelite",
+      "usage_pct": 100.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Chlorophyll",
+      "usage_pct": 100.0
+    }
+  ]
+}

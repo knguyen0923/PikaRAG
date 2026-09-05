@@ -1,0 +1,52 @@
+{
+  "moves": [
+    {
+      "name": "Fake Out",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Close Combat",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Poison Jab",
+      "usage_pct": 73.7
+    },
+    {
+      "name": "Rock Slide",
+      "usage_pct": 61.0
+    },
+    {
+      "name": "Psycho Cut",
+      "usage_pct": 50.0
+    },
+    {
+      "name": "Thunder Punch",
+      "usage_pct": 6.8
+    }
+  ],
+  "items": [
+    {
+      "name": "Medichamite",
+      "usage_pct": 76.3
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 12.7
+    },
+    {
+      "name": "Iron Ball",
+      "usage_pct": 11.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Pure Power",
+      "usage_pct": 98.3
+    },
+    {
+      "name": "Telepathy",
+      "usage_pct": 1.7
+    }
+  ]
+}

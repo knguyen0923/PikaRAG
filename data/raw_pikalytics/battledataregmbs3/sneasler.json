@@ -1,0 +1,68 @@
+{
+  "moves": [
+    {
+      "name": "Close Combat",
+      "usage_pct": 99.3
+    },
+    {
+      "name": "Fake Out",
+      "usage_pct": 94.4
+    },
+    {
+      "name": "Dire Claw",
+      "usage_pct": 93.6
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 59.3
+    },
+    {
+      "name": "Coaching",
+      "usage_pct": 21.7
+    },
+    {
+      "name": "Rock Slide",
+      "usage_pct": 7.8
+    }
+  ],
+  "items": [
+    {
+      "name": "White Herb",
+      "usage_pct": 71.1
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 26.0
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 0.6
+    },
+    {
+      "name": "Lum Berry",
+      "usage_pct": 0.5
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 0.4
+    },
+    {
+      "name": "Black Belt",
+      "usage_pct": 0.4
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Unburden",
+      "usage_pct": 88.7
+    },
+    {
+      "name": "Poison Touch",
+      "usage_pct": 11.2
+    },
+    {
+      "name": "Pressure",
+      "usage_pct": 0.1
+    }
+  ]
+}

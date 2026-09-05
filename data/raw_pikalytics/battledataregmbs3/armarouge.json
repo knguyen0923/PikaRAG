@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Psychic",
+      "usage_pct": 61.3
+    },
+    {
+      "name": "Trick Room",
+      "usage_pct": 53.2
+    },
+    {
+      "name": "Heat Wave",
+      "usage_pct": 51.1
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 45.7
+    },
+    {
+      "name": "Armor Cannon",
+      "usage_pct": 43.0
+    },
+    {
+      "name": "Wide Guard",
+      "usage_pct": 42.5
+    }
+  ],
+  "items": [
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 31.2
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 15.6
+    },
+    {
+      "name": "Iron Ball",
+      "usage_pct": 12.9
+    },
+    {
+      "name": "Colbur Berry",
+      "usage_pct": 8.6
+    },
+    {
+      "name": "White Herb",
+      "usage_pct": 8.1
+    },
+    {
+      "name": "Wise Glasses",
+      "usage_pct": 5.9
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Flash Fire",
+      "usage_pct": 94.1
+    },
+    {
+      "name": "Weak Armor",
+      "usage_pct": 5.9
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Sleep Powder",
+      "usage_pct": 78.0
+    },
+    {
+      "name": "Sludge Bomb",
+      "usage_pct": 73.8
+    },
+    {
+      "name": "After You",
+      "usage_pct": 60.7
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 39.3
+    },
+    {
+      "name": "Leaf Storm",
+      "usage_pct": 36.1
+    },
+    {
+      "name": "Solar Beam",
+      "usage_pct": 25.1
+    }
+  ],
+  "items": [
+    {
+      "name": "Wide Lens",
+      "usage_pct": 45.0
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 26.2
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 18.3
+    },
+    {
+      "name": "Lum Berry",
+      "usage_pct": 5.8
+    },
+    {
+      "name": "Big Root",
+      "usage_pct": 3.1
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 1.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Chlorophyll",
+      "usage_pct": 88.5
+    },
+    {
+      "name": "Effect Spore",
+      "usage_pct": 11.5
+    }
+  ]
+}

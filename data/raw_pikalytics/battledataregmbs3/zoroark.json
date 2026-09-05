@@ -1,0 +1,44 @@
+{
+  "moves": [
+    {
+      "name": "Sludge Bomb",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Trick",
+      "usage_pct": 50.0
+    },
+    {
+      "name": "U-turn",
+      "usage_pct": 50.0
+    },
+    {
+      "name": "Dark Pulse",
+      "usage_pct": 50.0
+    },
+    {
+      "name": "Flamethrower",
+      "usage_pct": 50.0
+    },
+    {
+      "name": "Night Daze",
+      "usage_pct": 50.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Focus Sash",
+      "usage_pct": 50.0
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 50.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Illusion",
+      "usage_pct": 100.0
+    }
+  ]
+}

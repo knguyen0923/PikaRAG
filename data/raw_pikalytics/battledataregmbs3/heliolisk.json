@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 73.2
+    },
+    {
+      "name": "Thunderbolt",
+      "usage_pct": 54.0
+    },
+    {
+      "name": "Dragon Pulse",
+      "usage_pct": 31.4
+    },
+    {
+      "name": "Hyper Voice",
+      "usage_pct": 31.0
+    },
+    {
+      "name": "Shed Tail",
+      "usage_pct": 28.0
+    },
+    {
+      "name": "Ally Switch",
+      "usage_pct": 20.1
+    }
+  ],
+  "items": [
+    {
+      "name": "Focus Sash",
+      "usage_pct": 36.4
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 19.7
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 14.2
+    },
+    {
+      "name": "Magnet",
+      "usage_pct": 13.8
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 9.6
+    },
+    {
+      "name": "Wise Glasses",
+      "usage_pct": 3.3
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Dry Skin",
+      "usage_pct": 77.8
+    },
+    {
+      "name": "Solar Power",
+      "usage_pct": 22.2
+    }
+  ]
+}

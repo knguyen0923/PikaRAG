@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Tailwind",
+      "usage_pct": 97.8
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 63.3
+    },
+    {
+      "name": "Flare Blitz",
+      "usage_pct": 61.0
+    },
+    {
+      "name": "Brave Bird",
+      "usage_pct": 46.4
+    },
+    {
+      "name": "Acrobatics",
+      "usage_pct": 27.6
+    },
+    {
+      "name": "Quick Guard",
+      "usage_pct": 25.5
+    }
+  ],
+  "items": [
+    {
+      "name": "Sharp Beak",
+      "usage_pct": 30.9
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 17.5
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 13.1
+    },
+    {
+      "name": "Charti Berry",
+      "usage_pct": 2.8
+    },
+    {
+      "name": "Mental Herb",
+      "usage_pct": 2.4
+    },
+    {
+      "name": "Expert Belt",
+      "usage_pct": 2.4
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Gale Wings",
+      "usage_pct": 99.9
+    },
+    {
+      "name": "Flame Body",
+      "usage_pct": 0.1
+    }
+  ]
+}

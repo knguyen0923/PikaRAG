@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 94.2
+    },
+    {
+      "name": "Wave Crash",
+      "usage_pct": 88.2
+    },
+    {
+      "name": "Earthquake",
+      "usage_pct": 66.2
+    },
+    {
+      "name": "Ice Punch",
+      "usage_pct": 57.0
+    },
+    {
+      "name": "High Horsepower",
+      "usage_pct": 37.2
+    },
+    {
+      "name": "Rock Slide",
+      "usage_pct": 12.2
+    }
+  ],
+  "items": [
+    {
+      "name": "Swampertite",
+      "usage_pct": 98.5
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 0.7
+    },
+    {
+      "name": "Rindo Berry",
+      "usage_pct": 0.3
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 0.2
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 0.2
+    },
+    {
+      "name": "Mystic Water",
+      "usage_pct": 0.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Torrent",
+      "usage_pct": 53.6
+    },
+    {
+      "name": "Damp",
+      "usage_pct": 46.4
+    }
+  ]
+}

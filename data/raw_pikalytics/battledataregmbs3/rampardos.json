@@ -1,0 +1,44 @@
+{
+  "moves": [
+    {
+      "name": "Rock Slide",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Fire Punch",
+      "usage_pct": 80.0
+    },
+    {
+      "name": "Dragon Claw",
+      "usage_pct": 53.3
+    },
+    {
+      "name": "Iron Head",
+      "usage_pct": 26.7
+    },
+    {
+      "name": "Thunder Punch",
+      "usage_pct": 13.3
+    }
+  ],
+  "items": [
+    {
+      "name": "Life Orb",
+      "usage_pct": 86.7
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 13.3
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Sheer Force",
+      "usage_pct": 100.0
+    }
+  ]
+}

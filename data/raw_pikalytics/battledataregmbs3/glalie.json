@@ -1,0 +1,40 @@
+{
+  "moves": [
+    {
+      "name": "Explosion",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Taunt",
+      "usage_pct": 64.7
+    },
+    {
+      "name": "Body Slam",
+      "usage_pct": 54.1
+    },
+    {
+      "name": "Ice Shard",
+      "usage_pct": 27.1
+    },
+    {
+      "name": "Ice Spinner",
+      "usage_pct": 24.7
+    }
+  ],
+  "items": [
+    {
+      "name": "Glalitite",
+      "usage_pct": 100.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Inner Focus",
+      "usage_pct": 100.0
+    }
+  ]
+}

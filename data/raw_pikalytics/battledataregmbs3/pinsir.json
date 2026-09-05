@@ -1,0 +1,40 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Body Slam",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Feint",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Storm Throw",
+      "usage_pct": 59.0
+    },
+    {
+      "name": "Swords Dance",
+      "usage_pct": 41.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Pinsirite",
+      "usage_pct": 100.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Hyper Cutter",
+      "usage_pct": 89.7
+    },
+    {
+      "name": "Mold Breaker",
+      "usage_pct": 10.3
+    }
+  ]
+}

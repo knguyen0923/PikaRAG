@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Shadow Ball",
+      "usage_pct": 94.4
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 87.1
+    },
+    {
+      "name": "Perish Song",
+      "usage_pct": 66.0
+    },
+    {
+      "name": "Sludge Bomb",
+      "usage_pct": 55.4
+    },
+    {
+      "name": "Disable",
+      "usage_pct": 46.9
+    },
+    {
+      "name": "Icy Wind",
+      "usage_pct": 12.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Gengarite",
+      "usage_pct": 84.4
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 10.5
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 2.1
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 1.9
+    },
+    {
+      "name": "Quick Claw",
+      "usage_pct": 0.8
+    },
+    {
+      "name": "Expert Belt",
+      "usage_pct": 0.3
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Cursed Body",
+      "usage_pct": 100.0
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Shadow Ball",
+      "usage_pct": 63.9
+    },
+    {
+      "name": "Hyper Voice",
+      "usage_pct": 54.5
+    },
+    {
+      "name": "Icy Wind",
+      "usage_pct": 52.0
+    },
+    {
+      "name": "Bitter Malice",
+      "usage_pct": 31.0
+    },
+    {
+      "name": "Psychic",
+      "usage_pct": 30.0
+    },
+    {
+      "name": "Flamethrower",
+      "usage_pct": 29.6
+    }
+  ],
+  "items": [
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 46.2
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 25.6
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 20.9
+    },
+    {
+      "name": "Bright Powder",
+      "usage_pct": 3.6
+    },
+    {
+      "name": "Spell Tag",
+      "usage_pct": 2.2
+    },
+    {
+      "name": "Colbur Berry",
+      "usage_pct": 1.1
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Illusion",
+      "usage_pct": 100.0
+    }
+  ]
+}

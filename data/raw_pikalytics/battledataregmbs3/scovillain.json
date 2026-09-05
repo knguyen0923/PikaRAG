@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 98.9
+    },
+    {
+      "name": "Rage Powder",
+      "usage_pct": 96.5
+    },
+    {
+      "name": "Overheat",
+      "usage_pct": 77.7
+    },
+    {
+      "name": "Leech Seed",
+      "usage_pct": 53.6
+    },
+    {
+      "name": "Giga Drain",
+      "usage_pct": 36.0
+    },
+    {
+      "name": "Flamethrower",
+      "usage_pct": 14.4
+    }
+  ],
+  "items": [
+    {
+      "name": "Scovillainite",
+      "usage_pct": 99.3
+    },
+    {
+      "name": "Kebia Berry",
+      "usage_pct": 0.3
+    },
+    {
+      "name": "Sceptilite",
+      "usage_pct": 0.3
+    },
+    {
+      "name": "Focus Band",
+      "usage_pct": 0.1
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Moody",
+      "usage_pct": 88.2
+    },
+    {
+      "name": "Chlorophyll",
+      "usage_pct": 9.6
+    },
+    {
+      "name": "Insomnia",
+      "usage_pct": 2.2
+    }
+  ]
+}

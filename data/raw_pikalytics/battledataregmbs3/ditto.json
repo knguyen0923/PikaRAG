@@ -1,0 +1,36 @@
+{
+  "moves": [
+    {
+      "name": "Transform",
+      "usage_pct": 100.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 45.5
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 35.6
+    },
+    {
+      "name": "Quick Claw",
+      "usage_pct": 12.9
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 5.0
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 1.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Imposter",
+      "usage_pct": 100.0
+    }
+  ]
+}

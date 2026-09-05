@@ -1,0 +1,32 @@
+{
+  "moves": [
+    {
+      "name": "Rock Slide",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Giga Impact",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Ice Punch",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Earthquake",
+      "usage_pct": 100.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 100.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Huge Power",
+      "usage_pct": 100.0
+    }
+  ]
+}

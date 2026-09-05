@@ -1,0 +1,52 @@
+{
+  "moves": [
+    {
+      "name": "Accelerock",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 94.6
+    },
+    {
+      "name": "Close Combat",
+      "usage_pct": 94.6
+    },
+    {
+      "name": "Rock Slide",
+      "usage_pct": 93.7
+    },
+    {
+      "name": "Drill Run",
+      "usage_pct": 4.8
+    },
+    {
+      "name": "Iron Head",
+      "usage_pct": 3.9
+    }
+  ],
+  "items": [
+    {
+      "name": "Focus Sash",
+      "usage_pct": 84.5
+    },
+    {
+      "name": "Hard Stone",
+      "usage_pct": 7.5
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 5.1
+    },
+    {
+      "name": "Expert Belt",
+      "usage_pct": 3.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Tough Claws",
+      "usage_pct": 100.0
+    }
+  ]
+}

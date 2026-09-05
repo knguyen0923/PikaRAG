@@ -1,0 +1,68 @@
+{
+  "moves": [
+    {
+      "name": "Dual Wingbeat",
+      "usage_pct": 72.7
+    },
+    {
+      "name": "Earthquake",
+      "usage_pct": 66.7
+    },
+    {
+      "name": "Rock Slide",
+      "usage_pct": 51.5
+    },
+    {
+      "name": "Tailwind",
+      "usage_pct": 33.3
+    },
+    {
+      "name": "High Horsepower",
+      "usage_pct": 33.3
+    },
+    {
+      "name": "Knock Off",
+      "usage_pct": 30.3
+    }
+  ],
+  "items": [
+    {
+      "name": "Leftovers",
+      "usage_pct": 30.3
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 21.2
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 21.2
+    },
+    {
+      "name": "Quick Claw",
+      "usage_pct": 12.1
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 9.1
+    },
+    {
+      "name": "Bright Powder",
+      "usage_pct": 3.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Hyper Cutter",
+      "usage_pct": 87.9
+    },
+    {
+      "name": "Poison Heal",
+      "usage_pct": 9.1
+    },
+    {
+      "name": "Sand Veil",
+      "usage_pct": 3.0
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 97.1
+    },
+    {
+      "name": "Fake Out",
+      "usage_pct": 97.1
+    },
+    {
+      "name": "Thunderbolt",
+      "usage_pct": 94.3
+    },
+    {
+      "name": "Quick Attack",
+      "usage_pct": 94.3
+    },
+    {
+      "name": "Reversal",
+      "usage_pct": 2.9
+    },
+    {
+      "name": "Brick Break",
+      "usage_pct": 2.9
+    }
+  ],
+  "items": [
+    {
+      "name": "Light Ball",
+      "usage_pct": 97.1
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Lightning Rod",
+      "usage_pct": 97.1
+    },
+    {
+      "name": "Static",
+      "usage_pct": 2.9
+    }
+  ]
+}

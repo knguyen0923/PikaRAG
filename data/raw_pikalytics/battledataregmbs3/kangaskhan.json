@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Fake Out",
+      "usage_pct": 99.8
+    },
+    {
+      "name": "Last Resort",
+      "usage_pct": 49.6
+    },
+    {
+      "name": "Double-Edge",
+      "usage_pct": 45.3
+    },
+    {
+      "name": "Ice Punch",
+      "usage_pct": 32.4
+    },
+    {
+      "name": "Low Kick",
+      "usage_pct": 24.0
+    },
+    {
+      "name": "Sucker Punch",
+      "usage_pct": 15.3
+    }
+  ],
+  "items": [
+    {
+      "name": "Kangaskhanite",
+      "usage_pct": 52.0
+    },
+    {
+      "name": "Silk Scarf",
+      "usage_pct": 37.6
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 2.8
+    },
+    {
+      "name": "Metronome",
+      "usage_pct": 2.8
+    },
+    {
+      "name": "Iron Ball",
+      "usage_pct": 1.4
+    },
+    {
+      "name": "Chople Berry",
+      "usage_pct": 1.1
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Scrappy",
+      "usage_pct": 98.9
+    },
+    {
+      "name": "Inner Focus",
+      "usage_pct": 1.1
+    }
+  ]
+}

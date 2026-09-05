@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Mach Punch",
+      "usage_pct": 81.8
+    },
+    {
+      "name": "Drain Punch",
+      "usage_pct": 75.8
+    },
+    {
+      "name": "Thunder Punch",
+      "usage_pct": 71.7
+    },
+    {
+      "name": "Detect",
+      "usage_pct": 34.3
+    },
+    {
+      "name": "Ice Punch",
+      "usage_pct": 33.3
+    },
+    {
+      "name": "Poison Jab",
+      "usage_pct": 23.2
+    }
+  ],
+  "items": [
+    {
+      "name": "Life Orb",
+      "usage_pct": 58.6
+    },
+    {
+      "name": "Black Belt",
+      "usage_pct": 32.3
+    },
+    {
+      "name": "Expert Belt",
+      "usage_pct": 3.0
+    },
+    {
+      "name": "Muscle Band",
+      "usage_pct": 2.0
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 2.0
+    },
+    {
+      "name": "Lum Berry",
+      "usage_pct": 1.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Iron Fist",
+      "usage_pct": 69.7
+    },
+    {
+      "name": "Sheer Force",
+      "usage_pct": 30.3
+    }
+  ]
+}

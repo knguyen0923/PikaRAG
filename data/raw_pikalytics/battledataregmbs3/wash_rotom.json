@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Hydro Pump",
+      "usage_pct": 96.4
+    },
+    {
+      "name": "Will-O-Wisp",
+      "usage_pct": 77.9
+    },
+    {
+      "name": "Thunderbolt",
+      "usage_pct": 71.5
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 54.2
+    },
+    {
+      "name": "Volt Switch",
+      "usage_pct": 41.2
+    },
+    {
+      "name": "Electroweb",
+      "usage_pct": 22.8
+    }
+  ],
+  "items": [
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 39.1
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 29.7
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 21.6
+    },
+    {
+      "name": "Magnet",
+      "usage_pct": 4.0
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 2.3
+    },
+    {
+      "name": "Wide Lens",
+      "usage_pct": 1.2
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Levitate",
+      "usage_pct": 100.0
+    }
+  ]
+}

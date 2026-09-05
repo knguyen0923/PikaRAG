@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Waterfall",
+      "usage_pct": 98.6
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 79.7
+    },
+    {
+      "name": "Dragon Dance",
+      "usage_pct": 68.8
+    },
+    {
+      "name": "Crunch",
+      "usage_pct": 33.3
+    },
+    {
+      "name": "Lash Out",
+      "usage_pct": 26.7
+    },
+    {
+      "name": "Taunt",
+      "usage_pct": 20.7
+    }
+  ],
+  "items": [
+    {
+      "name": "Gyaradosite",
+      "usage_pct": 61.0
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 28.8
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 4.5
+    },
+    {
+      "name": "White Herb",
+      "usage_pct": 1.9
+    },
+    {
+      "name": "Lum Berry",
+      "usage_pct": 1.4
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 1.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Intimidate",
+      "usage_pct": 99.4
+    },
+    {
+      "name": "Moxie",
+      "usage_pct": 0.6
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 84.0
+    },
+    {
+      "name": "Close Combat",
+      "usage_pct": 82.0
+    },
+    {
+      "name": "Rock Slide",
+      "usage_pct": 72.0
+    },
+    {
+      "name": "Accelerock",
+      "usage_pct": 58.0
+    },
+    {
+      "name": "Psychic Fangs",
+      "usage_pct": 48.0
+    },
+    {
+      "name": "Taunt",
+      "usage_pct": 16.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Focus Sash",
+      "usage_pct": 88.0
+    },
+    {
+      "name": "Hard Stone",
+      "usage_pct": 10.0
+    },
+    {
+      "name": "King's Rock",
+      "usage_pct": 2.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Sand Rush",
+      "usage_pct": 86.0
+    },
+    {
+      "name": "Steadfast",
+      "usage_pct": 14.0
+    }
+  ]
+}

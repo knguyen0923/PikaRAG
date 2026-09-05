@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Stone Axe",
+      "usage_pct": 97.9
+    },
+    {
+      "name": "X-Scissor",
+      "usage_pct": 66.5
+    },
+    {
+      "name": "Close Combat",
+      "usage_pct": 58.9
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 37.5
+    },
+    {
+      "name": "Night Slash",
+      "usage_pct": 31.1
+    },
+    {
+      "name": "U-turn",
+      "usage_pct": 30.8
+    }
+  ],
+  "items": [
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 45.0
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 33.5
+    },
+    {
+      "name": "White Herb",
+      "usage_pct": 16.9
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 2.7
+    },
+    {
+      "name": "Silver Powder",
+      "usage_pct": 1.2
+    },
+    {
+      "name": "Quick Claw",
+      "usage_pct": 0.3
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Sharpness",
+      "usage_pct": 97.9
+    },
+    {
+      "name": "Sheer Force",
+      "usage_pct": 2.1
+    }
+  ]
+}

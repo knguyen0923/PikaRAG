@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Power Gem",
+      "usage_pct": 99.7
+    },
+    {
+      "name": "Earth Power",
+      "usage_pct": 94.3
+    },
+    {
+      "name": "Sludge Bomb",
+      "usage_pct": 94.2
+    },
+    {
+      "name": "Spiky Shield",
+      "usage_pct": 84.5
+    },
+    {
+      "name": "Energy Ball",
+      "usage_pct": 15.3
+    },
+    {
+      "name": "Sludge Wave",
+      "usage_pct": 4.4
+    }
+  ],
+  "items": [
+    {
+      "name": "Focus Sash",
+      "usage_pct": 76.5
+    },
+    {
+      "name": "Glimmoranite",
+      "usage_pct": 19.0
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 2.5
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 0.7
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 0.7
+    },
+    {
+      "name": "Quick Claw",
+      "usage_pct": 0.2
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Toxic Debris",
+      "usage_pct": 99.9
+    },
+    {
+      "name": "Corrosion",
+      "usage_pct": 0.1
+    }
+  ]
+}

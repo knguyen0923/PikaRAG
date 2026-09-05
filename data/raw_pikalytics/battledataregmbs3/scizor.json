@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Bullet Punch",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 88.7
+    },
+    {
+      "name": "Swords Dance",
+      "usage_pct": 80.6
+    },
+    {
+      "name": "Bug Bite",
+      "usage_pct": 73.4
+    },
+    {
+      "name": "Close Combat",
+      "usage_pct": 25.9
+    },
+    {
+      "name": "Dual Wingbeat",
+      "usage_pct": 9.4
+    }
+  ],
+  "items": [
+    {
+      "name": "Scizorite",
+      "usage_pct": 53.5
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 25.0
+    },
+    {
+      "name": "Metal Coat",
+      "usage_pct": 14.0
+    },
+    {
+      "name": "White Herb",
+      "usage_pct": 2.8
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 2.3
+    },
+    {
+      "name": "Lum Berry",
+      "usage_pct": 1.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Technician",
+      "usage_pct": 100.0
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "moves": [
+    {
+      "name": "Will-O-Wisp",
+      "usage_pct": 97.1
+    },
+    {
+      "name": "Destiny Bond",
+      "usage_pct": 62.9
+    },
+    {
+      "name": "Poltergeist",
+      "usage_pct": 62.9
+    },
+    {
+      "name": "Rain Dance",
+      "usage_pct": 51.4
+    },
+    {
+      "name": "Disable",
+      "usage_pct": 48.6
+    },
+    {
+      "name": "Encore",
+      "usage_pct": 37.1
+    }
+  ],
+  "items": [
+    {
+      "name": "Banettite",
+      "usage_pct": 100.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Frisk",
+      "usage_pct": 100.0
+    }
+  ]
+}

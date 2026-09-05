@@ -1,0 +1,44 @@
+{
+  "moves": [
+    {
+      "name": "Close Combat",
+      "usage_pct": 94.4
+    },
+    {
+      "name": "No Retreat",
+      "usage_pct": 88.9
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 84.7
+    },
+    {
+      "name": "Rock Slide",
+      "usage_pct": 47.2
+    },
+    {
+      "name": "Throat Chop",
+      "usage_pct": 22.2
+    },
+    {
+      "name": "Iron Head",
+      "usage_pct": 16.7
+    }
+  ],
+  "items": [
+    {
+      "name": "Falinksite",
+      "usage_pct": 95.8
+    },
+    {
+      "name": "Black Belt",
+      "usage_pct": 4.2
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Defiant",
+      "usage_pct": 100.0
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 77.8
+    },
+    {
+      "name": "Throat Chop",
+      "usage_pct": 61.0
+    },
+    {
+      "name": "Barb Barrage",
+      "usage_pct": 55.6
+    },
+    {
+      "name": "Aqua Jet",
+      "usage_pct": 37.1
+    },
+    {
+      "name": "Poison Jab",
+      "usage_pct": 34.6
+    },
+    {
+      "name": "Taunt",
+      "usage_pct": 21.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Life Orb",
+      "usage_pct": 59.0
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 19.7
+    },
+    {
+      "name": "Shuca Berry",
+      "usage_pct": 9.8
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 3.5
+    },
+    {
+      "name": "Expert Belt",
+      "usage_pct": 3.2
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 2.9
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Swift Swim",
+      "usage_pct": 73.3
+    },
+    {
+      "name": "Intimidate",
+      "usage_pct": 24.1
+    },
+    {
+      "name": "Poison Point",
+      "usage_pct": 2.5
+    }
+  ]
+}

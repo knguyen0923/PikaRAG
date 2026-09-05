@@ -1,0 +1,32 @@
+{
+  "moves": [
+    {
+      "name": "Crunch",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Giga Impact",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Low Kick",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Ice Punch",
+      "usage_pct": 100.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Quick Claw",
+      "usage_pct": 100.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Analytic",
+      "usage_pct": 100.0
+    }
+  ]
+}

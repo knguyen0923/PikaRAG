@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 71.6
+    },
+    {
+      "name": "Fissure",
+      "usage_pct": 67.9
+    },
+    {
+      "name": "Yawn",
+      "usage_pct": 49.5
+    },
+    {
+      "name": "Stockpile",
+      "usage_pct": 28.4
+    },
+    {
+      "name": "Heat Crash",
+      "usage_pct": 24.8
+    },
+    {
+      "name": "Ice Punch",
+      "usage_pct": 24.8
+    }
+  ],
+  "items": [
+    {
+      "name": "Leftovers",
+      "usage_pct": 40.4
+    },
+    {
+      "name": "Chople Berry",
+      "usage_pct": 31.2
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 17.4
+    },
+    {
+      "name": "Expert Belt",
+      "usage_pct": 10.1
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 0.9
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Thick Fat",
+      "usage_pct": 99.1
+    },
+    {
+      "name": "Immunity",
+      "usage_pct": 0.9
+    }
+  ]
+}

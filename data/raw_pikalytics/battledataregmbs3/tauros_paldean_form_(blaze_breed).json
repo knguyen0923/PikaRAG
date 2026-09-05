@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Close Combat",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Raging Bull",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 90.4
+    },
+    {
+      "name": "Rock Slide",
+      "usage_pct": 57.5
+    },
+    {
+      "name": "Wild Charge",
+      "usage_pct": 15.1
+    },
+    {
+      "name": "Flare Blitz",
+      "usage_pct": 12.3
+    }
+  ],
+  "items": [
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 30.1
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 21.9
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 19.2
+    },
+    {
+      "name": "Expert Belt",
+      "usage_pct": 13.7
+    },
+    {
+      "name": "White Herb",
+      "usage_pct": 11.0
+    },
+    {
+      "name": "Bright Powder",
+      "usage_pct": 4.1
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Intimidate",
+      "usage_pct": 71.2
+    },
+    {
+      "name": "Anger Point",
+      "usage_pct": 28.8
+    }
+  ]
+}

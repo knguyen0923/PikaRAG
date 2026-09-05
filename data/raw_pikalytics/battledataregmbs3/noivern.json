@@ -1,0 +1,48 @@
+{
+  "moves": [
+    {
+      "name": "Air Slash",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Draco Meteor",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 87.5
+    },
+    {
+      "name": "Tailwind",
+      "usage_pct": 62.5
+    },
+    {
+      "name": "Boomburst",
+      "usage_pct": 37.5
+    },
+    {
+      "name": "Heat Wave",
+      "usage_pct": 12.5
+    }
+  ],
+  "items": [
+    {
+      "name": "Focus Sash",
+      "usage_pct": 62.5
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 37.5
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Telepathy",
+      "usage_pct": 56.3
+    },
+    {
+      "name": "Infiltrator",
+      "usage_pct": 43.8
+    }
+  ]
+}

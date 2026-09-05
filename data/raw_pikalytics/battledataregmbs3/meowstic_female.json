@@ -1,0 +1,36 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Energy Ball",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Psychic",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Thunderbolt",
+      "usage_pct": 66.7
+    },
+    {
+      "name": "Fake Out",
+      "usage_pct": 33.3
+    }
+  ],
+  "items": [
+    {
+      "name": "Meowsticite",
+      "usage_pct": 100.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Competitive",
+      "usage_pct": 100.0
+    }
+  ]
+}

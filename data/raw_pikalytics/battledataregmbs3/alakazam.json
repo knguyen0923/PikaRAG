@@ -1,0 +1,48 @@
+{
+  "moves": [
+    {
+      "name": "Shadow Ball",
+      "usage_pct": 62.5
+    },
+    {
+      "name": "Psychic",
+      "usage_pct": 56.3
+    },
+    {
+      "name": "Speed Swap",
+      "usage_pct": 43.8
+    },
+    {
+      "name": "Trick",
+      "usage_pct": 31.3
+    },
+    {
+      "name": "Skill Swap",
+      "usage_pct": 31.3
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 25.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 43.8
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 31.3
+    },
+    {
+      "name": "Alakazite",
+      "usage_pct": 25.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Inner Focus",
+      "usage_pct": 100.0
+    }
+  ]
+}

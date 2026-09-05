@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Dragon Pulse",
+      "usage_pct": 99.1
+    },
+    {
+      "name": "Earth Power",
+      "usage_pct": 95.3
+    },
+    {
+      "name": "Detect",
+      "usage_pct": 57.3
+    },
+    {
+      "name": "Energy Ball",
+      "usage_pct": 46.3
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 38.0
+    },
+    {
+      "name": "Leaf Storm",
+      "usage_pct": 36.2
+    }
+  ],
+  "items": [
+    {
+      "name": "Sceptilite",
+      "usage_pct": 98.2
+    },
+    {
+      "name": "Scovillainite",
+      "usage_pct": 0.7
+    },
+    {
+      "name": "White Herb",
+      "usage_pct": 0.4
+    },
+    {
+      "name": "Miracle Seed",
+      "usage_pct": 0.2
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 0.2
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 0.2
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Overgrow",
+      "usage_pct": 83.6
+    },
+    {
+      "name": "Unburden",
+      "usage_pct": 16.4
+    }
+  ]
+}

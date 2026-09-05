@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Last Respects",
+      "usage_pct": 89.7
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 79.4
+    },
+    {
+      "name": "Will-O-Wisp",
+      "usage_pct": 47.6
+    },
+    {
+      "name": "Ally Switch",
+      "usage_pct": 42.1
+    },
+    {
+      "name": "Shadow Sneak",
+      "usage_pct": 41.3
+    },
+    {
+      "name": "Snarl",
+      "usage_pct": 17.5
+    }
+  ],
+  "items": [
+    {
+      "name": "Life Orb",
+      "usage_pct": 47.6
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 19.8
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 7.1
+    },
+    {
+      "name": "Colbur Berry",
+      "usage_pct": 6.3
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 6.3
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 4.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Sand Rush",
+      "usage_pct": 76.2
+    },
+    {
+      "name": "Fluffy",
+      "usage_pct": 23.8
+    }
+  ]
+}

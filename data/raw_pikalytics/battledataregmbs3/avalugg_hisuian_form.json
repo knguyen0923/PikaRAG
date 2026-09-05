@@ -1,0 +1,44 @@
+{
+  "moves": [
+    {
+      "name": "Body Press",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Rock Slide",
+      "usage_pct": 93.8
+    },
+    {
+      "name": "Mountain Gale",
+      "usage_pct": 93.8
+    },
+    {
+      "name": "Wide Guard",
+      "usage_pct": 87.5
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 6.3
+    },
+    {
+      "name": "Rock Blast",
+      "usage_pct": 6.3
+    }
+  ],
+  "items": [
+    {
+      "name": "Leftovers",
+      "usage_pct": 93.8
+    },
+    {
+      "name": "Hard Stone",
+      "usage_pct": 6.3
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Sturdy",
+      "usage_pct": 100.0
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "moves": [
+    {
+      "name": "Rock Slide",
+      "usage_pct": 98.3
+    },
+    {
+      "name": "Shell Smash",
+      "usage_pct": 88.1
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 81.4
+    },
+    {
+      "name": "Close Combat",
+      "usage_pct": 76.3
+    },
+    {
+      "name": "Liquidation",
+      "usage_pct": 32.2
+    },
+    {
+      "name": "Brutal Swing",
+      "usage_pct": 15.3
+    }
+  ],
+  "items": [
+    {
+      "name": "Barbaracite",
+      "usage_pct": 96.6
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 3.4
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Tough Claws",
+      "usage_pct": 100.0
+    }
+  ]
+}

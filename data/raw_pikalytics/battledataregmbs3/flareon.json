@@ -1,0 +1,32 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Superpower",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Flare Blitz",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Baby-Doll Eyes",
+      "usage_pct": 100.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Charti Berry",
+      "usage_pct": 100.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Flash Fire",
+      "usage_pct": 100.0
+    }
+  ]
+}

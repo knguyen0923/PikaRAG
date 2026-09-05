@@ -1,0 +1,56 @@
+{
+  "moves": [
+    {
+      "name": "Trick Room",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Will-O-Wisp",
+      "usage_pct": 78.8
+    },
+    {
+      "name": "Snarl",
+      "usage_pct": 44.2
+    },
+    {
+      "name": "Night Shade",
+      "usage_pct": 30.8
+    },
+    {
+      "name": "Skill Swap",
+      "usage_pct": 30.8
+    },
+    {
+      "name": "Rain Dance",
+      "usage_pct": 26.9
+    }
+  ],
+  "items": [
+    {
+      "name": "Roseli Berry",
+      "usage_pct": 44.2
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 38.5
+    },
+    {
+      "name": "Black Glasses",
+      "usage_pct": 13.5
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 3.8
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Infiltrator",
+      "usage_pct": 94.2
+    },
+    {
+      "name": "Pressure",
+      "usage_pct": 5.8
+    }
+  ]
+}

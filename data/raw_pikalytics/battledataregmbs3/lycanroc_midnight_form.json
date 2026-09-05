@@ -1,0 +1,32 @@
+{
+  "moves": [
+    {
+      "name": "Rock Slide",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Iron Tail",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Close Combat",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Stone Edge",
+      "usage_pct": 100.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 100.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "No Guard",
+      "usage_pct": 100.0
+    }
+  ]
+}

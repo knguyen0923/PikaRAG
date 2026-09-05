@@ -1,0 +1,68 @@
+{
+  "moves": [
+    {
+      "name": "Trick Room",
+      "usage_pct": 95.7
+    },
+    {
+      "name": "Psychic",
+      "usage_pct": 60.7
+    },
+    {
+      "name": "Helping Hand",
+      "usage_pct": 48.9
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 39.1
+    },
+    {
+      "name": "Thunderbolt",
+      "usage_pct": 30.3
+    },
+    {
+      "name": "Hyper Voice",
+      "usage_pct": 30.2
+    }
+  ],
+  "items": [
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 62.0
+    },
+    {
+      "name": "Colbur Berry",
+      "usage_pct": 24.9
+    },
+    {
+      "name": "Mental Herb",
+      "usage_pct": 4.4
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 2.9
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 2.2
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 0.8
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Armor Tail",
+      "usage_pct": 99.9
+    },
+    {
+      "name": "Cud Chew",
+      "usage_pct": 0.0
+    },
+    {
+      "name": "Sap Sipper",
+      "usage_pct": 0.0
+    }
+  ]
+}

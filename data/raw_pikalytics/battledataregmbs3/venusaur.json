@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Sludge Bomb",
+      "usage_pct": 95.4
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 83.0
+    },
+    {
+      "name": "Earth Power",
+      "usage_pct": 73.5
+    },
+    {
+      "name": "Giga Drain",
+      "usage_pct": 57.3
+    },
+    {
+      "name": "Sleep Powder",
+      "usage_pct": 46.3
+    },
+    {
+      "name": "Energy Ball",
+      "usage_pct": 22.5
+    }
+  ],
+  "items": [
+    {
+      "name": "Venusaurite",
+      "usage_pct": 47.3
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 18.7
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 10.0
+    },
+    {
+      "name": "Wide Lens",
+      "usage_pct": 9.6
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 3.7
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 2.4
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Chlorophyll",
+      "usage_pct": 98.6
+    },
+    {
+      "name": "Overgrow",
+      "usage_pct": 1.4
+    }
+  ]
+}

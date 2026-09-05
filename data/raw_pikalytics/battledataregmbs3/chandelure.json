@@ -1,0 +1,68 @@
+{
+  "moves": [
+    {
+      "name": "Shadow Ball",
+      "usage_pct": 95.2
+    },
+    {
+      "name": "Heat Wave",
+      "usage_pct": 91.8
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 89.7
+    },
+    {
+      "name": "Trick Room",
+      "usage_pct": 64.4
+    },
+    {
+      "name": "Calm Mind",
+      "usage_pct": 14.4
+    },
+    {
+      "name": "Energy Ball",
+      "usage_pct": 14.4
+    }
+  ],
+  "items": [
+    {
+      "name": "Chandelurite",
+      "usage_pct": 43.8
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 19.2
+    },
+    {
+      "name": "Charcoal",
+      "usage_pct": 18.5
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 11.0
+    },
+    {
+      "name": "Quick Claw",
+      "usage_pct": 4.1
+    },
+    {
+      "name": "Colbur Berry",
+      "usage_pct": 1.4
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Flash Fire",
+      "usage_pct": 96.6
+    },
+    {
+      "name": "Flame Body",
+      "usage_pct": 2.1
+    },
+    {
+      "name": "Infiltrator",
+      "usage_pct": 1.4
+    }
+  ]
+}

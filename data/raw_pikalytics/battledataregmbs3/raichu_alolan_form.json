@@ -1,0 +1,44 @@
+{
+  "moves": [
+    {
+      "name": "Psychic",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Volt Switch",
+      "usage_pct": 92.3
+    },
+    {
+      "name": "Nuzzle",
+      "usage_pct": 92.3
+    },
+    {
+      "name": "Thunder",
+      "usage_pct": 92.3
+    },
+    {
+      "name": "Fake Out",
+      "usage_pct": 7.7
+    },
+    {
+      "name": "Thunderbolt",
+      "usage_pct": 7.7
+    }
+  ],
+  "items": [
+    {
+      "name": "Focus Sash",
+      "usage_pct": 96.2
+    },
+    {
+      "name": "Twisted Spoon",
+      "usage_pct": 3.8
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Surge Surfer",
+      "usage_pct": 100.0
+    }
+  ]
+}

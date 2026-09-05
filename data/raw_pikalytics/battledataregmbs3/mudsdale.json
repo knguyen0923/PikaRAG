@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 82.1
+    },
+    {
+      "name": "High Horsepower",
+      "usage_pct": 77.8
+    },
+    {
+      "name": "Rock Slide",
+      "usage_pct": 59.3
+    },
+    {
+      "name": "Earthquake",
+      "usage_pct": 55.6
+    },
+    {
+      "name": "Body Press",
+      "usage_pct": 49.4
+    },
+    {
+      "name": "Stone Edge",
+      "usage_pct": 24.7
+    }
+  ],
+  "items": [
+    {
+      "name": "Soft Sand",
+      "usage_pct": 35.2
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 31.5
+    },
+    {
+      "name": "Quick Claw",
+      "usage_pct": 17.9
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 15.4
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Stamina",
+      "usage_pct": 49.4
+    },
+    {
+      "name": "Inner Focus",
+      "usage_pct": 47.5
+    },
+    {
+      "name": "Own Tempo",
+      "usage_pct": 3.1
+    }
+  ]
+}

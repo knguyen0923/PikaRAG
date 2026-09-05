@@ -1,0 +1,48 @@
+{
+  "moves": [
+    {
+      "name": "Heat Wave",
+      "usage_pct": 99.6
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 99.2
+    },
+    {
+      "name": "Overheat",
+      "usage_pct": 72.9
+    },
+    {
+      "name": "Hyper Voice",
+      "usage_pct": 30.9
+    },
+    {
+      "name": "Flamethrower",
+      "usage_pct": 27.8
+    },
+    {
+      "name": "Solar Beam",
+      "usage_pct": 25.8
+    }
+  ],
+  "items": [
+    {
+      "name": "Pyroarite",
+      "usage_pct": 99.9
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Unnerve",
+      "usage_pct": 88.5
+    },
+    {
+      "name": "Moxie",
+      "usage_pct": 6.4
+    },
+    {
+      "name": "Rivalry",
+      "usage_pct": 5.1
+    }
+  ]
+}

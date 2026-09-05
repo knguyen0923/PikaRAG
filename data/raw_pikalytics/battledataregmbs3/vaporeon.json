@@ -1,0 +1,44 @@
+{
+  "moves": [
+    {
+      "name": "Calm Mind",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Scald",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Baton Pass",
+      "usage_pct": 93.8
+    },
+    {
+      "name": "Acid Armor",
+      "usage_pct": 87.5
+    },
+    {
+      "name": "Ice Beam",
+      "usage_pct": 12.5
+    },
+    {
+      "name": "Wish",
+      "usage_pct": 6.3
+    }
+  ],
+  "items": [
+    {
+      "name": "Rindo Berry",
+      "usage_pct": 81.3
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 18.8
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Water Absorb",
+      "usage_pct": 100.0
+    }
+  ]
+}

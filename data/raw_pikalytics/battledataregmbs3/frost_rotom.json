@@ -1,0 +1,48 @@
+{
+  "moves": [
+    {
+      "name": "Blizzard",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Volt Switch",
+      "usage_pct": 78.1
+    },
+    {
+      "name": "Electroweb",
+      "usage_pct": 71.9
+    },
+    {
+      "name": "Thunderbolt",
+      "usage_pct": 68.8
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 21.9
+    },
+    {
+      "name": "Helping Hand",
+      "usage_pct": 18.8
+    }
+  ],
+  "items": [
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 78.1
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 18.8
+    },
+    {
+      "name": "Never-Melt Ice",
+      "usage_pct": 3.1
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Levitate",
+      "usage_pct": 100.0
+    }
+  ]
+}

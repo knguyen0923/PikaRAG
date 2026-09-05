@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Hyper Voice",
+      "usage_pct": 99.9
+    },
+    {
+      "name": "Quick Attack",
+      "usage_pct": 81.6
+    },
+    {
+      "name": "Hyper Beam",
+      "usage_pct": 71.2
+    },
+    {
+      "name": "Detect",
+      "usage_pct": 61.1
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 35.0
+    },
+    {
+      "name": "Moonblast",
+      "usage_pct": 13.1
+    }
+  ],
+  "items": [
+    {
+      "name": "Fairy Feather",
+      "usage_pct": 89.6
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 5.1
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 1.5
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 1.5
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 1.2
+    },
+    {
+      "name": "Quick Claw",
+      "usage_pct": 0.6
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Pixilate",
+      "usage_pct": 99.9
+    },
+    {
+      "name": "Cute Charm",
+      "usage_pct": 0.1
+    }
+  ]
+}

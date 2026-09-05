@@ -1,0 +1,56 @@
+{
+  "moves": [
+    {
+      "name": "Blizzard",
+      "usage_pct": 98.9
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 96.3
+    },
+    {
+      "name": "Shadow Ball",
+      "usage_pct": 86.0
+    },
+    {
+      "name": "Aurora Veil",
+      "usage_pct": 80.2
+    },
+    {
+      "name": "Rain Dance",
+      "usage_pct": 10.6
+    },
+    {
+      "name": "Nasty Plot",
+      "usage_pct": 4.1
+    }
+  ],
+  "items": [
+    {
+      "name": "Froslassite",
+      "usage_pct": 99.6
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 0.2
+    },
+    {
+      "name": "Never-Melt Ice",
+      "usage_pct": 0.1
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 0.1
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Cursed Body",
+      "usage_pct": 79.0
+    },
+    {
+      "name": "Snow Cloak",
+      "usage_pct": 21.0
+    }
+  ]
+}

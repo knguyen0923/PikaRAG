@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Fake Out",
+      "usage_pct": 98.1
+    },
+    {
+      "name": "Knock Off",
+      "usage_pct": 71.4
+    },
+    {
+      "name": "Triple Axel",
+      "usage_pct": 58.3
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 38.3
+    },
+    {
+      "name": "Feint",
+      "usage_pct": 20.9
+    },
+    {
+      "name": "Ice Spinner",
+      "usage_pct": 20.4
+    }
+  ],
+  "items": [
+    {
+      "name": "Focus Sash",
+      "usage_pct": 65.5
+    },
+    {
+      "name": "Wide Lens",
+      "usage_pct": 17.5
+    },
+    {
+      "name": "King's Rock",
+      "usage_pct": 4.9
+    },
+    {
+      "name": "Never-Melt Ice",
+      "usage_pct": 3.9
+    },
+    {
+      "name": "Expert Belt",
+      "usage_pct": 3.9
+    },
+    {
+      "name": "Muscle Band",
+      "usage_pct": 1.9
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Pickpocket",
+      "usage_pct": 59.2
+    },
+    {
+      "name": "Pressure",
+      "usage_pct": 40.8
+    }
+  ]
+}

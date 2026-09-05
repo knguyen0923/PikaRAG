@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Sleep Powder",
+      "usage_pct": 92.3
+    },
+    {
+      "name": "Hurricane",
+      "usage_pct": 81.2
+    },
+    {
+      "name": "Rage Powder",
+      "usage_pct": 75.6
+    },
+    {
+      "name": "Tailwind",
+      "usage_pct": 40.3
+    },
+    {
+      "name": "Rain Dance",
+      "usage_pct": 34.7
+    },
+    {
+      "name": "Pollen Puff",
+      "usage_pct": 31.3
+    }
+  ],
+  "items": [
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 54.8
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 41.1
+    },
+    {
+      "name": "Charti Berry",
+      "usage_pct": 4.0
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 0.1
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Compound Eyes",
+      "usage_pct": 84.5
+    },
+    {
+      "name": "Friend Guard",
+      "usage_pct": 8.9
+    },
+    {
+      "name": "Shield Dust",
+      "usage_pct": 6.5
+    }
+  ]
+}

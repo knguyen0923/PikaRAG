@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Play Rough",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Aqua Jet",
+      "usage_pct": 96.9
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 80.9
+    },
+    {
+      "name": "Belly Drum",
+      "usage_pct": 50.6
+    },
+    {
+      "name": "Liquidation",
+      "usage_pct": 27.8
+    },
+    {
+      "name": "Perish Song",
+      "usage_pct": 16.7
+    }
+  ],
+  "items": [
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 71.6
+    },
+    {
+      "name": "Mystic Water",
+      "usage_pct": 9.3
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 8.0
+    },
+    {
+      "name": "Muscle Band",
+      "usage_pct": 4.9
+    },
+    {
+      "name": "Never-Melt Ice",
+      "usage_pct": 3.1
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 1.9
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Huge Power",
+      "usage_pct": 83.3
+    },
+    {
+      "name": "Sap Sipper",
+      "usage_pct": 16.7
+    }
+  ]
+}

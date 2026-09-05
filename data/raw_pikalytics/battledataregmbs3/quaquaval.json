@@ -1,0 +1,48 @@
+{
+  "moves": [
+    {
+      "name": "Close Combat",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 70.0
+    },
+    {
+      "name": "Aqua Step",
+      "usage_pct": 70.0
+    },
+    {
+      "name": "Triple Axel",
+      "usage_pct": 40.0
+    },
+    {
+      "name": "Detect",
+      "usage_pct": 30.0
+    },
+    {
+      "name": "Bulk Up",
+      "usage_pct": 30.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Life Orb",
+      "usage_pct": 60.0
+    },
+    {
+      "name": "Mystic Water",
+      "usage_pct": 30.0
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 10.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Moxie",
+      "usage_pct": 100.0
+    }
+  ]
+}
