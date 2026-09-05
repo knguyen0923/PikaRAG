@@ -107,21 +107,23 @@ pika-rag/
 
 ## Build Order (suggested)
 
-1. **Data pipeline** — pull PokéAPI + Pikalytics data, merge into structured records with regulation metadata
-2. **Damage calculator** — port `@smogon/calc` core logic, test against known values before touching the bot
-3. **RAG core** — embed records, build Chroma index, test retrieval quality with sample queries
-4. **Haiku integration** — prompt template that injects retrieved context, test grounding (no hallucinated stats)
-5. **Discord bot skeleton** — get `/ping` working on Oracle Cloud before wiring in real commands
-6. **Wire up slash commands** — `/ask`, `/stats`, `/moves`, `/calc`
-7. **Refresh job** — scheduled scraper + manual rebuild script
-8. **Polish** — error handling, rate limiting, embed formatting for Discord responses
+1. [x] **Data pipeline** — pull PokéAPI + Pikalytics data, merge into structured records with regulation metadata
+2. [x] **Damage calculator** — port `@smogon/calc` core logic, test against known values before touching the bot
+3. [x] **RAG core** — embed records, build Chroma index, test retrieval quality with sample queries
+4. [x] **Haiku integration** — prompt template that injects retrieved context, test grounding (no hallucinated stats)
+5. [x] **Discord bot skeleton** — `/ping` working
+6. [x] **Wire up slash commands** — `/ask`, `/stats`, `/moves`, `/calc`, plus `/import`, `/scout`, `/team` (Pokepaste team memory, added beyond original scope)
+7. [x] **Refresh job** — scheduled scraper (`pipeline/refresh_job.py`, `pipeline/refresh_pikalytics_job.py`) + systemd timers
+8. [x] **Polish** — cooldowns, colored embeds, `on_tree_error` handling; CI (`pytest` workflow)
+
+All code-side work is done and merged to `main` (232 passing tests). What's left is deployment — see `docs/DEPLOYMENT.md`.
 
 ---
 
 ## Open Items / To Revisit
 
-- [ ] Confirm Pikalytics scraping is within their ToS, or find an alternative/API path
-- [ ] Decide exact chunking strategy (per-Pokémon vs. split by data type)
-- [ ] Set prepaid budget cap for Anthropic API credit
-- [ ] Set up Oracle Cloud free tier instance + confirm always-on ARM instance specs
-- [ ] Define cron schedule for routine data refresh (weekly? bi-weekly?)
+- [x] Decide exact chunking strategy — resolved: records merged per-Pokémon into `data/processed/pokemon_records.json`, no separate chunk types needed at current scale
+- [x] Define cron schedule for routine data refresh — resolved: `pikarag-refresh-pokeapi.timer` (weekly), `pikarag-refresh-pikalytics.timer` (monthly)
+- [ ] Confirm Pikalytics scraping is within their ToS, or find an alternative/API path — not formally revisited; pipeline is live and has been running against it
+- [ ] Set prepaid budget cap for Anthropic API credit — manual console step, not yet done (see `docs/DEPLOYMENT.md` step 1.3)
+- [ ] Set up Oracle Cloud free tier instance + confirm always-on ARM instance specs — not yet provisioned (see `docs/DEPLOYMENT.md` step 1.4)
