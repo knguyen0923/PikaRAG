@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Make It Rain",
+      "usage_pct": 99.0
+    },
+    {
+      "name": "Shadow Ball",
+      "usage_pct": 99.0
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 70.9
+    },
+    {
+      "name": "Nasty Plot",
+      "usage_pct": 58.5
+    },
+    {
+      "name": "Power Gem",
+      "usage_pct": 27.1
+    },
+    {
+      "name": "Trick",
+      "usage_pct": 17.3
+    }
+  ],
+  "items": [
+    {
+      "name": "Life Orb",
+      "usage_pct": 37.9
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 27.1
+    },
+    {
+      "name": "Metal Coat",
+      "usage_pct": 11.3
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 7.3
+    },
+    {
+      "name": "White Herb",
+      "usage_pct": 6.5
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 2.8
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Good as Gold",
+      "usage_pct": 100.0
+    }
+  ]
+}

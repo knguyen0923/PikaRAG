@@ -1,0 +1,48 @@
+{
+  "moves": [
+    {
+      "name": "Salt Cure",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Recover",
+      "usage_pct": 75.0
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 75.0
+    },
+    {
+      "name": "Heavy Slam",
+      "usage_pct": 50.0
+    },
+    {
+      "name": "Explosion",
+      "usage_pct": 25.0
+    },
+    {
+      "name": "Stealth Rock",
+      "usage_pct": 25.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Leftovers",
+      "usage_pct": 75.0
+    },
+    {
+      "name": "Silk Scarf",
+      "usage_pct": 25.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Purifying Salt",
+      "usage_pct": 75.0
+    },
+    {
+      "name": "Clear Body",
+      "usage_pct": 25.0
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "moves": [
+    {
+      "name": "Trick Room",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Shadow Ball",
+      "usage_pct": 87.0
+    },
+    {
+      "name": "Body Press",
+      "usage_pct": 82.6
+    },
+    {
+      "name": "Haze",
+      "usage_pct": 65.2
+    },
+    {
+      "name": "Will-O-Wisp",
+      "usage_pct": 43.5
+    },
+    {
+      "name": "Night Shade",
+      "usage_pct": 8.7
+    }
+  ],
+  "items": [
+    {
+      "name": "Colbur Berry",
+      "usage_pct": 73.9
+    },
+    {
+      "name": "Mental Herb",
+      "usage_pct": 21.7
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 4.3
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Mummy",
+      "usage_pct": 100.0
+    }
+  ]
+}

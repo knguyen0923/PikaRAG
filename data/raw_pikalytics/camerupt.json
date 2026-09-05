@@ -1,0 +1,56 @@
+{
+  "moves": [
+    {
+      "name": "Earth Power",
+      "usage_pct": 99.1
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 86.8
+    },
+    {
+      "name": "Heat Wave",
+      "usage_pct": 68.0
+    },
+    {
+      "name": "Ancient Power",
+      "usage_pct": 66.0
+    },
+    {
+      "name": "Eruption",
+      "usage_pct": 65.1
+    },
+    {
+      "name": "Flamethrower",
+      "usage_pct": 5.4
+    }
+  ],
+  "items": [
+    {
+      "name": "Cameruptite",
+      "usage_pct": 97.5
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 2.3
+    },
+    {
+      "name": "Wise Glasses",
+      "usage_pct": 0.2
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Solid Rock",
+      "usage_pct": 96.6
+    },
+    {
+      "name": "Magma Armor",
+      "usage_pct": 2.3
+    },
+    {
+      "name": "Anger Point",
+      "usage_pct": 1.1
+    }
+  ]
+}

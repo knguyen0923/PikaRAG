@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Close Combat",
+      "usage_pct": 72.5
+    },
+    {
+      "name": "Flare Blitz",
+      "usage_pct": 69.8
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 50.7
+    },
+    {
+      "name": "Detect",
+      "usage_pct": 48.6
+    },
+    {
+      "name": "Rock Slide",
+      "usage_pct": 27.0
+    },
+    {
+      "name": "Coaching",
+      "usage_pct": 24.7
+    }
+  ],
+  "items": [
+    {
+      "name": "Blazikenite",
+      "usage_pct": 61.2
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 22.9
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 7.6
+    },
+    {
+      "name": "Muscle Band",
+      "usage_pct": 4.5
+    },
+    {
+      "name": "Wide Lens",
+      "usage_pct": 1.2
+    },
+    {
+      "name": "Scope Lens",
+      "usage_pct": 1.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Speed Boost",
+      "usage_pct": 96.9
+    },
+    {
+      "name": "Blaze",
+      "usage_pct": 3.1
+    }
+  ]
+}

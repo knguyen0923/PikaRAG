@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Power Gem",
+      "usage_pct": 87.5
+    },
+    {
+      "name": "Psychic",
+      "usage_pct": 87.5
+    },
+    {
+      "name": "Light Screen",
+      "usage_pct": 25.0
+    },
+    {
+      "name": "Reflect",
+      "usage_pct": 25.0
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 25.0
+    },
+    {
+      "name": "Trick Room",
+      "usage_pct": 25.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Light Clay",
+      "usage_pct": 25.0
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 25.0
+    },
+    {
+      "name": "Bright Powder",
+      "usage_pct": 12.5
+    },
+    {
+      "name": "Twisted Spoon",
+      "usage_pct": 12.5
+    },
+    {
+      "name": "Wise Glasses",
+      "usage_pct": 12.5
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 12.5
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Magic Bounce",
+      "usage_pct": 100.0
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "moves": [
+    {
+      "name": "Liquidation",
+      "usage_pct": 93.3
+    },
+    {
+      "name": "Wide Guard",
+      "usage_pct": 86.7
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 62.7
+    },
+    {
+      "name": "Leech Life",
+      "usage_pct": 29.3
+    },
+    {
+      "name": "Lunge",
+      "usage_pct": 18.7
+    },
+    {
+      "name": "Entrainment",
+      "usage_pct": 18.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Mystic Water",
+      "usage_pct": 64.0
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 14.7
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 8.0
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 7.3
+    },
+    {
+      "name": "White Herb",
+      "usage_pct": 6.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Water Bubble",
+      "usage_pct": 100.0
+    }
+  ]
+}

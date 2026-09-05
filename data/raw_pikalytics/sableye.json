@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Rain Dance",
+      "usage_pct": 78.8
+    },
+    {
+      "name": "Light Screen",
+      "usage_pct": 67.0
+    },
+    {
+      "name": "Encore",
+      "usage_pct": 56.2
+    },
+    {
+      "name": "Reflect",
+      "usage_pct": 52.4
+    },
+    {
+      "name": "Will-O-Wisp",
+      "usage_pct": 38.9
+    },
+    {
+      "name": "Disable",
+      "usage_pct": 30.4
+    }
+  ],
+  "items": [
+    {
+      "name": "Roseli Berry",
+      "usage_pct": 48.0
+    },
+    {
+      "name": "Light Clay",
+      "usage_pct": 41.5
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 2.7
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 2.6
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 1.6
+    },
+    {
+      "name": "Damp Rock",
+      "usage_pct": 1.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Prankster",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Stall",
+      "usage_pct": 0.0
+    }
+  ]
+}

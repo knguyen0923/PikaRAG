@@ -1,0 +1,52 @@
+{
+  "moves": [
+    {
+      "name": "Life Dew",
+      "usage_pct": 87.5
+    },
+    {
+      "name": "Trick Room",
+      "usage_pct": 79.2
+    },
+    {
+      "name": "Simple Beam",
+      "usage_pct": 66.7
+    },
+    {
+      "name": "Healing Wish",
+      "usage_pct": 58.3
+    },
+    {
+      "name": "Dazzling Gleam",
+      "usage_pct": 25.0
+    },
+    {
+      "name": "Light Screen",
+      "usage_pct": 16.7
+    }
+  ],
+  "items": [
+    {
+      "name": "Mental Herb",
+      "usage_pct": 58.3
+    },
+    {
+      "name": "Audinite",
+      "usage_pct": 37.5
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 4.2
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Healer",
+      "usage_pct": 62.5
+    },
+    {
+      "name": "Regenerator",
+      "usage_pct": 37.5
+    }
+  ]
+}

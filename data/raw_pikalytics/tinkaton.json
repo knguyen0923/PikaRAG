@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Gigaton Hammer",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Fake Out",
+      "usage_pct": 97.0
+    },
+    {
+      "name": "Play Rough",
+      "usage_pct": 58.7
+    },
+    {
+      "name": "Encore",
+      "usage_pct": 56.2
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 55.2
+    },
+    {
+      "name": "Knock Off",
+      "usage_pct": 10.4
+    }
+  ],
+  "items": [
+    {
+      "name": "Occa Berry",
+      "usage_pct": 26.9
+    },
+    {
+      "name": "Metal Coat",
+      "usage_pct": 26.4
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 17.4
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 9.5
+    },
+    {
+      "name": "Shuca Berry",
+      "usage_pct": 7.0
+    },
+    {
+      "name": "White Herb",
+      "usage_pct": 5.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Mold Breaker",
+      "usage_pct": 67.7
+    },
+    {
+      "name": "Own Tempo",
+      "usage_pct": 32.3
+    }
+  ]
+}

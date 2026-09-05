@@ -1,0 +1,48 @@
+{
+  "moves": [
+    {
+      "name": "Aura Sphere",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Dark Pulse",
+      "usage_pct": 97.3
+    },
+    {
+      "name": "Water Pulse",
+      "usage_pct": 83.8
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 54.1
+    },
+    {
+      "name": "Heal Pulse",
+      "usage_pct": 35.1
+    },
+    {
+      "name": "Muddy Water",
+      "usage_pct": 16.2
+    }
+  ],
+  "items": [
+    {
+      "name": "Life Orb",
+      "usage_pct": 62.2
+    },
+    {
+      "name": "Wise Glasses",
+      "usage_pct": 35.1
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 2.7
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Mega Launcher",
+      "usage_pct": 100.0
+    }
+  ]
+}

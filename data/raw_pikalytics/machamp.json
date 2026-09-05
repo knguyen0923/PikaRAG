@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Stone Edge",
+      "usage_pct": 84.6
+    },
+    {
+      "name": "Dynamic Punch",
+      "usage_pct": 69.2
+    },
+    {
+      "name": "Wide Guard",
+      "usage_pct": 53.8
+    },
+    {
+      "name": "Knock Off",
+      "usage_pct": 33.3
+    },
+    {
+      "name": "Ice Punch",
+      "usage_pct": 30.8
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 17.9
+    }
+  ],
+  "items": [
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 46.2
+    },
+    {
+      "name": "Scope Lens",
+      "usage_pct": 17.9
+    },
+    {
+      "name": "Muscle Band",
+      "usage_pct": 15.4
+    },
+    {
+      "name": "Quick Claw",
+      "usage_pct": 12.8
+    },
+    {
+      "name": "Coba Berry",
+      "usage_pct": 5.1
+    },
+    {
+      "name": "Black Belt",
+      "usage_pct": 2.6
+    }
+  ],
+  "abilities": [
+    {
+      "name": "No Guard",
+      "usage_pct": 100.0
+    }
+  ]
+}

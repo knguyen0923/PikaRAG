@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Volt Switch",
+      "usage_pct": 98.8
+    },
+    {
+      "name": "Thunderbolt",
+      "usage_pct": 68.2
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 62.4
+    },
+    {
+      "name": "Overheat",
+      "usage_pct": 42.4
+    },
+    {
+      "name": "Light Screen",
+      "usage_pct": 37.6
+    },
+    {
+      "name": "Snarl",
+      "usage_pct": 29.4
+    }
+  ],
+  "items": [
+    {
+      "name": "Manectite",
+      "usage_pct": 84.7
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 11.8
+    },
+    {
+      "name": "White Herb",
+      "usage_pct": 2.4
+    },
+    {
+      "name": "Magnet",
+      "usage_pct": 1.2
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Lightning Rod",
+      "usage_pct": 61.2
+    },
+    {
+      "name": "Minus",
+      "usage_pct": 37.6
+    },
+    {
+      "name": "Static",
+      "usage_pct": 1.2
+    }
+  ]
+}

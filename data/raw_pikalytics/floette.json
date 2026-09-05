@@ -1,0 +1,56 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 99.8
+    },
+    {
+      "name": "Dazzling Gleam",
+      "usage_pct": 97.1
+    },
+    {
+      "name": "Moonblast",
+      "usage_pct": 79.0
+    },
+    {
+      "name": "Light of Ruin",
+      "usage_pct": 58.0
+    },
+    {
+      "name": "Calm Mind",
+      "usage_pct": 42.7
+    },
+    {
+      "name": "Draining Kiss",
+      "usage_pct": 19.3
+    }
+  ],
+  "items": [
+    {
+      "name": "Floettite",
+      "usage_pct": 99.4
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 0.4
+    },
+    {
+      "name": "Fairy Feather",
+      "usage_pct": 0.1
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 0.1
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Flower Veil",
+      "usage_pct": 98.9
+    },
+    {
+      "name": "Symbiosis",
+      "usage_pct": 1.1
+    }
+  ]
+}

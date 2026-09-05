@@ -1,0 +1,68 @@
+{
+  "moves": [
+    {
+      "name": "Knock Off",
+      "usage_pct": 70.7
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 65.9
+    },
+    {
+      "name": "Earthquake",
+      "usage_pct": 53.7
+    },
+    {
+      "name": "High Horsepower",
+      "usage_pct": 36.6
+    },
+    {
+      "name": "Close Combat",
+      "usage_pct": 34.1
+    },
+    {
+      "name": "Rock Slide",
+      "usage_pct": 26.8
+    }
+  ],
+  "items": [
+    {
+      "name": "Passho Berry",
+      "usage_pct": 26.8
+    },
+    {
+      "name": "Chople Berry",
+      "usage_pct": 19.5
+    },
+    {
+      "name": "Quick Claw",
+      "usage_pct": 17.1
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 17.1
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 9.8
+    },
+    {
+      "name": "Muscle Band",
+      "usage_pct": 7.3
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Intimidate",
+      "usage_pct": 53.7
+    },
+    {
+      "name": "Anger Point",
+      "usage_pct": 26.8
+    },
+    {
+      "name": "Moxie",
+      "usage_pct": 19.5
+    }
+  ]
+}

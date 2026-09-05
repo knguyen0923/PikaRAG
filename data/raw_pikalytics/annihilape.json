@@ -1,0 +1,68 @@
+{
+  "moves": [
+    {
+      "name": "Rage Fist",
+      "usage_pct": 93.2
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 78.5
+    },
+    {
+      "name": "Drain Punch",
+      "usage_pct": 77.7
+    },
+    {
+      "name": "Bulk Up",
+      "usage_pct": 69.6
+    },
+    {
+      "name": "Close Combat",
+      "usage_pct": 23.9
+    },
+    {
+      "name": "Coaching",
+      "usage_pct": 13.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Leftovers",
+      "usage_pct": 50.7
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 17.5
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 11.4
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 6.0
+    },
+    {
+      "name": "Roseli Berry",
+      "usage_pct": 3.2
+    },
+    {
+      "name": "Kasib Berry",
+      "usage_pct": 2.6
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Defiant",
+      "usage_pct": 99.3
+    },
+    {
+      "name": "Inner Focus",
+      "usage_pct": 0.5
+    },
+    {
+      "name": "Vital Spirit",
+      "usage_pct": 0.2
+    }
+  ]
+}

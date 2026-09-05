@@ -1,0 +1,32 @@
+{
+  "moves": [
+    {
+      "name": "Rock Slide",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Close Combat",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Icicle Crash",
+      "usage_pct": 100.0
+    }
+  ],
+  "items": [
+    {
+      "name": "White Herb",
+      "usage_pct": 100.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Swift Swim",
+      "usage_pct": 100.0
+    }
+  ]
+}

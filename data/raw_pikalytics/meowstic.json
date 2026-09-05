@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Fake Out",
+      "usage_pct": 70.4
+    },
+    {
+      "name": "Reflect",
+      "usage_pct": 39.4
+    },
+    {
+      "name": "Light Screen",
+      "usage_pct": 35.9
+    },
+    {
+      "name": "Charm",
+      "usage_pct": 28.2
+    },
+    {
+      "name": "Psychic Terrain",
+      "usage_pct": 26.1
+    },
+    {
+      "name": "Expanding Force",
+      "usage_pct": 26.1
+    }
+  ],
+  "items": [
+    {
+      "name": "Light Clay",
+      "usage_pct": 21.1
+    },
+    {
+      "name": "Mental Herb",
+      "usage_pct": 19.0
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 18.3
+    },
+    {
+      "name": "Kasib Berry",
+      "usage_pct": 12.0
+    },
+    {
+      "name": "Twisted Spoon",
+      "usage_pct": 8.5
+    },
+    {
+      "name": "Bright Powder",
+      "usage_pct": 7.7
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Prankster",
+      "usage_pct": 100.0
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "moves": [
+    {
+      "name": "Tailwind",
+      "usage_pct": 88.9
+    },
+    {
+      "name": "Hyper Voice",
+      "usage_pct": 69.8
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 54.0
+    },
+    {
+      "name": "Will-O-Wisp",
+      "usage_pct": 41.3
+    },
+    {
+      "name": "Roost",
+      "usage_pct": 30.2
+    },
+    {
+      "name": "Hurricane",
+      "usage_pct": 23.8
+    }
+  ],
+  "items": [
+    {
+      "name": "Altarianite",
+      "usage_pct": 69.8
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 27.0
+    },
+    {
+      "name": "Bright Powder",
+      "usage_pct": 1.6
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 1.6
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Cloud Nine",
+      "usage_pct": 100.0
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "moves": [
+    {
+      "name": "Dragon Pulse",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 97.1
+    },
+    {
+      "name": "Thunderbolt",
+      "usage_pct": 97.1
+    },
+    {
+      "name": "Cotton Guard",
+      "usage_pct": 79.7
+    },
+    {
+      "name": "Volt Switch",
+      "usage_pct": 18.8
+    },
+    {
+      "name": "Charge",
+      "usage_pct": 2.9
+    }
+  ],
+  "items": [
+    {
+      "name": "Ampharosite",
+      "usage_pct": 98.6
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 1.4
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Static",
+      "usage_pct": 100.0
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "moves": [
+    {
+      "name": "Trick Room",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Psychic",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Helping Hand",
+      "usage_pct": 90.5
+    },
+    {
+      "name": "Ally Switch",
+      "usage_pct": 81.0
+    },
+    {
+      "name": "Moonblast",
+      "usage_pct": 9.5
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 7.1
+    }
+  ],
+  "items": [
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 64.3
+    },
+    {
+      "name": "Mental Herb",
+      "usage_pct": 26.2
+    },
+    {
+      "name": "Colbur Berry",
+      "usage_pct": 9.5
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Telepathy",
+      "usage_pct": 92.9
+    },
+    {
+      "name": "Synchronize",
+      "usage_pct": 7.1
+    }
+  ]
+}

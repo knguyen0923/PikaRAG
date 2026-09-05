@@ -1,0 +1,68 @@
+{
+  "moves": [
+    {
+      "name": "Fake Out",
+      "usage_pct": 91.1
+    },
+    {
+      "name": "Knock Off",
+      "usage_pct": 87.3
+    },
+    {
+      "name": "Drain Punch",
+      "usage_pct": 51.0
+    },
+    {
+      "name": "Close Combat",
+      "usage_pct": 44.2
+    },
+    {
+      "name": "Detect",
+      "usage_pct": 23.8
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 17.8
+    }
+  ],
+  "items": [
+    {
+      "name": "Scraftinite",
+      "usage_pct": 85.5
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 6.4
+    },
+    {
+      "name": "Lum Berry",
+      "usage_pct": 1.9
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 1.8
+    },
+    {
+      "name": "Expert Belt",
+      "usage_pct": 1.3
+    },
+    {
+      "name": "Roseli Berry",
+      "usage_pct": 1.2
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Intimidate",
+      "usage_pct": 98.8
+    },
+    {
+      "name": "Moxie",
+      "usage_pct": 0.8
+    },
+    {
+      "name": "Shed Skin",
+      "usage_pct": 0.4
+    }
+  ]
+}

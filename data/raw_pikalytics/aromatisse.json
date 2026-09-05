@@ -1,0 +1,44 @@
+{
+  "moves": [
+    {
+      "name": "Moonblast",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Light Screen",
+      "usage_pct": 85.7
+    },
+    {
+      "name": "Reflect",
+      "usage_pct": 85.7
+    },
+    {
+      "name": "Heal Pulse",
+      "usage_pct": 85.7
+    },
+    {
+      "name": "Encore",
+      "usage_pct": 14.3
+    },
+    {
+      "name": "Trick Room",
+      "usage_pct": 14.3
+    }
+  ],
+  "items": [
+    {
+      "name": "Light Clay",
+      "usage_pct": 85.7
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 14.3
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Aroma Veil",
+      "usage_pct": 100.0
+    }
+  ]
+}

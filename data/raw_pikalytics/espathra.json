@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Calm Mind",
+      "usage_pct": 83.1
+    },
+    {
+      "name": "Lumina Crash",
+      "usage_pct": 80.4
+    },
+    {
+      "name": "Baton Pass",
+      "usage_pct": 77.3
+    },
+    {
+      "name": "Feather Dance",
+      "usage_pct": 12.7
+    },
+    {
+      "name": "Psychic Terrain",
+      "usage_pct": 10.8
+    }
+  ],
+  "items": [
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 32.7
+    },
+    {
+      "name": "Mental Herb",
+      "usage_pct": 27.7
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 15.0
+    },
+    {
+      "name": "Colbur Berry",
+      "usage_pct": 11.2
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 6.9
+    },
+    {
+      "name": "Twisted Spoon",
+      "usage_pct": 6.5
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Speed Boost",
+      "usage_pct": 100.0
+    }
+  ]
+}

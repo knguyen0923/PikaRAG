@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Rock Slide",
+      "usage_pct": 98.8
+    },
+    {
+      "name": "Knock Off",
+      "usage_pct": 92.9
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 91.9
+    },
+    {
+      "name": "Low Kick",
+      "usage_pct": 43.5
+    },
+    {
+      "name": "Dragon Dance",
+      "usage_pct": 31.0
+    },
+    {
+      "name": "Ice Punch",
+      "usage_pct": 17.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Tyranitarite",
+      "usage_pct": 69.9
+    },
+    {
+      "name": "Chople Berry",
+      "usage_pct": 7.2
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 5.8
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 4.7
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 4.0
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 2.6
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Sand Stream",
+      "usage_pct": 99.7
+    },
+    {
+      "name": "Unnerve",
+      "usage_pct": 0.3
+    }
+  ]
+}

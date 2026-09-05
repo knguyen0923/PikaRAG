@@ -1,0 +1,56 @@
+{
+  "moves": [
+    {
+      "name": "Entrainment",
+      "usage_pct": 65.4
+    },
+    {
+      "name": "Detect",
+      "usage_pct": 56.4
+    },
+    {
+      "name": "Close Combat",
+      "usage_pct": 55.1
+    },
+    {
+      "name": "Dual Wingbeat",
+      "usage_pct": 53.8
+    },
+    {
+      "name": "Cross Chop",
+      "usage_pct": 34.6
+    },
+    {
+      "name": "Stone Edge",
+      "usage_pct": 32.1
+    }
+  ],
+  "items": [
+    {
+      "name": "Hawluchanite",
+      "usage_pct": 97.4
+    },
+    {
+      "name": "White Herb",
+      "usage_pct": 1.3
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 1.3
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Mold Breaker",
+      "usage_pct": 56.4
+    },
+    {
+      "name": "Unburden",
+      "usage_pct": 30.8
+    },
+    {
+      "name": "Limber",
+      "usage_pct": 12.8
+    }
+  ]
+}

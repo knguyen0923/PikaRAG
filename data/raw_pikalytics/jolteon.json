@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Rising Voltage",
+      "usage_pct": 76.2
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 66.9
+    },
+    {
+      "name": "Discharge",
+      "usage_pct": 48.8
+    },
+    {
+      "name": "Weather Ball",
+      "usage_pct": 45.3
+    },
+    {
+      "name": "Volt Switch",
+      "usage_pct": 39.5
+    },
+    {
+      "name": "Electroweb",
+      "usage_pct": 32.6
+    }
+  ],
+  "items": [
+    {
+      "name": "Life Orb",
+      "usage_pct": 50.6
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 24.4
+    },
+    {
+      "name": "Magnet",
+      "usage_pct": 23.3
+    },
+    {
+      "name": "Shuca Berry",
+      "usage_pct": 1.2
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 0.6
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Volt Absorb",
+      "usage_pct": 99.4
+    },
+    {
+      "name": "Quick Feet",
+      "usage_pct": 0.6
+    }
+  ]
+}

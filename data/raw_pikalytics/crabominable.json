@@ -1,0 +1,48 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 70.1
+    },
+    {
+      "name": "Drain Punch",
+      "usage_pct": 66.9
+    },
+    {
+      "name": "Ice Hammer",
+      "usage_pct": 66.1
+    },
+    {
+      "name": "Mach Punch",
+      "usage_pct": 58.3
+    },
+    {
+      "name": "Ice Punch",
+      "usage_pct": 33.9
+    },
+    {
+      "name": "Crabhammer",
+      "usage_pct": 30.7
+    }
+  ],
+  "items": [
+    {
+      "name": "Crabominite",
+      "usage_pct": 100.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Hyper Cutter",
+      "usage_pct": 89.0
+    },
+    {
+      "name": "Iron Fist",
+      "usage_pct": 8.7
+    },
+    {
+      "name": "Anger Point",
+      "usage_pct": 2.4
+    }
+  ]
+}

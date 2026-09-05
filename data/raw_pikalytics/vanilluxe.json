@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Blizzard",
+      "usage_pct": 95.8
+    },
+    {
+      "name": "Freeze-Dry",
+      "usage_pct": 93.4
+    },
+    {
+      "name": "Icy Wind",
+      "usage_pct": 42.7
+    },
+    {
+      "name": "Aurora Veil",
+      "usage_pct": 36.4
+    },
+    {
+      "name": "Ice Shard",
+      "usage_pct": 32.5
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 26.2
+    }
+  ],
+  "items": [
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 57.0
+    },
+    {
+      "name": "Never-Melt Ice",
+      "usage_pct": 14.7
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 11.2
+    },
+    {
+      "name": "Light Clay",
+      "usage_pct": 10.5
+    },
+    {
+      "name": "Silk Scarf",
+      "usage_pct": 3.8
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 1.7
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Snow Warning",
+      "usage_pct": 99.0
+    },
+    {
+      "name": "Weak Armor",
+      "usage_pct": 1.0
+    }
+  ]
+}

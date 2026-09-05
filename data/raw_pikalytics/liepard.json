@@ -1,0 +1,52 @@
+{
+  "moves": [
+    {
+      "name": "Fake Out",
+      "usage_pct": 98.6
+    },
+    {
+      "name": "Charm",
+      "usage_pct": 67.1
+    },
+    {
+      "name": "Encore",
+      "usage_pct": 59.4
+    },
+    {
+      "name": "Fake Tears",
+      "usage_pct": 43.4
+    },
+    {
+      "name": "Knock Off",
+      "usage_pct": 34.3
+    },
+    {
+      "name": "Screech",
+      "usage_pct": 23.1
+    }
+  ],
+  "items": [
+    {
+      "name": "Focus Sash",
+      "usage_pct": 63.6
+    },
+    {
+      "name": "Chople Berry",
+      "usage_pct": 34.3
+    },
+    {
+      "name": "Roseli Berry",
+      "usage_pct": 1.4
+    },
+    {
+      "name": "Lum Berry",
+      "usage_pct": 0.7
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Prankster",
+      "usage_pct": 100.0
+    }
+  ]
+}

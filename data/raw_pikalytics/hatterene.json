@@ -1,0 +1,68 @@
+{
+  "moves": [
+    {
+      "name": "Dazzling Gleam",
+      "usage_pct": 99.7
+    },
+    {
+      "name": "Trick Room",
+      "usage_pct": 87.2
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 81.7
+    },
+    {
+      "name": "Psychic",
+      "usage_pct": 51.2
+    },
+    {
+      "name": "Expanding Force",
+      "usage_pct": 24.1
+    },
+    {
+      "name": "Psyshock",
+      "usage_pct": 17.7
+    }
+  ],
+  "items": [
+    {
+      "name": "Life Orb",
+      "usage_pct": 48.0
+    },
+    {
+      "name": "Fairy Feather",
+      "usage_pct": 25.6
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 15.1
+    },
+    {
+      "name": "Babiri Berry",
+      "usage_pct": 5.2
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 3.2
+    },
+    {
+      "name": "Kebia Berry",
+      "usage_pct": 1.5
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Magic Bounce",
+      "usage_pct": 98.0
+    },
+    {
+      "name": "Healer",
+      "usage_pct": 1.5
+    },
+    {
+      "name": "Anticipation",
+      "usage_pct": 0.6
+    }
+  ]
+}

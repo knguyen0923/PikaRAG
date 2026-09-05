@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Leaf Storm",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 75.2
+    },
+    {
+      "name": "Glare",
+      "usage_pct": 56.9
+    },
+    {
+      "name": "Dragon Pulse",
+      "usage_pct": 30.3
+    },
+    {
+      "name": "Taunt",
+      "usage_pct": 29.4
+    },
+    {
+      "name": "Light Screen",
+      "usage_pct": 26.6
+    }
+  ],
+  "items": [
+    {
+      "name": "Focus Sash",
+      "usage_pct": 26.6
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 20.2
+    },
+    {
+      "name": "Wide Lens",
+      "usage_pct": 11.9
+    },
+    {
+      "name": "Light Clay",
+      "usage_pct": 11.9
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 10.1
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 7.3
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Contrary",
+      "usage_pct": 100.0
+    }
+  ]
+}

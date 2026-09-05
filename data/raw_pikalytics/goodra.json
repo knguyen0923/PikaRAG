@@ -1,0 +1,56 @@
+{
+  "moves": [
+    {
+      "name": "Ice Beam",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Thunderbolt",
+      "usage_pct": 70.8
+    },
+    {
+      "name": "Scald",
+      "usage_pct": 54.2
+    },
+    {
+      "name": "Tearful Look",
+      "usage_pct": 54.2
+    },
+    {
+      "name": "Draco Meteor",
+      "usage_pct": 37.5
+    },
+    {
+      "name": "Feint",
+      "usage_pct": 29.2
+    }
+  ],
+  "items": [
+    {
+      "name": "Haban Berry",
+      "usage_pct": 83.3
+    },
+    {
+      "name": "Wise Glasses",
+      "usage_pct": 8.3
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 8.3
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Gooey",
+      "usage_pct": 54.2
+    },
+    {
+      "name": "Hydration",
+      "usage_pct": 29.2
+    },
+    {
+      "name": "Sap Sipper",
+      "usage_pct": 16.7
+    }
+  ]
+}

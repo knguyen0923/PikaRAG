@@ -1,0 +1,40 @@
+{
+  "moves": [
+    {
+      "name": "Glare",
+      "usage_pct": 55.6
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 55.6
+    },
+    {
+      "name": "Poison Fang",
+      "usage_pct": 55.6
+    },
+    {
+      "name": "Toxic Spikes",
+      "usage_pct": 55.6
+    },
+    {
+      "name": "Poison Jab",
+      "usage_pct": 44.4
+    },
+    {
+      "name": "Thunder Fang",
+      "usage_pct": 44.4
+    }
+  ],
+  "items": [
+    {
+      "name": "Leftovers",
+      "usage_pct": 55.6
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Intimidate",
+      "usage_pct": 100.0
+    }
+  ]
+}

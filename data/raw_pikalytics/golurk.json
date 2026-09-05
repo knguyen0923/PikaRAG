@@ -1,0 +1,52 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 99.0
+    },
+    {
+      "name": "Headlong Rush",
+      "usage_pct": 97.0
+    },
+    {
+      "name": "Poltergeist",
+      "usage_pct": 90.9
+    },
+    {
+      "name": "Ice Punch",
+      "usage_pct": 54.5
+    },
+    {
+      "name": "Close Combat",
+      "usage_pct": 12.1
+    },
+    {
+      "name": "Drain Punch",
+      "usage_pct": 12.1
+    }
+  ],
+  "items": [
+    {
+      "name": "Golurkite",
+      "usage_pct": 99.0
+    },
+    {
+      "name": "White Herb",
+      "usage_pct": 1.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Iron Fist",
+      "usage_pct": 70.7
+    },
+    {
+      "name": "No Guard",
+      "usage_pct": 17.2
+    },
+    {
+      "name": "Klutz",
+      "usage_pct": 12.1
+    }
+  ]
+}

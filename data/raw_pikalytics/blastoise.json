@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Water Spout",
+      "usage_pct": 93.4
+    },
+    {
+      "name": "Dark Pulse",
+      "usage_pct": 83.4
+    },
+    {
+      "name": "Aura Sphere",
+      "usage_pct": 60.0
+    },
+    {
+      "name": "Fake Out",
+      "usage_pct": 57.6
+    },
+    {
+      "name": "Shell Smash",
+      "usage_pct": 46.8
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 33.6
+    }
+  ],
+  "items": [
+    {
+      "name": "Blastoisinite",
+      "usage_pct": 96.2
+    },
+    {
+      "name": "Mystic Water",
+      "usage_pct": 2.4
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 1.0
+    },
+    {
+      "name": "White Herb",
+      "usage_pct": 0.3
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 0.1
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Rain Dish",
+      "usage_pct": 71.6
+    },
+    {
+      "name": "Torrent",
+      "usage_pct": 28.4
+    }
+  ]
+}

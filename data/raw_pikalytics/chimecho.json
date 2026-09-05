@@ -1,0 +1,40 @@
+{
+  "moves": [
+    {
+      "name": "Psychic",
+      "usage_pct": 80.0
+    },
+    {
+      "name": "Trick Room",
+      "usage_pct": 68.6
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 62.9
+    },
+    {
+      "name": "Flash Cannon",
+      "usage_pct": 62.9
+    },
+    {
+      "name": "Recover",
+      "usage_pct": 37.1
+    },
+    {
+      "name": "Fake Tears",
+      "usage_pct": 37.1
+    }
+  ],
+  "items": [
+    {
+      "name": "Chimechite",
+      "usage_pct": 100.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Levitate",
+      "usage_pct": 100.0
+    }
+  ]
+}

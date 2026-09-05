@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 84.5
+    },
+    {
+      "name": "Heat Wave",
+      "usage_pct": 73.6
+    },
+    {
+      "name": "Overheat",
+      "usage_pct": 41.1
+    },
+    {
+      "name": "Will-O-Wisp",
+      "usage_pct": 30.2
+    },
+    {
+      "name": "Encore",
+      "usage_pct": 29.5
+    },
+    {
+      "name": "Helping Hand",
+      "usage_pct": 28.7
+    }
+  ],
+  "items": [
+    {
+      "name": "Charcoal",
+      "usage_pct": 30.2
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 20.2
+    },
+    {
+      "name": "Shuca Berry",
+      "usage_pct": 19.4
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 9.3
+    },
+    {
+      "name": "Passho Berry",
+      "usage_pct": 7.8
+    },
+    {
+      "name": "Bright Powder",
+      "usage_pct": 5.4
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Drought",
+      "usage_pct": 100.0
+    }
+  ]
+}

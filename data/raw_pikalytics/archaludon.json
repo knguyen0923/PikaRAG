@@ -1,0 +1,68 @@
+{
+  "moves": [
+    {
+      "name": "Electro Shot",
+      "usage_pct": 96.7
+    },
+    {
+      "name": "Flash Cannon",
+      "usage_pct": 95.2
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 94.3
+    },
+    {
+      "name": "Dragon Pulse",
+      "usage_pct": 73.5
+    },
+    {
+      "name": "Draco Meteor",
+      "usage_pct": 21.2
+    },
+    {
+      "name": "Aura Sphere",
+      "usage_pct": 12.7
+    }
+  ],
+  "items": [
+    {
+      "name": "Leftovers",
+      "usage_pct": 88.6
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 2.4
+    },
+    {
+      "name": "White Herb",
+      "usage_pct": 2.0
+    },
+    {
+      "name": "Chople Berry",
+      "usage_pct": 1.8
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 1.7
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 1.4
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Stamina",
+      "usage_pct": 93.4
+    },
+    {
+      "name": "Sturdy",
+      "usage_pct": 5.3
+    },
+    {
+      "name": "Stalwart",
+      "usage_pct": 1.3
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "moves": [
+    {
+      "name": "Body Press",
+      "usage_pct": 93.5
+    },
+    {
+      "name": "Shed Tail",
+      "usage_pct": 93.5
+    },
+    {
+      "name": "Heavy Slam",
+      "usage_pct": 77.6
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 72.0
+    },
+    {
+      "name": "Iron Head",
+      "usage_pct": 21.5
+    },
+    {
+      "name": "Iron Defense",
+      "usage_pct": 19.6
+    }
+  ],
+  "items": [
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 92.5
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 6.5
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 0.9
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Earth Eater",
+      "usage_pct": 100.0
+    }
+  ]
+}

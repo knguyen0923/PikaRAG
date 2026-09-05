@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 97.6
+    },
+    {
+      "name": "Flash Cannon",
+      "usage_pct": 94.0
+    },
+    {
+      "name": "Ice Beam",
+      "usage_pct": 53.0
+    },
+    {
+      "name": "Hydro Pump",
+      "usage_pct": 41.0
+    },
+    {
+      "name": "Surf",
+      "usage_pct": 39.8
+    },
+    {
+      "name": "Roar",
+      "usage_pct": 20.5
+    }
+  ],
+  "items": [
+    {
+      "name": "Leftovers",
+      "usage_pct": 39.8
+    },
+    {
+      "name": "Mystic Water",
+      "usage_pct": 27.7
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 15.7
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 9.6
+    },
+    {
+      "name": "Shuca Berry",
+      "usage_pct": 3.6
+    },
+    {
+      "name": "Chople Berry",
+      "usage_pct": 1.2
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Competitive",
+      "usage_pct": 100.0
+    }
+  ]
+}

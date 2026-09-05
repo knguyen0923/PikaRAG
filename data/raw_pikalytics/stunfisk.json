@@ -1,0 +1,32 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Sucker Punch",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Earth Power",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Thunderbolt",
+      "usage_pct": 100.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Expert Belt",
+      "usage_pct": 100.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Static",
+      "usage_pct": 100.0
+    }
+  ]
+}

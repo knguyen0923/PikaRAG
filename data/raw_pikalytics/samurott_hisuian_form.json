@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Sacred Sword",
+      "usage_pct": 75.1
+    },
+    {
+      "name": "Aqua Cutter",
+      "usage_pct": 70.3
+    },
+    {
+      "name": "Ceaseless Edge",
+      "usage_pct": 52.6
+    },
+    {
+      "name": "Night Slash",
+      "usage_pct": 49.8
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 48.8
+    },
+    {
+      "name": "Sucker Punch",
+      "usage_pct": 47.8
+    }
+  ],
+  "items": [
+    {
+      "name": "Focus Sash",
+      "usage_pct": 31.1
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 21.1
+    },
+    {
+      "name": "Black Glasses",
+      "usage_pct": 18.7
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 15.8
+    },
+    {
+      "name": "Scope Lens",
+      "usage_pct": 6.7
+    },
+    {
+      "name": "Muscle Band",
+      "usage_pct": 4.3
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Sharpness",
+      "usage_pct": 100.0
+    }
+  ]
+}

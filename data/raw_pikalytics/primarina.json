@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Hyper Voice",
+      "usage_pct": 97.1
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 89.5
+    },
+    {
+      "name": "Moonblast",
+      "usage_pct": 83.9
+    },
+    {
+      "name": "Calm Mind",
+      "usage_pct": 37.1
+    },
+    {
+      "name": "Ice Beam",
+      "usage_pct": 14.0
+    },
+    {
+      "name": "Dazzling Gleam",
+      "usage_pct": 10.1
+    }
+  ],
+  "items": [
+    {
+      "name": "Leftovers",
+      "usage_pct": 32.7
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 18.9
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 15.8
+    },
+    {
+      "name": "Mystic Water",
+      "usage_pct": 14.8
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 6.6
+    },
+    {
+      "name": "Quick Claw",
+      "usage_pct": 3.8
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Liquid Voice",
+      "usage_pct": 97.1
+    },
+    {
+      "name": "Torrent",
+      "usage_pct": 2.9
+    }
+  ]
+}

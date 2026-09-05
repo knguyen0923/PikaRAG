@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Flower Trick",
+      "usage_pct": 97.4
+    },
+    {
+      "name": "Triple Axel",
+      "usage_pct": 85.2
+    },
+    {
+      "name": "Knock Off",
+      "usage_pct": 63.0
+    },
+    {
+      "name": "Sucker Punch",
+      "usage_pct": 37.3
+    },
+    {
+      "name": "U-turn",
+      "usage_pct": 30.1
+    },
+    {
+      "name": "Play Rough",
+      "usage_pct": 24.1
+    }
+  ],
+  "items": [
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 52.6
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 24.6
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 13.9
+    },
+    {
+      "name": "Wide Lens",
+      "usage_pct": 3.0
+    },
+    {
+      "name": "Expert Belt",
+      "usage_pct": 2.8
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 0.7
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Protean",
+      "usage_pct": 83.6
+    },
+    {
+      "name": "Overgrow",
+      "usage_pct": 16.4
+    }
+  ]
+}

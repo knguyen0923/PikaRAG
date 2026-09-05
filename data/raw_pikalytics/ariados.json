@@ -1,0 +1,44 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Rage Powder",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Knock Off",
+      "usage_pct": 96.5
+    },
+    {
+      "name": "String Shot",
+      "usage_pct": 96.5
+    },
+    {
+      "name": "Struggle Bug",
+      "usage_pct": 3.5
+    },
+    {
+      "name": "Toxic Thread",
+      "usage_pct": 3.5
+    }
+  ],
+  "items": [
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 98.2
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 1.8
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Insomnia",
+      "usage_pct": 100.0
+    }
+  ]
+}

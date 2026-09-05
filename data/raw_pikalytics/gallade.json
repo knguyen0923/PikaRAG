@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Sacred Sword",
+      "usage_pct": 94.7
+    },
+    {
+      "name": "Psycho Cut",
+      "usage_pct": 87.3
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 65.5
+    },
+    {
+      "name": "Leaf Blade",
+      "usage_pct": 54.0
+    },
+    {
+      "name": "Trick Room",
+      "usage_pct": 27.1
+    },
+    {
+      "name": "Night Slash",
+      "usage_pct": 16.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Focus Sash",
+      "usage_pct": 31.8
+    },
+    {
+      "name": "Scope Lens",
+      "usage_pct": 13.8
+    },
+    {
+      "name": "Galladite",
+      "usage_pct": 10.5
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 10.1
+    },
+    {
+      "name": "Black Belt",
+      "usage_pct": 8.0
+    },
+    {
+      "name": "Lum Berry",
+      "usage_pct": 7.4
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Sharpness",
+      "usage_pct": 94.9
+    },
+    {
+      "name": "Justified",
+      "usage_pct": 5.1
+    }
+  ]
+}

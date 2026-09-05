@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Weather Ball",
+      "usage_pct": 89.9
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 86.8
+    },
+    {
+      "name": "Perish Song",
+      "usage_pct": 51.9
+    },
+    {
+      "name": "Ice Beam",
+      "usage_pct": 32.4
+    },
+    {
+      "name": "Muddy Water",
+      "usage_pct": 31.9
+    },
+    {
+      "name": "Hypnosis",
+      "usage_pct": 26.8
+    }
+  ],
+  "items": [
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 58.3
+    },
+    {
+      "name": "Damp Rock",
+      "usage_pct": 10.0
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 9.4
+    },
+    {
+      "name": "Mystic Water",
+      "usage_pct": 8.6
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 6.9
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 3.2
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Drizzle",
+      "usage_pct": 99.9
+    },
+    {
+      "name": "Damp",
+      "usage_pct": 0.1
+    }
+  ]
+}

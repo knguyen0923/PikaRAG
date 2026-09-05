@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Jet Punch",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Wave Crash",
+      "usage_pct": 91.8
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 74.7
+    },
+    {
+      "name": "Close Combat",
+      "usage_pct": 56.0
+    },
+    {
+      "name": "Flip Turn",
+      "usage_pct": 37.7
+    },
+    {
+      "name": "Bulk Up",
+      "usage_pct": 14.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Mystic Water",
+      "usage_pct": 65.0
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 16.7
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 7.4
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 5.1
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 4.7
+    },
+    {
+      "name": "Lum Berry",
+      "usage_pct": 0.8
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Zero to Hero",
+      "usage_pct": 100.0
+    }
+  ]
+}

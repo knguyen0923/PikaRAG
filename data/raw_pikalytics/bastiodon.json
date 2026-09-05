@@ -1,0 +1,48 @@
+{
+  "moves": [
+    {
+      "name": "Wide Guard",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Sandstorm",
+      "usage_pct": 90.5
+    },
+    {
+      "name": "Iron Defense",
+      "usage_pct": 90.5
+    },
+    {
+      "name": "Body Press",
+      "usage_pct": 90.5
+    },
+    {
+      "name": "Taunt",
+      "usage_pct": 9.5
+    },
+    {
+      "name": "Guard Split",
+      "usage_pct": 9.5
+    }
+  ],
+  "items": [
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 90.5
+    },
+    {
+      "name": "Bright Powder",
+      "usage_pct": 9.5
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Soundproof",
+      "usage_pct": 90.5
+    },
+    {
+      "name": "Sturdy",
+      "usage_pct": 9.5
+    }
+  ]
+}

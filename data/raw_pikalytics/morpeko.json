@@ -1,0 +1,44 @@
+{
+  "moves": [
+    {
+      "name": "Fake Out",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Aura Wheel",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 87.5
+    },
+    {
+      "name": "Parting Shot",
+      "usage_pct": 50.0
+    },
+    {
+      "name": "Seed Bomb",
+      "usage_pct": 37.5
+    },
+    {
+      "name": "Taunt",
+      "usage_pct": 12.5
+    }
+  ],
+  "items": [
+    {
+      "name": "Focus Sash",
+      "usage_pct": 87.5
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 12.5
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Hunger Switch",
+      "usage_pct": 100.0
+    }
+  ]
+}

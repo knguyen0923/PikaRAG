@@ -1,0 +1,48 @@
+{
+  "moves": [
+    {
+      "name": "Shell Side Arm",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Ice Beam",
+      "usage_pct": 69.0
+    },
+    {
+      "name": "Psychic",
+      "usage_pct": 69.0
+    },
+    {
+      "name": "Flamethrower",
+      "usage_pct": 42.9
+    },
+    {
+      "name": "Trick Room",
+      "usage_pct": 26.2
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 19.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Quick Claw",
+      "usage_pct": 95.2
+    },
+    {
+      "name": "Shuca Berry",
+      "usage_pct": 4.8
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Quick Draw",
+      "usage_pct": 97.6
+    },
+    {
+      "name": "Regenerator",
+      "usage_pct": 2.4
+    }
+  ]
+}

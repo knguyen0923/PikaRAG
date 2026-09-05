@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Superpower",
+      "usage_pct": 94.1
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 78.9
+    },
+    {
+      "name": "Knock Off",
+      "usage_pct": 72.7
+    },
+    {
+      "name": "Psycho Cut",
+      "usage_pct": 46.3
+    },
+    {
+      "name": "Trick Room",
+      "usage_pct": 22.1
+    },
+    {
+      "name": "Stored Power",
+      "usage_pct": 18.8
+    }
+  ],
+  "items": [
+    {
+      "name": "Malamarite",
+      "usage_pct": 78.9
+    },
+    {
+      "name": "Mental Herb",
+      "usage_pct": 5.9
+    },
+    {
+      "name": "Roseli Berry",
+      "usage_pct": 5.7
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 5.0
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 3.8
+    },
+    {
+      "name": "Colbur Berry",
+      "usage_pct": 0.5
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Contrary",
+      "usage_pct": 100.0
+    }
+  ]
+}

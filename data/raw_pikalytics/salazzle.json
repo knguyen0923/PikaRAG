@@ -1,0 +1,52 @@
+{
+  "moves": [
+    {
+      "name": "Fake Out",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Sludge Bomb",
+      "usage_pct": 88.5
+    },
+    {
+      "name": "Heat Wave",
+      "usage_pct": 65.4
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 61.5
+    },
+    {
+      "name": "Overheat",
+      "usage_pct": 26.9
+    },
+    {
+      "name": "Encore",
+      "usage_pct": 19.2
+    }
+  ],
+  "items": [
+    {
+      "name": "Focus Sash",
+      "usage_pct": 73.1
+    },
+    {
+      "name": "Expert Belt",
+      "usage_pct": 15.4
+    },
+    {
+      "name": "Passho Berry",
+      "usage_pct": 11.5
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Corrosion",
+      "usage_pct": 69.2
+    },
+    {
+      "name": "Oblivious",
+      "usage_pct": 30.8
+    }
+  ]
+}

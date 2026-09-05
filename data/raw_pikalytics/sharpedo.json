@@ -1,0 +1,44 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Crunch",
+      "usage_pct": 94.1
+    },
+    {
+      "name": "Psychic Fangs",
+      "usage_pct": 70.3
+    },
+    {
+      "name": "Destiny Bond",
+      "usage_pct": 32.7
+    },
+    {
+      "name": "Liquidation",
+      "usage_pct": 28.7
+    },
+    {
+      "name": "Rock Tomb",
+      "usage_pct": 22.8
+    }
+  ],
+  "items": [
+    {
+      "name": "Sharpedonite",
+      "usage_pct": 71.3
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 28.7
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Speed Boost",
+      "usage_pct": 100.0
+    }
+  ]
+}

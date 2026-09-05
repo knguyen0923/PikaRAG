@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Poltergeist",
+      "usage_pct": 82.0
+    },
+    {
+      "name": "King's Shield",
+      "usage_pct": 80.6
+    },
+    {
+      "name": "Shadow Sneak",
+      "usage_pct": 72.1
+    },
+    {
+      "name": "Iron Head",
+      "usage_pct": 56.0
+    },
+    {
+      "name": "Wide Guard",
+      "usage_pct": 36.8
+    },
+    {
+      "name": "Sacred Sword",
+      "usage_pct": 28.5
+    }
+  ],
+  "items": [
+    {
+      "name": "Spell Tag",
+      "usage_pct": 25.4
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 18.2
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 15.9
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 12.0
+    },
+    {
+      "name": "Expert Belt",
+      "usage_pct": 6.6
+    },
+    {
+      "name": "Lum Berry",
+      "usage_pct": 5.6
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Stance Change",
+      "usage_pct": 100.0
+    }
+  ]
+}

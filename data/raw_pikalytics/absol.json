@@ -1,0 +1,36 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Close Combat",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Sucker Punch",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Night Slash",
+      "usage_pct": 88.9
+    },
+    {
+      "name": "Swords Dance",
+      "usage_pct": 11.1
+    }
+  ],
+  "items": [
+    {
+      "name": "Scope Lens",
+      "usage_pct": 100.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Super Luck",
+      "usage_pct": 100.0
+    }
+  ]
+}

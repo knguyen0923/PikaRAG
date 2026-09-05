@@ -1,0 +1,32 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Weather Ball",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Ice Beam",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Thunder",
+      "usage_pct": 100.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Life Orb",
+      "usage_pct": 100.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Forecast",
+      "usage_pct": 100.0
+    }
+  ]
+}

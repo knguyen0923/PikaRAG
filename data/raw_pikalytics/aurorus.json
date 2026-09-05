@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Blizzard",
+      "usage_pct": 91.4
+    },
+    {
+      "name": "Freeze-Dry",
+      "usage_pct": 88.6
+    },
+    {
+      "name": "Ancient Power",
+      "usage_pct": 85.7
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 51.4
+    },
+    {
+      "name": "Substitute",
+      "usage_pct": 42.9
+    },
+    {
+      "name": "Earth Power",
+      "usage_pct": 11.4
+    }
+  ],
+  "items": [
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 45.7
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 40.0
+    },
+    {
+      "name": "Never-Melt Ice",
+      "usage_pct": 5.7
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 5.7
+    },
+    {
+      "name": "Chople Berry",
+      "usage_pct": 2.9
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Snow Warning",
+      "usage_pct": 91.4
+    },
+    {
+      "name": "Refrigerate",
+      "usage_pct": 8.6
+    }
+  ]
+}

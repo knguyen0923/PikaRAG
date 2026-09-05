@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Ice Shard",
+      "usage_pct": 85.5
+    },
+    {
+      "name": "Icicle Crash",
+      "usage_pct": 75.8
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 66.6
+    },
+    {
+      "name": "High Horsepower",
+      "usage_pct": 63.7
+    },
+    {
+      "name": "Earthquake",
+      "usage_pct": 39.8
+    },
+    {
+      "name": "Rock Slide",
+      "usage_pct": 18.5
+    }
+  ],
+  "items": [
+    {
+      "name": "Focus Sash",
+      "usage_pct": 39.3
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 27.3
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 15.6
+    },
+    {
+      "name": "Expert Belt",
+      "usage_pct": 7.1
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 4.7
+    },
+    {
+      "name": "Never-Melt Ice",
+      "usage_pct": 2.6
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Oblivious",
+      "usage_pct": 77.5
+    },
+    {
+      "name": "Thick Fat",
+      "usage_pct": 22.5
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "moves": [
+    {
+      "name": "Clanging Scales",
+      "usage_pct": 95.7
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 94.9
+    },
+    {
+      "name": "Clangorous Soul",
+      "usage_pct": 83.2
+    },
+    {
+      "name": "Aura Sphere",
+      "usage_pct": 79.2
+    },
+    {
+      "name": "Drain Punch",
+      "usage_pct": 9.8
+    },
+    {
+      "name": "Flash Cannon",
+      "usage_pct": 7.4
+    }
+  ],
+  "items": [
+    {
+      "name": "Leftovers",
+      "usage_pct": 71.2
+    },
+    {
+      "name": "Dragon Fang",
+      "usage_pct": 14.1
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 6.9
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 2.4
+    },
+    {
+      "name": "Payapa Berry",
+      "usage_pct": 2.2
+    },
+    {
+      "name": "Haban Berry",
+      "usage_pct": 1.5
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Soundproof",
+      "usage_pct": 80.6
+    },
+    {
+      "name": "Overcoat",
+      "usage_pct": 14.9
+    },
+    {
+      "name": "Bulletproof",
+      "usage_pct": 4.5
+    }
+  ]
+}

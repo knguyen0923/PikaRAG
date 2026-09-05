@@ -1,0 +1,56 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 98.0
+    },
+    {
+      "name": "Leaf Blade",
+      "usage_pct": 97.3
+    },
+    {
+      "name": "Triple Arrows",
+      "usage_pct": 96.0
+    },
+    {
+      "name": "Sucker Punch",
+      "usage_pct": 53.0
+    },
+    {
+      "name": "Shadow Sneak",
+      "usage_pct": 27.5
+    },
+    {
+      "name": "Coaching",
+      "usage_pct": 6.7
+    }
+  ],
+  "items": [
+    {
+      "name": "Scope Lens",
+      "usage_pct": 89.3
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 4.7
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 3.4
+    },
+    {
+      "name": "White Herb",
+      "usage_pct": 1.3
+    },
+    {
+      "name": "Muscle Band",
+      "usage_pct": 1.3
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Scrappy",
+      "usage_pct": 100.0
+    }
+  ]
+}

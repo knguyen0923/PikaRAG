@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Parabolic Charge",
+      "usage_pct": 96.1
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 79.2
+    },
+    {
+      "name": "Thunderbolt",
+      "usage_pct": 71.4
+    },
+    {
+      "name": "Soak",
+      "usage_pct": 39.0
+    },
+    {
+      "name": "Slack Off",
+      "usage_pct": 31.2
+    },
+    {
+      "name": "Volt Switch",
+      "usage_pct": 15.6
+    }
+  ],
+  "items": [
+    {
+      "name": "Magnet",
+      "usage_pct": 45.5
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 15.6
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 14.3
+    },
+    {
+      "name": "Shuca Berry",
+      "usage_pct": 11.7
+    },
+    {
+      "name": "Big Root",
+      "usage_pct": 6.5
+    },
+    {
+      "name": "Quick Claw",
+      "usage_pct": 3.9
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Electromorphosis",
+      "usage_pct": 100.0
+    }
+  ]
+}

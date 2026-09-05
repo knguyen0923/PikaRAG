@@ -1,0 +1,68 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 82.2
+    },
+    {
+      "name": "Rock Slide",
+      "usage_pct": 76.3
+    },
+    {
+      "name": "Earthquake",
+      "usage_pct": 63.2
+    },
+    {
+      "name": "High Horsepower",
+      "usage_pct": 46.7
+    },
+    {
+      "name": "Ice Punch",
+      "usage_pct": 46.7
+    },
+    {
+      "name": "Heat Crash",
+      "usage_pct": 19.7
+    }
+  ],
+  "items": [
+    {
+      "name": "Life Orb",
+      "usage_pct": 19.7
+    },
+    {
+      "name": "Quick Claw",
+      "usage_pct": 16.4
+    },
+    {
+      "name": "Metronome",
+      "usage_pct": 14.5
+    },
+    {
+      "name": "Expert Belt",
+      "usage_pct": 13.2
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 9.9
+    },
+    {
+      "name": "Passho Berry",
+      "usage_pct": 8.6
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Lightning Rod",
+      "usage_pct": 52.6
+    },
+    {
+      "name": "Solid Rock",
+      "usage_pct": 46.7
+    },
+    {
+      "name": "Reckless",
+      "usage_pct": 0.7
+    }
+  ]
+}

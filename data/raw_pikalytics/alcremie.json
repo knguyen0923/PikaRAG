@@ -1,0 +1,52 @@
+{
+  "moves": [
+    {
+      "name": "Decorate",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Dazzling Gleam",
+      "usage_pct": 94.6
+    },
+    {
+      "name": "Psychic",
+      "usage_pct": 51.4
+    },
+    {
+      "name": "Energy Ball",
+      "usage_pct": 45.9
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 32.4
+    },
+    {
+      "name": "Helping Hand",
+      "usage_pct": 18.9
+    }
+  ],
+  "items": [
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 59.5
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 35.1
+    },
+    {
+      "name": "Bright Powder",
+      "usage_pct": 5.4
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Aroma Veil",
+      "usage_pct": 94.6
+    },
+    {
+      "name": "Sweet Veil",
+      "usage_pct": 5.4
+    }
+  ]
+}

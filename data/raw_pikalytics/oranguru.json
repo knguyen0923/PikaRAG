@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Trick Room",
+      "usage_pct": 96.9
+    },
+    {
+      "name": "Instruct",
+      "usage_pct": 88.4
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 47.0
+    },
+    {
+      "name": "Psychic",
+      "usage_pct": 39.2
+    },
+    {
+      "name": "Encore",
+      "usage_pct": 28.2
+    },
+    {
+      "name": "Psychic Terrain",
+      "usage_pct": 22.3
+    }
+  ],
+  "items": [
+    {
+      "name": "Mental Herb",
+      "usage_pct": 56.7
+    },
+    {
+      "name": "Colbur Berry",
+      "usage_pct": 28.2
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 9.1
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 3.1
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 1.6
+    },
+    {
+      "name": "Twisted Spoon",
+      "usage_pct": 1.3
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Inner Focus",
+      "usage_pct": 69.6
+    },
+    {
+      "name": "Telepathy",
+      "usage_pct": 30.4
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Light Screen",
+      "usage_pct": 83.7
+    },
+    {
+      "name": "Reflect",
+      "usage_pct": 83.7
+    },
+    {
+      "name": "Rain Dance",
+      "usage_pct": 82.9
+    },
+    {
+      "name": "Foul Play",
+      "usage_pct": 37.4
+    },
+    {
+      "name": "Dazzling Gleam",
+      "usage_pct": 35.8
+    },
+    {
+      "name": "Thunder Wave",
+      "usage_pct": 23.6
+    }
+  ],
+  "items": [
+    {
+      "name": "Light Clay",
+      "usage_pct": 70.7
+    },
+    {
+      "name": "Mental Herb",
+      "usage_pct": 13.8
+    },
+    {
+      "name": "Wide Lens",
+      "usage_pct": 11.4
+    },
+    {
+      "name": "Bright Powder",
+      "usage_pct": 1.6
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 0.8
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 0.8
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Prankster",
+      "usage_pct": 100.0
+    }
+  ]
+}

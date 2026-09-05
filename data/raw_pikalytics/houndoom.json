@@ -1,0 +1,44 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Heat Wave",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Dark Pulse",
+      "usage_pct": 82.4
+    },
+    {
+      "name": "Sludge Bomb",
+      "usage_pct": 76.5
+    },
+    {
+      "name": "Sucker Punch",
+      "usage_pct": 17.6
+    },
+    {
+      "name": "Snarl",
+      "usage_pct": 17.6
+    }
+  ],
+  "items": [
+    {
+      "name": "Houndoominite",
+      "usage_pct": 82.4
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 17.6
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Flash Fire",
+      "usage_pct": 100.0
+    }
+  ]
+}

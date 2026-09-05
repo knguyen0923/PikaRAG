@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Moonblast",
+      "usage_pct": 94.3
+    },
+    {
+      "name": "Follow Me",
+      "usage_pct": 92.1
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 74.2
+    },
+    {
+      "name": "Helping Hand",
+      "usage_pct": 29.5
+    },
+    {
+      "name": "Life Dew",
+      "usage_pct": 22.4
+    },
+    {
+      "name": "Icy Wind",
+      "usage_pct": 9.6
+    }
+  ],
+  "items": [
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 33.7
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 21.6
+    },
+    {
+      "name": "Clefablite",
+      "usage_pct": 20.6
+    },
+    {
+      "name": "Fairy Feather",
+      "usage_pct": 8.8
+    },
+    {
+      "name": "Babiri Berry",
+      "usage_pct": 4.7
+    },
+    {
+      "name": "Lum Berry",
+      "usage_pct": 3.9
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Unaware",
+      "usage_pct": 92.9
+    },
+    {
+      "name": "Magic Guard",
+      "usage_pct": 7.1
+    }
+  ]
+}

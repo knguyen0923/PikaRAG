@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Hyper Voice",
+      "usage_pct": 93.2
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 84.7
+    },
+    {
+      "name": "Earth Power",
+      "usage_pct": 60.2
+    },
+    {
+      "name": "Calm Mind",
+      "usage_pct": 47.5
+    },
+    {
+      "name": "Draco Meteor",
+      "usage_pct": 28.8
+    },
+    {
+      "name": "Dragon Pulse",
+      "usage_pct": 25.4
+    }
+  ],
+  "items": [
+    {
+      "name": "Drampanite",
+      "usage_pct": 80.5
+    },
+    {
+      "name": "Silk Scarf",
+      "usage_pct": 5.1
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 5.1
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 4.2
+    },
+    {
+      "name": "Wise Glasses",
+      "usage_pct": 1.7
+    },
+    {
+      "name": "White Herb",
+      "usage_pct": 0.8
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Cloud Nine",
+      "usage_pct": 81.4
+    },
+    {
+      "name": "Berserk",
+      "usage_pct": 18.6
+    }
+  ]
+}

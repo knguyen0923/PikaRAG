@@ -1,0 +1,44 @@
+{
+  "moves": [
+    {
+      "name": "Iron Head",
+      "usage_pct": 95.1
+    },
+    {
+      "name": "Brave Bird",
+      "usage_pct": 88.5
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 78.7
+    },
+    {
+      "name": "Swords Dance",
+      "usage_pct": 47.5
+    },
+    {
+      "name": "Rock Slide",
+      "usage_pct": 26.2
+    },
+    {
+      "name": "Rock Tomb",
+      "usage_pct": 19.7
+    }
+  ],
+  "items": [
+    {
+      "name": "Skarmorite",
+      "usage_pct": 100.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Sturdy",
+      "usage_pct": 91.8
+    },
+    {
+      "name": "Weak Armor",
+      "usage_pct": 8.2
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 92.5
+    },
+    {
+      "name": "Will-O-Wisp",
+      "usage_pct": 85.8
+    },
+    {
+      "name": "Flare Blitz",
+      "usage_pct": 60.0
+    },
+    {
+      "name": "Snarl",
+      "usage_pct": 53.3
+    },
+    {
+      "name": "Heat Wave",
+      "usage_pct": 36.7
+    },
+    {
+      "name": "Extreme Speed",
+      "usage_pct": 20.8
+    }
+  ],
+  "items": [
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 46.7
+    },
+    {
+      "name": "Charcoal",
+      "usage_pct": 36.7
+    },
+    {
+      "name": "Wide Lens",
+      "usage_pct": 5.8
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 3.3
+    },
+    {
+      "name": "White Herb",
+      "usage_pct": 1.7
+    },
+    {
+      "name": "Lum Berry",
+      "usage_pct": 0.8
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Intimidate",
+      "usage_pct": 89.2
+    },
+    {
+      "name": "Flash Fire",
+      "usage_pct": 10.8
+    }
+  ]
+}

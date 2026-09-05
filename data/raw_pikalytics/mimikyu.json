@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Play Rough",
+      "usage_pct": 88.8
+    },
+    {
+      "name": "Shadow Sneak",
+      "usage_pct": 81.3
+    },
+    {
+      "name": "Trick Room",
+      "usage_pct": 54.4
+    },
+    {
+      "name": "Shadow Claw",
+      "usage_pct": 42.5
+    },
+    {
+      "name": "Swords Dance",
+      "usage_pct": 30.0
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 26.9
+    }
+  ],
+  "items": [
+    {
+      "name": "Life Orb",
+      "usage_pct": 49.4
+    },
+    {
+      "name": "Mental Herb",
+      "usage_pct": 22.5
+    },
+    {
+      "name": "Spell Tag",
+      "usage_pct": 14.4
+    },
+    {
+      "name": "Lum Berry",
+      "usage_pct": 5.0
+    },
+    {
+      "name": "Quick Claw",
+      "usage_pct": 3.1
+    },
+    {
+      "name": "White Herb",
+      "usage_pct": 1.9
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Disguise",
+      "usage_pct": 100.0
+    }
+  ]
+}

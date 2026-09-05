@@ -1,0 +1,68 @@
+{
+  "moves": [
+    {
+      "name": "Follow Me",
+      "usage_pct": 95.4
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 89.4
+    },
+    {
+      "name": "Super Fang",
+      "usage_pct": 40.2
+    },
+    {
+      "name": "Population Bomb",
+      "usage_pct": 31.5
+    },
+    {
+      "name": "Beat Up",
+      "usage_pct": 31.0
+    },
+    {
+      "name": "Encore",
+      "usage_pct": 24.2
+    }
+  ],
+  "items": [
+    {
+      "name": "Chople Berry",
+      "usage_pct": 38.7
+    },
+    {
+      "name": "Wide Lens",
+      "usage_pct": 29.4
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 24.2
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 6.0
+    },
+    {
+      "name": "Mental Herb",
+      "usage_pct": 0.6
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 0.4
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Friend Guard",
+      "usage_pct": 73.2
+    },
+    {
+      "name": "Technician",
+      "usage_pct": 26.3
+    },
+    {
+      "name": "Cheek Pouch",
+      "usage_pct": 0.5
+    }
+  ]
+}

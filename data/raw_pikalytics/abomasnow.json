@@ -1,0 +1,44 @@
+{
+  "moves": [
+    {
+      "name": "Blizzard",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 88.6
+    },
+    {
+      "name": "Energy Ball",
+      "usage_pct": 82.9
+    },
+    {
+      "name": "Ice Shard",
+      "usage_pct": 51.4
+    },
+    {
+      "name": "Earth Power",
+      "usage_pct": 34.3
+    },
+    {
+      "name": "Aurora Veil",
+      "usage_pct": 22.9
+    }
+  ],
+  "items": [
+    {
+      "name": "Abomasite",
+      "usage_pct": 97.1
+    },
+    {
+      "name": "Light Clay",
+      "usage_pct": 2.9
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Snow Warning",
+      "usage_pct": 100.0
+    }
+  ]
+}

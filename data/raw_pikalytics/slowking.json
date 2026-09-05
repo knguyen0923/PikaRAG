@@ -1,0 +1,48 @@
+{
+  "moves": [
+    {
+      "name": "Chilly Reception",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 50.0
+    },
+    {
+      "name": "Yawn",
+      "usage_pct": 50.0
+    },
+    {
+      "name": "Trick Room",
+      "usage_pct": 50.0
+    },
+    {
+      "name": "Scald",
+      "usage_pct": 50.0
+    },
+    {
+      "name": "Skill Swap",
+      "usage_pct": 25.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Colbur Berry",
+      "usage_pct": 50.0
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 50.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Oblivious",
+      "usage_pct": 50.0
+    },
+    {
+      "name": "Regenerator",
+      "usage_pct": 50.0
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Sucker Punch",
+      "usage_pct": 99.5
+    },
+    {
+      "name": "Kowtow Cleave",
+      "usage_pct": 97.9
+    },
+    {
+      "name": "Iron Head",
+      "usage_pct": 73.5
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 68.6
+    },
+    {
+      "name": "Low Kick",
+      "usage_pct": 43.7
+    },
+    {
+      "name": "Swords Dance",
+      "usage_pct": 15.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Chople Berry",
+      "usage_pct": 42.9
+    },
+    {
+      "name": "Black Glasses",
+      "usage_pct": 31.8
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 12.8
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 5.7
+    },
+    {
+      "name": "Occa Berry",
+      "usage_pct": 4.8
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 0.4
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Defiant",
+      "usage_pct": 96.1
+    },
+    {
+      "name": "Supreme Overlord",
+      "usage_pct": 3.9
+    }
+  ]
+}

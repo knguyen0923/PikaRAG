@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Close Combat",
+      "usage_pct": 98.2
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 90.2
+    },
+    {
+      "name": "Brave Bird",
+      "usage_pct": 81.2
+    },
+    {
+      "name": "Roost",
+      "usage_pct": 71.5
+    },
+    {
+      "name": "Dual Wingbeat",
+      "usage_pct": 19.4
+    },
+    {
+      "name": "Tailwind",
+      "usage_pct": 11.4
+    }
+  ],
+  "items": [
+    {
+      "name": "Staraptite",
+      "usage_pct": 94.5
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 5.4
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 0.1
+    },
+    {
+      "name": "Skarmorite",
+      "usage_pct": 0.0
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 0.0
+    },
+    {
+      "name": "White Herb",
+      "usage_pct": 0.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Intimidate",
+      "usage_pct": 97.1
+    },
+    {
+      "name": "Reckless",
+      "usage_pct": 2.9
+    }
+  ]
+}

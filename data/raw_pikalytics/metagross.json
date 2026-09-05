@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 89.8
+    },
+    {
+      "name": "Psychic Fangs",
+      "usage_pct": 86.7
+    },
+    {
+      "name": "Iron Head",
+      "usage_pct": 58.7
+    },
+    {
+      "name": "Bullet Punch",
+      "usage_pct": 38.5
+    },
+    {
+      "name": "Stomping Tantrum",
+      "usage_pct": 31.8
+    },
+    {
+      "name": "Meteor Mash",
+      "usage_pct": 28.8
+    }
+  ],
+  "items": [
+    {
+      "name": "Metagrossite",
+      "usage_pct": 94.5
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 2.3
+    },
+    {
+      "name": "Metal Coat",
+      "usage_pct": 0.8
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 0.5
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 0.4
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 0.4
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Clear Body",
+      "usage_pct": 99.5
+    },
+    {
+      "name": "Light Metal",
+      "usage_pct": 0.5
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "moves": [
+    {
+      "name": "Tailwind",
+      "usage_pct": 98.5
+    },
+    {
+      "name": "Moonblast",
+      "usage_pct": 92.0
+    },
+    {
+      "name": "Encore",
+      "usage_pct": 74.1
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 56.5
+    },
+    {
+      "name": "Charm",
+      "usage_pct": 28.0
+    },
+    {
+      "name": "Sunny Day",
+      "usage_pct": 11.9
+    }
+  ],
+  "items": [
+    {
+      "name": "Focus Sash",
+      "usage_pct": 75.5
+    },
+    {
+      "name": "Fairy Feather",
+      "usage_pct": 11.4
+    },
+    {
+      "name": "Mental Herb",
+      "usage_pct": 3.6
+    },
+    {
+      "name": "Coba Berry",
+      "usage_pct": 2.7
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 1.9
+    },
+    {
+      "name": "Occa Berry",
+      "usage_pct": 1.4
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Prankster",
+      "usage_pct": 99.4
+    },
+    {
+      "name": "Chlorophyll",
+      "usage_pct": 0.5
+    },
+    {
+      "name": "Infiltrator",
+      "usage_pct": 0.0
+    }
+  ]
+}

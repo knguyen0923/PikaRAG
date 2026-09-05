@@ -1,0 +1,60 @@
+{
+  "moves": [
+    {
+      "name": "Torch Song",
+      "usage_pct": 98.8
+    },
+    {
+      "name": "Shadow Ball",
+      "usage_pct": 87.1
+    },
+    {
+      "name": "Slack Off",
+      "usage_pct": 74.9
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 66.7
+    },
+    {
+      "name": "Will-O-Wisp",
+      "usage_pct": 32.7
+    },
+    {
+      "name": "Yawn",
+      "usage_pct": 8.8
+    }
+  ],
+  "items": [
+    {
+      "name": "Leftovers",
+      "usage_pct": 64.9
+    },
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 24.6
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 8.2
+    },
+    {
+      "name": "Shuca Berry",
+      "usage_pct": 1.2
+    },
+    {
+      "name": "Kasib Berry",
+      "usage_pct": 1.2
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Unaware",
+      "usage_pct": 99.4
+    },
+    {
+      "name": "Blaze",
+      "usage_pct": 0.6
+    }
+  ]
+}

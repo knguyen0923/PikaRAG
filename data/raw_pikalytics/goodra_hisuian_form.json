@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Body Press",
+      "usage_pct": 63.6
+    },
+    {
+      "name": "Shelter",
+      "usage_pct": 63.6
+    },
+    {
+      "name": "Flash Cannon",
+      "usage_pct": 53.3
+    },
+    {
+      "name": "Protect",
+      "usage_pct": 47.7
+    },
+    {
+      "name": "Heavy Slam",
+      "usage_pct": 42.1
+    },
+    {
+      "name": "Breaking Swipe",
+      "usage_pct": 27.1
+    }
+  ],
+  "items": [
+    {
+      "name": "Leftovers",
+      "usage_pct": 63.6
+    },
+    {
+      "name": "Expert Belt",
+      "usage_pct": 20.6
+    },
+    {
+      "name": "Scope Lens",
+      "usage_pct": 10.3
+    },
+    {
+      "name": "Lum Berry",
+      "usage_pct": 2.8
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 2.8
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Sap Sipper",
+      "usage_pct": 35.5
+    },
+    {
+      "name": "Shell Armor",
+      "usage_pct": 32.7
+    },
+    {
+      "name": "Gooey",
+      "usage_pct": 31.8
+    }
+  ]
+}

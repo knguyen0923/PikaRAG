@@ -1,0 +1,32 @@
+{
+  "moves": [
+    {
+      "name": "Brick Break",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Close Combat",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Poison Jab",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Darkest Lariat",
+      "usage_pct": 100.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Expert Belt",
+      "usage_pct": 100.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Scrappy",
+      "usage_pct": 100.0
+    }
+  ]
+}

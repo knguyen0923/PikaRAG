@@ -1,0 +1,68 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 60.5
+    },
+    {
+      "name": "Draco Meteor",
+      "usage_pct": 40.1
+    },
+    {
+      "name": "Dragon Darts",
+      "usage_pct": 38.3
+    },
+    {
+      "name": "Will-O-Wisp",
+      "usage_pct": 36.5
+    },
+    {
+      "name": "Phantom Force",
+      "usage_pct": 32.3
+    },
+    {
+      "name": "Psychic Fangs",
+      "usage_pct": 31.7
+    }
+  ],
+  "items": [
+    {
+      "name": "Life Orb",
+      "usage_pct": 41.3
+    },
+    {
+      "name": "Focus Sash",
+      "usage_pct": 34.7
+    },
+    {
+      "name": "Light Clay",
+      "usage_pct": 7.2
+    },
+    {
+      "name": "Spell Tag",
+      "usage_pct": 6.6
+    },
+    {
+      "name": "Colbur Berry",
+      "usage_pct": 4.2
+    },
+    {
+      "name": "Bright Powder",
+      "usage_pct": 1.8
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Clear Body",
+      "usage_pct": 73.7
+    },
+    {
+      "name": "Infiltrator",
+      "usage_pct": 18.0
+    },
+    {
+      "name": "Cursed Body",
+      "usage_pct": 8.4
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "moves": [
+    {
+      "name": "Haze",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Taunt",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Flip Turn",
+      "usage_pct": 100.0
+    },
+    {
+      "name": "Toxic",
+      "usage_pct": 100.0
+    }
+  ],
+  "items": [
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 100.0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Intimidate",
+      "usage_pct": 100.0
+    }
+  ]
+}

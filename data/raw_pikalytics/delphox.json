@@ -1,0 +1,52 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 98.6
+    },
+    {
+      "name": "Heat Wave",
+      "usage_pct": 98.6
+    },
+    {
+      "name": "Nasty Plot",
+      "usage_pct": 74.0
+    },
+    {
+      "name": "Psychic",
+      "usage_pct": 52.5
+    },
+    {
+      "name": "Psyshock",
+      "usage_pct": 46.1
+    },
+    {
+      "name": "Encore",
+      "usage_pct": 12.5
+    }
+  ],
+  "items": [
+    {
+      "name": "Delphoxite",
+      "usage_pct": 99.9
+    },
+    {
+      "name": "Pyroarite",
+      "usage_pct": 0.1
+    },
+    {
+      "name": "Choice Scarf",
+      "usage_pct": 0.1
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Blaze",
+      "usage_pct": 93.2
+    },
+    {
+      "name": "Magician",
+      "usage_pct": 6.8
+    }
+  ]
+}

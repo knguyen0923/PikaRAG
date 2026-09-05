@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 67.6
+    },
+    {
+      "name": "Dragon Pulse",
+      "usage_pct": 46.6
+    },
+    {
+      "name": "Hurricane",
+      "usage_pct": 45.5
+    },
+    {
+      "name": "Extreme Speed",
+      "usage_pct": 39.1
+    },
+    {
+      "name": "Tailwind",
+      "usage_pct": 36.5
+    },
+    {
+      "name": "Draco Meteor",
+      "usage_pct": 27.3
+    }
+  ],
+  "items": [
+    {
+      "name": "Dragoninite",
+      "usage_pct": 67.7
+    },
+    {
+      "name": "Dragon Fang",
+      "usage_pct": 13.6
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 4.7
+    },
+    {
+      "name": "Leftovers",
+      "usage_pct": 2.3
+    },
+    {
+      "name": "Expert Belt",
+      "usage_pct": 1.9
+    },
+    {
+      "name": "Muscle Band",
+      "usage_pct": 1.8
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Multiscale",
+      "usage_pct": 72.8
+    },
+    {
+      "name": "Inner Focus",
+      "usage_pct": 27.2
+    }
+  ]
+}
