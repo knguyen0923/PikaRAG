@@ -1,4 +1,5 @@
 import json
+import sys
 from pathlib import Path
 
 from pipeline.build_records import find_legal_pokemon_file
@@ -37,3 +38,20 @@ if __name__ == "__main__":
         print(f"\nFAILED to fetch usage for {len(summary['failed'])} Pokemon:")
         for name in summary["failed"]:
             print(f"  - {name}")
+
+    # Mirror refresh_job.py's coverage guard: a scheduled run that silently
+    # writes a degenerate result is worse than one that fails loudly. Real
+    # HTTP/network failures are an unambiguous problem. Zero species with
+    # any usage data despite processing a full legal list is *also* a
+    # failure signature (most likely a stale PIKALYTICS_FORMAT_CODE making
+    # every page 404, which looks identical to "no usage data" per-species)
+    # rather than a legitimate reg where nothing gets played.
+    stale_format_code = summary["species_with_data"] == 0 and not summary["failed"]
+    if stale_format_code:
+        print(
+            "\nERROR: every species came back with no usage data and nothing "
+            "outright failed -- this looks like a stale PIKALYTICS_FORMAT_CODE "
+            "rather than a real 0%-usage regulation."
+        )
+    if summary["failed"] or stale_format_code:
+        sys.exit(1)

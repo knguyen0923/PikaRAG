@@ -1,4 +1,4 @@
-from bot.pokemon_lookup import find_record, not_found_message
+from bot.pokemon_lookup import find_record, not_found_message, usage_for_record
 
 
 def stats_response(records: list, name: str, usage: dict = None) -> str:
@@ -16,7 +16,7 @@ def stats_response(records: list, name: str, usage: dict = None) -> str:
         f"Abilities: {abilities}."
     )
 
-    species_usage = (usage or {}).get(record["name"])
+    species_usage = usage_for_record(usage, record)
     if species_usage:
         build_parts = []
         if species_usage.get("items"):

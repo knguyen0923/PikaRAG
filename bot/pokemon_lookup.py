@@ -21,3 +21,12 @@ def not_found_message(records: list, name: str) -> str:
     if suggestions:
         return f"No Pokemon found matching '{name}'. Did you mean: {', '.join(suggestions)}?"
     return f"No Pokemon found matching '{name}'."
+
+
+def usage_for_record(usage: dict, record: dict):
+    """Look up one resolved record's Pikalytics usage entry, if any.
+
+    `usage` may be None (no usage data loaded at all); shared here so
+    /stats and /moves don't each re-derive the same None-safe lookup.
+    """
+    return (usage or {}).get(record["name"])
