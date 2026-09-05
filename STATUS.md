@@ -5,8 +5,8 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-05, at commit `8b6dc17` (main, clean working tree).
-<!-- STATUS_COMMIT: 8b6dc17 -->
+**Last updated:** 2026-09-05, at commit `234ccaf` (main, clean working tree).
+<!-- STATUS_COMMIT: 234ccaf -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
