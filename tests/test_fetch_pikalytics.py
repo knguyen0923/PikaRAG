@@ -10,6 +10,7 @@ from pipeline.fetch_pikalytics import (
     fetch_pikalytics_usage,
     fetch_all_usage,
     PikalyticsFetchError,
+    PIKALYTICS_FORMAT_CODE,
 )
 
 
@@ -31,6 +32,14 @@ def test_resolve_mega():
 
 def test_resolve_mega_x_y():
     assert resolve_pikalytics_slug("Mega Charizard X") == "Charizard-Mega-X"
+
+
+def test_resolve_strips_breed_suffix():
+    assert resolve_pikalytics_slug("Tauros [Paldean Form (Aqua Breed)]") == "Tauros-Paldea-Aqua"
+
+
+def test_resolve_abbreviates_female_suffix():
+    assert resolve_pikalytics_slug("Meowstic [Female]") == "Meowstic-F"
 
 
 _SAMPLE_MARKDOWN = """\
@@ -146,7 +155,7 @@ def test_fetch_pikalytics_usage_parses_a_successful_response():
 
     assert result["moves"][0]["name"] == "Dragon Claw"
     session.get.assert_called_once_with(
-        "https://www.pikalytics.com/ai/pokedex/battledataregmbs3/Garchomp"
+        "https://www.pikalytics.com/ai/pokedex/battledataregmbs3/Garchomp", timeout=(5, 10)
     )
 
 
@@ -154,6 +163,26 @@ def test_fetch_pikalytics_usage_returns_none_on_404():
     session = _mock_session(404, text="Pokemon not found")
 
     result = fetch_pikalytics_usage("Nonexistamon", session=session)
+
+    assert result is None
+
+
+_ALL_UNDEFINED_MARKDOWN = """\
+## Common Moves
+- **Overheat**: undefined%
+
+## Common Abilities
+- **Blaze**: undefined%
+
+## Common Items
+- **Life Orb**: undefined%
+"""
+
+
+def test_fetch_pikalytics_usage_returns_none_for_an_all_empty_page():
+    session = _mock_session(200, text=_ALL_UNDEFINED_MARKDOWN)
+
+    result = fetch_pikalytics_usage("Abomasnow-Mega", session=session)
 
     assert result is None
 
@@ -182,11 +211,12 @@ def test_fetch_all_usage_writes_cache_and_builds_usage_dict(tmp_path):
     assert result["cached"] == 0
     assert result["failed"] == []
     assert result["usage_by_species"]["Garchomp"]["moves"][0]["name"] == "Dragon Claw"
-    assert (tmp_path / simple_cache_filename("Garchomp")).exists()
+    assert (tmp_path / PIKALYTICS_FORMAT_CODE / simple_cache_filename("Garchomp")).exists()
 
 
 def test_fetch_all_usage_skips_already_cached_files(tmp_path):
-    cache_file = tmp_path / simple_cache_filename("Garchomp")
+    cache_file = tmp_path / PIKALYTICS_FORMAT_CODE / simple_cache_filename("Garchomp")
+    cache_file.parent.mkdir(parents=True, exist_ok=True)
     cache_file.write_text(json.dumps({"moves": [], "items": [], "abilities": []}))
     session = _mock_session(200, text=_SAMPLE_MARKDOWN)
 
@@ -205,13 +235,14 @@ def test_fetch_all_usage_caches_none_for_a_species_with_no_data(tmp_path):
 
     assert result["fetched"] == 1
     assert "Nonexistamon" not in result["usage_by_species"]
-    cache_file = tmp_path / simple_cache_filename("Nonexistamon")
+    cache_file = tmp_path / PIKALYTICS_FORMAT_CODE / simple_cache_filename("Nonexistamon")
     assert cache_file.exists()
     assert json.loads(cache_file.read_text()) is None
 
 
 def test_fetch_all_usage_does_not_refetch_a_cached_none(tmp_path):
-    cache_file = tmp_path / simple_cache_filename("Nonexistamon")
+    cache_file = tmp_path / PIKALYTICS_FORMAT_CODE / simple_cache_filename("Nonexistamon")
+    cache_file.parent.mkdir(parents=True, exist_ok=True)
     cache_file.write_text("null")
     session = _mock_session(200, text=_SAMPLE_MARKDOWN)
 
