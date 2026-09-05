@@ -1,0 +1,64 @@
+{
+  "moves": [
+    {
+      "name": "Protect",
+      "usage_pct": 98.2
+    },
+    {
+      "name": "Aqua Jet",
+      "usage_pct": 92.9
+    },
+    {
+      "name": "Close Combat",
+      "usage_pct": 75.0
+    },
+    {
+      "name": "Wave Crash",
+      "usage_pct": 54.5
+    },
+    {
+      "name": "Raging Bull",
+      "usage_pct": 30.4
+    },
+    {
+      "name": "Rock Slide",
+      "usage_pct": 24.1
+    }
+  ],
+  "items": [
+    {
+      "name": "Sitrus Berry",
+      "usage_pct": 26.8
+    },
+    {
+      "name": "Life Orb",
+      "usage_pct": 21.4
+    },
+    {
+      "name": "Mystic Water",
+      "usage_pct": 17.9
+    },
+    {
+      "name": "White Herb",
+      "usage_pct": 13.4
+    },
+    {
+      "name": "Soft Sand",
+      "usage_pct": 10.7
+    },
+    {
+      "name": "Wide Lens",
+      "usage_pct": 6.3
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Intimidate",
+      "usage_pct": 78.6
+    },
+    {
+      "name": "Anger Point",
+      "usage_pct": 21.4
+    }
+  ]
+}

@@ -43,11 +43,6 @@
       }
     ]
   },
-  "Mega Abomasnow": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Absol": {
     "moves": [
       {
@@ -83,11 +78,6 @@
         "usage_pct": 100.0
       }
     ]
-  },
-  "Mega Absol": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Aegislash": {
     "moves": [
@@ -217,11 +207,6 @@
       }
     ]
   },
-  "Mega Aerodactyl": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Aggron": {
     "moves": [
       {
@@ -274,11 +259,6 @@
       }
     ]
   },
-  "Mega Aggron": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Alakazam": {
     "moves": [
       {
@@ -326,11 +306,6 @@
         "usage_pct": 100.0
       }
     ]
-  },
-  "Mega Alakazam": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Alcremie": {
     "moves": [
@@ -436,11 +411,6 @@
       }
     ]
   },
-  "Mega Altaria": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Ampharos": {
     "moves": [
       {
@@ -484,11 +454,6 @@
         "usage_pct": 100.0
       }
     ]
-  },
-  "Mega Ampharos": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Annihilape": {
     "moves": [
@@ -1098,11 +1063,6 @@
       }
     ]
   },
-  "Mega Audino": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Aurorus": {
     "moves": [
       {
@@ -1343,11 +1303,6 @@
       }
     ]
   },
-  "Mega Banette": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Barbaracle": {
     "moves": [
       {
@@ -1391,11 +1346,6 @@
         "usage_pct": 100.0
       }
     ]
-  },
-  "Mega Barbaracle": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Basculegion": {
     "moves": [
@@ -1645,11 +1595,6 @@
       }
     ]
   },
-  "Mega Beedrill": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Bellibolt": {
     "moves": [
       {
@@ -1770,11 +1715,6 @@
       }
     ]
   },
-  "Mega Blastoise": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Blaziken": {
     "moves": [
       {
@@ -1839,11 +1779,6 @@
       }
     ]
   },
-  "Mega Blaziken": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Camerupt": {
     "moves": [
       {
@@ -1899,11 +1834,6 @@
         "usage_pct": 1.1
       }
     ]
-  },
-  "Mega Camerupt": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Castform": {
     "moves": [
@@ -2069,11 +1999,6 @@
       }
     ]
   },
-  "Mega Chandelure": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Charizard": {
     "moves": [
       {
@@ -2138,16 +2063,6 @@
       }
     ]
   },
-  "Mega Charizard X": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
-  "Mega Charizard Y": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Chesnaught": {
     "moves": [
       {
@@ -2192,11 +2107,6 @@
       }
     ]
   },
-  "Mega Chesnaught": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Chimecho": {
     "moves": [
       {
@@ -2236,11 +2146,6 @@
         "usage_pct": 100.0
       }
     ]
-  },
-  "Mega Chimecho": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Clawitzer": {
     "moves": [
@@ -2353,11 +2258,6 @@
         "usage_pct": 7.1
       }
     ]
-  },
-  "Mega Clefable": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Cofagrigus": {
     "moves": [
@@ -2583,16 +2483,6 @@
       }
     ]
   },
-  "Mega Crabominable": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
-  "Decidueye": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Decidueye [Hisuian Form]": {
     "moves": [
       {
@@ -2649,11 +2539,6 @@
       }
     ]
   },
-  "Dedenne": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Delphox": {
     "moves": [
       {
@@ -2705,11 +2590,6 @@
         "usage_pct": 6.8
       }
     ]
-  },
-  "Mega Delphox": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Diggersby": {
     "moves": [
@@ -2847,11 +2727,6 @@
       }
     ]
   },
-  "Mega Dragalge": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Dragapult": {
     "moves": [
       {
@@ -2984,11 +2859,6 @@
       }
     ]
   },
-  "Mega Dragonite": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Drampa": {
     "moves": [
       {
@@ -3053,11 +2923,6 @@
       }
     ]
   },
-  "Mega Drampa": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Eelektross": {
     "moves": [
       {
@@ -3101,21 +2966,6 @@
         "usage_pct": 100.0
       }
     ]
-  },
-  "Mega Eelektross": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
-  "Emboar": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
-  "Mega Emboar": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Emolga": {
     "moves": [
@@ -3405,11 +3255,6 @@
       }
     ]
   },
-  "Mega Excadrill": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Falinks": {
     "moves": [
       {
@@ -3453,11 +3298,6 @@
         "usage_pct": 100.0
       }
     ]
-  },
-  "Mega Falinks": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Farigiraf": {
     "moves": [
@@ -3574,16 +3414,6 @@
         "usage_pct": 3.5
       }
     ]
-  },
-  "Mega Feraligatr": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
-  "Flapple": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Flareon": {
     "moves": [
@@ -3729,16 +3559,6 @@
       }
     ]
   },
-  "Florges": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
-  "Forretress": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Froslass": {
     "moves": [
       {
@@ -3794,16 +3614,6 @@
         "usage_pct": 21.0
       }
     ]
-  },
-  "Mega Froslass": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
-  "Furfrou": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Gallade": {
     "moves": [
@@ -3869,16 +3679,6 @@
       }
     ]
   },
-  "Mega Gallade": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
-  "Garbodor": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Garchomp": {
     "moves": [
       {
@@ -3942,11 +3742,6 @@
         "usage_pct": 1.5
       }
     ]
-  },
-  "Mega Garchomp": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Gardevoir": {
     "moves": [
@@ -4015,11 +3810,6 @@
         "usage_pct": 1.7
       }
     ]
-  },
-  "Mega Gardevoir": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Garganacl": {
     "moves": [
@@ -4128,11 +3918,6 @@
         "usage_pct": 100.0
       }
     ]
-  },
-  "Mega Gengar": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Gholdengo": {
     "moves": [
@@ -4282,11 +4067,6 @@
       }
     ]
   },
-  "Mega Glalie": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Glimmora": {
     "moves": [
       {
@@ -4350,11 +4130,6 @@
         "usage_pct": 0.1
       }
     ]
-  },
-  "Mega Glimmora": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Gliscor": {
     "moves": [
@@ -4476,11 +4251,6 @@
       }
     ]
   },
-  "Mega Golurk": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Goodra": {
     "moves": [
       {
@@ -4601,11 +4371,6 @@
       }
     ]
   },
-  "Gourgeist": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Greninja": {
     "moves": [
       {
@@ -4669,11 +4434,6 @@
         "usage_pct": 10.3
       }
     ]
-  },
-  "Mega Greninja": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Grimmsnarl": {
     "moves": [
@@ -4807,11 +4567,6 @@
       }
     ]
   },
-  "Mega Gyarados": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Hatterene": {
     "moves": [
       {
@@ -4936,11 +4691,6 @@
       }
     ]
   },
-  "Mega Hawlucha": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Heliolisk": {
     "moves": [
       {
@@ -5049,11 +4799,6 @@
       }
     ]
   },
-  "Mega Heracross": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Hippowdon": {
     "moves": [
       {
@@ -5145,11 +4890,6 @@
         "usage_pct": 100.0
       }
     ]
-  },
-  "Mega Houndoom": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Houndstone": {
     "moves": [
@@ -5583,11 +5323,6 @@
       }
     ]
   },
-  "Mega Kangaskhan": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Kingambit": {
     "moves": [
       {
@@ -5912,11 +5647,6 @@
       }
     ]
   },
-  "Leafeon": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Liepard": {
     "moves": [
       {
@@ -6021,11 +5751,6 @@
       }
     ]
   },
-  "Mega Lopunny": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Lucario": {
     "moves": [
       {
@@ -6093,11 +5818,6 @@
         "usage_pct": 9.1
       }
     ]
-  },
-  "Mega Lucario": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Luxray": {
     "moves": [
@@ -6415,11 +6135,6 @@
       }
     ]
   },
-  "Mega Malamar": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Mamoswine": {
     "moves": [
       {
@@ -6544,11 +6259,6 @@
       }
     ]
   },
-  "Mega Manectric": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Maushold": {
     "moves": [
       {
@@ -6665,11 +6375,6 @@
       }
     ]
   },
-  "Mega Mawile": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Medicham": {
     "moves": [
       {
@@ -6722,11 +6427,6 @@
       }
     ]
   },
-  "Mega Medicham": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Meganium": {
     "moves": [
       {
@@ -6770,11 +6470,6 @@
         "usage_pct": 29.0
       }
     ]
-  },
-  "Mega Meganium": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Meowscarada": {
     "moves": [
@@ -6900,10 +6595,41 @@
       }
     ]
   },
-  "Mega Meowstic": {
-    "moves": [],
-    "items": [],
-    "abilities": []
+  "Meowstic [Female]": {
+    "moves": [
+      {
+        "name": "Protect",
+        "usage_pct": 100.0
+      },
+      {
+        "name": "Energy Ball",
+        "usage_pct": 100.0
+      },
+      {
+        "name": "Psychic",
+        "usage_pct": 100.0
+      },
+      {
+        "name": "Thunderbolt",
+        "usage_pct": 66.7
+      },
+      {
+        "name": "Fake Out",
+        "usage_pct": 33.3
+      }
+    ],
+    "items": [
+      {
+        "name": "Meowsticite",
+        "usage_pct": 100.0
+      }
+    ],
+    "abilities": [
+      {
+        "name": "Competitive",
+        "usage_pct": 100.0
+      }
+    ]
   },
   "Metagross": {
     "moves": [
@@ -6968,11 +6694,6 @@
         "usage_pct": 0.5
       }
     ]
-  },
-  "Mega Metagross": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Milotic": {
     "moves": [
@@ -7145,11 +6866,6 @@
         "usage_pct": 100.0
       }
     ]
-  },
-  "Mr. Rime": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Mudsdale": {
     "moves": [
@@ -7707,11 +7423,6 @@
       }
     ]
   },
-  "Passimian": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Pelipper": {
     "moves": [
       {
@@ -7824,11 +7535,6 @@
       }
     ]
   },
-  "Mega Pidgeot": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Pikachu": {
     "moves": [
       {
@@ -7913,11 +7619,6 @@
       }
     ]
   },
-  "Mega Pinsir": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Politoed": {
     "moves": [
       {
@@ -7981,11 +7682,6 @@
         "usage_pct": 0.1
       }
     ]
-  },
-  "Polteageist": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Primarina": {
     "moves": [
@@ -8098,11 +7794,6 @@
         "usage_pct": 5.1
       }
     ]
-  },
-  "Mega Pyroar": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Quaquaval": {
     "moves": [
@@ -8291,16 +7982,6 @@
         "usage_pct": 100.0
       }
     ]
-  },
-  "Mega Raichu X": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
-  "Mega Raichu Y": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Rampardos": {
     "moves": [
@@ -8493,16 +8174,6 @@
         "usage_pct": 100.0
       }
     ]
-  },
-  "Rotom": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
-  "Fan Rotom": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Frost Rotom": {
     "moves": [
@@ -8844,11 +8515,6 @@
       }
     ]
   },
-  "Mega Sableye": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Salazzle": {
     "moves": [
       {
@@ -8900,11 +8566,6 @@
         "usage_pct": 30.8
       }
     ]
-  },
-  "Samurott": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Samurott [Hisuian Form]": {
     "moves": [
@@ -8965,11 +8626,6 @@
         "usage_pct": 100.0
       }
     ]
-  },
-  "Sandaconda": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Sceptile": {
     "moves": [
@@ -9035,11 +8691,6 @@
       }
     ]
   },
-  "Mega Sceptile": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Scizor": {
     "moves": [
       {
@@ -9099,11 +8750,6 @@
         "usage_pct": 100.0
       }
     ]
-  },
-  "Mega Scizor": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Scolipede": {
     "moves": [
@@ -9165,11 +8811,6 @@
       }
     ]
   },
-  "Mega Scolipede": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Scovillain": {
     "moves": [
       {
@@ -9229,11 +8870,6 @@
         "usage_pct": 2.2
       }
     ]
-  },
-  "Mega Scovillain": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Scrafty": {
     "moves": [
@@ -9302,11 +8938,6 @@
         "usage_pct": 0.4
       }
     ]
-  },
-  "Mega Scrafty": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Serperior": {
     "moves": [
@@ -9411,26 +9042,6 @@
         "usage_pct": 100.0
       }
     ]
-  },
-  "Mega Sharpedo": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
-  "Simipour": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
-  "Simisage": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
-  "Simisear": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Sinistcha": {
     "moves": [
@@ -9539,11 +9150,6 @@
         "usage_pct": 8.2
       }
     ]
-  },
-  "Mega Skarmory": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Skeledirge": {
     "moves": [
@@ -9705,11 +9311,6 @@
       }
     ]
   },
-  "Mega Slowbro": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Slowking": {
     "moves": [
       {
@@ -9817,11 +9418,6 @@
         "usage_pct": 100.0
       }
     ]
-  },
-  "Slurpuff": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Sneasler": {
     "moves": [
@@ -10071,11 +9667,6 @@
       }
     ]
   },
-  "Mega Staraptor": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Starmie": {
     "moves": [
       {
@@ -10132,11 +9723,6 @@
       }
     ]
   },
-  "Mega Starmie": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Steelix": {
     "moves": [
       {
@@ -10189,11 +9775,6 @@
       }
     ]
   },
-  "Mega Steelix": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Stunfisk": {
     "moves": [
       {
@@ -10225,11 +9806,6 @@
         "usage_pct": 100.0
       }
     ]
-  },
-  "Stunfisk [Galarian Form]": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Swampert": {
     "moves": [
@@ -10294,11 +9870,6 @@
         "usage_pct": 46.4
       }
     ]
-  },
-  "Mega Swampert": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Sylveon": {
     "moves": [
@@ -10428,10 +9999,133 @@
       }
     ]
   },
-  "Tauros": {
-    "moves": [],
-    "items": [],
-    "abilities": []
+  "Tauros [Paldean Form (Aqua Breed)]": {
+    "moves": [
+      {
+        "name": "Protect",
+        "usage_pct": 98.2
+      },
+      {
+        "name": "Aqua Jet",
+        "usage_pct": 92.9
+      },
+      {
+        "name": "Close Combat",
+        "usage_pct": 75.0
+      },
+      {
+        "name": "Wave Crash",
+        "usage_pct": 54.5
+      },
+      {
+        "name": "Raging Bull",
+        "usage_pct": 30.4
+      },
+      {
+        "name": "Rock Slide",
+        "usage_pct": 24.1
+      }
+    ],
+    "items": [
+      {
+        "name": "Sitrus Berry",
+        "usage_pct": 26.8
+      },
+      {
+        "name": "Life Orb",
+        "usage_pct": 21.4
+      },
+      {
+        "name": "Mystic Water",
+        "usage_pct": 17.9
+      },
+      {
+        "name": "White Herb",
+        "usage_pct": 13.4
+      },
+      {
+        "name": "Soft Sand",
+        "usage_pct": 10.7
+      },
+      {
+        "name": "Wide Lens",
+        "usage_pct": 6.3
+      }
+    ],
+    "abilities": [
+      {
+        "name": "Intimidate",
+        "usage_pct": 78.6
+      },
+      {
+        "name": "Anger Point",
+        "usage_pct": 21.4
+      }
+    ]
+  },
+  "Tauros [Paldean Form (Blaze Breed)]": {
+    "moves": [
+      {
+        "name": "Close Combat",
+        "usage_pct": 100.0
+      },
+      {
+        "name": "Raging Bull",
+        "usage_pct": 100.0
+      },
+      {
+        "name": "Protect",
+        "usage_pct": 90.4
+      },
+      {
+        "name": "Rock Slide",
+        "usage_pct": 57.5
+      },
+      {
+        "name": "Wild Charge",
+        "usage_pct": 15.1
+      },
+      {
+        "name": "Flare Blitz",
+        "usage_pct": 12.3
+      }
+    ],
+    "items": [
+      {
+        "name": "Sitrus Berry",
+        "usage_pct": 30.1
+      },
+      {
+        "name": "Life Orb",
+        "usage_pct": 21.9
+      },
+      {
+        "name": "Focus Sash",
+        "usage_pct": 19.2
+      },
+      {
+        "name": "Expert Belt",
+        "usage_pct": 13.7
+      },
+      {
+        "name": "White Herb",
+        "usage_pct": 11.0
+      },
+      {
+        "name": "Bright Powder",
+        "usage_pct": 4.1
+      }
+    ],
+    "abilities": [
+      {
+        "name": "Intimidate",
+        "usage_pct": 71.2
+      },
+      {
+        "name": "Anger Point",
+        "usage_pct": 28.8
+      }
+    ]
   },
   "Tinkaton": {
     "moves": [
@@ -10781,11 +10475,6 @@
       }
     ]
   },
-  "Trevenant": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Tsareena": {
     "moves": [
       {
@@ -11037,11 +10726,6 @@
         "usage_pct": 0.3
       }
     ]
-  },
-  "Mega Tyranitar": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Tyrantrum": {
     "moves": [
@@ -11319,11 +11003,6 @@
       }
     ]
   },
-  "Mega Venusaur": {
-    "moves": [],
-    "items": [],
-    "abilities": []
-  },
   "Victreebel": {
     "moves": [
       {
@@ -11355,11 +11034,6 @@
         "usage_pct": 100.0
       }
     ]
-  },
-  "Mega Victreebel": {
-    "moves": [],
-    "items": [],
-    "abilities": []
   },
   "Vileplume": {
     "moves": [
