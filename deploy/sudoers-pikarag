@@ -1,0 +1,4 @@
+# Install with: sudo install -m 0440 deploy/sudoers-pikarag /etc/sudoers.d/pikarag
+# Lets the unprivileged `pikarag` user restart just the bot unit after a
+# refresh job writes new data -- nothing broader.
+pikarag ALL=(root) NOPASSWD: /usr/bin/systemctl restart pikarag-bot.service

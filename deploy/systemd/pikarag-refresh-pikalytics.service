@@ -1,0 +1,10 @@
+[Unit]
+Description=PikaRAG Pikalytics usage data refresh (one-shot)
+
+[Service]
+Type=oneshot
+User=pikarag
+WorkingDirectory=/opt/pikarag
+EnvironmentFile=/opt/pikarag/.env
+ExecStart=/opt/pikarag/deploy/refresh-pikalytics-monthly.sh
+ExecStartPost=/usr/bin/sudo /usr/bin/systemctl restart pikarag-bot.service

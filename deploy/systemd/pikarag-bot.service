@@ -1,0 +1,16 @@
+[Unit]
+Description=PikaRAG Discord bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pikarag
+WorkingDirectory=/opt/pikarag
+EnvironmentFile=/opt/pikarag/.env
+ExecStart=/opt/pikarag/.venv/bin/python -m bot.main
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
