@@ -5,8 +5,9 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-05, at commit `234ccaf` (main, clean working tree).
-<!-- STATUS_COMMIT: 234ccaf -->
+**Last updated:** 2026-09-07, at commit `c245e3b` (main). Deployment
+walkthrough in progress -- see `RESUME.md` for exact in-flight state.
+<!-- STATUS_COMMIT: c245e3b -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
@@ -38,14 +39,23 @@ Full checklist with what's resolved vs. open: `pika-rag-project-plan.md`
 
 ## What's actually left
 
-Not code — manual deployment/account steps, per `docs/DEPLOYMENT.md`:
+Not code — manual deployment/account steps, per `docs/DEPLOYMENT.md`. Full
+detail on exactly where this stands: `RESUME.md`.
 
-1. Get a Discord bot token + invite it to a server
-2. Get an Anthropic API key **and set a spend cap** in console (not done yet)
-3. Provision the Oracle Cloud free-tier ARM instance (not done yet)
+1. ~~Get a Discord bot token + invite it to a server~~ done
+2. ~~Get an Anthropic API key and set a spend cap~~ done ($5 cap, both
+   secrets in local `.env`)
+3. Provision the Oracle Cloud free-tier ARM instance — **in progress**: first
+   attempt was misconfigured (private subnet, no public IP) and was
+   terminated; needs to be recreated with the public IP toggle set correctly.
+   `deploy/cloud-init.sh` now automates most of step 4 below.
 4. Server setup: clone repo, venv, `.env`, run both refresh jobs once to
    populate `data/processed/`
 5. Install systemd units, verify the bot responds in Discord
+
+Also pending: the ToS/Privacy Policy Claude Artifact
+(`https://claude.ai/code/artifact/c8af5a8a-f5ad-420c-8dfe-9d260f6d0ea7`) needs
+its share menu flipped to public before anything tries to fetch those URLs.
 
 Also unresolved, lower priority: confirm Pikalytics scraping is within their
 ToS (pipeline has been running against it, never formally checked).
