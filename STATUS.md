@@ -5,9 +5,9 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-07, at commit `c245e3b` (main). Deployment
+**Last updated:** 2026-09-07, at commit `863b191` (main). Deployment
 walkthrough in progress -- see `RESUME.md` for exact in-flight state.
-<!-- STATUS_COMMIT: c245e3b -->
+<!-- STATUS_COMMIT: 863b191 -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
