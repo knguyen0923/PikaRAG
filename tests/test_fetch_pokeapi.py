@@ -15,6 +15,14 @@ def test_resolve_mega_x_y_name():
     assert resolve_pokeapi_name("Mega Charizard X") == "charizard-mega-x"
     assert resolve_pokeapi_name("Mega Charizard Y") == "charizard-mega-y"
 
+def test_resolve_mega_z_name():
+    # Regulation M-C introduced a third lettered Mega variant (X/Y precedent
+    # was Mewtwo/Charizard-only in mainline games); PokeAPI slugs it the same
+    # way: "<species>-mega-<letter>", not "<species>-<letter>-mega".
+    assert resolve_pokeapi_name("Mega Absol Z") == "absol-mega-z"
+    assert resolve_pokeapi_name("Mega Garchomp Z") == "garchomp-mega-z"
+    assert resolve_pokeapi_name("Mega Lucario Z") == "lucario-mega-z"
+
 def test_resolve_bracket_forme_name():
     assert resolve_pokeapi_name("Aegislash [Blade Forme]") == "aegislash-blade"
 

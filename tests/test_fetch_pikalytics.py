@@ -34,6 +34,12 @@ def test_resolve_mega_x_y():
     assert resolve_pikalytics_slug("Mega Charizard X") == "Charizard-Mega-X"
 
 
+def test_resolve_mega_z():
+    # Confirmed live against Pikalytics' M-C championspreview pages, e.g.
+    # pikalytics.com/pokedex/championspreview/Absol-Mega-Z.
+    assert resolve_pikalytics_slug("Mega Absol Z") == "Absol-Mega-Z"
+
+
 def test_resolve_strips_breed_suffix():
     assert resolve_pikalytics_slug("Tauros [Paldean Form (Aqua Breed)]") == "Tauros-Paldea-Aqua"
 

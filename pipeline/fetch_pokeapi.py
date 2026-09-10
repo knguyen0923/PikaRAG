@@ -79,7 +79,7 @@ def resolve_pokeapi_name(display_name: str) -> str:
         if paren_text:
             bracket_words += [w for w in _slugify(paren_text).split("-") if w]
 
-    mega_match = re.match(r"^Mega (.+?)( X| Y)?$", name)
+    mega_match = re.match(r"^Mega (.+?)( [A-Z])?$", name)
     if mega_match:
         base = mega_match.group(1)
         suffix = mega_match.group(2)
