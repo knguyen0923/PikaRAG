@@ -68,6 +68,26 @@ def test_write_processed_records_creates_valid_json(tmp_path):
         loaded = json.load(f)
     assert loaded == records
 
+def test_build_records_applies_learnset_exclusions(tmp_path):
+    """Regression test: a regulation can revoke a specific move from a specific
+    species (e.g. M-C: "Politoed can't learn Pound") without banning that move
+    format-wide. legal_pokemon_*.json's optional "learnset_exclusions" map
+    (species name -> excluded move names) is subtracted after the normal
+    PokeAPI-learnset x vgc_moves.json intersection."""
+    source_dir = _make_fixture_source(tmp_path)
+    legal_path = source_dir / "legal_pokemon_m-b.json"
+    legal_data = json.loads(legal_path.read_text())
+    legal_data["learnset_exclusions"] = {"Abomasnow": ["Ice Punch"]}
+    _write_json(legal_path, legal_data)
+    raw_dir = _make_fixture_raw(tmp_path)
+
+    records = build_records(source_dir, raw_dir)
+
+    assert len(records) == 1
+    record = records[0]
+    assert set(record["learnset"]) == {"Wood Hammer"}
+    assert "Ice Punch" not in record["learnset"]
+
 def test_build_records_filters_abilities_against_vgc_abilities(tmp_path):
     """Regression test: abilities not in vgc_abilities.json should be dropped."""
     source_dir = _make_fixture_source(tmp_path)

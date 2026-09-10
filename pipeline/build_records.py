@@ -35,6 +35,7 @@ def build_records(source_dir: Path, raw_dir: Path) -> list:
     abilities_data = _load_json(source_dir / "vgc_abilities.json")
 
     regulation = legal_data["regulation"]
+    learnset_exclusions = legal_data.get("learnset_exclusions", {})
     types_by_name = {p["name"]: p["types"] for p in moves_data["pokemon"]}
     move_names_by_slug = {}
     for move in moves_data["moves"]:
@@ -52,11 +53,12 @@ def build_records(source_dir: Path, raw_dir: Path) -> list:
             continue
         raw = _load_json(raw_path)
 
+        excluded = set(learnset_exclusions.get(name, []))
         learnset = sorted({
             move_names_by_slug[slug]
             for slug in raw.get("learnset", [])
             if slug in move_names_by_slug
-        })
+        } - excluded)
         abilities = sorted({
             ability_names_by_slug[slug]
             for slug in raw.get("abilities", [])
