@@ -36,6 +36,10 @@
     "description": "Cures being frozen. Disappears for the duration of the battle after a single use."
   },
   {
+    "name": "Assault Vest",
+    "description": "Boosts the holder's Special Defense stat by 50%. However, it prevents the holder from using status moves."
+  },
+  {
     "name": "Audinite",
     "description": "A held item that allows Audino to Mega Evolve."
   },
@@ -84,6 +88,10 @@
     "description": "Lowers the accuracy of moves used by opponents against the holder by 10%."
   },
   {
+    "name": "Bug Gem",
+    "description": "Boosts the power of the holder's next Bug-type move by 30%. Disappears for the duration of the battle after a single use."
+  },
+  {
     "name": "Cameruptite",
     "description": "A held item that allows Camerupt to Mega Evolve."
   },
@@ -128,8 +136,16 @@
     "description": "A held item that allows Chimecho to Mega Evolve."
   },
   {
+    "name": "Choice Band",
+    "description": "Boosts the holder's Attack stat by 50%. However, once the holder uses a move, it becomes unable to use any other move but that one until it switches out of battle."
+  },
+  {
     "name": "Choice Scarf",
     "description": "Boosts the holder's Speed stat by 50%. However, once the holder uses a move, it becomes unable to use any other move but that one until it switches out of battle."
+  },
+  {
+    "name": "Choice Specs",
+    "description": "Boosts the holder's Special Attack stat by 50%. However, once the holder uses a move, it becomes unable to use any other move but that one until it switches out of battle."
   },
   {
     "name": "Chople Berry",
@@ -156,8 +172,16 @@
     "description": "When the holder summons rain with its moves or Ability, the duration is extended by 3 turns. (Total duration: 8 turns)"
   },
   {
+    "name": "Dark Gem",
+    "description": "Boosts the power of the holder's next Dark-type move by 30%. Disappears for the duration of the battle after a single use."
+  },
+  {
     "name": "Delphoxite",
     "description": "A held item that allows Delphox to Mega Evolve."
+  },
+  {
+    "name": "Draco Plate",
+    "description": "Boosts the power of the holder's Dragon-type moves by 20%. Turns Judgment into a Dragon-type move when held by Arceus."
   },
   {
     "name": "Dragalgite",
@@ -168,6 +192,10 @@
     "description": "Boosts the power of the holder's Dragon-type moves by 20%."
   },
   {
+    "name": "Dragon Gem",
+    "description": "Boosts the power of the holder's next Dragon-type move by 30%. Disappears for the duration of the battle after a single use."
+  },
+  {
     "name": "Dragoninite",
     "description": "A held item that allows Dragonite to Mega Evolve."
   },
@@ -176,12 +204,24 @@
     "description": "A held item that allows Drampa to Mega Evolve."
   },
   {
+    "name": "Dread Plate",
+    "description": "Boosts the power of the holder's Dark-type moves by 20%. Turns Judgment into a Dark-type move when held by Arceus."
+  },
+  {
+    "name": "Earth Plate",
+    "description": "Boosts the power of the holder's Ground-type moves by 20%. Turns Judgment into a Ground-type move when held by Arceus."
+  },
+  {
     "name": "Eelektrossite",
     "description": "A held item that allows Eelektross to Mega Evolve."
   },
   {
     "name": "Eject Button",
     "description": "Immediately switches the holder out for a chosen ally after it’s hit by an attack. Disappears for the duration of the battle after a single use."
+  },
+  {
+    "name": "Electric Gem",
+    "description": "Boosts the power of the holder's next Electric-type move by 30%. Disappears for the duration of the battle after a single use."
   },
   {
     "name": "Electric Seed",
@@ -204,6 +244,10 @@
     "description": "Boosts the power of the holder's Fairy-type moves by 20%."
   },
   {
+    "name": "Fairy Gem",
+    "description": "Boosts the power of the holder's next Fairy-type move by 30%. Disappears for the duration of the battle after a single use."
+  },
+  {
     "name": "Falinksite",
     "description": "A held item that allows Falinks to Mega Evolve."
   },
@@ -212,8 +256,28 @@
     "description": "A held item that allows Feraligatr to Mega Evolve."
   },
   {
+    "name": "Fighting Gem",
+    "description": "Boosts the power of the holder's next Fighting-type move by 30%. Disappears for the duration of the battle after a single use."
+  },
+  {
+    "name": "Fire Gem",
+    "description": "Boosts the power of the holder's next Fire-type move by 30%. Disappears for the duration of the battle after a single use."
+  },
+  {
+    "name": "Fist Plate",
+    "description": "Boosts the power of the holder's Fighting-type moves by 20%. Turns Judgment into a Fighting-type move when held by Arceus."
+  },
+  {
+    "name": "Flame Plate",
+    "description": "Boosts the power of the holder's Fire-type moves by 20%. Turns Judgment into a Fire-type move when held by Arceus."
+  },
+  {
     "name": "Floettite",
     "description": "A held item that allows Eternal Flower Floette to Mega Evolve."
+  },
+  {
+    "name": "Flying Gem",
+    "description": "Boosts the power of the holder's next Flying-type move by 30%. Disappears for the duration of the battle after a single use."
   },
   {
     "name": "Focus Band",
@@ -244,6 +308,10 @@
     "description": "A held item that allows Gengar to Mega Evolve."
   },
   {
+    "name": "Ghost Gem",
+    "description": "Boosts the power of the holder's next Ghost-type move by 30%. Disappears for the duration of the battle after a single use."
+  },
+  {
     "name": "Glalitite",
     "description": "A held item that allows Glalie to Mega Evolve."
   },
@@ -256,12 +324,20 @@
     "description": "A held item that allows Golurk to Mega Evolve."
   },
   {
+    "name": "Grass Gem",
+    "description": "Boosts the power of the holder's next Grass-type move by 30%. Disappears for the duration of the battle after a single use."
+  },
+  {
     "name": "Grassy Seed",
     "description": "Raises the holder’s Defense stat by 1 stage when Grassy Terrain takes effect. Disappears for the duration of the battle after a single use."
   },
   {
     "name": "Greninjite",
     "description": "A held item that allows Greninja to Mega Evolve."
+  },
+  {
+    "name": "Ground Gem",
+    "description": "Boosts the power of the holder's next Ground-type move by 30%. Disappears for the duration of the battle after a single use."
   },
   {
     "name": "Gyaradosite",
@@ -292,12 +368,28 @@
     "description": "A held item that allows Houndoom to Mega Evolve."
   },
   {
+    "name": "Ice Gem",
+    "description": "Boosts the power of the holder's next Ice-type move by 30%. Disappears for the duration of the battle after a single use."
+  },
+  {
+    "name": "Icicle Plate",
+    "description": "Boosts the power of the holder's Ice-type moves by 20%. Turns Judgment into a Ice-type move when held by Arceus."
+  },
+  {
     "name": "Icy Rock",
     "description": "When the holder summons snow with its moves or Ability, the duration is extended by 3 turns. (Total duration: 8 turns)"
   },
   {
+    "name": "Insect Plate",
+    "description": "Boosts the power of the holder's Bug-type moves by 20%. Turns Judgment into a Bug-type move when held by Arceus."
+  },
+  {
     "name": "Iron Ball",
     "description": "Halves the holder's Speed stat. If the holder is off the ground, it will be grounded, meaning it can be affected by Ground-type moves, as well as the Spikes, Toxic Spikes, and Sticky Web statuses."
+  },
+  {
+    "name": "Iron Plate",
+    "description": "Boosts the power of the holder's Steel-type moves by 20%. Turns Judgment into a Steel-type move when held by Arceus."
   },
   {
     "name": "Kangaskhanite",
@@ -368,6 +460,10 @@
     "description": "A held item that allows Mawile to Mega Evolve."
   },
   {
+    "name": "Meadow Plate",
+    "description": "Boosts the power of the holder's Grass-type moves by 20%. Turns Judgment into a Grass-type move when held by Arceus."
+  },
+  {
     "name": "Medichamite",
     "description": "A held item that allows Medicham to Mega Evolve."
   },
@@ -394,6 +490,10 @@
   {
     "name": "Metronome",
     "description": "Boosts the power of a move that is used repeatedly. This boost will be 20% on the second usage, 40% on the third, and so on, up to a maximum boost of 100%. If the streak is broken, the move's power returns to its usual value."
+  },
+  {
+    "name": "Mind Plate",
+    "description": "Boosts the power of the holder's Psychic-type moves by 20%. Turns Judgment into a Psychic-type move when held by Arceus."
   },
   {
     "name": "Miracle Seed",
@@ -452,8 +552,20 @@
     "description": "A held item that allows Pinsir to Mega Evolve."
   },
   {
+    "name": "Pixie Plate",
+    "description": "Boosts the power of the holder's Fairy-type moves by 20%. Turns Judgment into a Fairy-type move when held by Arceus."
+  },
+  {
     "name": "Poison Barb",
     "description": "Boosts the power of the holder's Poison-type moves by 20%."
+  },
+  {
+    "name": "Poison Gem",
+    "description": "Boosts the power of the holder's next Poison-type move by 30%. Disappears for the duration of the battle after a single use."
+  },
+  {
+    "name": "Psychic Gem",
+    "description": "Boosts the power of the holder's next Psychic-type move by 30%. Disappears for the duration of the battle after a single use."
   },
   {
     "name": "Psychic Seed",
@@ -486,6 +598,10 @@
   {
     "name": "Rindo Berry",
     "description": "Halves the damage taken when the holder is hit with a supereffective Grass-type move. Disappears for the duration of the battle after a single use."
+  },
+  {
+    "name": "Rock Gem",
+    "description": "Boosts the power of the holder's next Rock-type move by 30%. Disappears for the duration of the battle after a single use."
   },
   {
     "name": "Rocky Helmet",
@@ -560,6 +676,10 @@
     "description": "A held item that allows Skarmory to Mega Evolve."
   },
   {
+    "name": "Sky Plate",
+    "description": "Boosts the power of the holder's Flying-type moves by 20%. Turns Judgment into a Flying-type move when held by Arceus."
+  },
+  {
     "name": "Slowbronite",
     "description": "A held item that allows Slowbro to Mega Evolve. It has no effect on Galarian Slowbro."
   },
@@ -576,6 +696,14 @@
     "description": "Boosts the power of the holder's Ghost-type moves by 20%."
   },
   {
+    "name": "Splash Plate",
+    "description": "Boosts the power of the holder's Water-type moves by 20%. Turns Judgment into a Water-type move when held by Arceus."
+  },
+  {
+    "name": "Spooky Plate",
+    "description": "Boosts the power of the holder's Ghost-type moves by 20%. Turns Judgment into a Ghost-type move when held by Arceus."
+  },
+  {
     "name": "Staraptite",
     "description": "A held item that allows Staraptor to Mega Evolve."
   },
@@ -584,8 +712,16 @@
     "description": "A held item that allows Starmie to Mega Evolve."
   },
   {
+    "name": "Steel Gem",
+    "description": "Boosts the power of the holder's next Steel-type move by 30%. Disappears for the duration of the battle after a single use."
+  },
+  {
     "name": "Steelixite",
     "description": "A held item that allows Steelix to Mega Evolve."
+  },
+  {
+    "name": "Stone Plate",
+    "description": "Boosts the power of the holder's Rock-type moves by 20%. Turns Judgment into a Rock-type move when held by Arceus."
   },
   {
     "name": "Swampertite",
@@ -598,6 +734,10 @@
   {
     "name": "Terrain Extender",
     "description": "Extends the duration of the terrain the holder sets (Electric, Grassy, Misty, or Psychic Terrain) from 5 turns to 8 turns."
+  },
+  {
+    "name": "Toxic Plate",
+    "description": "Boosts the power of the holder's Poison-type moves by 20%. Turns Judgment into a Poison-type move when held by Arceus."
   },
   {
     "name": "Twisted Spoon",
@@ -620,6 +760,10 @@
     "description": "Halves the damage taken when the holder is hit with a supereffective Electric-type move. Disappears for the duration of the battle after a single use."
   },
   {
+    "name": "Water Gem",
+    "description": "Boosts the power of the holder's next Water-type move by 30%. Disappears for the duration of the battle after a single use."
+  },
+  {
     "name": "White Herb",
     "description": "Restores the holder's stats to their usual value when they are lowered. Disappears for the duration of the battle after a single use."
   },
@@ -634,6 +778,10 @@
   {
     "name": "Yache Berry",
     "description": "Halves the damage taken when the holder is hit with a supereffective Ice-type move. Disappears for the duration of the battle after a single use."
+  },
+  {
+    "name": "Zap Plate",
+    "description": "Boosts the power of the holder's Electric-type moves by 20%. Turns Judgment into a Electric-type move when held by Arceus."
   },
   {
     "name": "Zoom Lens",
