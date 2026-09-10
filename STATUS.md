@@ -5,10 +5,11 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-10, at commit `c004251` (main). Regulation M-C
-rollout + a real bugfix landed today; deployment walkthrough (Oracle Cloud
-instance recreation) is still where it left off -- see `RESUME.md`.
-<!-- STATUS_COMMIT: c004251 -->
+**Last updated:** 2026-09-10, at commit `95816bd` (main). Regulation M-C
+rollout, a real bugfix, and wiring `vgc_items.json` into RAG/`calc`/`scout`
+all landed today; deployment walkthrough (Oracle Cloud instance recreation)
+is still where it left off -- see `RESUME.md`.
+<!-- STATUS_COMMIT: 95816bd -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
@@ -22,9 +23,11 @@ budget or compaction), which is more specific than this snapshot.
 
 ## Where things stand
 
-All planned code work is done and merged to `main`. 235/235 tests passing.
+All planned code work is done and merged to `main`. 244/244 tests passing.
 Data is current for **Regulation M-C** (315 -> 345 legal Pokemon, live since
-2026-09-08) -- see the `data:` and `fix:`/`feat:` commits from 2026-09-10.
+2026-09-08) -- see the `data:`/`fix:`/`feat:` commits from 2026-09-10.
+`vgc_items.json` (197 items, now complete against everything `damage_calc`
+supports) is wired into `/ask` (RAG) and validated in `/calc`/`/scout`/`/import`.
 
 - **Data pipeline** (`pipeline/`) — PokéAPI + Pikalytics fetch, merge into
   `data/processed/pokemon_records.json` + `pikalytics_usage.json`
@@ -67,11 +70,9 @@ Also pending, from the 2026-09-10 M-C rollout:
 - `PIKALYTICS_FORMAT_CODE` (`pipeline/fetch_pikalytics.py`) still points at
   M-B's code -- no M-C ranked format code exists on Pikalytics yet. Re-verify
   once their ladder data accumulates, then run `refresh_pikalytics_job`.
-- `data/source/vgc_items.json` is unused by any code path (not embedded into
-  RAG, not used to validate `/calc` item names) and is missing common items
-  `damage_calc` already supports (Choice Band/Specs, Assault Vest, most
-  Gems/Plates). A wiring-up plan exists — see chat history or ask to have it
-  re-summarized.
+- The real Chroma index (`data/chroma/`) needs the bot to actually restart
+  once to pick up the new item chunks -- `build()` upserts in place, so this
+  is automatic on next startup, not a manual step.
 
 ## Useful pointers
 
