@@ -5,9 +5,10 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-07, at commit `863b191` (main). Deployment
-walkthrough in progress -- see `RESUME.md` for exact in-flight state.
-<!-- STATUS_COMMIT: 863b191 -->
+**Last updated:** 2026-09-10, at commit `c004251` (main). Regulation M-C
+rollout + a real bugfix landed today; deployment walkthrough (Oracle Cloud
+instance recreation) is still where it left off -- see `RESUME.md`.
+<!-- STATUS_COMMIT: c004251 -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
@@ -21,7 +22,9 @@ budget or compaction), which is more specific than this snapshot.
 
 ## Where things stand
 
-All planned code work is done and merged to `main`. 232/232 tests passing.
+All planned code work is done and merged to `main`. 235/235 tests passing.
+Data is current for **Regulation M-C** (315 -> 345 legal Pokemon, live since
+2026-09-08) -- see the `data:` and `fix:`/`feat:` commits from 2026-09-10.
 
 - **Data pipeline** (`pipeline/`) — PokéAPI + Pikalytics fetch, merge into
   `data/processed/pokemon_records.json` + `pikalytics_usage.json`
@@ -59,6 +62,16 @@ its share menu flipped to public before anything tries to fetch those URLs.
 
 Also unresolved, lower priority: confirm Pikalytics scraping is within their
 ToS (pipeline has been running against it, never formally checked).
+
+Also pending, from the 2026-09-10 M-C rollout:
+- `PIKALYTICS_FORMAT_CODE` (`pipeline/fetch_pikalytics.py`) still points at
+  M-B's code -- no M-C ranked format code exists on Pikalytics yet. Re-verify
+  once their ladder data accumulates, then run `refresh_pikalytics_job`.
+- `data/source/vgc_items.json` is unused by any code path (not embedded into
+  RAG, not used to validate `/calc` item names) and is missing common items
+  `damage_calc` already supports (Choice Band/Specs, Assault Vest, most
+  Gems/Plates). A wiring-up plan exists — see chat history or ask to have it
+  re-summarized.
 
 ## Useful pointers
 
