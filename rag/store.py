@@ -3,7 +3,7 @@ from typing import Optional
 
 import chromadb
 
-from rag.embed import build_chunks
+from rag.embed import build_chunks, build_item_chunks
 
 DEFAULT_PERSIST_DIR = "data/chroma"
 
@@ -26,15 +26,17 @@ class ChromaIndex:
         name = collection_name or f"pokemon-{uuid.uuid4().hex}"
         self._collection = self._client.get_or_create_collection(name)
 
-    def build(self, records: list[dict]) -> None:
+    def build(self, records: list[dict], items: list[dict] = None) -> None:
         chunks = [chunk for record in records for chunk in build_chunks(record)]
+        if items:
+            chunks += [chunk for item in items for chunk in build_item_chunks(item)]
         embeddings = self._embedder.embed([chunk["text"] for chunk in chunks])
         self._collection.upsert(
             ids=[chunk["id"] for chunk in chunks],
             embeddings=embeddings,
             documents=[chunk["text"] for chunk in chunks],
             metadatas=[
-                {"pokemon": chunk["pokemon"], "chunk_type": chunk["chunk_type"]} for chunk in chunks
+                {k: v for k, v in chunk.items() if k not in ("id", "text")} for chunk in chunks
             ],
         )
 

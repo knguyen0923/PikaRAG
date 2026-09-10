@@ -1,6 +1,6 @@
 import numpy as np
 
-from rag.embed import SentenceTransformerEmbedder, build_chunks
+from rag.embed import SentenceTransformerEmbedder, build_chunks, build_item_chunks
 
 _RECORD = {
     "name": "Abomasnow",
@@ -37,6 +37,21 @@ def test_moveset_chunk_text_contains_learnset_moves():
 
     assert "Blizzard" in moveset_chunk["text"]
     assert "Wood Hammer" in moveset_chunk["text"]
+
+
+_ITEM = {"name": "Life Orb", "description": "Boosts the power of the holder's moves by 30%. However, the holder also loses 1/10 of its max HP each time it successfully lands an attack."}
+
+
+def test_build_item_chunks_returns_one_chunk_with_name_and_description():
+    chunks = build_item_chunks(_ITEM)
+
+    assert len(chunks) == 1
+    chunk = chunks[0]
+    assert chunk["chunk_type"] == "item"
+    assert chunk["item"] == "Life Orb"
+    assert chunk["id"] == "item-Life Orb"
+    assert "Life Orb" in chunk["text"]
+    assert "30%" in chunk["text"]
 
 
 class _FakeModel:

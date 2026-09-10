@@ -89,6 +89,17 @@ def test_build_indexes_one_chunk_per_record_per_chunk_type():
     assert len(matches) == 4
 
 
+def test_build_also_indexes_item_chunks():
+    index = ChromaIndex(embedder=_BagOfWordsEmbedder(), client=chromadb.Client())
+    life_orb = {"name": "Life Orb", "description": "Boosts move power by 30% at the cost of recoil HP."}
+
+    index.build([_ABOMASNOW], items=[life_orb])
+
+    matches = index.query("Life Orb power boost recoil", n_results=1)
+    assert matches[0]["metadata"]["item"] == "Life Orb"
+    assert matches[0]["metadata"]["chunk_type"] == "item"
+
+
 def test_default_client_persists_data_across_instances_at_same_path(tmp_path):
     persist_dir = tmp_path / "chroma"
     embedder = _BagOfWordsEmbedder()

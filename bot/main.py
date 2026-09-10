@@ -26,6 +26,7 @@ from rag.store import ChromaIndex
 
 PROCESSED_RECORDS_PATH = Path("data/processed/pokemon_records.json")
 VGC_MOVES_PATH = Path("data/source/vgc_moves.json")
+VGC_ITEMS_PATH = Path("data/source/vgc_items.json")
 USAGE_DATA_PATH = Path("data/processed/pikalytics_usage.json")
 _COOLDOWN_SECONDS = 3.0
 
@@ -46,7 +47,7 @@ def _embed(command_name: str, description: str) -> discord.Embed:
 
 
 def build_client(
-    index=None, answerer=None, records=None, moves=None, usage=None
+    index=None, answerer=None, records=None, moves=None, usage=None, items=None
 ) -> tuple[discord.Client, app_commands.CommandTree]:
     intents = discord.Intents.default()
     client = discord.Client(intents=intents)
@@ -92,7 +93,7 @@ def build_client(
         except PokepasteFetchError as e:
             await interaction.followup.send(embed=_embed("import", str(e)))
             return
-        response = import_team_response(records, moves, interaction.user.id, side, raw_text)
+        response = import_team_response(records, moves, interaction.user.id, side, raw_text, items=items)
         await interaction.followup.send(embed=_embed("import", response))
 
     @tree.command(name="scout", description="Add or update one Pokemon in a stored team with only what you currently know.")
@@ -113,7 +114,7 @@ def build_client(
             records, moves, interaction.user.id, species,
             item=item, ability=ability, tera_type=tera_type,
             move1=move1, move2=move2, move3=move3, move4=move4,
-            side=side,
+            side=side, items=items,
         )
         await interaction.response.send_message(embed=_embed("scout", response))
 
@@ -156,6 +157,7 @@ def build_client(
             attacker,
             defender,
             move,
+            items=items,
             attacker_evs=resolved_attacker_evs,
             attacker_nature=resolved_attacker_nature,
             attacker_item=resolved_attacker_item,
@@ -209,29 +211,35 @@ def _load_moves() -> list:
     return json.loads(VGC_MOVES_PATH.read_text())["moves"]
 
 
+def _load_items() -> list:
+    return json.loads(VGC_ITEMS_PATH.read_text())
+
+
 def _load_usage() -> dict:
     if not USAGE_DATA_PATH.exists():
         return {}
     return json.loads(USAGE_DATA_PATH.read_text())
 
 
-def _build_real_index(records: list) -> ChromaIndex:
+def _build_real_index(records: list, items: list) -> ChromaIndex:
     # Fixed collection name: build() upserts, so restarting the bot refreshes
     # this same persisted collection in place instead of leaking a new one.
     index = ChromaIndex(embedder=SentenceTransformerEmbedder(), collection_name="pokemon")
-    index.build(records)
+    index.build(records, items=items)
     return index
 
 
 def main() -> None:
     token = os.environ["DISCORD_TOKEN"]
     records = _load_records()
+    items = _load_items()
     client, _tree = build_client(
-        index=_build_real_index(records),
+        index=_build_real_index(records, items),
         answerer=HaikuAnswerer(),
         records=records,
         moves=_load_moves(),
         usage=_load_usage(),
+        items=items,
     )
     client.run(token)
 

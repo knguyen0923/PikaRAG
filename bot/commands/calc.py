@@ -36,12 +36,28 @@ def _build_combatant(record: dict, evs: dict, nature: str, item: Optional[str], 
     }
 
 
+def _canonicalize_item(items: Optional[list], item: Optional[str]) -> tuple:
+    """Resolve `item` against `items` (vgc_items.json entries), if a list was given.
+
+    Returns (canonical_item_or_original, error_message_or_None). When `items`
+    is not provided, the item passes through unvalidated (backward-compatible
+    with callers that don't have an items list handy).
+    """
+    if not items or not item:
+        return item, None
+    record = find_record(items, item)
+    if record is None:
+        return item, _not_found_message("item", item, items)
+    return record["name"], None
+
+
 def calc_response(
     records: list,
     moves: list,
     attacker_name: str,
     defender_name: str,
     move_name: str,
+    items: Optional[list] = None,
     attacker_evs: str = "0/0/0/0/0/0",
     attacker_nature: str = "Hardy",
     attacker_item: Optional[str] = None,
@@ -68,6 +84,13 @@ def calc_response(
     move = find_record(moves, move_name)
     if move is None:
         return _not_found_message("move", move_name, moves)
+
+    attacker_item, error = _canonicalize_item(items, attacker_item)
+    if error:
+        return error
+    defender_item, error = _canonicalize_item(items, defender_item)
+    if error:
+        return error
 
     parsed_attacker_evs = _parse_evs(attacker_evs)
     if parsed_attacker_evs is None:

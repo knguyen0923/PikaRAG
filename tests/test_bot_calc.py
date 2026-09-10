@@ -84,6 +84,46 @@ def test_calc_response_flags_a_ko_chance_against_low_defender_hp():
     assert "ko chance" in response.lower()
 
 
+_ASSAULT_VEST = {"name": "Assault Vest", "description": "Boosts Sp. Def by 50%; prevents status moves."}
+_ITEMS = [_ASSAULT_VEST]
+
+
+def test_calc_response_unknown_attacker_item_suggests_close_matches_when_items_given():
+    response = calc_response(
+        _RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam",
+        attacker_item="Assult Vest", items=_ITEMS,
+    )
+
+    assert "no item" in response.lower()
+    assert "Assault Vest" in response
+
+
+def test_calc_response_skips_item_validation_when_no_items_list_given():
+    # Backward-compatible: callers that don't pass `items` (e.g. existing
+    # tests below) get the old pass-through-unvalidated behavior.
+    response = calc_response(
+        _RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam", attacker_item="Anything Goes"
+    )
+
+    assert "no item" not in response.lower()
+
+
+def test_calc_response_canonicalizes_item_casing_before_applying_its_effect(monkeypatch):
+    # Regression: a validated item must still reach damage_calc with its
+    # canonical casing, since damage_calc's item dicts are case-sensitive
+    # exact-match lookups against the raw string.
+    def _max_damage(response: str) -> int:
+        return int(response.split(": ")[1].split("-")[1].split(" ")[0])
+
+    baseline = calc_response(_RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam")
+    with_vest = calc_response(
+        _RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam",
+        defender_item="assault vest", items=_ITEMS,
+    )
+
+    assert _max_damage(with_vest) < _max_damage(baseline)
+
+
 def test_calc_response_defender_item_reduces_damage():
     def _max_damage(response: str) -> int:
         return int(response.split(": ")[1].split("-")[1].split(" ")[0])

@@ -19,6 +19,9 @@ _ICE_BEAM = {"name": "Ice Beam", "type": "Ice", "category": "Special", "power": 
 _WOOD_HAMMER = {"name": "Wood Hammer", "type": "Grass", "category": "Physical", "power": 120, "accuracy": 100, "pp": 15, "effect": None}
 _MOVES = [_ICE_BEAM, _WOOD_HAMMER]
 
+_FOCUS_SASH = {"name": "Focus Sash", "description": "Endures a hit that would KO from full HP, once."}
+_ITEMS = [_FOCUS_SASH]
+
 _ABOMASNOW_TEAM_MEMBER = {
     "species": "Abomasnow", "nickname": None, "gender": None, "item": "Focus Sash",
     "ability": "Snow Warning", "level": 50, "tera_type": "Ice",
@@ -144,6 +147,37 @@ def test_scout_response_normalizes_unrecognized_tera_type():
 
     assert "not recognized" in response.lower()
     assert get_team(705, "opponent")[0]["tera_type"] is None
+
+
+def test_import_team_response_flags_unmatched_item_when_items_given():
+    response = import_team_response(
+        _RECORDS, _MOVES, 801, "mine", "Abomasnow @ Focus Sesh\n- Wood Hammer\n", items=_ITEMS
+    )
+
+    assert "not recognized" in response.lower()
+    assert "Focus Sesh" in response
+
+
+def test_import_team_response_canonicalizes_item_casing_when_items_given():
+    response = import_team_response(
+        _RECORDS, _MOVES, 802, "mine", "Abomasnow @ focus sash\n- Wood Hammer\n", items=_ITEMS
+    )
+
+    assert "not recognized" not in response.lower()
+    assert get_team(802, "mine")[0]["item"] == "Focus Sash"
+
+
+def test_import_team_response_skips_item_validation_when_no_items_list_given():
+    response = import_team_response(_RECORDS, _MOVES, 803, "mine", "Abomasnow @ Anything Goes\n- Wood Hammer\n")
+
+    assert "not recognized" not in response.lower()
+    assert get_team(803, "mine")[0]["item"] == "Anything Goes"
+
+
+def test_scout_response_flags_unmatched_item_when_items_given():
+    response = scout_response(_RECORDS, _MOVES, 804, "Abomasnow", item="Focus Sesh", items=_ITEMS, side="opponent")
+
+    assert "not recognized" in response.lower()
 
 
 def test_scout_response_reports_team_full_without_crashing():

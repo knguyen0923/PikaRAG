@@ -28,7 +28,7 @@ def view_team_response(user_id: int, side: str) -> str:
     return format_team_block(team, _SIDE_LABELS[side])
 
 
-def _validate_member(records: list, moves: list, member: dict) -> list:
+def _validate_member(records: list, moves: list, items: list, member: dict) -> list:
     warnings = []
     if find_record(records, member["species"]) is None:
         suggestions = suggest_names(records, member["species"])
@@ -36,6 +36,16 @@ def _validate_member(records: list, moves: list, member: dict) -> list:
             warnings.append(f"'{member['species']}' not recognized. Did you mean: {', '.join(suggestions)}?")
         else:
             warnings.append(f"'{member['species']}' not recognized.")
+    if items and member["item"] is not None:
+        item_record = find_record(items, member["item"])
+        if item_record is None:
+            suggestions = suggest_names(items, member["item"])
+            if suggestions:
+                warnings.append(f"Item '{member['item']}' not recognized. Did you mean: {', '.join(suggestions)}?")
+            else:
+                warnings.append(f"Item '{member['item']}' not recognized.")
+        else:
+            member["item"] = item_record["name"]
     for move_name in member["moves"]:
         if find_record(moves, move_name) is None:
             suggestions = suggest_names(moves, move_name)
@@ -61,7 +71,9 @@ def _format_warnings(warnings: list) -> list:
     return ["", "Warnings:"] + [f"- {w}" for w in warnings]
 
 
-def import_team_response(records: list, moves: list, user_id: int, side: str, pokepaste_text: str) -> str:
+def import_team_response(
+    records: list, moves: list, user_id: int, side: str, pokepaste_text: str, items: list = None
+) -> str:
     try:
         members = parse_pokepaste(pokepaste_text)
     except PokepasteParseError as e:
@@ -69,7 +81,7 @@ def import_team_response(records: list, moves: list, user_id: int, side: str, po
 
     warnings = []
     for member in members:
-        warnings.extend(_validate_member(records, moves, member))
+        warnings.extend(_validate_member(records, moves, items, member))
 
     try:
         store_team(user_id, side, members)
@@ -99,6 +111,7 @@ def scout_response(
     move3=None,
     move4=None,
     side: str = "opponent",
+    items: list = None,
 ) -> str:
     member = {
         "species": species, "nickname": None, "gender": None,
@@ -106,7 +119,7 @@ def scout_response(
         "evs": dict(_EMPTY_EVS), "ivs": dict(_MAX_IVS), "nature": "Hardy",
         "moves": [m for m in (move1, move2, move3, move4) if m],
     }
-    warnings = _validate_member(records, moves, member)
+    warnings = _validate_member(records, moves, items, member)
 
     try:
         stored = merge_scout(user_id, side, member)

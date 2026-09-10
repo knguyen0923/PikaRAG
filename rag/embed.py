@@ -24,6 +24,17 @@ def build_chunks(record: dict) -> list[dict]:
     ]
 
 
+def build_item_chunks(item: dict) -> list[dict]:
+    """Turn one vgc_items.json entry into a retrievable text chunk.
+
+    One chunk per item, same granularity rationale as build_chunks: precise
+    retrieval for "what does <item> do" questions.
+    """
+    name = item["name"]
+    text = f"{name}: {item['description']}"
+    return [{"id": f"item-{name}", "item": name, "chunk_type": "item", "text": text}]
+
+
 class SentenceTransformerEmbedder:
     """Local embedding via sentence-transformers.
 
