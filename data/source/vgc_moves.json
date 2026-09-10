@@ -1,10 +1,10 @@
 {
   "meta": {
-    "regulation": "M-B",
+    "regulation": "M-C",
     "season": "All",
     "source": "VGC",
-    "pokemon_count": 315,
-    "moves_count": 496
+    "pokemon_count": 345,
+    "moves_count": 501
   },
   "pokemon": [
     {
@@ -2108,6 +2108,202 @@
         "Normal",
         "Ghost"
       ]
+    },
+    {
+      "name": "Salamence",
+      "types": [
+        "Dragon",
+        "Flying"
+      ]
+    },
+    {
+      "name": "Mega Salamence",
+      "types": [
+        "Dragon",
+        "Flying"
+      ]
+    },
+    {
+      "name": "Golisopod",
+      "types": [
+        "Bug",
+        "Water"
+      ]
+    },
+    {
+      "name": "Mega Golisopod",
+      "types": [
+        "Bug",
+        "Steel"
+      ]
+    },
+    {
+      "name": "Baxcalibur",
+      "types": [
+        "Dragon",
+        "Ice"
+      ]
+    },
+    {
+      "name": "Mega Baxcalibur",
+      "types": [
+        "Dragon",
+        "Ice"
+      ]
+    },
+    {
+      "name": "Rillaboom",
+      "types": [
+        "Grass"
+      ]
+    },
+    {
+      "name": "Wigglytuff",
+      "types": [
+        "Normal",
+        "Fairy"
+      ]
+    },
+    {
+      "name": "Persian",
+      "types": [
+        "Normal"
+      ]
+    },
+    {
+      "name": "Persian [Alolan Form]",
+      "types": [
+        "Dark"
+      ]
+    },
+    {
+      "name": "Farfetch'd",
+      "types": [
+        "Normal",
+        "Flying"
+      ]
+    },
+    {
+      "name": "Mr. Mime",
+      "types": [
+        "Psychic",
+        "Fairy"
+      ]
+    },
+    {
+      "name": "Swalot",
+      "types": [
+        "Poison"
+      ]
+    },
+    {
+      "name": "Gogoat",
+      "types": [
+        "Grass"
+      ]
+    },
+    {
+      "name": "Cinderace",
+      "types": [
+        "Fire"
+      ]
+    },
+    {
+      "name": "Inteleon",
+      "types": [
+        "Water"
+      ]
+    },
+    {
+      "name": "Thievul",
+      "types": [
+        "Dark"
+      ]
+    },
+    {
+      "name": "Toxtricity",
+      "types": [
+        "Electric",
+        "Poison"
+      ]
+    },
+    {
+      "name": "Grapploct",
+      "types": [
+        "Fighting"
+      ]
+    },
+    {
+      "name": "Perrserker",
+      "types": [
+        "Steel"
+      ]
+    },
+    {
+      "name": "Sirfetch'd",
+      "types": [
+        "Fighting"
+      ]
+    },
+    {
+      "name": "Pincurchin",
+      "types": [
+        "Electric"
+      ]
+    },
+    {
+      "name": "Indeedee",
+      "types": [
+        "Psychic",
+        "Normal"
+      ]
+    },
+    {
+      "name": "Arboliva",
+      "types": [
+        "Grass",
+        "Normal"
+      ]
+    },
+    {
+      "name": "Pawmot",
+      "types": [
+        "Electric",
+        "Fighting"
+      ]
+    },
+    {
+      "name": "Squawkabilly",
+      "types": [
+        "Normal",
+        "Flying"
+      ]
+    },
+    {
+      "name": "Mabosstiff",
+      "types": [
+        "Dark"
+      ]
+    },
+    {
+      "name": "Mega Absol Z",
+      "types": [
+        "Dark",
+        "Ghost"
+      ]
+    },
+    {
+      "name": "Mega Garchomp Z",
+      "types": [
+        "Dragon"
+      ]
+    },
+    {
+      "name": "Mega Lucario Z",
+      "types": [
+        "Fighting",
+        "Steel"
+      ]
     }
   ],
   "moves": [
@@ -3046,6 +3242,15 @@
       "accuracy": 90,
       "pp": 12,
       "effect": "The user attacks twice in a row."
+    },
+    {
+      "name": "Double Shock",
+      "type": "Electric",
+      "category": "Physical",
+      "power": 120,
+      "accuracy": 100,
+      "pp": 5,
+      "effect": "The user loses its Electric type after using this move. Classified as a punching move as of Regulation M-C."
     },
     {
       "name": "Double Team",
@@ -4344,15 +4549,6 @@
       "effect": "Restores 1/4 of the max HP of the user and its allies."
     },
     {
-      "name": "Light of Ruin",
-      "type": "Fairy",
-      "category": "Special",
-      "power": 140,
-      "accuracy": 90,
-      "pp": 8,
-      "effect": "The user takes 1/2 of the damage dealt by this move."
-    },
-    {
       "name": "Light Screen",
       "type": "Psychic",
       "category": "Status",
@@ -4360,6 +4556,15 @@
       "accuracy": 101,
       "pp": 20,
       "effect": "Gives the user’s side the Light Screen status for 5 turns."
+    },
+    {
+      "name": "Light of Ruin",
+      "type": "Fairy",
+      "category": "Special",
+      "power": 140,
+      "accuracy": 90,
+      "pp": 8,
+      "effect": "The user takes 1/2 of the damage dealt by this move."
     },
     {
       "name": "Liquidation",
@@ -4533,6 +4738,15 @@
       "effect": "Lowers the target’s Sp. Def stat by 2 stages."
     },
     {
+      "name": "Meteor Assault",
+      "type": "Fighting",
+      "category": "Physical",
+      "power": 170,
+      "accuracy": 100,
+      "pp": 5,
+      "effect": "The user can’t move on the next turn after this move is used."
+    },
+    {
       "name": "Meteor Beam",
       "type": "Rock",
       "category": "Special",
@@ -4549,6 +4763,15 @@
       "accuracy": 90,
       "pp": 12,
       "effect": "Has a 20% chance of boosting the user’s Attack stat by 1 stage."
+    },
+    {
+      "name": "Milk Drink",
+      "type": "Normal",
+      "category": "Status",
+      "power": null,
+      "accuracy": 101,
+      "pp": 10,
+      "effect": "Restores the target’s HP by up to half of its max HP. As of Regulation M-C, this move can target an ally as well as the user."
     },
     {
       "name": "Minimize",
@@ -5550,6 +5773,15 @@
       "effect": "Restores 1/2 of the user’s max HP."
     },
     {
+      "name": "Slash",
+      "type": "Normal",
+      "category": "Physical",
+      "power": 80,
+      "accuracy": 100,
+      "pp": 20,
+      "effect": "Has a high critical-hit ratio."
+    },
+    {
       "name": "Sleep Powder",
       "type": "Grass",
       "category": "Status",
@@ -5620,6 +5852,15 @@
       "accuracy": 95,
       "pp": 16,
       "effect": "Lowers targets’ Sp. Atk stats by 1 stage."
+    },
+    {
+      "name": "Snipe Shot",
+      "type": "Water",
+      "category": "Physical",
+      "power": 85,
+      "accuracy": 100,
+      "pp": 15,
+      "effect": "This move can be used on the target regardless of effects that redirect moves to other Pokémon. This move also ignores the Ability of a target that would draw in the move."
     },
     {
       "name": "Snore",
@@ -5852,7 +6093,7 @@
       "category": "Status",
       "power": null,
       "accuracy": 100,
-      "pp": 12,
+      "pp": 8,
       "effect": "Restores the user’s HP by an amount equal to the target’s Attack stat. Lowers the target’s Attack stat by 1 stage."
     },
     {
@@ -6500,7 +6741,7 @@
       "category": "Status",
       "power": null,
       "accuracy": 101,
-      "pp": 12,
+      "pp": 8,
       "effect": "Gives the user’s spot the Wish status."
     },
     {

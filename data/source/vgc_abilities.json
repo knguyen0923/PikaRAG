@@ -32,6 +32,10 @@
     "description": "The Pokémon and its allies cannot gain the Infatuated, Taunted, Unable to Repeat, Move Disabled, Healing Prevented, or Encore statuses."
   },
   {
+    "name": "Aura Guard",
+    "description": "Halves the damage the Pokémon takes from contact moves. Introduced in Regulation M-C as Mega Lucario Z's Ability."
+  },
+  {
     "name": "Battle Armor",
     "description": "Attacks landed on the Pokémon will never be critical hits."
   },
@@ -544,6 +548,10 @@
     "description": "When the Pokémon is hit by a contact move, the attacker takes damage equal to 1/8 of its max HP."
   },
   {
+    "name": "Run Away",
+    "description": "As of Regulation M-C, works as an in-battle Ability: allows the Pokémon to switch out."
+  },
+  {
     "name": "Sand Force",
     "description": "Boosts the power of the Pokémon's Rock-, Ground-, and Steel-type moves by 30% in a sandstorm."
   },
@@ -730,6 +738,10 @@
   {
     "name": "Telepathy",
     "description": "The Pokémon dodges attacks from its allies."
+  },
+  {
+    "name": "Thermal Exchange",
+    "description": "Boosts the Pokémon’s Attack stat when it’s hit by a Fire-type move. The Pokémon cannot be burned."
   },
   {
     "name": "Thick Fat",

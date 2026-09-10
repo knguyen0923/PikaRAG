@@ -95,7 +95,7 @@
       "Worry Seed"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -192,7 +192,7 @@
       "Worry Seed"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -271,6 +271,7 @@
       "Shadow Ball",
       "Shadow Claw",
       "Shadow Sneak",
+      "Slash",
       "Sleep Talk",
       "Snarl",
       "Snore",
@@ -297,7 +298,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -372,6 +373,7 @@
       "Shadow Ball",
       "Shadow Claw",
       "Shadow Sneak",
+      "Slash",
       "Sleep Talk",
       "Snarl",
       "Snore",
@@ -398,7 +400,29 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
+    ]
+  },
+  {
+    "name": "Mega Absol Z",
+    "types": [
+      "Dark",
+      "Ghost"
+    ],
+    "base_stats": {
+      "hp": 65,
+      "attack": 154,
+      "defense": 60,
+      "sp_attack": 75,
+      "sp_defense": 60,
+      "speed": 151
+    },
+    "abilities": [
+      "Sharpness"
+    ],
+    "learnset": [],
+    "legal_in": [
+      "M-C"
     ]
   },
   {
@@ -458,6 +482,7 @@
       "Shadow Ball",
       "Shadow Claw",
       "Shadow Sneak",
+      "Slash",
       "Sleep Talk",
       "Snore",
       "Solar Blade",
@@ -472,7 +497,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -532,6 +557,7 @@
       "Shadow Ball",
       "Shadow Claw",
       "Shadow Sneak",
+      "Slash",
       "Sleep Talk",
       "Snore",
       "Solar Blade",
@@ -546,7 +572,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -640,7 +666,7 @@
       "Wide Guard"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -729,7 +755,7 @@
       "Wide Guard"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -852,7 +878,7 @@
       "Whirlpool"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -969,7 +995,7 @@
       "Whirlpool"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -1071,7 +1097,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -1165,7 +1191,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -1237,7 +1263,7 @@
       "Wonder Room"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -1335,7 +1361,7 @@
       "Wonder Room"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -1430,7 +1456,7 @@
       "Wonder Room"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -1530,7 +1556,7 @@
       "Zap Cannon"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -1626,7 +1652,7 @@
       "Zap Cannon"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -1727,7 +1753,7 @@
       "Vacuum Wave"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -1806,7 +1832,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -1887,7 +1913,7 @@
       "X-Scissor"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -1990,7 +2016,71 @@
       "Wrap"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
+    ]
+  },
+  {
+    "name": "Arboliva",
+    "types": [
+      "Grass",
+      "Normal"
+    ],
+    "base_stats": {
+      "hp": 78,
+      "attack": 69,
+      "defense": 90,
+      "sp_attack": 125,
+      "sp_defense": 109,
+      "speed": 39
+    },
+    "abilities": [
+      "Harvest"
+    ],
+    "learnset": [
+      "Alluring Voice",
+      "Bullet Seed",
+      "Charm",
+      "Dazzling Gleam",
+      "Earth Power",
+      "Encore",
+      "Endure",
+      "Energy Ball",
+      "Facade",
+      "Flail",
+      "Fling",
+      "Giga Drain",
+      "Giga Impact",
+      "Grass Knot",
+      "Grassy Terrain",
+      "Growth",
+      "Helping Hand",
+      "Hyper Beam",
+      "Hyper Voice",
+      "Leaf Storm",
+      "Leech Seed",
+      "Light Screen",
+      "Mirror Coat",
+      "Petal Blizzard",
+      "Petal Dance",
+      "Pollen Puff",
+      "Protect",
+      "Psych Up",
+      "Reflect",
+      "Rest",
+      "Safeguard",
+      "Seed Bomb",
+      "Sleep Talk",
+      "Solar Beam",
+      "Solar Blade",
+      "Substitute",
+      "Sunny Day",
+      "Sweet Scent",
+      "Terrain Pulse",
+      "Trailblaze",
+      "Weather Ball"
+    ],
+    "legal_in": [
+      "M-C"
     ]
   },
   {
@@ -2079,7 +2169,7 @@
       "Will-O-Wisp"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -2169,7 +2259,7 @@
       "Will-O-Wisp"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -2219,10 +2309,8 @@
       "Iron Defense",
       "Iron Head",
       "Light Screen",
-      "Metal Burst",
       "Metal Sound",
       "Meteor Beam",
-      "Mirror Coat",
       "Night Slash",
       "Outrage",
       "Protect",
@@ -2232,6 +2320,7 @@
       "Rock Slide",
       "Rock Tomb",
       "Scary Face",
+      "Slash",
       "Sleep Talk",
       "Smack Down",
       "Snarl",
@@ -2246,7 +2335,7 @@
       "Thunderbolt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -2340,7 +2429,7 @@
       "X-Scissor"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -2419,7 +2508,7 @@
       "Will-O-Wisp"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -2498,7 +2587,7 @@
       "Wish"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -2604,7 +2693,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -2709,7 +2798,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -2801,7 +2890,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -2884,7 +2973,7 @@
       "Wide Guard"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -2962,7 +3051,7 @@
       "Wide Guard"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -3064,7 +3153,7 @@
       "Whirlpool"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -3162,7 +3251,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -3255,7 +3344,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -3336,6 +3425,7 @@
       "Screech",
       "Shadow Claw",
       "Shell Smash",
+      "Slash",
       "Sleep Talk",
       "Sludge Bomb",
       "Sludge Wave",
@@ -3360,7 +3450,7 @@
       "X-Scissor"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -3454,7 +3544,7 @@
       "X-Scissor"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -3528,7 +3618,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -3602,7 +3692,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -3699,7 +3789,97 @@
       "Wide Guard"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
+    ]
+  },
+  {
+    "name": "Baxcalibur",
+    "types": [
+      "Dragon",
+      "Ice"
+    ],
+    "base_stats": {
+      "hp": 115,
+      "attack": 145,
+      "defense": 92,
+      "sp_attack": 75,
+      "sp_defense": 86,
+      "speed": 87
+    },
+    "abilities": [
+      "Ice Body",
+      "Thermal Exchange"
+    ],
+    "learnset": [
+      "Aerial Ace",
+      "Avalanche",
+      "Bite",
+      "Blizzard",
+      "Body Press",
+      "Body Slam",
+      "Breaking Swipe",
+      "Brick Break",
+      "Bulldoze",
+      "Crunch",
+      "Dig",
+      "Double-Edge",
+      "Draco Meteor",
+      "Dragon Cheer",
+      "Dragon Claw",
+      "Dragon Dance",
+      "Dragon Pulse",
+      "Dragon Tail",
+      "Earthquake",
+      "Endure",
+      "Facade",
+      "Focus Energy",
+      "Giga Impact",
+      "Helping Hand",
+      "High Horsepower",
+      "Hyper Beam",
+      "Ice Beam",
+      "Ice Fang",
+      "Ice Shard",
+      "Icicle Crash",
+      "Icicle Spear",
+      "Icy Wind",
+      "Iron Head",
+      "Outrage",
+      "Protect",
+      "Rain Dance",
+      "Rest",
+      "Scale Shot",
+      "Scary Face",
+      "Sleep Talk",
+      "Snowscape",
+      "Stomping Tantrum",
+      "Substitute",
+      "Swords Dance",
+      "Thunder Fang",
+      "Zen Headbutt"
+    ],
+    "legal_in": [
+      "M-C"
+    ]
+  },
+  {
+    "name": "Mega Baxcalibur",
+    "types": [
+      "Dragon",
+      "Ice"
+    ],
+    "base_stats": {
+      "hp": 115,
+      "attack": 175,
+      "defense": 117,
+      "sp_attack": 105,
+      "sp_defense": 101,
+      "speed": 87
+    },
+    "abilities": [],
+    "learnset": [],
+    "legal_in": [
+      "M-C"
     ]
   },
   {
@@ -3781,6 +3961,7 @@
       "Scary Face",
       "Shadow Claw",
       "Sheer Cold",
+      "Slash",
       "Sleep Talk",
       "Snarl",
       "Snore",
@@ -3802,7 +3983,7 @@
       "Yawn"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -3890,7 +4071,7 @@
       "X-Scissor"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -3975,7 +4156,7 @@
       "X-Scissor"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -4038,7 +4219,7 @@
       "Zap Cannon"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -4147,7 +4328,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -4250,7 +4431,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -4340,6 +4521,7 @@
       "Scorching Sands",
       "Seismic Toss",
       "Shadow Claw",
+      "Slash",
       "Sleep Talk",
       "Snore",
       "Solar Beam",
@@ -4360,7 +4542,7 @@
       "Will-O-Wisp"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -4447,6 +4629,7 @@
       "Round",
       "Scorching Sands",
       "Shadow Claw",
+      "Slash",
       "Sleep Talk",
       "Snore",
       "Solar Beam",
@@ -4467,7 +4650,7 @@
       "Will-O-Wisp"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -4566,7 +4749,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -4663,7 +4846,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -4734,7 +4917,7 @@
       "Weather Ball"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -4805,7 +4988,7 @@
       "Weather Ball"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -4876,7 +5059,7 @@
       "Weather Ball"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -4947,7 +5130,7 @@
       "Weather Ball"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -5026,7 +5209,7 @@
       "X-Scissor"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -5109,7 +5292,7 @@
       "Will-O-Wisp"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -5186,7 +5369,7 @@
       "Will-O-Wisp"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -5281,6 +5464,7 @@
       "Scorching Sands",
       "Seismic Toss",
       "Shadow Claw",
+      "Slash",
       "Sleep Talk",
       "Snore",
       "Solar Beam",
@@ -5297,7 +5481,7 @@
       "Will-O-Wisp"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -5384,6 +5568,7 @@
       "Scorching Sands",
       "Seismic Toss",
       "Shadow Claw",
+      "Slash",
       "Sleep Talk",
       "Snore",
       "Solar Beam",
@@ -5400,7 +5585,7 @@
       "Will-O-Wisp"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -5487,6 +5672,7 @@
       "Scorching Sands",
       "Seismic Toss",
       "Shadow Claw",
+      "Slash",
       "Sleep Talk",
       "Snore",
       "Solar Beam",
@@ -5503,7 +5689,7 @@
       "Will-O-Wisp"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -5620,7 +5806,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -5730,7 +5916,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -5827,7 +6013,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -5915,7 +6101,93 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
+    ]
+  },
+  {
+    "name": "Cinderace",
+    "types": [
+      "Fire"
+    ],
+    "base_stats": {
+      "hp": 80,
+      "attack": 116,
+      "defense": 75,
+      "sp_attack": 65,
+      "sp_defense": 75,
+      "speed": 119
+    },
+    "abilities": [
+      "Blaze"
+    ],
+    "learnset": [
+      "Acrobatics",
+      "Agility",
+      "Ally Switch",
+      "Assurance",
+      "Attract",
+      "Baton Pass",
+      "Blast Burn",
+      "Blaze Kick",
+      "Bounce",
+      "Bulk Up",
+      "Burning Jealousy",
+      "Coaching",
+      "Counter",
+      "Double-Edge",
+      "Electro Ball",
+      "Endure",
+      "Facade",
+      "Feint",
+      "Fire Blast",
+      "Fire Fang",
+      "Fire Punch",
+      "Fire Spin",
+      "Flame Charge",
+      "Flamethrower",
+      "Flare Blitz",
+      "Fling",
+      "Focus Blast",
+      "Focus Energy",
+      "Giga Impact",
+      "Gunk Shot",
+      "Heat Wave",
+      "Helping Hand",
+      "High Jump Kick",
+      "Hyper Beam",
+      "Iron Head",
+      "Low Kick",
+      "Low Sweep",
+      "Mega Kick",
+      "Mud Shot",
+      "Mud-Slap",
+      "Overheat",
+      "Protect",
+      "Quick Attack",
+      "Rest",
+      "Reversal",
+      "Round",
+      "Scorching Sands",
+      "Shadow Ball",
+      "Sleep Talk",
+      "Smack Down",
+      "Snarl",
+      "Snore",
+      "Substitute",
+      "Sucker Punch",
+      "Sunny Day",
+      "Super Fang",
+      "Swords Dance",
+      "Taunt",
+      "Temper Flare",
+      "Trailblaze",
+      "U-turn",
+      "Weather Ball",
+      "Will-O-Wisp",
+      "Zen Headbutt"
+    ],
+    "legal_in": [
+      "M-C"
     ]
   },
   {
@@ -5995,7 +6267,7 @@
       "Weather Ball"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -6132,7 +6404,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -6246,7 +6518,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -6333,7 +6605,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -6423,7 +6695,7 @@
       "Wide Guard"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -6504,7 +6776,7 @@
       "U-turn"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -6599,7 +6871,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -6685,7 +6957,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -6794,7 +7066,7 @@
       "Worry Seed"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -6887,7 +7159,7 @@
       "Upper Hand"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -6970,7 +7242,7 @@
       "Wild Charge"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -7072,7 +7344,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -7167,7 +7439,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -7261,7 +7533,7 @@
       "Wild Charge"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -7285,7 +7557,7 @@
       "Transform"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -7365,7 +7637,7 @@
       "Whirlpool"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -7440,7 +7712,7 @@
       "Whirlpool"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -7531,7 +7803,7 @@
       "Will-O-Wisp"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -7656,7 +7928,7 @@
       "Zap Cannon"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -7762,7 +8034,7 @@
       "Wrap"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -7863,7 +8135,7 @@
       "Whirlwind"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -7952,7 +8224,7 @@
       "Whirlwind"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -8057,7 +8329,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -8154,7 +8426,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -8263,7 +8535,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -8365,7 +8637,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -8441,7 +8713,7 @@
       "Wild Charge"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -8547,7 +8819,7 @@
       "Yawn"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -8628,7 +8900,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -8726,7 +8998,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -8793,6 +9065,7 @@
       "Scary Face",
       "Scorching Sands",
       "Shadow Claw",
+      "Slash",
       "Sleep Talk",
       "Sludge Bomb",
       "Smart Strike",
@@ -8809,7 +9082,7 @@
       "X-Scissor"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -8885,7 +9158,7 @@
       "X-Scissor"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -8959,7 +9232,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -9032,7 +9305,94 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
+    ]
+  },
+  {
+    "name": "Farfetch'd",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
+    "base_stats": {
+      "hp": 52,
+      "attack": 90,
+      "defense": 55,
+      "sp_attack": 58,
+      "sp_defense": 62,
+      "speed": 60
+    },
+    "abilities": [
+      "Defiant",
+      "Inner Focus",
+      "Keen Eye"
+    ],
+    "learnset": [
+      "Acrobatics",
+      "Aerial Ace",
+      "Agility",
+      "Air Cutter",
+      "Air Slash",
+      "Attract",
+      "Baton Pass",
+      "Body Slam",
+      "Brave Bird",
+      "Brutal Swing",
+      "Close Combat",
+      "Covet",
+      "Curse",
+      "Defog",
+      "Detect",
+      "Double Team",
+      "Double-Edge",
+      "Dual Wingbeat",
+      "Endure",
+      "Facade",
+      "Feather Dance",
+      "Feint",
+      "Final Gambit",
+      "First Impression",
+      "Flail",
+      "Fly",
+      "Focus Energy",
+      "Heat Wave",
+      "Helping Hand",
+      "Iron Tail",
+      "Knock Off",
+      "Last Resort",
+      "Leaf Blade",
+      "Mud-Slap",
+      "Night Slash",
+      "Pluck",
+      "Poison Jab",
+      "Protect",
+      "Psych Up",
+      "Quick Attack",
+      "Reflect",
+      "Rest",
+      "Roost",
+      "Round",
+      "Simple Beam",
+      "Sky Attack",
+      "Slash",
+      "Sleep Talk",
+      "Snore",
+      "Solar Blade",
+      "Steel Wing",
+      "Substitute",
+      "Sunny Day",
+      "Swagger",
+      "Swords Dance",
+      "Tailwind",
+      "Thief",
+      "Throat Chop",
+      "Toxic",
+      "U-turn",
+      "Uproar",
+      "Whirlwind"
+    ],
+    "legal_in": [
+      "M-C"
     ]
   },
   {
@@ -9127,7 +9487,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -9220,6 +9580,7 @@
       "Screech",
       "Seismic Toss",
       "Shadow Claw",
+      "Slash",
       "Sleep Talk",
       "Snarl",
       "Snore",
@@ -9240,7 +9601,7 @@
       "Whirlpool"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -9345,7 +9706,7 @@
       "Whirlpool"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -9415,7 +9776,7 @@
       "U-turn"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -9504,7 +9865,7 @@
       "Zap Cannon"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -9575,7 +9936,7 @@
       "Worry Seed"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -9638,7 +9999,7 @@
       "Wish"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -9717,7 +10078,7 @@
       "Worry Seed"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -9819,7 +10180,7 @@
       "Zap Cannon"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -9918,7 +10279,7 @@
       "Will-O-Wisp"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -10009,7 +10370,7 @@
       "Will-O-Wisp"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -10076,7 +10437,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -10184,6 +10545,7 @@
       "Shadow Claw",
       "Shadow Sneak",
       "Skill Swap",
+      "Slash",
       "Sleep Talk",
       "Snore",
       "Solar Blade",
@@ -10213,7 +10575,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -10318,6 +10680,7 @@
       "Shadow Claw",
       "Shadow Sneak",
       "Skill Swap",
+      "Slash",
       "Sleep Talk",
       "Snore",
       "Solar Blade",
@@ -10347,7 +10710,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -10431,7 +10794,7 @@
       "Venoshock"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -10504,6 +10867,7 @@
       "Scary Face",
       "Scorching Sands",
       "Shadow Claw",
+      "Slash",
       "Sleep Talk",
       "Snore",
       "Spikes",
@@ -10521,7 +10885,7 @@
       "Whirlpool"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -10592,6 +10956,7 @@
       "Scary Face",
       "Scorching Sands",
       "Shadow Claw",
+      "Slash",
       "Sleep Talk",
       "Snore",
       "Spikes",
@@ -10608,7 +10973,28 @@
       "Toxic"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
+    ]
+  },
+  {
+    "name": "Mega Garchomp Z",
+    "types": [
+      "Dragon"
+    ],
+    "base_stats": {
+      "hp": 108,
+      "attack": 130,
+      "defense": 85,
+      "sp_attack": 141,
+      "sp_defense": 85,
+      "speed": 151
+    },
+    "abilities": [
+      "Levitate"
+    ],
+    "learnset": [],
+    "legal_in": [
+      "M-C"
     ]
   },
   {
@@ -10723,7 +11109,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -10832,7 +11218,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -10910,7 +11296,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -11025,7 +11411,7 @@
       "Zap Cannon"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -11134,7 +11520,7 @@
       "Wonder Room"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -11200,7 +11586,7 @@
       "Trick"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -11289,7 +11675,7 @@
       "Yawn"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -11374,7 +11760,7 @@
       "Weather Ball"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -11456,7 +11842,7 @@
       "Weather Ball"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -11526,7 +11912,7 @@
       "Venoshock"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -11595,7 +11981,7 @@
       "Venoshock"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -11680,6 +12066,7 @@
       "Screech",
       "Skitter Smack",
       "Sky Attack",
+      "Slash",
       "Sleep Talk",
       "Sludge Bomb",
       "Snore",
@@ -11705,7 +12092,196 @@
       "X-Scissor"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
+    ]
+  },
+  {
+    "name": "Gogoat",
+    "types": [
+      "Grass"
+    ],
+    "base_stats": {
+      "hp": 123,
+      "attack": 100,
+      "defense": 62,
+      "sp_attack": 97,
+      "sp_defense": 81,
+      "speed": 68
+    },
+    "abilities": [
+      "Sap Sipper"
+    ],
+    "learnset": [
+      "Aerial Ace",
+      "Attract",
+      "Body Slam",
+      "Bounce",
+      "Brick Break",
+      "Bulk Up",
+      "Bulldoze",
+      "Bullet Seed",
+      "Dig",
+      "Double Team",
+      "Double-Edge",
+      "Earthquake",
+      "Endeavor",
+      "Endure",
+      "Energy Ball",
+      "Facade",
+      "Giga Drain",
+      "Giga Impact",
+      "Grass Knot",
+      "Grassy Glide",
+      "Grassy Terrain",
+      "Growth",
+      "Helping Hand",
+      "High Horsepower",
+      "Horn Leech",
+      "Hyper Beam",
+      "Iron Tail",
+      "Leaf Blade",
+      "Leaf Storm",
+      "Leech Seed",
+      "Milk Drink",
+      "Mud Shot",
+      "Mud-Slap",
+      "Payback",
+      "Play Rough",
+      "Protect",
+      "Rain Dance",
+      "Rest",
+      "Roar",
+      "Rock Slide",
+      "Round",
+      "Seed Bomb",
+      "Sleep Talk",
+      "Snore",
+      "Solar Beam",
+      "Stomping Tantrum",
+      "Substitute",
+      "Sunny Day",
+      "Superpower",
+      "Surf",
+      "Swagger",
+      "Synthesis",
+      "Throat Chop",
+      "Toxic",
+      "Trailblaze",
+      "Wild Charge",
+      "Worry Seed",
+      "Zen Headbutt"
+    ],
+    "legal_in": [
+      "M-C"
+    ]
+  },
+  {
+    "name": "Golisopod",
+    "types": [
+      "Bug",
+      "Water"
+    ],
+    "base_stats": {
+      "hp": 75,
+      "attack": 125,
+      "defense": 140,
+      "sp_attack": 60,
+      "sp_defense": 90,
+      "speed": 40
+    },
+    "abilities": [],
+    "learnset": [
+      "Aerial Ace",
+      "Assurance",
+      "Attract",
+      "Blizzard",
+      "Brick Break",
+      "Bug Bite",
+      "Bug Buzz",
+      "Bulk Up",
+      "Close Combat",
+      "Dark Pulse",
+      "Dive",
+      "Double Team",
+      "Drill Run",
+      "Endeavor",
+      "Endure",
+      "Facade",
+      "First Impression",
+      "Fling",
+      "Focus Blast",
+      "Frost Breath",
+      "Giga Impact",
+      "Hyper Beam",
+      "Ice Beam",
+      "Icy Wind",
+      "Iron Defense",
+      "Iron Head",
+      "Knock Off",
+      "Leech Life",
+      "Liquidation",
+      "Mud Shot",
+      "Muddy Water",
+      "Pain Split",
+      "Payback",
+      "Pin Missile",
+      "Poison Jab",
+      "Protect",
+      "Psych Up",
+      "Rain Dance",
+      "Razor Shell",
+      "Rest",
+      "Rock Slide",
+      "Rock Tomb",
+      "Round",
+      "Scald",
+      "Screech",
+      "Shadow Claw",
+      "Skitter Smack",
+      "Slash",
+      "Sleep Talk",
+      "Sludge Bomb",
+      "Sludge Wave",
+      "Snarl",
+      "Snore",
+      "Spikes",
+      "Spite",
+      "Struggle Bug",
+      "Substitute",
+      "Sucker Punch",
+      "Surf",
+      "Swagger",
+      "Swords Dance",
+      "Taunt",
+      "Throat Chop",
+      "Toxic",
+      "Venoshock",
+      "Water Pulse",
+      "Waterfall",
+      "X-Scissor"
+    ],
+    "legal_in": [
+      "M-C"
+    ]
+  },
+  {
+    "name": "Mega Golisopod",
+    "types": [
+      "Bug",
+      "Steel"
+    ],
+    "base_stats": {
+      "hp": 75,
+      "attack": 150,
+      "defense": 175,
+      "sp_attack": 70,
+      "sp_defense": 120,
+      "speed": 40
+    },
+    "abilities": [],
+    "learnset": [],
+    "legal_in": [
+      "M-C"
     ]
   },
   {
@@ -11817,7 +12393,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -11918,7 +12494,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -12011,7 +12587,7 @@
       "Weather Ball"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -12100,7 +12676,7 @@
       "Weather Ball"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -12193,7 +12769,7 @@
       "Worry Seed"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -12286,7 +12862,7 @@
       "Worry Seed"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -12379,7 +12955,7 @@
       "Worry Seed"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -12472,7 +13048,70 @@
       "Worry Seed"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
+    ]
+  },
+  {
+    "name": "Grapploct",
+    "types": [
+      "Fighting"
+    ],
+    "base_stats": {
+      "hp": 80,
+      "attack": 118,
+      "defense": 90,
+      "sp_attack": 70,
+      "sp_defense": 80,
+      "speed": 42
+    },
+    "abilities": [
+      "Limber",
+      "Technician"
+    ],
+    "learnset": [
+      "Attract",
+      "Bind",
+      "Body Slam",
+      "Brick Break",
+      "Brutal Swing",
+      "Bulk Up",
+      "Close Combat",
+      "Coaching",
+      "Detect",
+      "Dig",
+      "Dive",
+      "Drain Punch",
+      "Endure",
+      "Facade",
+      "Feint",
+      "Focus Blast",
+      "Giga Impact",
+      "Hydro Pump",
+      "Hyper Beam",
+      "Ice Punch",
+      "Liquidation",
+      "Mud Shot",
+      "Muddy Water",
+      "Payback",
+      "Protect",
+      "Rest",
+      "Reversal",
+      "Round",
+      "Scary Face",
+      "Skitter Smack",
+      "Sleep Talk",
+      "Snore",
+      "Stomping Tantrum",
+      "Substitute",
+      "Superpower",
+      "Surf",
+      "Taunt",
+      "Topsy-Turvy",
+      "Waterfall",
+      "Whirlpool"
+    ],
+    "legal_in": [
+      "M-C"
     ]
   },
   {
@@ -12566,7 +13205,7 @@
       "Weather Ball"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -12653,7 +13292,7 @@
       "Weather Ball"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -12745,7 +13384,7 @@
       "Wonder Room"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -12845,7 +13484,7 @@
       "Zap Cannon"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -12941,7 +13580,7 @@
       "Whirlpool"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -13026,7 +13665,7 @@
       "Wonder Room"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -13133,7 +13772,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -13230,7 +13869,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -13324,7 +13963,7 @@
       "Wild Charge"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -13399,6 +14038,7 @@
       "Seismic Toss",
       "Shadow Claw",
       "Skitter Smack",
+      "Slash",
       "Sleep Talk",
       "Smack Down",
       "Smart Strike",
@@ -13420,7 +14060,7 @@
       "Venoshock"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -13514,7 +14154,7 @@
       "Venoshock"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -13595,7 +14235,7 @@
       "Yawn"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -13692,7 +14332,7 @@
       "Will-O-Wisp"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -13785,7 +14425,7 @@
       "Will-O-Wisp"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -13860,7 +14500,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -13936,7 +14576,7 @@
       "Yawn"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -14046,7 +14686,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -14155,7 +14795,78 @@
       "Will-O-Wisp"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
+    ]
+  },
+  {
+    "name": "Indeedee",
+    "types": [
+      "Psychic",
+      "Normal"
+    ],
+    "base_stats": {
+      "hp": 60,
+      "attack": 65,
+      "defense": 55,
+      "sp_attack": 105,
+      "sp_defense": 95,
+      "speed": 95
+    },
+    "abilities": [
+      "Inner Focus",
+      "Synchronize"
+    ],
+    "learnset": [
+      "After You",
+      "Ally Switch",
+      "Attract",
+      "Body Slam",
+      "Calm Mind",
+      "Dazzling Gleam",
+      "Drain Punch",
+      "Draining Kiss",
+      "Encore",
+      "Endure",
+      "Energy Ball",
+      "Expanding Force",
+      "Extrasensory",
+      "Facade",
+      "Fake Out",
+      "Future Sight",
+      "Gravity",
+      "Healing Wish",
+      "Helping Hand",
+      "Hyper Voice",
+      "Imprison",
+      "Last Resort",
+      "Magic Room",
+      "Mystical Fire",
+      "Play Rough",
+      "Power Split",
+      "Power Swap",
+      "Protect",
+      "Psych Up",
+      "Psychic",
+      "Psychic Noise",
+      "Psychic Terrain",
+      "Psyshock",
+      "Rest",
+      "Round",
+      "Shadow Ball",
+      "Skill Swap",
+      "Sleep Talk",
+      "Snore",
+      "Stored Power",
+      "Substitute",
+      "Terrain Pulse",
+      "Tri Attack",
+      "Trick",
+      "Trick Room",
+      "Wonder Room",
+      "Zen Headbutt"
+    ],
+    "legal_in": [
+      "M-C"
     ]
   },
   {
@@ -14272,7 +14983,95 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
+    ]
+  },
+  {
+    "name": "Inteleon",
+    "types": [
+      "Water"
+    ],
+    "base_stats": {
+      "hp": 70,
+      "attack": 85,
+      "defense": 65,
+      "sp_attack": 125,
+      "sp_defense": 65,
+      "speed": 120
+    },
+    "abilities": [
+      "Sniper",
+      "Torrent"
+    ],
+    "learnset": [
+      "Acrobatics",
+      "Agility",
+      "Air Cutter",
+      "Air Slash",
+      "Aqua Jet",
+      "Aqua Ring",
+      "Attract",
+      "Baton Pass",
+      "Bind",
+      "Blizzard",
+      "Bounce",
+      "Breaking Swipe",
+      "Chilling Water",
+      "Dark Pulse",
+      "Dive",
+      "Double Team",
+      "Endure",
+      "Facade",
+      "Fell Stinger",
+      "Fling",
+      "Flip Turn",
+      "Focus Energy",
+      "Giga Impact",
+      "Haze",
+      "Hydro Cannon",
+      "Hydro Pump",
+      "Hyper Beam",
+      "Ice Beam",
+      "Ice Shard",
+      "Icicle Spear",
+      "Icy Wind",
+      "Light Screen",
+      "Liquidation",
+      "Mud Shot",
+      "Muddy Water",
+      "Pound",
+      "Protect",
+      "Psych Up",
+      "Rain Dance",
+      "Reflect",
+      "Rest",
+      "Round",
+      "Safeguard",
+      "Scald",
+      "Scale Shot",
+      "Shadow Ball",
+      "Skitter Smack",
+      "Sleep Talk",
+      "Smack Down",
+      "Snipe Shot",
+      "Snore",
+      "Snowscape",
+      "Soak",
+      "Substitute",
+      "Sucker Punch",
+      "Surf",
+      "Swords Dance",
+      "Taunt",
+      "Tearful Look",
+      "U-turn",
+      "Vacuum Wave",
+      "Water Pulse",
+      "Waterfall",
+      "Weather Ball",
+      "Whirlpool"
+    ],
+    "legal_in": [
+      "M-C"
     ]
   },
   {
@@ -14363,7 +15162,7 @@
       "Zap Cannon"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -14472,7 +15271,7 @@
       "Zap Cannon"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -14573,7 +15372,7 @@
       "Whirlpool"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -14632,6 +15431,7 @@
       "Sandstorm",
       "Scary Face",
       "Shadow Claw",
+      "Slash",
       "Sleep Talk",
       "Snarl",
       "Spite",
@@ -14650,7 +15450,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -14714,6 +15514,7 @@
       "Sandstorm",
       "Scary Face",
       "Skitter Smack",
+      "Slash",
       "Sleep Talk",
       "Smack Down",
       "Stealth Rock",
@@ -14731,7 +15532,7 @@
       "X-Scissor"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -14806,7 +15607,7 @@
       "Trick Room"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -14916,7 +15717,7 @@
       "X-Scissor"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -15029,7 +15830,7 @@
       "Uproar"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -15117,7 +15918,7 @@
       "Yawn"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -15185,6 +15986,7 @@
       "Shadow Ball",
       "Shadow Claw",
       "Skitter Smack",
+      "Slash",
       "Sleep Talk",
       "Snarl",
       "Snore",
@@ -15206,7 +16008,7 @@
       "Yawn"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -15318,7 +16120,7 @@
       "Water Pulse"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -15427,7 +16229,7 @@
       "Water Pulse"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -15543,7 +16345,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -15655,7 +16457,29 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
+    ]
+  },
+  {
+    "name": "Mega Lucario Z",
+    "types": [
+      "Fighting",
+      "Steel"
+    ],
+    "base_stats": {
+      "hp": 70,
+      "attack": 100,
+      "defense": 70,
+      "sp_attack": 164,
+      "sp_defense": 70,
+      "speed": 151
+    },
+    "abilities": [
+      "Aura Guard"
+    ],
+    "learnset": [],
+    "legal_in": [
+      "M-C"
     ]
   },
   {
@@ -15737,7 +16561,7 @@
       "Wild Charge"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -15824,7 +16648,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -15912,7 +16736,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -16009,7 +16833,71 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
+    ]
+  },
+  {
+    "name": "Mabosstiff",
+    "types": [
+      "Dark"
+    ],
+    "base_stats": {
+      "hp": 80,
+      "attack": 120,
+      "defense": 90,
+      "sp_attack": 60,
+      "sp_defense": 70,
+      "speed": 85
+    },
+    "abilities": [
+      "Intimidate"
+    ],
+    "learnset": [
+      "Bite",
+      "Body Slam",
+      "Charm",
+      "Comeuppance",
+      "Crunch",
+      "Curse",
+      "Dark Pulse",
+      "Dig",
+      "Double-Edge",
+      "Endeavor",
+      "Endure",
+      "Facade",
+      "Fake Tears",
+      "Fire Fang",
+      "Giga Impact",
+      "Helping Hand",
+      "Hyper Beam",
+      "Hyper Voice",
+      "Ice Fang",
+      "Lash Out",
+      "Outrage",
+      "Pain Split",
+      "Payback",
+      "Play Rough",
+      "Protect",
+      "Psychic Fangs",
+      "Rain Dance",
+      "Rest",
+      "Reversal",
+      "Roar",
+      "Scary Face",
+      "Sleep Talk",
+      "Snarl",
+      "Spite",
+      "Substitute",
+      "Sunny Day",
+      "Swagger",
+      "Taunt",
+      "Thief",
+      "Thunder Fang",
+      "Trailblaze",
+      "Wild Charge"
+    ],
+    "legal_in": [
+      "M-C"
     ]
   },
   {
@@ -16111,7 +16999,7 @@
       "Wide Guard"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -16187,6 +17075,7 @@
       "Round",
       "Scary Face",
       "Skill Swap",
+      "Slash",
       "Sleep Talk",
       "Snore",
       "Spite",
@@ -16210,7 +17099,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -16301,7 +17190,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -16394,7 +17283,7 @@
       "Trailblaze"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -16473,7 +17362,7 @@
       "Wild Charge"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -16548,7 +17437,7 @@
       "Wild Charge"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -16623,7 +17512,7 @@
       "Water Pulse"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -16732,7 +17621,7 @@
       "Toxic"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -16835,7 +17724,7 @@
       "Toxic"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -16946,7 +17835,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -17052,7 +17941,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -17142,7 +18031,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -17226,7 +18115,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -17297,6 +18186,7 @@
       "Shadow Ball",
       "Shadow Claw",
       "Skill Swap",
+      "Slash",
       "Sleep Talk",
       "Solar Beam",
       "Spikes",
@@ -17315,7 +18205,7 @@
       "Worry Seed"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -17406,7 +18296,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -17494,7 +18384,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -17575,7 +18465,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -17675,7 +18565,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -17771,7 +18661,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -17861,7 +18751,7 @@
       "Wrap"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -17931,6 +18821,7 @@
       "Shadow Ball",
       "Shadow Claw",
       "Shadow Sneak",
+      "Slash",
       "Sleep Talk",
       "Snore",
       "Spite",
@@ -17952,7 +18843,7 @@
       "X-Scissor"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -18041,7 +18932,126 @@
       "Wild Charge"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
+    ]
+  },
+  {
+    "name": "Mr. Mime",
+    "types": [
+      "Psychic",
+      "Fairy"
+    ],
+    "base_stats": {
+      "hp": 40,
+      "attack": 45,
+      "defense": 65,
+      "sp_attack": 100,
+      "sp_defense": 120,
+      "speed": 90
+    },
+    "abilities": [
+      "Filter",
+      "Soundproof",
+      "Technician"
+    ],
+    "learnset": [
+      "Aerial Ace",
+      "Ally Switch",
+      "Attract",
+      "Baton Pass",
+      "Body Slam",
+      "Brick Break",
+      "Calm Mind",
+      "Charge Beam",
+      "Charm",
+      "Confuse Ray",
+      "Copycat",
+      "Counter",
+      "Covet",
+      "Curse",
+      "Dazzling Gleam",
+      "Double Team",
+      "Double-Edge",
+      "Drain Punch",
+      "Dynamic Punch",
+      "Encore",
+      "Endure",
+      "Energy Ball",
+      "Expanding Force",
+      "Facade",
+      "Fake Out",
+      "Fire Punch",
+      "Fling",
+      "Focus Blast",
+      "Focus Punch",
+      "Follow Me",
+      "Foul Play",
+      "Future Sight",
+      "Giga Impact",
+      "Grass Knot",
+      "Guard Swap",
+      "Helping Hand",
+      "Hyper Beam",
+      "Hypnosis",
+      "Ice Punch",
+      "Icy Wind",
+      "Infestation",
+      "Iron Defense",
+      "Light Screen",
+      "Magic Room",
+      "Mega Kick",
+      "Misty Terrain",
+      "Mud-Slap",
+      "Mystical Fire",
+      "Nasty Plot",
+      "Payback",
+      "Pound",
+      "Power Split",
+      "Power Swap",
+      "Protect",
+      "Psych Up",
+      "Psychic",
+      "Psychic Terrain",
+      "Psyshock",
+      "Quick Guard",
+      "Rain Dance",
+      "Recycle",
+      "Reflect",
+      "Rest",
+      "Role Play",
+      "Round",
+      "Safeguard",
+      "Seismic Toss",
+      "Shadow Ball",
+      "Skill Swap",
+      "Sleep Talk",
+      "Snore",
+      "Solar Beam",
+      "Stored Power",
+      "Substitute",
+      "Sucker Punch",
+      "Sunny Day",
+      "Swagger",
+      "Taunt",
+      "Teeter Dance",
+      "Thief",
+      "Thunder",
+      "Thunder Punch",
+      "Thunder Wave",
+      "Thunderbolt",
+      "Tickle",
+      "Torment",
+      "Toxic",
+      "Trick",
+      "Trick Room",
+      "Uproar",
+      "Wide Guard",
+      "Wonder Room",
+      "Zap Cannon",
+      "Zen Headbutt"
+    ],
+    "legal_in": [
+      "M-C"
     ]
   },
   {
@@ -18160,7 +19170,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -18233,7 +19243,7 @@
       "Toxic"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -18316,7 +19326,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -18413,7 +19423,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -18514,7 +19524,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -18607,7 +19617,7 @@
       "X-Scissor"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -18705,7 +19715,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -18768,7 +19778,7 @@
       "Wrap"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -18853,7 +19863,7 @@
       "Waterfall"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -18933,7 +19943,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -19013,7 +20023,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -19105,6 +20115,7 @@
       "Scary Face",
       "Seismic Toss",
       "Shadow Claw",
+      "Slash",
       "Sleep Talk",
       "Sludge Bomb",
       "Snarl",
@@ -19130,7 +20141,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -19226,7 +20237,91 @@
       "Vacuum Wave"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
+    ]
+  },
+  {
+    "name": "Pawmot",
+    "types": [
+      "Electric",
+      "Fighting"
+    ],
+    "base_stats": {
+      "hp": 70,
+      "attack": 115,
+      "defense": 70,
+      "sp_attack": 70,
+      "sp_defense": 60,
+      "speed": 105
+    },
+    "abilities": [
+      "Iron Fist",
+      "Natural Cure",
+      "Volt Absorb"
+    ],
+    "learnset": [
+      "Agility",
+      "Baton Pass",
+      "Bite",
+      "Body Press",
+      "Brick Break",
+      "Bulk Up",
+      "Charge",
+      "Charge Beam",
+      "Charm",
+      "Close Combat",
+      "Coaching",
+      "Crunch",
+      "Dig",
+      "Discharge",
+      "Double Shock",
+      "Double-Edge",
+      "Eerie Impulse",
+      "Electric Terrain",
+      "Electro Ball",
+      "Electroweb",
+      "Encore",
+      "Endure",
+      "Entrainment",
+      "Facade",
+      "Fire Punch",
+      "Fling",
+      "Focus Blast",
+      "Focus Punch",
+      "Giga Impact",
+      "Grass Knot",
+      "Helping Hand",
+      "Hyper Beam",
+      "Ice Punch",
+      "Knock Off",
+      "Low Kick",
+      "Low Sweep",
+      "Nuzzle",
+      "Play Rough",
+      "Protect",
+      "Quick Attack",
+      "Rain Dance",
+      "Rest",
+      "Rock Tomb",
+      "Seed Bomb",
+      "Sleep Talk",
+      "Substitute",
+      "Sunny Day",
+      "Super Fang",
+      "Supercell Slam",
+      "Thief",
+      "Throat Chop",
+      "Thunder",
+      "Thunder Fang",
+      "Thunder Punch",
+      "Thunder Wave",
+      "Thunderbolt",
+      "Upper Hand",
+      "Volt Switch",
+      "Wild Charge"
+    ],
+    "legal_in": [
+      "M-C"
     ]
   },
   {
@@ -19315,7 +20410,292 @@
       "Wide Guard"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
+    ]
+  },
+  {
+    "name": "Perrserker",
+    "types": [
+      "Steel"
+    ],
+    "base_stats": {
+      "hp": 70,
+      "attack": 110,
+      "defense": 100,
+      "sp_attack": 50,
+      "sp_defense": 60,
+      "speed": 50
+    },
+    "abilities": [
+      "Battle Armor",
+      "Tough Claws"
+    ],
+    "learnset": [
+      "Amnesia",
+      "Assurance",
+      "Attract",
+      "Baton Pass",
+      "Body Slam",
+      "Brick Break",
+      "Charm",
+      "Chilling Water",
+      "Close Combat",
+      "Crunch",
+      "Curse",
+      "Dark Pulse",
+      "Dig",
+      "Double-Edge",
+      "Endeavor",
+      "Endure",
+      "Facade",
+      "Fake Out",
+      "Fake Tears",
+      "Fling",
+      "Foul Play",
+      "Giga Impact",
+      "Gunk Shot",
+      "Gyro Ball",
+      "Heavy Slam",
+      "Helping Hand",
+      "Hyper Beam",
+      "Hyper Voice",
+      "Iron Defense",
+      "Iron Head",
+      "Iron Tail",
+      "Knock Off",
+      "Lash Out",
+      "Metal Burst",
+      "Metal Sound",
+      "Nasty Plot",
+      "Payback",
+      "Play Rough",
+      "Protect",
+      "Rain Dance",
+      "Rest",
+      "Round",
+      "Screech",
+      "Seed Bomb",
+      "Shadow Ball",
+      "Shadow Claw",
+      "Slash",
+      "Sleep Talk",
+      "Snore",
+      "Spite",
+      "Stealth Rock",
+      "Steel Beam",
+      "Substitute",
+      "Sunny Day",
+      "Swagger",
+      "Swords Dance",
+      "Taunt",
+      "Thief",
+      "Thrash",
+      "Throat Chop",
+      "Thunder",
+      "Thunderbolt",
+      "Trailblaze",
+      "U-turn",
+      "Uproar",
+      "X-Scissor"
+    ],
+    "legal_in": [
+      "M-C"
+    ]
+  },
+  {
+    "name": "Persian",
+    "types": [
+      "Normal"
+    ],
+    "base_stats": {
+      "hp": 65,
+      "attack": 70,
+      "defense": 60,
+      "sp_attack": 65,
+      "sp_defense": 65,
+      "speed": 115
+    },
+    "abilities": [
+      "Limber",
+      "Technician",
+      "Unnerve"
+    ],
+    "learnset": [
+      "Aerial Ace",
+      "Agility",
+      "Amnesia",
+      "Assurance",
+      "Attract",
+      "Bite",
+      "Body Slam",
+      "Charm",
+      "Chilling Water",
+      "Covet",
+      "Curse",
+      "Dark Pulse",
+      "Detect",
+      "Dig",
+      "Double Team",
+      "Double-Edge",
+      "Endeavor",
+      "Endure",
+      "Facade",
+      "Fake Out",
+      "Fake Tears",
+      "Feint",
+      "Foul Play",
+      "Giga Impact",
+      "Gunk Shot",
+      "Helping Hand",
+      "Hyper Beam",
+      "Hyper Voice",
+      "Hypnosis",
+      "Icy Wind",
+      "Iron Tail",
+      "Knock Off",
+      "Lash Out",
+      "Last Resort",
+      "Mud-Slap",
+      "Nasty Plot",
+      "Night Slash",
+      "Pain Split",
+      "Payback",
+      "Play Rough",
+      "Power Gem",
+      "Protect",
+      "Psych Up",
+      "Rain Dance",
+      "Rest",
+      "Roar",
+      "Round",
+      "Screech",
+      "Seed Bomb",
+      "Shadow Ball",
+      "Shadow Claw",
+      "Skitter Smack",
+      "Slash",
+      "Sleep Talk",
+      "Snarl",
+      "Snore",
+      "Spite",
+      "Substitute",
+      "Sunny Day",
+      "Swagger",
+      "Switcheroo",
+      "Taunt",
+      "Thief",
+      "Throat Chop",
+      "Thunder",
+      "Thunder Wave",
+      "Thunderbolt",
+      "Torment",
+      "Toxic",
+      "Trailblaze",
+      "U-turn",
+      "Uproar",
+      "Water Pulse",
+      "Zap Cannon"
+    ],
+    "legal_in": [
+      "M-C"
+    ]
+  },
+  {
+    "name": "Persian [Alolan Form]",
+    "types": [
+      "Dark"
+    ],
+    "base_stats": {
+      "hp": 65,
+      "attack": 60,
+      "defense": 60,
+      "sp_attack": 75,
+      "sp_defense": 65,
+      "speed": 115
+    },
+    "abilities": [
+      "Fur Coat",
+      "Technician"
+    ],
+    "learnset": [
+      "Aerial Ace",
+      "Agility",
+      "Amnesia",
+      "Assurance",
+      "Attract",
+      "Beat Up",
+      "Bite",
+      "Body Slam",
+      "Burning Jealousy",
+      "Charm",
+      "Chilling Water",
+      "Confuse Ray",
+      "Covet",
+      "Curse",
+      "Dark Pulse",
+      "Dig",
+      "Double Team",
+      "Double-Edge",
+      "Endeavor",
+      "Endure",
+      "Facade",
+      "Fake Out",
+      "Fake Tears",
+      "Feint",
+      "Foul Play",
+      "Giga Impact",
+      "Gunk Shot",
+      "Helping Hand",
+      "Hyper Beam",
+      "Hyper Voice",
+      "Hypnosis",
+      "Icy Wind",
+      "Iron Tail",
+      "Knock Off",
+      "Lash Out",
+      "Last Resort",
+      "Nasty Plot",
+      "Night Slash",
+      "Payback",
+      "Play Rough",
+      "Power Gem",
+      "Protect",
+      "Psych Up",
+      "Quash",
+      "Rain Dance",
+      "Rest",
+      "Roar",
+      "Round",
+      "Screech",
+      "Seed Bomb",
+      "Shadow Ball",
+      "Shadow Claw",
+      "Skitter Smack",
+      "Slash",
+      "Sleep Talk",
+      "Smack Down",
+      "Snarl",
+      "Snore",
+      "Spite",
+      "Substitute",
+      "Sunny Day",
+      "Swagger",
+      "Switcheroo",
+      "Taunt",
+      "Thief",
+      "Throat Chop",
+      "Thunder",
+      "Thunder Wave",
+      "Thunderbolt",
+      "Torment",
+      "Toxic",
+      "Trailblaze",
+      "U-turn",
+      "Uproar",
+      "Water Pulse"
+    ],
+    "legal_in": [
+      "M-C"
     ]
   },
   {
@@ -19382,7 +20762,7 @@
       "Whirlwind"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -19441,7 +20821,7 @@
       "Whirlwind"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -19538,7 +20918,78 @@
       "Zap Cannon"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
+    ]
+  },
+  {
+    "name": "Pincurchin",
+    "types": [
+      "Electric"
+    ],
+    "base_stats": {
+      "hp": 48,
+      "attack": 101,
+      "defense": 95,
+      "sp_attack": 91,
+      "sp_defense": 85,
+      "speed": 15
+    },
+    "abilities": [
+      "Electric Surge",
+      "Lightning Rod"
+    ],
+    "learnset": [
+      "Acupressure",
+      "Assurance",
+      "Attract",
+      "Body Slam",
+      "Charge",
+      "Charge Beam",
+      "Chilling Water",
+      "Curse",
+      "Discharge",
+      "Electric Terrain",
+      "Electro Ball",
+      "Electroweb",
+      "Endure",
+      "Facade",
+      "Giga Impact",
+      "Hex",
+      "Hydro Pump",
+      "Hyper Beam",
+      "Liquidation",
+      "Memento",
+      "Muddy Water",
+      "Pain Split",
+      "Payback",
+      "Pin Missile",
+      "Poison Jab",
+      "Protect",
+      "Rain Dance",
+      "Recover",
+      "Rest",
+      "Reversal",
+      "Rising Voltage",
+      "Round",
+      "Scald",
+      "Self-Destruct",
+      "Sleep Talk",
+      "Snore",
+      "Spikes",
+      "Substitute",
+      "Sucker Punch",
+      "Supercell Slam",
+      "Surf",
+      "Throat Chop",
+      "Thunder",
+      "Thunder Wave",
+      "Thunderbolt",
+      "Toxic Spikes",
+      "Venoshock",
+      "Wild Charge"
+    ],
+    "legal_in": [
+      "M-C"
     ]
   },
   {
@@ -19606,6 +21057,7 @@
       "Rock Tomb",
       "Round",
       "Seismic Toss",
+      "Slash",
       "Sleep Talk",
       "Smack Down",
       "Snore",
@@ -19626,7 +21078,7 @@
       "X-Scissor"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -19710,7 +21162,7 @@
       "X-Scissor"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -19777,7 +21229,6 @@
       "Muddy Water",
       "Payback",
       "Perish Song",
-      "Pound",
       "Protect",
       "Psych Up",
       "Psychic",
@@ -19801,7 +21252,7 @@
       "Whirlpool"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -19870,7 +21321,7 @@
       "Wonder Room"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -19964,7 +21415,7 @@
       "Wonder Room"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -20043,7 +21494,7 @@
       "Yawn"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -20115,7 +21566,7 @@
       "Yawn"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -20199,7 +21650,7 @@
       "Whirlpool"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -20294,7 +21745,7 @@
       "Whirlpool"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -20399,7 +21850,7 @@
       "Zap Cannon"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -20507,7 +21958,7 @@
       "Zap Cannon"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -20595,7 +22046,7 @@
       "Zap Cannon"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -20683,7 +22134,7 @@
       "Zap Cannon"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -20788,7 +22239,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -20885,7 +22336,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -21010,7 +22461,97 @@
       "Whirlpool"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
+    ]
+  },
+  {
+    "name": "Rillaboom",
+    "types": [
+      "Grass"
+    ],
+    "base_stats": {
+      "hp": 100,
+      "attack": 125,
+      "defense": 90,
+      "sp_attack": 60,
+      "sp_defense": 70,
+      "speed": 85
+    },
+    "abilities": [
+      "Overgrow"
+    ],
+    "learnset": [
+      "Acrobatics",
+      "Assurance",
+      "Attract",
+      "Body Press",
+      "Body Slam",
+      "Boomburst",
+      "Brick Break",
+      "Brutal Swing",
+      "Bulk Up",
+      "Bulldoze",
+      "Bullet Seed",
+      "Darkest Lariat",
+      "Double Hit",
+      "Double-Edge",
+      "Drain Punch",
+      "Earth Power",
+      "Earthquake",
+      "Endeavor",
+      "Endure",
+      "Energy Ball",
+      "Facade",
+      "Fake Out",
+      "Fling",
+      "Focus Blast",
+      "Focus Energy",
+      "Focus Punch",
+      "Frenzy Plant",
+      "Giga Drain",
+      "Giga Impact",
+      "Grass Knot",
+      "Grassy Glide",
+      "Grassy Terrain",
+      "Growth",
+      "Hammer Arm",
+      "High Horsepower",
+      "Hyper Beam",
+      "Hyper Voice",
+      "Knock Off",
+      "Leaf Storm",
+      "Leech Seed",
+      "Low Kick",
+      "Low Sweep",
+      "Mega Kick",
+      "Mud Shot",
+      "Noble Roar",
+      "Protect",
+      "Rest",
+      "Round",
+      "Scary Face",
+      "Screech",
+      "Seed Bomb",
+      "Sleep Talk",
+      "Snarl",
+      "Snore",
+      "Solar Beam",
+      "Solar Blade",
+      "Stomping Tantrum",
+      "Substitute",
+      "Sunny Day",
+      "Superpower",
+      "Swords Dance",
+      "Taunt",
+      "Thief",
+      "Trailblaze",
+      "U-turn",
+      "Uproar",
+      "Wood Hammer",
+      "Worry Seed"
+    ],
+    "legal_in": [
+      "M-C"
     ]
   },
   {
@@ -21092,7 +22633,7 @@
       "Worry Seed"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -21164,7 +22705,7 @@
       "Will-O-Wisp"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -21237,7 +22778,7 @@
       "Will-O-Wisp"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -21310,7 +22851,7 @@
       "Will-O-Wisp"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -21383,7 +22924,7 @@
       "Will-O-Wisp"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -21456,7 +22997,7 @@
       "Will-O-Wisp"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -21529,7 +23070,7 @@
       "Will-O-Wisp"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -21621,7 +23162,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -21745,7 +23286,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -21863,7 +23404,169 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
+    ]
+  },
+  {
+    "name": "Salamence",
+    "types": [
+      "Dragon",
+      "Flying"
+    ],
+    "base_stats": {
+      "hp": 95,
+      "attack": 135,
+      "defense": 80,
+      "sp_attack": 110,
+      "sp_defense": 80,
+      "speed": 100
+    },
+    "abilities": [
+      "Intimidate",
+      "Moxie"
+    ],
+    "learnset": [
+      "Aerial Ace",
+      "Air Cutter",
+      "Air Slash",
+      "Aqua Tail",
+      "Attract",
+      "Bite",
+      "Body Slam",
+      "Breaking Swipe",
+      "Brick Break",
+      "Brutal Swing",
+      "Bulldoze",
+      "Crunch",
+      "Defog",
+      "Double Team",
+      "Double-Edge",
+      "Draco Meteor",
+      "Dragon Cheer",
+      "Dragon Claw",
+      "Dragon Dance",
+      "Dragon Pulse",
+      "Dragon Tail",
+      "Dual Wingbeat",
+      "Earthquake",
+      "Endure",
+      "Facade",
+      "Fire Blast",
+      "Fire Fang",
+      "Fire Spin",
+      "Flamethrower",
+      "Fly",
+      "Focus Energy",
+      "Giga Impact",
+      "Heat Wave",
+      "Helping Hand",
+      "Hurricane",
+      "Hydro Pump",
+      "Hyper Beam",
+      "Hyper Voice",
+      "Iron Defense",
+      "Iron Head",
+      "Iron Tail",
+      "Mud-Slap",
+      "Outrage",
+      "Protect",
+      "Psychic Fangs",
+      "Rain Dance",
+      "Rest",
+      "Roar",
+      "Rock Slide",
+      "Rock Tomb",
+      "Roost",
+      "Round",
+      "Scary Face",
+      "Shadow Claw",
+      "Sleep Talk",
+      "Snore",
+      "Steel Wing",
+      "Stone Edge",
+      "Substitute",
+      "Sunny Day",
+      "Swagger",
+      "Tailwind",
+      "Temper Flare",
+      "Thunder Fang",
+      "Toxic",
+      "Zen Headbutt"
+    ],
+    "legal_in": [
+      "M-C"
+    ]
+  },
+  {
+    "name": "Mega Salamence",
+    "types": [
+      "Dragon",
+      "Flying"
+    ],
+    "base_stats": {
+      "hp": 95,
+      "attack": 145,
+      "defense": 130,
+      "sp_attack": 120,
+      "sp_defense": 90,
+      "speed": 120
+    },
+    "abilities": [
+      "Aerilate"
+    ],
+    "learnset": [
+      "Aerial Ace",
+      "Aqua Tail",
+      "Attract",
+      "Bite",
+      "Brick Break",
+      "Brutal Swing",
+      "Bulldoze",
+      "Crunch",
+      "Defog",
+      "Double Team",
+      "Double-Edge",
+      "Draco Meteor",
+      "Dragon Claw",
+      "Dragon Pulse",
+      "Dragon Tail",
+      "Earthquake",
+      "Facade",
+      "Fire Blast",
+      "Fire Fang",
+      "Flamethrower",
+      "Fly",
+      "Focus Energy",
+      "Giga Impact",
+      "Heat Wave",
+      "Hyper Beam",
+      "Hyper Voice",
+      "Iron Tail",
+      "Outrage",
+      "Protect",
+      "Rain Dance",
+      "Rest",
+      "Roar",
+      "Rock Slide",
+      "Rock Tomb",
+      "Roost",
+      "Round",
+      "Scary Face",
+      "Shadow Claw",
+      "Sleep Talk",
+      "Snore",
+      "Steel Wing",
+      "Stone Edge",
+      "Substitute",
+      "Sunny Day",
+      "Swagger",
+      "Tailwind",
+      "Thunder Fang",
+      "Toxic",
+      "Zen Headbutt"
+    ],
+    "legal_in": [
+      "M-C"
     ]
   },
   {
@@ -21961,7 +23664,7 @@
       "Will-O-Wisp"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -22034,6 +23737,7 @@
       "Scald",
       "Scary Face",
       "Screech",
+      "Slash",
       "Sleep Talk",
       "Smart Strike",
       "Snarl",
@@ -22057,7 +23761,7 @@
       "X-Scissor"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -22126,6 +23830,7 @@
       "Sacred Sword",
       "Scary Face",
       "Screech",
+      "Slash",
       "Sleep Talk",
       "Smart Strike",
       "Snarl",
@@ -22148,7 +23853,7 @@
       "X-Scissor"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -22221,7 +23926,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -22310,6 +24015,7 @@
       "Seed Bomb",
       "Seismic Toss",
       "Shed Tail",
+      "Slash",
       "Sleep Talk",
       "Snore",
       "Solar Beam",
@@ -22330,7 +24036,7 @@
       "X-Scissor"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -22435,7 +24141,7 @@
       "X-Scissor"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -22512,6 +24218,7 @@
       "Sandstorm",
       "Scary Face",
       "Skitter Smack",
+      "Slash",
       "Sleep Talk",
       "Snore",
       "Steel Beam",
@@ -22532,7 +24239,7 @@
       "X-Scissor"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -22604,6 +24311,7 @@
       "Sandstorm",
       "Scary Face",
       "Skitter Smack",
+      "Slash",
       "Sleep Talk",
       "Snore",
       "Steel Beam",
@@ -22624,7 +24332,7 @@
       "X-Scissor"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -22708,7 +24416,7 @@
       "X-Scissor"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -22784,7 +24492,7 @@
       "X-Scissor"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -22857,7 +24565,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -22928,7 +24636,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -23038,7 +24746,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -23143,7 +24851,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -23228,7 +24936,7 @@
       "Wrap"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -23297,6 +25005,7 @@
       "Scale Shot",
       "Scary Face",
       "Screech",
+      "Slash",
       "Sleep Talk",
       "Snarl",
       "Snore",
@@ -23317,7 +25026,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -23384,6 +25093,7 @@
       "Scale Shot",
       "Scary Face",
       "Screech",
+      "Slash",
       "Sleep Talk",
       "Snarl",
       "Snore",
@@ -23404,7 +25114,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -23491,7 +25201,7 @@
       "Waterfall"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -23575,7 +25285,7 @@
       "Worry Seed"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -23663,7 +25373,7 @@
       "Yawn"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -23722,7 +25432,65 @@
       "Uproar"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
+    ]
+  },
+  {
+    "name": "Sirfetch'd",
+    "types": [
+      "Fighting"
+    ],
+    "base_stats": {
+      "hp": 62,
+      "attack": 135,
+      "defense": 95,
+      "sp_attack": 68,
+      "sp_defense": 82,
+      "speed": 65
+    },
+    "abilities": [
+      "Scrappy",
+      "Steadfast"
+    ],
+    "learnset": [
+      "Assurance",
+      "Attract",
+      "Body Slam",
+      "Brave Bird",
+      "Brick Break",
+      "Brutal Swing",
+      "Close Combat",
+      "Coaching",
+      "Defog",
+      "Detect",
+      "Dual Wingbeat",
+      "Endure",
+      "Facade",
+      "Final Gambit",
+      "First Impression",
+      "Focus Energy",
+      "Grassy Glide",
+      "Helping Hand",
+      "Iron Defense",
+      "Knock Off",
+      "Leaf Blade",
+      "Meteor Assault",
+      "Poison Jab",
+      "Protect",
+      "Rest",
+      "Round",
+      "Sleep Talk",
+      "Snore",
+      "Solar Blade",
+      "Steel Wing",
+      "Substitute",
+      "Sunny Day",
+      "Superpower",
+      "Swords Dance",
+      "Throat Chop"
+    ],
+    "legal_in": [
+      "M-C"
     ]
   },
   {
@@ -23791,6 +25559,7 @@
       "Sand Tomb",
       "Sandstorm",
       "Sky Attack",
+      "Slash",
       "Sleep Talk",
       "Snore",
       "Spikes",
@@ -23810,7 +25579,7 @@
       "X-Scissor"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -23884,7 +25653,7 @@
       "X-Scissor"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -23964,7 +25733,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -24084,7 +25853,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -24205,7 +25974,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -24316,7 +26085,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -24442,7 +26211,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -24565,7 +26334,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -24637,7 +26406,7 @@
       "Yawn"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -24702,6 +26471,7 @@
       "Screech",
       "Shadow Ball",
       "Shadow Claw",
+      "Slash",
       "Sleep Talk",
       "Sludge Bomb",
       "Sludge Wave",
@@ -24723,7 +26493,7 @@
       "X-Scissor"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -24846,7 +26616,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -24933,7 +26703,73 @@
       "Wonder Room"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
+    ]
+  },
+  {
+    "name": "Squawkabilly",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
+    "base_stats": {
+      "hp": 82,
+      "attack": 96,
+      "defense": 51,
+      "sp_attack": 45,
+      "sp_defense": 51,
+      "speed": 92
+    },
+    "abilities": [
+      "Guts",
+      "Hustle",
+      "Intimidate"
+    ],
+    "learnset": [
+      "Aerial Ace",
+      "Air Cutter",
+      "Air Slash",
+      "Brave Bird",
+      "Copycat",
+      "Double-Edge",
+      "Dual Wingbeat",
+      "Endeavor",
+      "Endure",
+      "Facade",
+      "Fake Tears",
+      "Feather Dance",
+      "Final Gambit",
+      "Flatter",
+      "Fly",
+      "Foul Play",
+      "Giga Impact",
+      "Heat Wave",
+      "Helping Hand",
+      "Hurricane",
+      "Hyper Beam",
+      "Hyper Voice",
+      "Lash Out",
+      "Parting Shot",
+      "Pounce",
+      "Protect",
+      "Quick Attack",
+      "Rest",
+      "Reversal",
+      "Roost",
+      "Scary Face",
+      "Sleep Talk",
+      "Substitute",
+      "Sunny Day",
+      "Swagger",
+      "Tailwind",
+      "Taunt",
+      "Thief",
+      "Torment",
+      "U-turn",
+      "Uproar"
+    ],
+    "legal_in": [
+      "M-C"
     ]
   },
   {
@@ -25006,7 +26842,7 @@
       "Whirlwind"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -25072,7 +26908,7 @@
       "Whirlwind"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -25168,7 +27004,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -25253,7 +27089,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -25353,7 +27189,7 @@
       "Wide Guard"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -25450,7 +27286,7 @@
       "Wide Guard"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -25531,7 +27367,7 @@
       "Yawn"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -25606,7 +27442,95 @@
       "Yawn"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
+    ]
+  },
+  {
+    "name": "Swalot",
+    "types": [
+      "Poison"
+    ],
+    "base_stats": {
+      "hp": 100,
+      "attack": 73,
+      "defense": 83,
+      "sp_attack": 73,
+      "sp_defense": 83,
+      "speed": 55
+    },
+    "abilities": [
+      "Gluttony",
+      "Sticky Hold"
+    ],
+    "learnset": [
+      "Acid Spray",
+      "Amnesia",
+      "Attract",
+      "Belch",
+      "Block",
+      "Body Press",
+      "Body Slam",
+      "Brick Break",
+      "Bulldoze",
+      "Bullet Seed",
+      "Counter",
+      "Curse",
+      "Double Team",
+      "Double-Edge",
+      "Dynamic Punch",
+      "Earthquake",
+      "Encore",
+      "Endure",
+      "Explosion",
+      "Facade",
+      "Fire Punch",
+      "Fling",
+      "Gastro Acid",
+      "Giga Drain",
+      "Giga Impact",
+      "Gunk Shot",
+      "Helping Hand",
+      "Hyper Beam",
+      "Ice Beam",
+      "Ice Punch",
+      "Infestation",
+      "Knock Off",
+      "Mud Shot",
+      "Mud-Slap",
+      "Pain Split",
+      "Poison Jab",
+      "Pound",
+      "Protect",
+      "Rain Dance",
+      "Rest",
+      "Round",
+      "Seed Bomb",
+      "Self-Destruct",
+      "Shadow Ball",
+      "Sleep Talk",
+      "Sludge Bomb",
+      "Sludge Wave",
+      "Snore",
+      "Solar Beam",
+      "Spit Up",
+      "Stockpile",
+      "Substitute",
+      "Sunny Day",
+      "Swagger",
+      "Swallow",
+      "Swords Dance",
+      "Thief",
+      "Thunder Punch",
+      "Thunder Wave",
+      "Toxic",
+      "Toxic Spikes",
+      "Venoshock",
+      "Water Pulse",
+      "Yawn",
+      "Zen Headbutt"
+    ],
+    "legal_in": [
+      "M-C"
     ]
   },
   {
@@ -25716,7 +27640,7 @@
       "Yawn"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -25822,7 +27746,7 @@
       "Yawn"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -25906,7 +27830,7 @@
       "Yawn"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -25984,7 +27908,7 @@
       "Will-O-Wisp"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -26075,7 +27999,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -26152,7 +28076,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -26230,7 +28154,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -26302,7 +28226,73 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
+    ]
+  },
+  {
+    "name": "Thievul",
+    "types": [
+      "Dark"
+    ],
+    "base_stats": {
+      "hp": 70,
+      "attack": 58,
+      "defense": 58,
+      "sp_attack": 87,
+      "sp_defense": 92,
+      "speed": 90
+    },
+    "abilities": [
+      "Run Away",
+      "Unburden"
+    ],
+    "learnset": [
+      "Acrobatics",
+      "Agility",
+      "Assurance",
+      "Attract",
+      "Baton Pass",
+      "Beat Up",
+      "Burning Jealousy",
+      "Crunch",
+      "Dark Pulse",
+      "Dig",
+      "Endure",
+      "Facade",
+      "Fake Tears",
+      "Fire Fang",
+      "Foul Play",
+      "Giga Impact",
+      "Grass Knot",
+      "Hyper Beam",
+      "Ice Fang",
+      "Lash Out",
+      "Mud Shot",
+      "Nasty Plot",
+      "Night Slash",
+      "Parting Shot",
+      "Play Rough",
+      "Protect",
+      "Psychic",
+      "Quick Attack",
+      "Rest",
+      "Round",
+      "Screech",
+      "Shadow Ball",
+      "Shadow Claw",
+      "Sleep Talk",
+      "Snarl",
+      "Snore",
+      "Substitute",
+      "Sucker Punch",
+      "Tail Slap",
+      "Taunt",
+      "Thief",
+      "Thunder Fang",
+      "U-turn"
+    ],
+    "legal_in": [
+      "M-C"
     ]
   },
   {
@@ -26374,7 +28364,7 @@
       "Wood Hammer"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -26463,7 +28453,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -26568,7 +28558,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -26650,7 +28640,7 @@
       "Uproar"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -26738,7 +28728,7 @@
       "Wide Guard"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -26849,7 +28839,97 @@
       "X-Scissor"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
+    ]
+  },
+  {
+    "name": "Toxtricity",
+    "types": [
+      "Electric",
+      "Poison"
+    ],
+    "base_stats": {
+      "hp": 75,
+      "attack": 98,
+      "defense": 70,
+      "sp_attack": 114,
+      "sp_defense": 70,
+      "speed": 75
+    },
+    "abilities": [
+      "Plus",
+      "Technician"
+    ],
+    "learnset": [
+      "Acid Spray",
+      "Attract",
+      "Belch",
+      "Boomburst",
+      "Brick Break",
+      "Charge",
+      "Charge Beam",
+      "Charm",
+      "Discharge",
+      "Drain Punch",
+      "Eerie Impulse",
+      "Electric Terrain",
+      "Electro Ball",
+      "Electroweb",
+      "Encore",
+      "Endeavor",
+      "Endure",
+      "Facade",
+      "Fire Punch",
+      "Flail",
+      "Fling",
+      "Giga Impact",
+      "Gunk Shot",
+      "Helping Hand",
+      "Hex",
+      "Hyper Beam",
+      "Hyper Voice",
+      "Mega Kick",
+      "Metal Sound",
+      "Noble Roar",
+      "Nuzzle",
+      "Payback",
+      "Poison Jab",
+      "Protect",
+      "Psychic Noise",
+      "Rain Dance",
+      "Rest",
+      "Rising Voltage",
+      "Round",
+      "Scary Face",
+      "Screech",
+      "Sleep Talk",
+      "Sludge Bomb",
+      "Sludge Wave",
+      "Snarl",
+      "Snore",
+      "Stored Power",
+      "Substitute",
+      "Sunny Day",
+      "Swagger",
+      "Taunt",
+      "Tearful Look",
+      "Thief",
+      "Throat Chop",
+      "Thunder",
+      "Thunder Fang",
+      "Thunder Punch",
+      "Thunder Wave",
+      "Thunderbolt",
+      "Toxic",
+      "Toxic Spikes",
+      "Trailblaze",
+      "Uproar",
+      "Venoshock",
+      "Volt Switch",
+      "Wild Charge"
+    ],
+    "legal_in": [
+      "M-C"
     ]
   },
   {
@@ -26952,7 +29032,7 @@
       "X-Scissor"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -27036,7 +29116,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -27138,7 +29218,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -27230,7 +29310,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -27359,7 +29439,7 @@
       "Whirlpool"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -27482,7 +29562,7 @@
       "Water Pulse"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -27575,7 +29655,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -27672,7 +29752,7 @@
       "Zap Cannon"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -27741,7 +29821,7 @@
       "Weather Ball"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -27830,7 +29910,7 @@
       "Yawn"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -27920,7 +30000,7 @@
       "Worry Seed"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -28007,7 +30087,7 @@
       "Worry Seed"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -28097,7 +30177,7 @@
       "Wrap"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -28179,7 +30259,7 @@
       "Wrap"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -28267,7 +30347,7 @@
       "Worry Seed"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -28346,7 +30426,7 @@
       "Whirlwind"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -28435,7 +30515,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -28520,7 +30600,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -28602,6 +30682,7 @@
       "Screech",
       "Shadow Ball",
       "Shadow Claw",
+      "Slash",
       "Sleep Talk",
       "Snarl",
       "Snore",
@@ -28625,7 +30706,7 @@
       "X-Scissor"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -28706,7 +30787,144 @@
       "Worry Seed"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
+    ]
+  },
+  {
+    "name": "Wigglytuff",
+    "types": [
+      "Normal",
+      "Fairy"
+    ],
+    "base_stats": {
+      "hp": 140,
+      "attack": 70,
+      "defense": 45,
+      "sp_attack": 85,
+      "sp_defense": 50,
+      "speed": 45
+    },
+    "abilities": [
+      "Competitive",
+      "Cute Charm",
+      "Frisk"
+    ],
+    "learnset": [
+      "Alluring Voice",
+      "Ally Switch",
+      "Amnesia",
+      "Attract",
+      "Baton Pass",
+      "Blizzard",
+      "Body Press",
+      "Body Slam",
+      "Bounce",
+      "Brick Break",
+      "Calm Mind",
+      "Charge Beam",
+      "Charm",
+      "Chilling Water",
+      "Copycat",
+      "Counter",
+      "Covet",
+      "Curse",
+      "Dark Pulse",
+      "Dazzling Gleam",
+      "Detect",
+      "Dig",
+      "Disable",
+      "Double Team",
+      "Double-Edge",
+      "Drain Punch",
+      "Draining Kiss",
+      "Dynamic Punch",
+      "Encore",
+      "Endeavor",
+      "Endure",
+      "Energy Ball",
+      "Expanding Force",
+      "Facade",
+      "Fake Tears",
+      "Fire Blast",
+      "Fire Punch",
+      "Flamethrower",
+      "Fling",
+      "Focus Blast",
+      "Focus Punch",
+      "Giga Impact",
+      "Grass Knot",
+      "Gravity",
+      "Gyro Ball",
+      "Heal Bell",
+      "Helping Hand",
+      "Hyper Beam",
+      "Hyper Voice",
+      "Ice Beam",
+      "Ice Punch",
+      "Ice Spinner",
+      "Icy Wind",
+      "Knock Off",
+      "Last Resort",
+      "Light Screen",
+      "Magic Room",
+      "Mega Kick",
+      "Minimize",
+      "Misty Explosion",
+      "Misty Terrain",
+      "Mud-Slap",
+      "Nasty Plot",
+      "Pain Split",
+      "Play Rough",
+      "Pound",
+      "Protect",
+      "Psych Up",
+      "Psychic",
+      "Psychic Noise",
+      "Psyshock",
+      "Rain Dance",
+      "Recycle",
+      "Reflect",
+      "Rest",
+      "Role Play",
+      "Round",
+      "Safeguard",
+      "Sandstorm",
+      "Screech",
+      "Seismic Toss",
+      "Self-Destruct",
+      "Shadow Ball",
+      "Sing",
+      "Skill Swap",
+      "Sleep Talk",
+      "Snore",
+      "Solar Beam",
+      "Spit Up",
+      "Stealth Rock",
+      "Steel Roller",
+      "Stockpile",
+      "Stored Power",
+      "Substitute",
+      "Sunny Day",
+      "Swagger",
+      "Swallow",
+      "Sweet Kiss",
+      "Taunt",
+      "Thief",
+      "Thunder",
+      "Thunder Punch",
+      "Thunder Wave",
+      "Thunderbolt",
+      "Toxic",
+      "Trailblaze",
+      "Tri Attack",
+      "Uproar",
+      "Water Pulse",
+      "Wild Charge",
+      "Zap Cannon",
+      "Zen Headbutt"
+    ],
+    "legal_in": [
+      "M-C"
     ]
   },
   {
@@ -28792,7 +31010,7 @@
       "Zen Headbutt"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -28888,7 +31106,7 @@
       "Uproar"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   },
   {
@@ -28966,6 +31184,7 @@
       "Shadow Claw",
       "Shadow Sneak",
       "Skitter Smack",
+      "Slash",
       "Sleep Talk",
       "Sludge Bomb",
       "Snarl",
@@ -28984,7 +31203,7 @@
       "Will-O-Wisp"
     ],
     "legal_in": [
-      "M-B"
+      "M-C"
     ]
   }
 ]

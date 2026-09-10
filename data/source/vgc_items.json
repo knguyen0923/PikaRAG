@@ -16,6 +16,10 @@
     "description": "A held item that allows Aggron to Mega Evolve."
   },
   {
+    "name": "Air Balloon",
+    "description": "The holder floats in the air, giving it immunity to Ground-type moves. Pops and is consumed the first time the holder is hit by an attack."
+  },
+  {
     "name": "Alakazite",
     "description": "A held item that allows Alakazam to Mega Evolve."
   },
@@ -54,6 +58,10 @@
   {
     "name": "Big Root",
     "description": "Boosts the amount of HP restored through HP-absorbing moves by 30%. HP restored by moves such as Ingrain and Strength Sap will also be boosted by 30%."
+  },
+  {
+    "name": "Binding Band",
+    "description": "Increases the damage dealt by the holder’s binding moves from 1/8 to 1/6 of the target’s max HP per turn."
   },
   {
     "name": "Black Belt",
@@ -172,6 +180,14 @@
     "description": "A held item that allows Eelektross to Mega Evolve."
   },
   {
+    "name": "Eject Button",
+    "description": "Immediately switches the holder out for a chosen ally after it’s hit by an attack. Disappears for the duration of the battle after a single use."
+  },
+  {
+    "name": "Electric Seed",
+    "description": "Raises the holder’s Defense stat by 1 stage when Electric Terrain takes effect. Disappears for the duration of the battle after a single use."
+  },
+  {
     "name": "Emboarite",
     "description": "A held item that allows Emboar to Mega Evolve."
   },
@@ -240,6 +256,10 @@
     "description": "A held item that allows Golurk to Mega Evolve."
   },
   {
+    "name": "Grassy Seed",
+    "description": "Raises the holder’s Defense stat by 1 stage when Grassy Terrain takes effect. Disappears for the duration of the battle after a single use."
+  },
+  {
     "name": "Greninjite",
     "description": "A held item that allows Greninja to Mega Evolve."
   },
@@ -294,6 +314,10 @@
   {
     "name": "King's Rock",
     "description": "When the holder deals damage with its moves, there is a 10% chance that targets will flinch."
+  },
+  {
+    "name": "Leek",
+    "description": "Raises the critical-hit ratio of the holder’s moves. Has an even greater effect when held by Farfetch’d or Sirfetch’d."
   },
   {
     "name": "Leftovers",
@@ -376,6 +400,10 @@
     "description": "Boosts the power of the holder's Grass-type moves by 20%."
   },
   {
+    "name": "Misty Seed",
+    "description": "Raises the holder’s Special Defense stat by 1 stage when Misty Terrain takes effect. Disappears for the duration of the battle after a single use."
+  },
+  {
     "name": "Muscle Band",
     "description": "Boosts the power of the holder's physical moves by 10%."
   },
@@ -386,6 +414,10 @@
   {
     "name": "Never-Melt Ice",
     "description": "Boosts the power of the holder's Ice-type moves by 20%."
+  },
+  {
+    "name": "Normal Gem",
+    "description": "Boosts the power of the holder’s next Normal-type move by 30%. Disappears for the duration of the battle after a single use."
   },
   {
     "name": "Occa Berry",
@@ -424,6 +456,10 @@
     "description": "Boosts the power of the holder's Poison-type moves by 20%."
   },
   {
+    "name": "Psychic Seed",
+    "description": "Raises the holder’s Special Defense stat by 1 stage when Psychic Terrain takes effect. Disappears for the duration of the battle after a single use."
+  },
+  {
     "name": "Pyroarite",
     "description": "A held item that allows Pyroar to Mega Evolve."
   },
@@ -444,8 +480,16 @@
     "description": "Cures being burned. Disappears for the duration of the battle after a single use."
   },
   {
+    "name": "Red Card",
+    "description": "If the holder is hit by an attack, the attacker is forced to switch out for a random ally. Disappears for the duration of the battle after a single use."
+  },
+  {
     "name": "Rindo Berry",
     "description": "Halves the damage taken when the holder is hit with a supereffective Grass-type move. Disappears for the duration of the battle after a single use."
+  },
+  {
+    "name": "Rocky Helmet",
+    "description": "Damages any Pokémon that makes contact with the holder, inflicting 1/6 of the attacker’s max HP."
   },
   {
     "name": "Roseli Berry",
@@ -550,6 +594,10 @@
   {
     "name": "Tanga Berry",
     "description": "Halves the damage taken when the holder is hit with a supereffective Bug-type move. Disappears for the duration of the battle after a single use."
+  },
+  {
+    "name": "Terrain Extender",
+    "description": "Extends the duration of the terrain the holder sets (Electric, Grassy, Misty, or Psychic Terrain) from 5 turns to 8 turns."
   },
   {
     "name": "Twisted Spoon",

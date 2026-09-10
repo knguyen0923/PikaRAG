@@ -13,6 +13,14 @@ PIKALYTICS_FORMAT_CODE = "battledataregmbs3"  # VGC 2026 Reg M-B S3 -- manually
 # verified against Pikalytics' current format list; re-verify whenever a new
 # regulation file is dropped in (see spec's "Format code" section -- this is
 # NOT derivable from our own regulation label).
+#
+# STALE as of Regulation M-C (legal_pokemon_m-c.json, live 2026-09-08): no
+# "...regmc..." format code exists on Pikalytics yet (checked 2026-09-10 --
+# neither llms.txt nor guessed codes like "battledataregmcs1" resolve).
+# Ranked usage data for a new regulation typically takes time to accumulate;
+# do NOT refresh_pikalytics_job against the new roster until this constant is
+# re-verified, or every M-C-only species will silently report "no usage
+# data" instead of the real reason (format code mismatch).
 PIKALYTICS_AI_BASE_URL = "https://www.pikalytics.com/ai/pokedex"
 _TOP_N = 6
 

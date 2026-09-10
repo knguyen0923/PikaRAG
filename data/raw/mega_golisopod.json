@@ -1,0 +1,12 @@
+{
+  "base_stats": {
+    "hp": 75,
+    "attack": 150,
+    "defense": 175,
+    "sp_attack": 70,
+    "sp_defense": 120,
+    "speed": 40
+  },
+  "learnset": [],
+  "abilities": []
+}
