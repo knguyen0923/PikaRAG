@@ -6,7 +6,11 @@ thread. If this says "nothing in progress," there's no live handoff — just
 use `STATUS.md`.
 
 **Paused at:** 2026-09-07, mid deployment walkthrough (not a token-budget pause —
-just where the session left off; safe to resume any time)
+just where the session left off; safe to resume any time). Re-confirmed
+still accurate as of 2026-09-10 — an intervening session did unrelated code
+work (Regulation M-C data rollout, a slug-resolution bugfix, wiring
+`vgc_items.json` into RAG/`calc`/`scout` — see `STATUS.md`) and never
+touched this deployment thread, so everything below is unchanged.
 **Working on:** Working through `docs/DEPLOYMENT.md` step by step with the user
 to actually deploy PikaRAG (Discord bot config, Anthropic key, Oracle Cloud
 instance, systemd).
@@ -49,7 +53,8 @@ the console.
   agreement in this session.
 
 **In flight (not committed / not finished):**
-- `deploy/cloud-init.sh` is untracked in git — not yet committed.
+- `deploy/cloud-init.sh` — since committed (`c245e3b`, prior session); this
+  bullet is stale, no longer in flight.
 - Oracle Cloud instance needs to be recreated from scratch. Names agreed on:
   VCN `pikarag-vcn`, subnet `pikarag-subnet`, VNIC `pikarag-vnic` (DNS Label
   sub-fields, if used, must be alphanumeric-only / no hyphens / max 15 chars,
