@@ -5,11 +5,12 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-10, at commit `95816bd` (main). Regulation M-C
-rollout, a real bugfix, and wiring `vgc_items.json` into RAG/`calc`/`scout`
-all landed today; deployment walkthrough (Oracle Cloud instance recreation)
-is still where it left off -- see `RESUME.md`.
-<!-- STATUS_COMMIT: 95816bd -->
+**Last updated:** 2026-09-11, at commit `e7c8bae` (main). No code changes since
+the 2026-09-10 M-C rollout / `vgc_items.json` wiring -- just a `RESUME.md`
+reconfirmation that the deployment thread is unaffected. Deployment
+walkthrough (Oracle Cloud instance recreation) is still where it left off --
+see `RESUME.md`.
+<!-- STATUS_COMMIT: e7c8bae -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
