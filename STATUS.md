@@ -5,14 +5,15 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-12, at commit `7c6cd33` (main). Bot deployed and
+**Last updated:** 2026-09-12, at commit `4228c08` (main). Bot deployed and
 confirmed live in Discord this session (see `RESUME.md`); a project cleanup
 + code-review pass landed 5 more commits after that (README/`.gitignore`
 polish, a new spend-tracking feature for `/ask`, five real bug fixes in
 `/calc`, a team-import parsing fix, and a damage-formula correctness fix,
 verified against Bulbapedia); the server was then updated to match (`git
-pull` + restart, confirmed healthy). 262/262 tests passing.
-<!-- STATUS_COMMIT: 7c6cd33 -->
+pull` + restart, confirmed healthy). `TAKEAWAYS.md` added as a portfolio
+retrospective (also published as a Claude Artifact). 262/262 tests passing.
+<!-- STATUS_COMMIT: 4228c08 -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
