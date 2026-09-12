@@ -5,11 +5,12 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-11, at commit `3431f78` (main). Oracle Cloud instance
+**Last updated:** 2026-09-11, at commit `02bc728` (main). Oracle Cloud instance
 recreated and the bot deployed successfully this session -- see `RESUME.md`
-for full detail. This commit pins `torch==2.6.0` in `requirements.txt`,
-fixing a real crash-on-import bug hit during deployment.
-<!-- STATUS_COMMIT: 3431f78 -->
+for full detail. `3431f78` pins `torch==2.6.0` in `requirements.txt`, fixing
+a real crash-on-import bug hit during deployment; `02bc728` just refreshes
+these two handoff docs to match.
+<!-- STATUS_COMMIT: 02bc728 -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
