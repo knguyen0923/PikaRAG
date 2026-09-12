@@ -5,82 +5,83 @@ or right before a compaction) so work can pick back up without losing the
 thread. If this says "nothing in progress," there's no live handoff — just
 use `STATUS.md`.
 
-**Paused at:** 2026-09-07, mid deployment walkthrough (not a token-budget pause —
-just where the session left off; safe to resume any time). Re-confirmed
-still accurate as of 2026-09-10 — an intervening session did unrelated code
-work (Regulation M-C data rollout, a slug-resolution bugfix, wiring
-`vgc_items.json` into RAG/`calc`/`scout` — see `STATUS.md`) and never
-touched this deployment thread, so everything below is unchanged.
-**Working on:** Working through `docs/DEPLOYMENT.md` step by step with the user
-to actually deploy PikaRAG (Discord bot config, Anthropic key, Oracle Cloud
-instance, systemd).
-**Why paused:** Session ended for the day; Oracle Cloud instance needed to be
-recreated (networking misconfig) and that requires the user's next action in
-the console.
+**Paused at:** 2026-09-11, deployment essentially complete — just waiting on
+Discord's global slash-command propagation window (up to ~1hr). Not a
+token-budget pause; safe to resume any time, or just check back in Discord.
+**Working on:** Same `docs/DEPLOYMENT.md` walkthrough as before. The Oracle
+Cloud instance from the prior pause (2026-09-07/08) was successfully
+recreated on 2026-09-11 and the bot is now live and connected to Discord's
+gateway.
+**Why paused:** Nothing left to do but wait for `/ping` to actually appear
+in Discord's slash-command picker (global `tree.sync()` in `bot/main.py`
+propagates over up to ~1hr for a bot's first-ever sync — this is normal
+Discord platform behavior, not a bug). User chose to wait it out rather
+than add a guild-scoped instant-sync for testing.
 
-**Done so far:**
-- Discord: bot created, token generated, OAuth2 URL Generator permissions set
-  (`bot` scope, Send Messages + Use Slash Commands), bot invited to server,
-  bot description written, `Intents.default()` confirmed sufficient (no
-  privileged intents needed since all commands are slash commands).
-- ToS + Privacy Policy: drafted and published as a Claude Artifact (two docs,
-  one page, anchor-linked) at
-  `https://claude.ai/code/artifact/c8af5a8a-f5ad-420c-8dfe-9d260f6d0ea7`
-  (`#terms-top` and `#privacy-top`). **The artifact is private by default —
-  needs its share menu set to public/viewable before Discord's bot
-  verification can actually fetch these URLs.** Not yet confirmed done.
-- Anthropic: spend cap set to $5 (deliberately low for initial testing, per
-  cost estimate: Haiku 4.5 model in `rag/answer.py`, ~$0.003-0.007/query, no
-  rate-limiting on `/ask` in code so cap doubles as an abuse ceiling). API
-  key created.
-- Local `.env` (`/Users/knguyen/VSC/PikaRAG/PikaRAG/.env`, gitignored) now has
-  both `DISCORD_TOKEN` and `ANTHROPIC_API_KEY` populated and verified
-  non-empty (values not inspected/printed, only presence checked).
-- Wrote `deploy/cloud-init.sh` (new file, untracked as of this pause) — an
-  Oracle Cloud "Initialization script" that automates apt installs, creates
-  the `pikarag` system user, clones the repo, sets up the venv + pip install,
-  stages (but does not enable) the systemd units. Deliberately does NOT write
-  real secrets into `.env` or enable the bot, since instance metadata /
-  cloud-init scripts are visible to anyone with console access to the
-  instance.
-- First Oracle Cloud instance attempt: created with shape `VM.Standard.A1.Flex`
-  (1 OCPU/6GB, ARM, Ubuntu 22.04), but the "Public IPv4 address" toggle was
-  left at "No" during creation, which caused Oracle to provision the subnet
-  as a **private subnet** (no internet gateway route) — this is a
-  subnet-level property, not fixable per-instance after the fact (confirmed:
-  no "reserve/add public IP" option available on the VNIC's private IP, only
-  NSG editing). User terminated this instance (with boot volume deleted) per
-  agreement in this session.
+**Done so far (this session, 2026-09-11):**
+- Recreated the Oracle Cloud instance (`project-pikarag`, `VM.Standard.A1.Flex`,
+  Canonical Ubuntu 22.04 Minimal aarch64), public IP `193.122.155.20`. See
+  memory `pikarag-oracle-deployment` for full connection details (SSH key
+  at `~/.ssh/pikarag-oci.key`) and `pikarag-oracle-networking-gotchas` for
+  the two real bugs hit along the way (manually-created VCNs don't get an
+  Internet Gateway automatically; `cloud-init.sh`'s `useradd -m` + `git clone`
+  ordering bug — the latter is **still unpatched in the repo**, worth fixing
+  before the next from-scratch recreation).
+- Bootstrap (`deploy/cloud-init.sh`'s steps) run manually over SSH, since the
+  instance's "Initialization script" field was left blank at creation time.
+  Repo cloned to `/opt/pikarag`, venv built, systemd units installed.
+- Real secrets copied into the server's `/opt/pikarag/.env` via `scp` of the
+  local `.env` (after two failed attempts hand-typing a heredoc, which
+  corrupted the file with duplicated/garbage lines both times — `scp` of the
+  already-correct local file was the fix).
+- Both refresh pipelines run once: PokeAPI job clean (345/345 from cache);
+  Pikalytics job wrote real data for 208/210 attempted species. The 2
+  failures (Farfetch'd, Sirfetch'd) are **not a bug** — confirmed via direct
+  curl tests against Pikalytics plus `git log` — those two are newly-legal
+  in M-C and were never in M-B, and `PIKALYTICS_FORMAT_CODE` still points at
+  M-B's format code (already a tracked open item below). Nothing to fix here.
+- Found and fixed a real bug: `pip install -r requirements.txt` was resolving
+  `torch==2.14.0`, which crashes on any `sentence_transformers`/`transformers`
+  import (`ValueError: Duplicate dispatch rule for <built-in function intern>`
+  inside `torch._dynamo` triggered via `transformers`' flex_attention
+  integration). Fixed by pinning `torch==2.6.0` in `requirements.txt`
+  (confirmed via direct import test) — **committed to the repo**
+  (uncommitted as of this write; see next step). Installed live in the
+  server's venv already, bot confirmed running past this point.
+- All three systemd units enabled and running:
+  `pikarag-bot.service` (active, connected to Discord gateway as of
+  `2026-09-12 00:48:02 UTC`), `pikarag-refresh-pokeapi.timer`,
+  `pikarag-refresh-pikalytics.timer`.
+- Discord invite: hit two snags along the way — (1) the app had "Requires
+  OAuth2 Code Grant" enabled in Bot settings, which broke the simple invite
+  link until turned off; (2) had to select Guild Install (not User Install)
+  and manually add a placeholder OAuth2 redirect (`https://discord.com`,
+  unused by the actual bot-scope invite flow) to satisfy an unrelated form
+  validation. Bot is now a member of the target server.
 
 **In flight (not committed / not finished):**
-- `deploy/cloud-init.sh` — since committed (`c245e3b`, prior session); this
-  bullet is stale, no longer in flight.
-- Oracle Cloud instance needs to be recreated from scratch. Names agreed on:
-  VCN `pikarag-vcn`, subnet `pikarag-subnet`, VNIC `pikarag-vnic` (DNS Label
-  sub-fields, if used, must be alphanumeric-only / no hyphens / max 15 chars,
-  e.g. `pikaragvcn` / `pikaragsub` -- separate from the hyphenated Display
-  Name fields, which are fine as typed).
-- Oracle billing/account setup (payment verification, home region choice)
-  was already completed by the user before the first (failed) instance
-  attempt, so recreation should just be the instance-creation flow, not
-  full account setup again.
+- `requirements.txt`'s `torch==2.6.0` pin — committed and pushed
+  (`3431f78`). This bullet is stale, no longer in flight.
+- `deploy/cloud-init.sh`'s `useradd -m`/`git clone` bug (see memory
+  `pikarag-oracle-networking-gotchas`) is still unpatched in the repo.
 
-**Next step:** Guide the user through recreating the Oracle Cloud instance,
-this time confirming **Public IPv4 address = Yes** is set *first*, before
-touching VCN/subnet/VNIC name fields or anything else in Networking. Reuse
-`deploy/cloud-init.sh` as the Initialization script. After the instance is
-up with a real public IP: SSH in, confirm cloud-init finished
-(`cat /var/log/pikarag-bootstrap-done.log`), fill in the real `.env` on the
-server, run both pipeline refresh jobs once, then enable the three systemd
-units (`pikarag-bot.service`, `pikarag-refresh-pokeapi.timer`,
-`pikarag-refresh-pikalytics.timer`). Also remember to flip the published
-legal-docs Artifact to public/shareable before submitting the bot anywhere
-that verifies those URLs.
+**Next step:** Nothing required — just check Discord in 15-60 min and try
+`/ping`. If it still doesn't respond after ~an hour, that's when it'd be
+worth actually investigating (check `sudo journalctl -u pikarag-bot.service
+-f` on the server for errors) rather than assuming it's still propagation
+delay. Everything else from the original deployment checklist is done
+(instance up, bootstrap complete, secrets in place, pipelines run, systemd
+units running, torch fix committed+pushed). Remaining loose ends, all
+low-priority: flip the published legal-docs Artifact
+(`https://claude.ai/code/artifact/c8af5a8a-f5ad-420c-8dfe-9d260f6d0ea7`) to
+public/shareable before submitting the bot anywhere that verifies those
+URLs; patch `cloud-init.sh`'s useradd/git-clone bug before the next
+from-scratch instance recreation; re-verify `PIKALYTICS_FORMAT_CODE` once
+Pikalytics publishes an M-C ranked ladder.
 
 **Open questions / decisions still needed:**
-- Whether to enable Shielded Instance (Secure Boot/Measured Boot/TPM) on the
-  recreated instance — recommended but optional, was left Disabled on the
-  terminated attempt and never explicitly revisited.
+- Whether to patch the `cloud-init.sh` bug now (low urgency — only matters
+  on the next from-scratch instance recreation) or leave it for later.
 
 ---
 
