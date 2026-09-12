@@ -1,4 +1,6 @@
-DEFAULT_MODEL = "claude-haiku-4-5-20251001"
+from rag import spend_tracker
+
+DEFAULT_MODEL = "claude-haiku-4-5"
 
 SYSTEM_PROMPT = (
     "You are a Pokemon VGC doubles assistant. Answer the user's question "
@@ -15,13 +17,14 @@ class HaikuAnswerer:
     for testing without a live API key.
     """
 
-    def __init__(self, client=None, model: str = DEFAULT_MODEL):
+    def __init__(self, client=None, model: str = DEFAULT_MODEL, spend_state_path=None):
         if client is None:
             import anthropic
 
             client = anthropic.Anthropic()
         self._client = client
         self._model = model
+        self._spend_state_path = spend_state_path or spend_tracker.DEFAULT_STATE_PATH
 
     def answer(self, question: str, context_block: str) -> str:
         message = self._client.messages.create(
@@ -35,4 +38,10 @@ class HaikuAnswerer:
                 }
             ],
         )
-        return message.content[0].text
+        text = message.content[0].text
+        crossed = spend_tracker.record_usage(
+            message.usage.input_tokens, message.usage.output_tokens, state_path=self._spend_state_path
+        )
+        if crossed:
+            text += "\n\n⚠️ Approaching the Anthropic spend cap (~$1 left)."
+        return text
