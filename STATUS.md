@@ -5,12 +5,15 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-11, at commit `02bc728` (main). Oracle Cloud instance
-recreated and the bot deployed successfully this session -- see `RESUME.md`
-for full detail. `3431f78` pins `torch==2.6.0` in `requirements.txt`, fixing
-a real crash-on-import bug hit during deployment; `02bc728` just refreshes
-these two handoff docs to match.
-<!-- STATUS_COMMIT: 02bc728 -->
+**Last updated:** 2026-09-11, at commit `edcca6f` (main). Bot deployed and
+live this session (see `RESUME.md` for that detail); afterward, a project
+cleanup + code-review pass landed 5 more commits: README/`.gitignore`
+polish, a new spend-tracking feature for `/ask`, five real bug fixes in
+`/calc` (nature/tera/EV/HP-percent validation), a team-import parsing fix
+(`Hidden Power:` lines), and a correctness fix to the core damage formula
+(terrain + item/screen modifier chaining, verified against Bulbapedia).
+262/262 tests passing.
+<!-- STATUS_COMMIT: edcca6f -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
@@ -24,7 +27,7 @@ budget or compaction), which is more specific than this snapshot.
 
 ## Where things stand
 
-All planned code work is done and merged to `main`. 244/244 tests passing.
+All planned code work is done and merged to `main`. 262/262 tests passing.
 Data is current for **Regulation M-C** (315 -> 345 legal Pokemon, live since
 2026-09-08) -- see the `data:`/`fix:`/`feat:` commits from 2026-09-10.
 `vgc_items.json` (197 items, now complete against everything `damage_calc`
@@ -60,8 +63,14 @@ Deployment is effectively done as of 2026-09-11 — full detail in `RESUME.md`.
    `2026-09-12 00:48:02 UTC` — **just waiting on Discord's global
    slash-command propagation (up to ~1hr) before `/ping` will respond**
 
-Uncommitted right now: `requirements.txt` has a `torch==2.6.0` pin (fixes a
-real crash — see `RESUME.md`) sitting in the working tree, not yet committed.
+**The deployed instance is now behind `main` by 5 commits** (docs polish,
+spend-tracker feature, `/calc` validation fixes, pokepaste fix, damage
+formula fix) plus the earlier `torch==2.6.0` pin. To pick these up on the
+server: `git pull` in `/opt/pikarag`, then `sudo systemctl restart
+pikarag-bot.service`. The spend-tracker feature also needs
+`ANTHROPIC_SPEND_CAP_USD=5.0` (or your real cap) added to the server's
+`/opt/pikarag/.env` — it defaults to `5.0` if missing, so this isn't urgent,
+just worth setting explicitly to match whatever the real Console cap is.
 
 Also pending: the ToS/Privacy Policy Claude Artifact
 (`https://claude.ai/code/artifact/c8af5a8a-f5ad-420c-8dfe-9d260f6d0ea7`) needs
