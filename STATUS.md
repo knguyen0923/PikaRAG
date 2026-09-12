@@ -5,7 +5,7 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-11, at commit `edcca6f` (main). Bot deployed and
+**Last updated:** 2026-09-11, at commit `e543231` (main). Bot deployed and
 live this session (see `RESUME.md` for that detail); afterward, a project
 cleanup + code-review pass landed 5 more commits: README/`.gitignore`
 polish, a new spend-tracking feature for `/ask`, five real bug fixes in
@@ -13,7 +13,7 @@ polish, a new spend-tracking feature for `/ask`, five real bug fixes in
 (`Hidden Power:` lines), and a correctness fix to the core damage formula
 (terrain + item/screen modifier chaining, verified against Bulbapedia).
 262/262 tests passing.
-<!-- STATUS_COMMIT: edcca6f -->
+<!-- STATUS_COMMIT: e543231 -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
