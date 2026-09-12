@@ -162,6 +162,65 @@ def test_electric_terrain_boosts_electric_move():
     assert terrain.max_damage > no_terrain.max_damage
 
 
+def test_terrain_boosts_base_power_at_the_correct_1_5x_before_the_main_formula():
+    # Regression: terrain was previously applied as a late 1.3x multiplier on
+    # the already-computed roll, not as a Base Power Modifier. Real terrain
+    # is 6144/4096 = 1.5x on the move's power, applied (and pokeRounded)
+    # before the main damage formula runs -- same stage as Gems/Plates.
+    #
+    # Thunderbolt (Electric, 90 BP Special), Electric attacker (STAB), Normal
+    # defender (neutral -- Water would be 2x, not neutral), Electric Terrain,
+    # neutral 120/120 stats (see _NEUTRAL_STATS comment above).
+    # power = poke_round(90 * 6144/4096) = poke_round(135.0) = 135
+    # base_damage = floor(floor(floor(22)*135*120/120)/50)+2
+    #             = floor(2970/50)+2 = 59+2 = 61
+    # min roll: 61 -> 61 -> floor(61*0.85)=51 -> poke_round(51*1.5)=77 (STAB)
+    #           -> floor(77*1.0)=77 (type) -> final modifiers neutral -> 77
+    # max roll: 61 -> 61 -> 61 -> poke_round(61*1.5)=92 (STAB) -> 92 -> 92
+    #
+    # The old (buggy) order left power at 90 and applied terrain at 1.3x
+    # after STAB/type instead, giving base_damage=41 and min/max of 66/80 --
+    # both clearly different from the correct 77/92 below.
+    move = {"name": "Thunderbolt", "type": "Electric", "category": "Special", "power": 90, "accuracy": 100, "pp": 15, "effect": None}
+    attacker = _make_combatant(_NEUTRAL_STATS, types=["Electric"])
+    defender = _make_combatant(_NEUTRAL_STATS, types=["Normal"])
+
+    result = calculate_damage(move, attacker, defender, {**_BASE_CONTEXT, "terrain": "Electric"})
+
+    assert result.min_damage == 77
+    assert result.max_damage == 92
+
+
+def test_screen_and_item_combine_into_one_chained_modifier_not_separate_floors():
+    # Regression: screens/items/berries were previously each floored
+    # separately in sequence. Real mechanics chain them into ONE combined
+    # /4096 modifier and round (half up) only once, which can differ from
+    # flooring each one in turn.
+    #
+    # Tackle (Normal, 40 BP Physical), Normal attacker (STAB), Water defender
+    # (neutral), Life Orb + Reflect (singles), neutral 120/120 stats.
+    # base_damage = floor(floor(floor(22)*40*120/120)/50)+2 = floor(880/50)+2 = 17+2 = 19
+    # combined final modifier = poke_round(poke_round(4096*2048/4096)*5324/4096)
+    #                         = poke_round(2048*5324/4096) = poke_round(2662.0) = 2662
+    # min roll: 19 -> 19 -> floor(19*0.85)=16 -> poke_round(16*1.5)=24 (STAB)
+    #           -> floor(24*1.0)=24 (type) -> poke_round(24*2662/4096)=16
+    # max roll: 19 -> 19 -> 19 -> poke_round(19*1.5)=29 (STAB, .5 rounds up)
+    #           -> floor(29*1.0)=29 (type) -> poke_round(29*2662/4096)=19
+    #
+    # The old (buggy) order floored screen (0.5x) then item (1.3x) as two
+    # separate steps, giving min/max of 15/18 -- both differ from 16/19.
+    move = {"name": "Tackle", "type": "Normal", "category": "Physical", "power": 40, "accuracy": 100, "pp": 35, "effect": None}
+    attacker = _make_combatant(_NEUTRAL_STATS, types=["Normal"], item="Life Orb")
+    defender = _make_combatant(_NEUTRAL_STATS, types=["Water"])
+
+    result = calculate_damage(
+        move, attacker, defender, {**_BASE_CONTEXT, "screen": "Reflect", "is_doubles": False}
+    )
+
+    assert result.min_damage == 16
+    assert result.max_damage == 19
+
+
 def test_reflect_halves_physical_damage():
     move = {"name": "Tackle", "type": "Normal", "category": "Physical", "power": 40, "accuracy": 100, "pp": 35, "effect": None}
     stats = {"hp": 100, "attack": 100, "defense": 100, "sp_attack": 100, "sp_defense": 100, "speed": 100}

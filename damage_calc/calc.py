@@ -12,21 +12,37 @@ NO_STAB_MULTIPLIER = 1.0
 SPREAD_MULTIPLIER = 0.75          # doubles, move hits more than one target
 WEATHER_BOOST_MULTIPLIER = 1.5    # Rain/Water, Sun/Fire
 WEATHER_PENALTY_MULTIPLIER = 0.5  # Rain/Fire, Sun/Water
-TERRAIN_BOOST_MULTIPLIER = 1.3    # grounded attacker, matching terrain
-SCREEN_DOUBLES_MULTIPLIER = 2 / 3
-SCREEN_SINGLES_MULTIPLIER = 0.5
-LIFE_ORB_MULTIPLIER = 1.3
-EXPERT_BELT_MULTIPLIER = 1.2
-MUSCLE_BAND_MULTIPLIER = 1.1
-WISE_GLASSES_MULTIPLIER = 1.1
-RESIST_BERRY_MULTIPLIER = 0.5
 CHOICE_ITEM_STAT_MULTIPLIER = 1.5
 ASSAULT_VEST_MULTIPLIER = 1.5
-GEM_MULTIPLIER = 1.3
-PLATE_MULTIPLIER = 1.2
 MIN_ROLL = 0.85
 MAX_ROLL = 1.00
 NEUTRAL_MULTIPLIER = 1.0
+
+# The games track these modifiers as fixed-point /4096 fractions and chain
+# multiple of them together into one combined value before ever rounding
+# (Bulbapedia's "User:FIQ/Damage_calculation" reference) -- using the exact
+# numerator keeps that chaining bit-faithful instead of drifting from a
+# rounded-off decimal approximation. See _chain_numerators/_apply_numerator.
+_NEUTRAL_NUM = 4096
+
+# Base Power Modifiers -- chained together and applied ONCE to the move's
+# base power, before the main damage formula runs.
+TERRAIN_BOOST_NUM = 6144  # 1.5x -- grounded attacker, matching terrain
+GEM_NUM = 5325            # ~1.300x
+PLATE_NUM = 4915          # ~1.200x
+
+# Final Modifiers -- chained together and applied ONCE to the computed
+# damage, after type effectiveness. Screens, held items, and resist berries
+# are all part of this single combined stage in-game -- flooring each one
+# separately (as an earlier version of this file did) can be off by 1 from
+# real damage whenever two or more of these apply at once.
+SCREEN_DOUBLES_NUM = 2732  # ~0.667x
+SCREEN_SINGLES_NUM = 2048  # 0.5x
+LIFE_ORB_NUM = 5324        # ~1.300x
+EXPERT_BELT_NUM = 4915     # ~1.200x
+MUSCLE_BAND_NUM = 4505     # ~1.100x
+WISE_GLASSES_NUM = 4505    # ~1.100x
+RESIST_BERRY_NUM = 2048    # 0.5x
 
 # Terrain name -> the move type it boosts.
 _TERRAIN_TYPE_MAP = {"Electric": "Electric", "Grassy": "Grass", "Psychic": "Psychic"}
@@ -120,8 +136,25 @@ def _apply_floor(value: int, multiplier: float) -> int:
 
 
 def _poke_round(value: float) -> int:
-    """Round half UP -- the games' rounding for the STAB step specifically."""
+    """Round half UP -- the games' rounding for the STAB step, and for
+    applying a combined Base Power/Final modifier chain (see below)."""
     return math.floor(value + 0.5)
+
+
+def _chain_numerators(numerators: list) -> int:
+    """Combine /4096 modifier numerators into one, per the games' fixed-point
+    chaining rule: each step folds the next modifier into the running
+    combined value via round_half_up((combined * next) / 4096), starting
+    from a neutral 4096 (1x). An empty list yields 4096 (no-op)."""
+    combined = _NEUTRAL_NUM
+    for numerator in numerators:
+        combined = _poke_round(combined * numerator / _NEUTRAL_NUM)
+    return combined
+
+
+def _apply_numerator(value: int, combined_numerator: int) -> int:
+    """Apply an already-chained /4096 numerator to a value, rounding half up."""
+    return _poke_round(value * combined_numerator / _NEUTRAL_NUM)
 
 
 def _damage_at_roll(
@@ -131,24 +164,23 @@ def _damage_at_roll(
     weather_modifier: float,
     stab: float,
     type_effectiveness: float,
-    terrain_modifier: float,
-    screen_modifier: float,
-    item_modifier: float,
+    final_modifier_numerator: int,
 ) -> int:
     """Run the modifier chain for one damage roll.
 
-    Real damage calculation truncates after EACH modifier rather than once at
-    the end, and the STAB step rounds half up instead of truncating. The order
-    below is the in-game order; changing it changes results in ~20-40% of cases.
+    Multi-target, weather, the random roll, and type effectiveness each
+    truncate immediately after being applied; STAB rounds half up instead.
+    Screens/items/berries are NOT separate truncation steps -- they were
+    already combined into final_modifier_numerator (see calculate_damage)
+    and are applied here as that one already-chained value, per the games'
+    "Final Modifiers" stage.
     """
     damage = _apply_floor(base_damage, spread_modifier)
     damage = _apply_floor(damage, weather_modifier)
     damage = _apply_floor(damage, roll)
     damage = _poke_round(damage * stab)
     damage = _apply_floor(damage, type_effectiveness)
-    damage = _apply_floor(damage, terrain_modifier)
-    damage = _apply_floor(damage, screen_modifier)
-    damage = _apply_floor(damage, item_modifier)
+    damage = _apply_numerator(damage, final_modifier_numerator)
     return damage
 
 
@@ -167,12 +199,19 @@ def calculate_damage(move: dict, attacker: dict, defender: dict, context: dict) 
     power = move["power"]
     attacker_item = attacker.get("item")
 
-    power_modifier = NEUTRAL_MULTIPLIER
+    terrain = context.get("terrain")
+    terrain_applies = bool(terrain) and _TERRAIN_TYPE_MAP.get(terrain) == move["type"]
+
+    # Base Power Modifiers: Gem/Plate and Terrain are chained together and
+    # applied once to power, before the main damage formula runs.
+    power_numerators = []
     if _GEM_TYPE.get(attacker_item) == move["type"]:
-        power_modifier = GEM_MULTIPLIER
+        power_numerators.append(GEM_NUM)
     elif _PLATE_TYPE.get(attacker_item) == move["type"]:
-        power_modifier = PLATE_MULTIPLIER
-    power = _apply_floor(power, power_modifier)
+        power_numerators.append(PLATE_NUM)
+    if terrain_applies:
+        power_numerators.append(TERRAIN_BOOST_NUM)
+    power = _apply_numerator(power, _chain_numerators(power_numerators))
 
     if category == "Physical":
         attack_stat = _effective_stat(attacker, "attack")
@@ -211,12 +250,10 @@ def calculate_damage(move: dict, attacker: dict, defender: dict, context: dict) 
         elif move["type"] == "Water":
             weather_modifier = WEATHER_PENALTY_MULTIPLIER
 
-    terrain = context.get("terrain")
-    terrain_modifier = (
-        TERRAIN_BOOST_MULTIPLIER
-        if terrain and _TERRAIN_TYPE_MAP.get(terrain) == move["type"]
-        else NEUTRAL_MULTIPLIER
-    )
+    # Final Modifiers: screens, the attacker's held item, and a defending
+    # resist berry are all chained together and applied once to damage,
+    # after type effectiveness (see _damage_at_roll).
+    final_numerators = []
 
     screen = context.get("screen")
     screen_applies = (
@@ -225,26 +262,22 @@ def calculate_damage(move: dict, attacker: dict, defender: dict, context: dict) 
         or (screen == "Aurora Veil")
     )
     if screen_applies:
-        screen_modifier = (
-            SCREEN_DOUBLES_MULTIPLIER if context.get("is_doubles") else SCREEN_SINGLES_MULTIPLIER
-        )
-    else:
-        screen_modifier = NEUTRAL_MULTIPLIER
+        final_numerators.append(SCREEN_DOUBLES_NUM if context.get("is_doubles") else SCREEN_SINGLES_NUM)
 
     if attacker_item == "Life Orb":
-        item_modifier = LIFE_ORB_MULTIPLIER
+        final_numerators.append(LIFE_ORB_NUM)
     elif attacker_item == "Expert Belt" and type_effectiveness > 1:
-        item_modifier = EXPERT_BELT_MULTIPLIER
+        final_numerators.append(EXPERT_BELT_NUM)
     elif attacker_item == "Muscle Band" and category == "Physical":
-        item_modifier = MUSCLE_BAND_MULTIPLIER
+        final_numerators.append(MUSCLE_BAND_NUM)
     elif attacker_item == "Wise Glasses" and category == "Special":
-        item_modifier = WISE_GLASSES_MULTIPLIER
-    else:
-        item_modifier = NEUTRAL_MULTIPLIER
+        final_numerators.append(WISE_GLASSES_NUM)
 
     resist_berry_type = _RESIST_BERRY_TYPE.get(defender.get("item"))
     if resist_berry_type == move["type"] and (type_effectiveness > 1 or resist_berry_type == "Normal"):
-        item_modifier *= RESIST_BERRY_MULTIPLIER
+        final_numerators.append(RESIST_BERRY_NUM)
+
+    final_modifier_numerator = _chain_numerators(final_numerators)
 
     chain = dict(
         base_damage=base_damage,
@@ -252,9 +285,7 @@ def calculate_damage(move: dict, attacker: dict, defender: dict, context: dict) 
         weather_modifier=weather_modifier,
         stab=stab,
         type_effectiveness=type_effectiveness,
-        terrain_modifier=terrain_modifier,
-        screen_modifier=screen_modifier,
-        item_modifier=item_modifier,
+        final_modifier_numerator=final_modifier_numerator,
     )
     min_damage = _damage_at_roll(roll=MIN_ROLL, **chain)
     max_damage = _damage_at_roll(roll=MAX_ROLL, **chain)
