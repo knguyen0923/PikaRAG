@@ -1,26 +1,45 @@
 from typing import Optional
 
-from bot.pokemon_lookup import find_record, suggest_names
+from bot.pokemon_lookup import find_record, not_found_message
 from damage_calc.calc import calculate_damage
+from damage_calc.data.natures import get_nature_modifiers
+from damage_calc.data.type_chart import ALL_TYPES
 
 _STAT_ORDER = ["hp", "attack", "defense", "sp_attack", "sp_defense", "speed"]
 _VGC_LEVEL = 50
 _MAX_IVS = {stat: 31 for stat in _STAT_ORDER}
 _NO_STAT_STAGES = {"attack": 0, "defense": 0, "sp_attack": 0, "sp_defense": 0, "speed": 0}
+_MAX_EV_PER_STAT = 252
+_MAX_EV_TOTAL = 508
+_ERROR_PREFIXES = ("No ", "Invalid ")
+
+
+def is_error_response(response: str) -> bool:
+    """True if `response` is one of calc_response's error messages rather
+    than a successful damage-range result. Centralized here, next to the
+    messages themselves, so callers don't have to re-derive or guess at
+    which prefixes mean "this calc failed" -- see bot/main.py's /calc
+    handler for why that distinction matters to a caller.
+    """
+    return response.startswith(_ERROR_PREFIXES)
 
 
 def _parse_evs(evs: str) -> Optional[dict]:
     parts = [part.strip() for part in evs.split("/")]
     if len(parts) != 6 or not all(part.isdigit() for part in parts):
         return None
-    return dict(zip(_STAT_ORDER, (int(part) for part in parts)))
+    values = [int(part) for part in parts]
+    if any(v > _MAX_EV_PER_STAT for v in values) or sum(values) > _MAX_EV_TOTAL:
+        return None
+    return dict(zip(_STAT_ORDER, values))
 
 
-def _not_found_message(kind: str, name: str, candidates: list) -> str:
-    suggestions = suggest_names(candidates, name)
-    if suggestions:
-        return f"No {kind} found matching '{name}'. Did you mean: {', '.join(suggestions)}?"
-    return f"No {kind} found matching '{name}'."
+def _is_valid_nature(nature: str) -> bool:
+    try:
+        get_nature_modifiers(nature)
+        return True
+    except KeyError:
+        return False
 
 
 def _build_combatant(record: dict, evs: dict, nature: str, item: Optional[str], tera_type: Optional[str]) -> dict:
@@ -47,7 +66,7 @@ def _canonicalize_item(items: Optional[list], item: Optional[str]) -> tuple:
         return item, None
     record = find_record(items, item)
     if record is None:
-        return item, _not_found_message("item", item, items)
+        return item, not_found_message(items, item, kind="item")
     return record["name"], None
 
 
@@ -75,15 +94,15 @@ def calc_response(
     """Format a damage-range response, assuming level 50 / 31 IVs / neutral stat stages (VGC standard)."""
     attacker_record = find_record(records, attacker_name)
     if attacker_record is None:
-        return _not_found_message("Pokemon", attacker_name, records)
+        return not_found_message(records, attacker_name)
 
     defender_record = find_record(records, defender_name)
     if defender_record is None:
-        return _not_found_message("Pokemon", defender_name, records)
+        return not_found_message(records, defender_name)
 
     move = find_record(moves, move_name)
     if move is None:
-        return _not_found_message("move", move_name, moves)
+        return not_found_message(moves, move_name, kind="move")
 
     attacker_item, error = _canonicalize_item(items, attacker_item)
     if error:
@@ -94,11 +113,30 @@ def calc_response(
 
     parsed_attacker_evs = _parse_evs(attacker_evs)
     if parsed_attacker_evs is None:
-        return "Invalid attacker EVs. Expected format: hp/atk/def/spa/spd/spe, e.g. 4/252/0/0/0/252."
+        return (
+            "Invalid attacker EVs. Expected format: hp/atk/def/spa/spd/spe, e.g. 4/252/0/0/0/252 "
+            f"(each stat 0-{_MAX_EV_PER_STAT}, total up to {_MAX_EV_TOTAL})."
+        )
 
     parsed_defender_evs = _parse_evs(defender_evs)
     if parsed_defender_evs is None:
-        return "Invalid defender EVs. Expected format: hp/atk/def/spa/spd/spe, e.g. 252/0/252/0/4/0."
+        return (
+            "Invalid defender EVs. Expected format: hp/atk/def/spa/spd/spe, e.g. 252/0/252/0/4/0 "
+            f"(each stat 0-{_MAX_EV_PER_STAT}, total up to {_MAX_EV_TOTAL})."
+        )
+
+    if not _is_valid_nature(attacker_nature):
+        return f"Invalid attacker nature '{attacker_nature}'."
+    if not _is_valid_nature(defender_nature):
+        return f"Invalid defender nature '{defender_nature}'."
+
+    if attacker_tera is not None and attacker_tera not in ALL_TYPES:
+        return f"Invalid attacker Tera type '{attacker_tera}'."
+    if defender_tera is not None and defender_tera not in ALL_TYPES:
+        return f"Invalid defender Tera type '{defender_tera}'."
+
+    if not 1 <= defender_hp_percent <= 100:
+        return "Invalid defender HP percent. Must be between 1 and 100."
 
     attacker = _build_combatant(attacker_record, parsed_attacker_evs, attacker_nature, attacker_item, attacker_tera)
     defender = _build_combatant(defender_record, parsed_defender_evs, defender_nature, defender_item, defender_tera)

@@ -8,7 +8,7 @@ import discord
 from discord import app_commands
 
 from bot.commands.ask import ask_response_async
-from bot.commands.calc import calc_response
+from bot.commands.calc import calc_response, is_error_response
 from bot.commands.moves import moves_response
 from bot.commands.ping import ping_response
 from bot.commands.stats import stats_response
@@ -138,7 +138,7 @@ def build_client(
         defender_nature: Optional[str] = None,
         defender_item: Optional[str] = None,
         defender_tera: Optional[str] = None,
-        defender_hp_percent: int = 100,
+        defender_hp_percent: app_commands.Range[int, 1, 100] = 100,
         weather: Optional[str] = None,
         terrain: Optional[str] = None,
         screen: Optional[str] = None,
@@ -172,9 +172,9 @@ def build_client(
             screen=screen,
             spread=spread,
         )
-        # Only note stored-team usage on a successful calc -- not on a "not
-        # found"/"invalid EVs" error, where the note would be misleading.
-        if not response.startswith(("No ", "Invalid ")):
+        # Only note stored-team usage on a successful calc -- not on an
+        # error, where the note would be misleading.
+        if not is_error_response(response):
             stored_names = [name for name in (attacker, defender) if find_team_member(user_id, name)]
             if stored_names:
                 response += f" (using stored data for: {', '.join(stored_names)})"

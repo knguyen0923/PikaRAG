@@ -16,11 +16,19 @@ def suggest_names(records: list, name: str, n: int = 3) -> list:
     return difflib.get_close_matches(name, names, n=n)
 
 
-def not_found_message(records: list, name: str) -> str:
-    suggestions = suggest_names(records, name)
+def format_with_suggestions(base_message: str, suggestions: list) -> str:
+    """Append a "Did you mean: ...?" clause to `base_message` when there are
+    close-match suggestions, shared by every not-found/not-recognized message
+    in the bot so a wording change only has one place to make it.
+    """
     if suggestions:
-        return f"No Pokemon found matching '{name}'. Did you mean: {', '.join(suggestions)}?"
-    return f"No Pokemon found matching '{name}'."
+        return f"{base_message} Did you mean: {', '.join(suggestions)}?"
+    return base_message
+
+
+def not_found_message(records: list, name: str, kind: str = "Pokemon") -> str:
+    suggestions = suggest_names(records, name)
+    return format_with_suggestions(f"No {kind} found matching '{name}'.", suggestions)
 
 
 def usage_for_record(usage: dict, record: dict):

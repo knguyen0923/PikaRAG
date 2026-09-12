@@ -1,4 +1,4 @@
-from bot.commands.calc import calc_response
+from bot.commands.calc import calc_response, is_error_response
 
 _ABOMASNOW = {
     "name": "Abomasnow",
@@ -23,6 +23,15 @@ _RECORDS = [_ABOMASNOW, _GYARADOS]
 _ICE_BEAM = {"name": "Ice Beam", "type": "Ice", "category": "Special", "power": 90, "accuracy": 100, "pp": 12, "effect": None}
 _TACKLE = {"name": "Tackle", "type": "Normal", "category": "Physical", "power": 40, "accuracy": 100, "pp": 35, "effect": None}
 _MOVES = [_ICE_BEAM, _TACKLE]
+
+
+def test_is_error_response_true_for_error_messages():
+    assert is_error_response("No Pokemon found matching 'Abomasno'.") is True
+    assert is_error_response("Invalid attacker EVs. Expected format: ...") is True
+
+
+def test_is_error_response_false_for_a_successful_calc():
+    assert is_error_response("Abomasnow's Ice Beam vs Gyarados: 10-12 damage (5.0%-6.0%).") is False
 
 
 def test_calc_response_reports_a_damage_range_and_percent():
@@ -61,6 +70,54 @@ def test_calc_response_rejects_malformed_evs():
 
     assert "invalid" in response.lower()
     assert "evs" in response.lower()
+
+
+def test_calc_response_rejects_evs_over_the_per_stat_cap():
+    response = calc_response(_RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam", attacker_evs="0/999/0/0/0/0")
+
+    assert "invalid" in response.lower()
+    assert "evs" in response.lower()
+
+
+def test_calc_response_rejects_evs_over_the_total_cap():
+    # Each stat is individually <= 252, but the total (300*2 = 600) exceeds 508.
+    response = calc_response(_RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam", attacker_evs="0/252/252/0/0/96")
+
+    assert "invalid" in response.lower()
+    assert "evs" in response.lower()
+
+
+def test_calc_response_rejects_unrecognized_attacker_nature():
+    response = calc_response(_RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam", attacker_nature="Adamnt")
+
+    assert "invalid" in response.lower()
+    assert "nature" in response.lower()
+
+
+def test_calc_response_rejects_unrecognized_defender_nature():
+    response = calc_response(_RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam", defender_nature="Modeset")
+
+    assert "invalid" in response.lower()
+    assert "nature" in response.lower()
+
+
+def test_calc_response_rejects_unrecognized_attacker_tera_type():
+    response = calc_response(_RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam", attacker_tera="Fir")
+
+    assert "invalid" in response.lower()
+    assert "tera" in response.lower()
+
+
+def test_calc_response_rejects_out_of_range_defender_hp_percent():
+    response = calc_response(_RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam", defender_hp_percent=0)
+
+    assert "invalid" in response.lower()
+    assert "hp" in response.lower()
+
+    response = calc_response(_RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam", defender_hp_percent=101)
+
+    assert "invalid" in response.lower()
+    assert "hp" in response.lower()
 
 
 def test_calc_response_higher_attacker_evs_increase_damage():

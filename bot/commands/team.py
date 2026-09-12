@@ -1,4 +1,4 @@
-from bot.pokemon_lookup import find_record, suggest_names
+from bot.pokemon_lookup import find_record, format_with_suggestions, suggest_names
 from bot.pokepaste import parse_pokepaste, PokepasteParseError
 from bot.team_store import get_team, merge_scout, store_team
 from damage_calc.data.natures import get_nature_modifiers
@@ -32,27 +32,18 @@ def _validate_member(records: list, moves: list, items: list, member: dict) -> l
     warnings = []
     if find_record(records, member["species"]) is None:
         suggestions = suggest_names(records, member["species"])
-        if suggestions:
-            warnings.append(f"'{member['species']}' not recognized. Did you mean: {', '.join(suggestions)}?")
-        else:
-            warnings.append(f"'{member['species']}' not recognized.")
+        warnings.append(format_with_suggestions(f"'{member['species']}' not recognized.", suggestions))
     if items and member["item"] is not None:
         item_record = find_record(items, member["item"])
         if item_record is None:
             suggestions = suggest_names(items, member["item"])
-            if suggestions:
-                warnings.append(f"Item '{member['item']}' not recognized. Did you mean: {', '.join(suggestions)}?")
-            else:
-                warnings.append(f"Item '{member['item']}' not recognized.")
+            warnings.append(format_with_suggestions(f"Item '{member['item']}' not recognized.", suggestions))
         else:
             member["item"] = item_record["name"]
     for move_name in member["moves"]:
         if find_record(moves, move_name) is None:
             suggestions = suggest_names(moves, move_name)
-            if suggestions:
-                warnings.append(f"Move '{move_name}' not recognized. Did you mean: {', '.join(suggestions)}?")
-            else:
-                warnings.append(f"Move '{move_name}' not recognized.")
+            warnings.append(format_with_suggestions(f"Move '{move_name}' not recognized.", suggestions))
     if member["nature"] is not None:
         try:
             get_nature_modifiers(member["nature"])
