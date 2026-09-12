@@ -118,3 +118,13 @@ def test_unknown_ev_stat_abbreviation_raises_pokepaste_parse_error():
 def test_malformed_ev_stat_entry_raises_pokepaste_parse_error():
     with pytest.raises(PokepasteParseError):
         parse_pokepaste("Garchomp\nEVs: HP\n- Tackle\n")
+
+
+def test_hidden_power_line_is_ignored_like_shiny_and_ball():
+    # Regression: a standard Showdown export field, previously not in
+    # _IGNORED_PREFIXES, aborted the whole team import instead of being
+    # skipped like Shiny:/Happiness:/Ball:.
+    member = parse_pokepaste("Garchomp\nHidden Power: Ice\n- Tackle\n")[0]
+
+    assert member["species"] == "Garchomp"
+    assert member["moves"] == ["Tackle"]

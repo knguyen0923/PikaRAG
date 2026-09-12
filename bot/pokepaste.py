@@ -8,7 +8,7 @@ _DEFAULT_EVS = {"hp": 0, "attack": 0, "defense": 0, "sp_attack": 0, "sp_defense"
 _DEFAULT_IVS = {"hp": 31, "attack": 31, "defense": 31, "sp_attack": 31, "sp_defense": 31, "speed": 31}
 _DEFAULT_NATURE = "Hardy"
 _DEFAULT_LEVEL = 50
-_IGNORED_PREFIXES = ("Shiny:", "Happiness:", "Ball:")
+_IGNORED_PREFIXES = ("Shiny:", "Happiness:", "Ball:", "Hidden Power:")
 
 
 class PokepasteParseError(Exception):
