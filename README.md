@@ -5,6 +5,20 @@ RAG pipeline over PokeAPI + Pikalytics usage data with a ported damage
 calculator, so players can look up sets, check usage trends, calculate
 damage, and manage a team roster without leaving Discord.
 
+## Status
+
+Deployed and live (Oracle Cloud, systemd-managed, always-on). Data is
+current for **Regulation M-C** (345 legal Pokemon).
+
+**Known limitation:** Pikalytics hasn't published a ranked-ladder format
+code for M-C yet, so usage-stat fetching (`pipeline/fetch_pikalytics.py`)
+is still pointed at M-B's format code as a stand-in. Two species that are
+new to M-C (Farfetch'd, Sirfetch'd) have no usage data as a result --
+everything else works normally. This isn't fixable from this repo; it
+just needs Pikalytics' M-C ladder to accumulate enough data for them to
+publish a format code, at which point `PIKALYTICS_FORMAT_CODE` should be
+updated and `pipeline.refresh_pikalytics_job` re-run.
+
 ## Commands
 
 | Command | Does |
@@ -42,7 +56,7 @@ See `pika-rag-project-plan.md` for the full build-order checklist and
 ```bash
 python3.11 -m venv .venv
 .venv/bin/pip install -r requirements.txt
-cp .env.example .env   # fill in DISCORD_TOKEN and ANTHROPIC_API_KEY
+cp .env.example .env   # fill in DISCORD_TOKEN, ANTHROPIC_API_KEY, ANTHROPIC_SPEND_CAP_USD
 .venv/bin/python -m pipeline.refresh_job
 .venv/bin/python -m pipeline.refresh_pikalytics_job
 .venv/bin/python -m bot.main

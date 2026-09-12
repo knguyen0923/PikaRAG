@@ -5,15 +5,14 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-11, at commit `e543231` (main). Bot deployed and
-live this session (see `RESUME.md` for that detail); afterward, a project
-cleanup + code-review pass landed 5 more commits: README/`.gitignore`
+**Last updated:** 2026-09-12, at commit `53c1a3f` (main). Bot deployed and
+confirmed live in Discord this session (see `RESUME.md`); a project cleanup
++ code-review pass landed 5 more commits after that (README/`.gitignore`
 polish, a new spend-tracking feature for `/ask`, five real bug fixes in
-`/calc` (nature/tera/EV/HP-percent validation), a team-import parsing fix
-(`Hidden Power:` lines), and a correctness fix to the core damage formula
-(terrain + item/screen modifier chaining, verified against Bulbapedia).
-262/262 tests passing.
-<!-- STATUS_COMMIT: e543231 -->
+`/calc`, a team-import parsing fix, and a damage-formula correctness fix,
+verified against Bulbapedia); the server was then updated to match (`git
+pull` + restart, confirmed healthy). 262/262 tests passing.
+<!-- STATUS_COMMIT: 53c1a3f -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
@@ -49,43 +48,44 @@ Full checklist with what's resolved vs. open: `pika-rag-project-plan.md`
 
 ## What's actually left
 
-Deployment is effectively done as of 2026-09-11 — full detail in `RESUME.md`.
+Deployment is fully done as of 2026-09-12 — bot is live, `/ping` confirmed
+working in Discord, and the server is caught up to `main` (`git pull` +
+restart done after the cleanup/bug-hunt commits landed). Full detail in
+`RESUME.md`.
 
 1. ~~Get a Discord bot token + invite it to a server~~ done
 2. ~~Get an Anthropic API key and set a spend cap~~ done ($5 cap, both
-   secrets in local `.env`)
+   secrets in local `.env`; server's `.env` currently relies on
+   `ANTHROPIC_SPEND_CAP_USD`'s `5.0` default rather than setting it
+   explicitly -- fine, just worth tidying up eventually)
 3. ~~Provision the Oracle Cloud free-tier ARM instance~~ done — recreated
    2026-09-11 (`project-pikarag`, public IP `193.122.155.20`) after the
    first attempt's private-subnet misconfig
 4. ~~Server setup: clone repo, venv, `.env`, run both refresh jobs~~ done
-5. ~~Install systemd units, verify the bot responds in Discord~~ units
-   installed and running, bot connected to Discord's gateway
-   `2026-09-12 00:48:02 UTC` — **just waiting on Discord's global
-   slash-command propagation (up to ~1hr) before `/ping` will respond**
+5. ~~Install systemd units, verify the bot responds in Discord~~ done —
+   `/ping` confirmed working live in Discord on 2026-09-12
 
-**The deployed instance is now behind `main` by 5 commits** (docs polish,
-spend-tracker feature, `/calc` validation fixes, pokepaste fix, damage
-formula fix) plus the earlier `torch==2.6.0` pin. To pick these up on the
-server: `git pull` in `/opt/pikarag`, then `sudo systemctl restart
-pikarag-bot.service`. The spend-tracker feature also needs
-`ANTHROPIC_SPEND_CAP_USD=5.0` (or your real cap) added to the server's
-`/opt/pikarag/.env` — it defaults to `5.0` if missing, so this isn't urgent,
-just worth setting explicitly to match whatever the real Console cap is.
+Everything below is optional follow-up, none of it blocking:
 
-Also pending: the ToS/Privacy Policy Claude Artifact
-(`https://claude.ai/code/artifact/c8af5a8a-f5ad-420c-8dfe-9d260f6d0ea7`) needs
-its share menu flipped to public before anything tries to fetch those URLs.
-
-Also unresolved, lower priority: confirm Pikalytics scraping is within their
-ToS (pipeline has been running against it, never formally checked).
-
-Also pending, from the 2026-09-10 M-C rollout:
-- `PIKALYTICS_FORMAT_CODE` (`pipeline/fetch_pikalytics.py`) still points at
-  M-B's code -- no M-C ranked format code exists on Pikalytics yet. Re-verify
-  once their ladder data accumulates, then run `refresh_pikalytics_job`.
-- The real Chroma index (`data/chroma/`) needs the bot to actually restart
-  once to pick up the new item chunks -- `build()` upserts in place, so this
-  is automatic on next startup, not a manual step.
+- **Known limitation (not fixable from this repo):** Pikalytics hasn't
+  published a ranked-ladder format code for Regulation M-C yet, so
+  `PIKALYTICS_FORMAT_CODE` (`pipeline/fetch_pikalytics.py`) still points at
+  M-B's code as a stand-in. Two species new to M-C (Farfetch'd, Sirfetch'd)
+  have no usage data as a result -- everything else works normally. Re-check
+  once Pikalytics' M-C ladder has accumulated enough data to publish a
+  format code, update the constant, then re-run `refresh_pikalytics_job`.
+  (Documented in `README.md`'s Status section too.)
+- The ToS/Privacy Policy Claude Artifact
+  (`https://claude.ai/code/artifact/c8af5a8a-f5ad-420c-8dfe-9d260f6d0ea7`)
+  is still private -- only matters if the bot is ever submitted somewhere
+  that verifies those URLs (e.g. Discord's public bot verification).
+- Confirm Pikalytics scraping is within their ToS (pipeline has been
+  running against it, never formally checked).
+- `deploy/cloud-init.sh` has a real bug (see memory
+  `pikarag-oracle-networking-gotchas`): `useradd -m` populates `/opt/pikarag`
+  with skeleton dotfiles before `git clone` runs into it, which fails since
+  the directory isn't empty. Only matters on the next from-scratch instance
+  recreation -- doesn't affect the currently-running instance.
 
 ## Useful pointers
 
