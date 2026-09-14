@@ -5,18 +5,37 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-14, at commit `2875f9b` (main, not yet pushed).
-`docs/superpowers/plans/2026-09-14-eval-harness.md` is written and
-committed: 8 TDD tasks (`eval/matchers.py`, `eval/metrics.py`,
-`eval/generate_golden_set.py`, generate+commit the real golden set,
-CI cache step, the recall@5 CI test, `scripts/run_eval.py`, a final
-full-suite sanity check). **Not yet executed.** Two implementation-level
-decisions the spec left open, made and disclosed in the plan: golden-set
-sampling is deterministic fixed-stride slicing (~12 records/~8 items,
-landing at 48 total entries — no RNG, so regenerating reproduces the same
-output), and the answer-quality matcher's `"exact"` type is a whole-word
-regex match rather than full-string equality (a free-text LLM answer will
-never equal a bare "91"/"Yes" verbatim).
+**Last updated:** 2026-09-14, at commit `6d021d5` (main, not yet pushed).
+The eval harness (`docs/superpowers/plans/2026-09-14-eval-harness.md`,
+all 8 tasks) is implemented and merged: `eval/generate_golden_set.py`
+builds a 48-entry golden Q&A set from real Pokemon/item/move data
+(`data/eval/golden_set.json`, committed); `tests/test_eval_retrieval.py`
+gates `recall@5 >= 0.9` in CI against the real embedder/index — measured
+0.9583; `scripts.run_eval --with-answers` exercises the full `/ask` path
+against a live Ollama model on demand (never gated in CI, no Tailscale
+access there). Two implementation-level decisions the spec left open, made
+and disclosed in the plan: golden-set sampling is deterministic
+fixed-stride slicing (no RNG, so regenerating reproduces the same output),
+and the answer-quality matcher's `"exact"` type is a whole-word regex
+match rather than full-string equality (a free-text LLM answer will never
+equal a bare "91"/"Yes" verbatim). The final whole-branch review caught a
+real production-safety bug the plan hadn't anticipated: `scripts.run_eval`
+would have written into the bot's *live* persistent Chroma store (the
+same collection `/ask` serves from) since `bot.main._build_real_index`
+had no way to inject an alternate client — fixed by adding an optional,
+backward-compatible `client=` parameter, with the eval harness now using
+an in-memory client instead. The CI test's failure message now names the
+specific missed golden entries rather than just an aggregate score, and
+now reuses `_build_real_index` instead of duplicating its wiring (so it
+can't silently drift from what the bot actually does). 292/292 tests
+passing. Deferred, non-blocking follow-ups noted by the final review (not
+yet done): all six "No"-answer moveset questions in the golden set
+happen to test the same move ("Accelerock", alphabetically first in the
+move pool) — real but low-stakes eval-signal diversity gap; golden-set
+size floor (30-50) isn't enforced at generation time, only in a unit
+test; two genuine retrieval misses were found during review
+(`Abomasnow`/`Dragalge` moveset questions retrieve the wrong chunk) —
+worth its own retrieval-quality investigation, not a harness bug.
 The local LLM migration is fully merged (see "Local LLM migration" section
 below for what changed and what's still open — Task 5, hardware setup).
 264/264 tests passing. This session then ran a verification pass — reading
@@ -47,7 +66,7 @@ rather than an interface change to already-shipped, already-tested code.
 **All 6 specs are now believed ready for implementation plans** — next
 step is picking one (eval-harness was the original recommendation) and
 running `writing-plans`.
-<!-- STATUS_COMMIT: 2875f9b -->
+<!-- STATUS_COMMIT: 6d021d5 -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
@@ -114,11 +133,10 @@ Tailscale)" section (now §3) and the plan's Task 5 checklist. **The live
 deployed bot still runs the old paid-Haiku code** until this commit is
 pulled and Task 5 is completed on the server.
 
-## Next up (eval harness planned; 5 more designs, not implemented)
+## Next up (eval harness shipped; 5 more designs, not implemented)
 
-`2026-09-13-eval-harness-design.md` has an implementation plan now —
-`docs/superpowers/plans/2026-09-14-eval-harness.md`, 8 TDD tasks, **not yet
-executed** (see "Last updated" above).
+`2026-09-13-eval-harness-design.md` is **implemented and merged** (see
+"Last updated" above for what shipped and what's deferred).
 
 The other 5 verified-and-fixed design specs from the 2026-09-13 brainstorm
 have no implementation plans yet, but are believed implementation-ready:
