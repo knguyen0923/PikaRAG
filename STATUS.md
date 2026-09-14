@@ -5,7 +5,18 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-14, at commit `0e4b04a` (main, not yet pushed).
+**Last updated:** 2026-09-14, at commit `2875f9b` (main, not yet pushed).
+`docs/superpowers/plans/2026-09-14-eval-harness.md` is written and
+committed: 8 TDD tasks (`eval/matchers.py`, `eval/metrics.py`,
+`eval/generate_golden_set.py`, generate+commit the real golden set,
+CI cache step, the recall@5 CI test, `scripts/run_eval.py`, a final
+full-suite sanity check). **Not yet executed.** Two implementation-level
+decisions the spec left open, made and disclosed in the plan: golden-set
+sampling is deterministic fixed-stride slicing (~12 records/~8 items,
+landing at 48 total entries — no RNG, so regenerating reproduces the same
+output), and the answer-quality matcher's `"exact"` type is a whole-word
+regex match rather than full-string equality (a free-text LLM answer will
+never equal a bare "91"/"Yes" verbatim).
 The local LLM migration is fully merged (see "Local LLM migration" section
 below for what changed and what's still open — Task 5, hardware setup).
 264/264 tests passing. This session then ran a verification pass — reading
@@ -36,7 +47,7 @@ rather than an interface change to already-shipped, already-tested code.
 **All 6 specs are now believed ready for implementation plans** — next
 step is picking one (eval-harness was the original recommendation) and
 running `writing-plans`.
-<!-- STATUS_COMMIT: 0e4b04a -->
+<!-- STATUS_COMMIT: 2875f9b -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
@@ -103,32 +114,31 @@ Tailscale)" section (now §3) and the plan's Task 5 checklist. **The live
 deployed bot still runs the old paid-Haiku code** until this commit is
 pulled and Task 5 is completed on the server.
 
-## Next up (design done, not implemented)
+## Next up (eval harness planned; 5 more designs, not implemented)
 
-All 6 design specs from the 2026-09-13 brainstorm are now verified against
-the current codebase and fixed (see "Last updated" above) — **none have
-implementation plans yet, but all are believed implementation-ready**:
+`2026-09-13-eval-harness-design.md` has an implementation plan now —
+`docs/superpowers/plans/2026-09-14-eval-harness.md`, 8 TDD tasks, **not yet
+executed** (see "Last updated" above).
 
-1. `2026-09-13-eval-harness-design.md` — golden set auto-generated from
-   processed data; recall@k in CI, answer-quality checked manually.
-   Original recommendation for "go first" (measures regressions before
-   later changes land), still reasonable.
-2. `2026-09-13-retrieval-quality-design.md` — entity-aware retrieval
+The other 5 verified-and-fixed design specs from the 2026-09-13 brainstorm
+have no implementation plans yet, but are believed implementation-ready:
+
+1. `2026-09-13-retrieval-quality-design.md` — entity-aware retrieval
    filtering, new free-text name-scanning logic (not pure reuse as
    originally framed) plus Mega/regional-form tie-breaking.
-3. `2026-09-13-grounding-trust-design.md` — source attribution + a
+2. `2026-09-13-grounding-trust-design.md` — source attribution + a
    distance-based confidence gate before the LLM is called.
-4. `2026-09-13-observability-design.md` — SQLite log of every `/ask` call +
+3. `2026-09-13-observability-design.md` — SQLite log of every `/ask` call +
    an admin `/debug-last` command. **Depends on grounding-trust landing
    first** (needs its `sources`/`best_distance`/`gate_fired` fields).
-5. `2026-09-13-reliability-design.md` — circuit breaker around Ollama calls
+4. `2026-09-13-reliability-design.md` — circuit breaker around Ollama calls
    (via string-match against `OFFLINE_MESSAGE`, not exceptions) + an
    admin-only `/llmstatus` health check.
-6. `2026-09-13-ingestion-robustness-design.md` — schema + freshness
+5. `2026-09-13-ingestion-robustness-design.md` — schema + freshness
    validation on pipeline refreshes, rescoped to drop a justification that
    didn't hold up (see "Last updated").
 
-Suggested order given the one real dependency: eval-harness or
+Suggested order given the one real dependency: eval-harness (plan ready) or
 retrieval-quality or ingestion-robustness first (all independent), then
 grounding-trust before observability, reliability anytime.
 
