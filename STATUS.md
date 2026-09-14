@@ -5,7 +5,7 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-14, at commit `3d3991e` (main, not yet pushed).
+**Last updated:** 2026-09-14, at commit `a6e12b9` (main, not yet pushed).
 
 **Immediate next action:** run `writing-plans` on
 `docs/superpowers/specs/2026-09-13-retrieval-quality-design.md`, then
@@ -27,7 +27,7 @@ history, `git log --oneline --grep=eval-harness` and
 `--grep="design specs"` for the commits); then used the eval harness
 itself to find two real retrieval-quality bugs (see below) and traced
 them to root cause. 292/292 tests passing throughout.
-<!-- STATUS_COMMIT: 3d3991e -->
+<!-- STATUS_COMMIT: a6e12b9 -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
