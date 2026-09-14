@@ -6,3 +6,5 @@ __pycache__/
 data/chroma/
 data/state/
 .vscode/
+
+.worktrees/
