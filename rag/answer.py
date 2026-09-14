@@ -1,6 +1,4 @@
-from rag import spend_tracker
-
-DEFAULT_MODEL = "claude-haiku-4-5"
+import requests
 
 SYSTEM_PROMPT = (
     "You are a Pokemon VGC doubles assistant. Answer the user's question "
@@ -8,40 +6,41 @@ SYSTEM_PROMPT = (
     "does not contain the answer, say you don't know rather than guessing."
 )
 
+OFFLINE_MESSAGE = "The knowledge assistant is offline right now -- try again later."
 
-class HaikuAnswerer:
-    """Generates grounded answers via Claude Haiku.
 
-    Accepts an injected `client` (anything with `.messages.create(...)`,
-    matching the anthropic SDK's interface) so callers can swap in a fake
-    for testing without a live API key.
+class OllamaAnswerer:
+    """Generates grounded answers via a local Ollama server, reached over
+    a private Tailscale network link.
+
+    Accepts an injected `client` (anything with a `.post(url, json=..., timeout=...)`
+    method matching `requests`' interface) so callers can swap in a fake for
+    testing without a live Ollama server.
     """
 
-    def __init__(self, client=None, model: str = DEFAULT_MODEL, spend_state_path=None):
-        if client is None:
-            import anthropic
-
-            client = anthropic.Anthropic()
-        self._client = client
+    def __init__(self, host: str, model: str = "llama3.2:3b", client=None, timeout: float = 30.0):
+        self._client = client if client is not None else requests
+        self._host = host
         self._model = model
-        self._spend_state_path = spend_state_path or spend_tracker.DEFAULT_STATE_PATH
+        self._timeout = timeout
 
     def answer(self, question: str, context_block: str) -> str:
-        message = self._client.messages.create(
-            model=self._model,
-            max_tokens=1024,
-            system=SYSTEM_PROMPT,
-            messages=[
-                {
-                    "role": "user",
-                    "content": f"Context:\n{context_block}\n\nQuestion: {question}",
-                }
-            ],
-        )
-        text = message.content[0].text
-        crossed = spend_tracker.record_usage(
-            message.usage.input_tokens, message.usage.output_tokens, state_path=self._spend_state_path
-        )
-        if crossed:
-            text += "\n\n⚠️ Approaching the Anthropic spend cap (~$1 left)."
-        return text
+        try:
+            response = self._client.post(
+                f"http://{self._host}/api/chat",
+                json={
+                    "model": self._model,
+                    "messages": [
+                        {"role": "system", "content": SYSTEM_PROMPT},
+                        {"role": "user", "content": f"Context:\n{context_block}\n\nQuestion: {question}"},
+                    ],
+                    "stream": False,
+                    "options": {"num_predict": 1024},
+                },
+                timeout=self._timeout,
+            )
+            response.raise_for_status()
+            return response.json()["message"]["content"]
+        except (requests.RequestException, KeyError, TypeError) as e:
+            print(f"OllamaAnswerer call failed: {e!r}")
+            return OFFLINE_MESSAGE

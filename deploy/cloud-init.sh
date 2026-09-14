@@ -5,10 +5,10 @@
 # OCI CLI. Runs once, as root, on first boot of the Ubuntu 22.04 ARM image.
 #
 # What this does NOT do: write .env, or enable/start the bot. Those need a
-# real Discord token + Anthropic key, which don't belong in instance
+# real Discord token + LLM_HOST value, which don't belong in instance
 # metadata (readable via the OCI console by anyone with access to the
 # instance). SSH in afterward to finish those two steps -- see
-# docs/DEPLOYMENT.md sections 2 and 3.
+# docs/DEPLOYMENT.md sections 2 and 4.
 
 set -euo pipefail
 

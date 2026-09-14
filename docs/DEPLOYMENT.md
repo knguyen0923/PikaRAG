@@ -10,19 +10,17 @@ elsewhere -- nothing below is Oracle-specific except the instance shape.
    New Application -> Bot -> Reset Token. Also enable it under
    OAuth2 -> URL Generator (scope `bot`, permission `Send Messages` +
    `Use Slash Commands`) to get an invite link, and invite it to your server.
-2. **Anthropic API key**: https://console.anthropic.com -> Settings ->
-   API Keys -> Create Key.
-3. **Anthropic prepaid budget cap**: console.anthropic.com -> Settings ->
-   Billing -> set a spend limit *before* the bot goes live and starts
-   burning real `/ask` requests against it. This is an account setting with
-   no API/CLI equivalent -- it has to be clicked, by you, once.
-4. **Oracle Cloud instance**: console -> Compute -> Instances -> Create.
+2. **Oracle Cloud instance**: console -> Compute -> Instances -> Create.
    - Shape: `VM.Standard.A1.Flex` (Ampere ARM, in the Always Free tier).
    - Image: Ubuntu 22.04 (ARM build).
    - Add your SSH public key at creation time.
    - Open port 443/80 only if you ever add a webhook listener -- this bot
      is outbound-only (Discord gateway + HTTPS calls out), so no inbound
      ports need opening for the bot itself.
+3. **A dedicated laptop for local LLM inference** (8GB+ RAM; CPU-only is
+   fine, just slower) that stays powered on and connected whenever `/ask`
+   should work -- see the new "Local LLM (Ollama + Tailscale)" section
+   below for setup.
 
 ## 2. Server setup
 
@@ -38,7 +36,7 @@ sudo -u pikarag python3.11 -m venv .venv
 sudo -u pikarag .venv/bin/pip install -r requirements.txt
 
 sudo -u pikarag cp .env.example .env
-sudo -u pikarag $EDITOR .env   # fill in DISCORD_TOKEN and ANTHROPIC_API_KEY
+sudo -u pikarag $EDITOR .env   # fill in DISCORD_TOKEN and LLM_HOST
 sudo chmod 600 /opt/pikarag/.env
 ```
 
@@ -53,7 +51,40 @@ sudo -u pikarag /opt/pikarag/.venv/bin/python -m pipeline.refresh_pikalytics_job
 Both are idempotent and safe to re-run; expect the Pikalytics one to take a
 while the first time (one request per legal species, rate-limited fetch).
 
-## 3. Install the systemd units
+## 3. Local LLM (Ollama + Tailscale)
+
+Sets up the laptop that runs `/ask`'s language model, and connects it
+privately to the Oracle Cloud instance -- no public IP, no port-forwarding.
+
+**On the laptop (Windows):**
+
+1. Install Tailscale: https://tailscale.com/download/windows, sign in,
+   `tailscale up` (or use the tray app's "Connect" button).
+2. Install Ollama: https://ollama.com/download/windows.
+3. Pull the model: `ollama pull llama3.2:3b` (roughly 2GB download; Ollama
+   runs as a background service afterward, listening on `localhost:11434`).
+4. Find the laptop's Tailscale IP: `tailscale ip` (prints something like
+   `100.64.1.2`). This is the value `LLM_HOST` needs, as `<that-ip>:11434`.
+5. Keep the laptop powered on, plugged in, and connected whenever `/ask`
+   should work -- Ollama does nothing until a request arrives, but it can't
+   answer one if the machine is asleep or off.
+
+**On the Oracle Cloud instance:**
+
+```bash
+curl -fsSL https://tailscale.com/install.sh | sh
+sudo tailscale up
+```
+
+Both steps are outbound-only (Tailscale's coordination happens over HTTPS
+out, same as the bot's existing Discord/PokeAPI/Pikalytics traffic) --
+consistent with this instance's "no inbound ports needed" setup from
+section 1.
+
+Set `LLM_HOST` in `.env` (section 2 above) to the laptop's Tailscale IP
+and port, e.g. `LLM_HOST=100.64.1.2:11434`.
+
+## 4. Install the systemd units
 
 ```bash
 sudo cp deploy/systemd/*.service deploy/systemd/*.timer /etc/systemd/system/
@@ -82,7 +113,7 @@ sudo journalctl -u pikarag-bot.service -f
 sudo systemctl list-timers 'pikarag-*'
 ```
 
-## 4. Regulation bumps (manual, judgment call)
+## 5. Regulation bumps (manual, judgment call)
 
 When Pokemon Champions rotates to a new regulation:
 
@@ -95,7 +126,7 @@ When Pokemon Champions rotates to a new regulation:
    call.
 3. Run both refresh jobs manually once, then let the timers take over.
 
-## 5. Updating the deployed code
+## 6. Updating the deployed code
 
 ```bash
 cd /opt/pikarag

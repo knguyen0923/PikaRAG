@@ -3,8 +3,9 @@ from unittest.mock import AsyncMock, MagicMock
 
 import discord
 
+import rag.answer
 from bot.commands.ping import ping_response
-from bot.main import build_client
+from bot.main import _build_answerer, build_client
 
 
 def _extract_text(mock_send) -> str:
@@ -282,11 +283,12 @@ def test_ask_command_includes_stored_team_context():
     ask_command = tree.get_command("ask")
     interaction = MagicMock()
     interaction.user.id = user_id
-    interaction.response.send_message = AsyncMock()
+    interaction.response.defer = AsyncMock()
+    interaction.followup.send = AsyncMock()
 
-    import asyncio
     asyncio.run(ask_command.callback(interaction, question="What's a good lead?"))
 
+    interaction.response.defer.assert_awaited_once()
     assert "Garchomp" in captured["context_block"]
 
 
@@ -434,3 +436,40 @@ def test_tree_error_handler_gives_a_friendly_message_on_cooldown():
     sent_text = _extract_text(interaction.response.send_message)
     assert "2.5" in sent_text
     assert "wait" in sent_text.lower() or "slow down" in sent_text.lower()
+
+
+class _FakeResponse:
+    def json(self):
+        return {"message": {"content": "ok"}}
+
+    def raise_for_status(self):
+        pass
+
+
+def test_build_answerer_reads_llm_host_and_model_from_env(monkeypatch):
+    monkeypatch.setenv("LLM_HOST", "100.1.2.3:11434")
+    monkeypatch.setenv("LLM_MODEL", "phi3:mini")
+    calls = []
+    monkeypatch.setattr(
+        rag.answer.requests, "post",
+        lambda url, json=None, timeout=None: calls.append({"url": url, "json": json}) or _FakeResponse(),
+    )
+
+    _build_answerer().answer("question", "context")
+
+    assert calls[0]["url"] == "http://100.1.2.3:11434/api/chat"
+    assert calls[0]["json"]["model"] == "phi3:mini"
+
+
+def test_build_answerer_defaults_model_when_unset(monkeypatch):
+    monkeypatch.setenv("LLM_HOST", "100.1.2.3:11434")
+    monkeypatch.delenv("LLM_MODEL", raising=False)
+    calls = []
+    monkeypatch.setattr(
+        rag.answer.requests, "post",
+        lambda url, json=None, timeout=None: calls.append({"url": url, "json": json}) or _FakeResponse(),
+    )
+
+    _build_answerer().answer("question", "context")
+
+    assert calls[0]["json"]["model"] == "llama3.2:3b"

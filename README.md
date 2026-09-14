@@ -41,8 +41,8 @@ spread each time.
 - **`pipeline/`** — fetches from PokeAPI + Pikalytics, merges into
   `data/processed/pokemon_records.json` + `pikalytics_usage.json`
 - **`damage_calc/`** — a Python port of `@smogon/calc`'s damage formula
-- **`rag/`** — embeds and retrieves Pokemon data, answers `/ask` via Claude
-  (Haiku)
+- **`rag/`** — embeds and retrieves Pokemon data, answers `/ask` via a
+  locally-run LLM (Ollama, reached over Tailscale)
 - **`bot/`** — the Discord bot itself (`discord.py`), one file per slash
   command under `bot/commands/`
 - **`deploy/`** — systemd units + timers and an Oracle Cloud cloud-init
@@ -56,7 +56,7 @@ See `pika-rag-project-plan.md` for the full build-order checklist and
 ```bash
 python3.11 -m venv .venv
 .venv/bin/pip install -r requirements.txt
-cp .env.example .env   # fill in DISCORD_TOKEN, ANTHROPIC_API_KEY, ANTHROPIC_SPEND_CAP_USD
+cp .env.example .env   # fill in DISCORD_TOKEN, LLM_HOST (see docs/DEPLOYMENT.md)
 .venv/bin/python -m pipeline.refresh_job
 .venv/bin/python -m pipeline.refresh_pikalytics_job
 .venv/bin/python -m bot.main

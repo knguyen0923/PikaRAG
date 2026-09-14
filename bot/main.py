@@ -20,7 +20,7 @@ from bot.commands.team import (
 )
 from bot.pokepaste_fetch import PokepasteFetchError, resolve_pokepaste_text
 from bot.team_store import find_team_member, get_team, resolve_calc_overrides
-from rag.answer import HaikuAnswerer
+from rag.answer import OllamaAnswerer
 from rag.embed import SentenceTransformerEmbedder
 from rag.store import ChromaIndex
 
@@ -61,6 +61,7 @@ def build_client(
     @tree.command(name="ask", description="Ask a question about VGC Pokemon stats and movesets.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
     async def ask(interaction: discord.Interaction, question: str) -> None:
+        await interaction.response.defer()
         user_id = interaction.user.id
         team_blocks = [
             format_team_block(get_team(user_id, "mine"), "Your team"),
@@ -68,7 +69,7 @@ def build_client(
         ]
         extra_context = "\n\n".join(block for block in team_blocks if block) or None
         answer = await ask_response_async(index, answerer, question, extra_context=extra_context)
-        await interaction.response.send_message(embed=_embed("ask", answer))
+        await interaction.followup.send(embed=_embed("ask", answer))
 
     @tree.command(name="stats", description="Look up a Pokemon's base stats, types, and abilities.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
@@ -229,13 +230,20 @@ def _build_real_index(records: list, items: list) -> ChromaIndex:
     return index
 
 
+def _build_answerer() -> OllamaAnswerer:
+    return OllamaAnswerer(
+        host=os.environ["LLM_HOST"],
+        model=os.environ.get("LLM_MODEL", "llama3.2:3b"),
+    )
+
+
 def main() -> None:
     token = os.environ["DISCORD_TOKEN"]
     records = _load_records()
     items = _load_items()
     client, _tree = build_client(
         index=_build_real_index(records, items),
-        answerer=HaikuAnswerer(),
+        answerer=_build_answerer(),
         records=records,
         moves=_load_moves(),
         usage=_load_usage(),
