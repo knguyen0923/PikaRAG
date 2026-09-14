@@ -5,21 +5,23 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-13, at commit `54d41b6` (main). No code changed
-this session — this was a design-only session. Brainstormed a
-production-grade RAG upgrade plus a Discord button-UI idea; mid-discussion
-the user set a new top priority (memory: `pikarag_cost_priority`): eliminate
-the one remaining paid dependency (`/ask`'s Claude Haiku call) by moving to
-a locally-run LLM (Ollama) on a dedicated laptop, reached over Tailscale from
-the always-on Oracle Cloud instance. That became the lead spec, with six more
-specs for the broader production-grade RAG effort (eval harness, retrieval
-quality, grounding & trust, observability, reliability, ingestion
-robustness) written on top of it. All 7 committed to
-`docs/superpowers/specs/2026-09-13-*.md`; none implemented yet — awaiting
-user review before moving to implementation plans. 262/262 tests still
-passing (no code touched). The Discord button-UI idea from the same session
-is still unexplored — not yet brainstormed or spec'd.
-<!-- STATUS_COMMIT: 54d41b6 -->
+**Last updated:** 2026-09-13, at commit `a99d173` (main). Still a
+design-only session — no bot/rag/pipeline code changed, only docs. Same
+session as the 7-spec production-grade-RAG brainstorm (memory:
+`pikarag_cost_priority` — user's top priority is $0 cost). The user then
+asked for a time estimate per track (see this session's transcript if
+needed) and asked to turn the highest-priority spec into an implementation
+plan now. `docs/superpowers/plans/2026-09-13-local-llm-migration.md` is
+written and committed: 5 TDD tasks (add `OllamaAnswerer`, wire it into
+`bot/main.py` via `LLM_HOST`/`LLM_MODEL` env vars, delete `HaikuAnswerer` +
+`rag/spend_tracker.py` + the `anthropic` dependency, update
+`.env.example`/`docs/DEPLOYMENT.md`/`README.md`, then a manual
+Tailscale+Ollama setup/verification task). **Not yet executed** — the bot
+still uses paid Haiku today. 262/262 tests still passing (no code touched).
+The other 6 specs have no implementation plans yet. The Discord button-UI
+idea from earlier in this session is still unexplored — not yet
+brainstormed or spec'd.
+<!-- STATUS_COMMIT: a99d173 -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
