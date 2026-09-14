@@ -13,6 +13,25 @@ answer quality, and matters more now that a small local model
 ([[local-llm-migration]]) can't compensate for noisy context as well as
 Haiku could.
 
+This isn't hypothetical — the eval harness ([[eval-harness]]) measured it
+directly. Two of the 48 golden questions miss their target chunk entirely:
+`Does Abomasnow learn Attract?` and `Does Dragalge learn Accelerock?` both
+fail to retrieve the Pokemon's own `-moveset` chunk in the top 5, even
+though the moveset chunk literally contains the answer. Root-caused by
+querying the real index directly: for every sampled Pokemon that also has
+a Mega Stone item (Abomasnow, Dragalge, Kangaskhan, Medicham — 4 of the
+golden set's 12), the top two results are *always* `item-<Name>ite`
+("A held item that allows `<Name>` to Mega Evolve.") and `<Name>-stats`,
+in that order, regardless of the question — `all-MiniLM-L6-v2`'s
+mean-pooled embedding favors a short, clean sentence repeating the exact
+Pokemon name over the long, diluted move-list text in the moveset chunk.
+Kangaskhan and Medicham still happened to squeak into the top 5 (rank 4-5);
+Abomasnow and Dragalge didn't (rank 6+). This is exactly the failure mode
+entity-aware filtering below eliminates: a `where={"pokemon": "Abomasnow"}`
+query only has Abomasnow's own 2 chunks to rank between — the Mega Stone's
+`item-Abomasite` chunk carries `metadata={"item": ...}`, not `"pokemon"`,
+so it's excluded from the filtered query entirely, not just outranked.
+
 ## Scope
 
 In scope:
@@ -147,8 +166,12 @@ nothing.
   empty-filtered-result falls back to unfiltered search.
 - Regression check via the eval harness ([[eval-harness]]): recall@k on
   the subset of golden questions that name a specific Pokemon/item should
-  visibly improve versus the pre-change baseline — worth running once both
-  specs are implemented.
+  visibly improve versus the pre-change baseline (measured 0.9583, 46/48,
+  at implementation time) — worth running once both specs are implemented.
+  `Abomasnow-moveset-learned-question` and
+  `Dragalge-moveset-not-learned-question` (`data/eval/golden_set.json`) are
+  the two known current misses this spec exists to fix — confirm both flip
+  to hits, not just that the aggregate score goes up.
 
 ## Out of scope
 
