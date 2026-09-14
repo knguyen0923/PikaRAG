@@ -5,21 +5,38 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-14, at commit `782d33f` (main, pushed to origin).
-The local LLM migration (code + deferred-minor follow-ups) is fully merged
-and pushed — see "Local LLM migration" section below for what changed and
-what's still open (Task 5, hardware setup). 264/264 tests passing. Since
-then, this session reviewed and refined the existing
-`2026-09-13-eval-harness-design.md` spec against the current codebase: found
-and fixed a file-path bug (`vgc_items.json` is at `data/source/`, not
-`data/processed/`), filled in an unspecified data source for the
-moveset-membership golden-question category (`data/source/vgc_moves.json`),
-and corrected/addressed a "no network calls" claim about the recall@k CI
-test (it uses the real `SentenceTransformerEmbedder`, unlike every other
-test in the suite — added `actions/cache` for the model download). Spec is
-committed; **awaiting the user's review before moving to an implementation
-plan via `writing-plans`.**
-<!-- STATUS_COMMIT: 782d33f -->
+**Last updated:** 2026-09-14, at commit `0e4b04a` (main, not yet pushed).
+The local LLM migration is fully merged (see "Local LLM migration" section
+below for what changed and what's still open — Task 5, hardware setup).
+264/264 tests passing. This session then ran a verification pass — reading
+every claim in a design spec against the actual current codebase, not just
+trusting the spec's own "Approved" label — across all 6 unimplemented
+design specs from the 2026-09-13 brainstorm (`eval-harness`,
+`retrieval-quality`, `grounding-trust`, `observability`, `reliability`,
+`ingestion-robustness`). **Every single one had real bugs or gaps** —
+wrong file paths, claims about code/tests that don't exist, at least one
+outright crash bug, and one spec (`grounding-trust`) whose own stated
+safety claim ("this change is caught by the existing test suite") was
+verified false. All 6 are now fixed and committed. Highlights: `reliability`'s
+circuit breaker couldn't have worked as designed (`OllamaAnswerer` already
+swallows every failure into a string return, never raises — nothing would
+trip a breaker watching for exceptions); `observability` silently depended
+on `grounding-trust`'s not-yet-built fields with no stated ordering;
+`ingestion-robustness`'s whole justification ("would have caught the M-C
+Pikalytics gap") didn't survive tracing the actual failure mechanics (that
+gap was a *successful* refresh against the wrong format code, not a stale
+one) and was rescoped accordingly; `retrieval-quality`'s entity detection
+would have silently no-op'd for ~1/3 of the roster (Mega/regional-form name
+collisions) without added tie-breaking logic. Two shared conventions were
+decided once and applied consistently: admin-only commands use a
+`BOT_OWNER_ID` env var (this bot uses a bare `discord.Client`, not
+`commands.Bot`, so `is_owner()` isn't available), and failure detection
+against `OllamaAnswerer` uses string-equality against `OFFLINE_MESSAGE`
+rather than an interface change to already-shipped, already-tested code.
+**All 6 specs are now believed ready for implementation plans** — next
+step is picking one (eval-harness was the original recommendation) and
+running `writing-plans`.
+<!-- STATUS_COMMIT: 0e4b04a -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
@@ -88,23 +105,32 @@ pulled and Task 5 is completed on the server.
 
 ## Next up (design done, not implemented)
 
-`2026-09-13-eval-harness-design.md` is **up next, spec refined and
-committed this session, awaiting the user's go-ahead to turn it into an
-implementation plan** (see "Last updated" above for what was fixed).
+All 6 design specs from the 2026-09-13 brainstorm are now verified against
+the current codebase and fixed (see "Last updated" above) — **none have
+implementation plans yet, but all are believed implementation-ready**:
 
-Five more design specs landed 2026-09-13 in `docs/superpowers/specs/` —
-awaiting user review, not yet turned into implementation plans or code:
-
-1. `2026-09-13-retrieval-quality-design.md` — entity-aware retrieval
-   filtering, reusing existing `bot/pokemon_lookup.py` name matching.
-2. `2026-09-13-grounding-trust-design.md` — source attribution + a
+1. `2026-09-13-eval-harness-design.md` — golden set auto-generated from
+   processed data; recall@k in CI, answer-quality checked manually.
+   Original recommendation for "go first" (measures regressions before
+   later changes land), still reasonable.
+2. `2026-09-13-retrieval-quality-design.md` — entity-aware retrieval
+   filtering, new free-text name-scanning logic (not pure reuse as
+   originally framed) plus Mega/regional-form tie-breaking.
+3. `2026-09-13-grounding-trust-design.md` — source attribution + a
    distance-based confidence gate before the LLM is called.
-3. `2026-09-13-observability-design.md` — SQLite log of every `/ask` call +
-   an admin `/debug-last` command.
-4. `2026-09-13-reliability-design.md` — circuit breaker around Ollama calls
-   + an `/llmstatus` health check.
-5. `2026-09-13-ingestion-robustness-design.md` — schema + freshness
-   validation on pipeline refreshes.
+4. `2026-09-13-observability-design.md` — SQLite log of every `/ask` call +
+   an admin `/debug-last` command. **Depends on grounding-trust landing
+   first** (needs its `sources`/`best_distance`/`gate_fired` fields).
+5. `2026-09-13-reliability-design.md` — circuit breaker around Ollama calls
+   (via string-match against `OFFLINE_MESSAGE`, not exceptions) + an
+   admin-only `/llmstatus` health check.
+6. `2026-09-13-ingestion-robustness-design.md` — schema + freshness
+   validation on pipeline refreshes, rescoped to drop a justification that
+   didn't hold up (see "Last updated").
+
+Suggested order given the one real dependency: eval-harness or
+retrieval-quality or ingestion-robustness first (all independent), then
+grounding-trust before observability, reliability anytime.
 
 Recommended order after eval harness: the rest in any order. Also still
 open: a Discord button-UI request (replacing slash commands with clickable
