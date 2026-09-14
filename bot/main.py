@@ -234,6 +234,7 @@ def _build_answerer() -> OllamaAnswerer:
     return OllamaAnswerer(
         host=os.environ["LLM_HOST"],
         model=os.environ.get("LLM_MODEL", "llama3.2:3b"),
+        timeout=float(os.environ.get("LLM_TIMEOUT", "30")),
     )
 
 

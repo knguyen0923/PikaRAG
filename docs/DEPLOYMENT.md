@@ -19,8 +19,8 @@ elsewhere -- nothing below is Oracle-specific except the instance shape.
      ports need opening for the bot itself.
 3. **A dedicated laptop for local LLM inference** (8GB+ RAM; CPU-only is
    fine, just slower) that stays powered on and connected whenever `/ask`
-   should work -- see the new "Local LLM (Ollama + Tailscale)" section
-   below for setup.
+   should work -- see the "Local LLM (Ollama + Tailscale)" section below
+   for setup.
 
 ## 2. Server setup
 
@@ -36,7 +36,9 @@ sudo -u pikarag python3.11 -m venv .venv
 sudo -u pikarag .venv/bin/pip install -r requirements.txt
 
 sudo -u pikarag cp .env.example .env
-sudo -u pikarag $EDITOR .env   # fill in DISCORD_TOKEN and LLM_HOST
+sudo -u pikarag $EDITOR .env   # fill in DISCORD_TOKEN; leave LLM_HOST blank
+                                # for now -- section 3 below tells you what
+                                # value goes there once the laptop is set up
 sudo chmod 600 /opt/pikarag/.env
 ```
 

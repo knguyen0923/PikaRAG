@@ -473,3 +473,31 @@ def test_build_answerer_defaults_model_when_unset(monkeypatch):
     _build_answerer().answer("question", "context")
 
     assert calls[0]["json"]["model"] == "llama3.2:3b"
+
+
+def test_build_answerer_reads_llm_timeout_from_env(monkeypatch):
+    monkeypatch.setenv("LLM_HOST", "100.1.2.3:11434")
+    monkeypatch.setenv("LLM_TIMEOUT", "60")
+    calls = []
+    monkeypatch.setattr(
+        rag.answer.requests, "post",
+        lambda url, json=None, timeout=None: calls.append({"timeout": timeout}) or _FakeResponse(),
+    )
+
+    _build_answerer().answer("question", "context")
+
+    assert calls[0]["timeout"] == 60.0
+
+
+def test_build_answerer_defaults_timeout_when_unset(monkeypatch):
+    monkeypatch.setenv("LLM_HOST", "100.1.2.3:11434")
+    monkeypatch.delenv("LLM_TIMEOUT", raising=False)
+    calls = []
+    monkeypatch.setattr(
+        rag.answer.requests, "post",
+        lambda url, json=None, timeout=None: calls.append({"timeout": timeout}) or _FakeResponse(),
+    )
+
+    _build_answerer().answer("question", "context")
+
+    assert calls[0]["timeout"] == 30.0

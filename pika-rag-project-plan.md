@@ -98,7 +98,7 @@ pika-rag/
 │       ├── stats.py           # /stats — base stats + spreads
 │       ├── moves.py           # /moves — common movesets
 │       └── calc.py            # /calc — damage calculator
-├── .env                        # API keys (Discord token, Anthropic key) — gitignored
+├── .env                        # secrets/config (Discord token, LLM_HOST) — gitignored
 ├── requirements.txt
 └── README.md
 ```
@@ -125,5 +125,4 @@ All code-side work is done and merged to `main` (232 passing tests). What's left
 - [x] Decide exact chunking strategy — resolved: records merged per-Pokémon into `data/processed/pokemon_records.json`, no separate chunk types needed at current scale
 - [x] Define cron schedule for routine data refresh — resolved: `pikarag-refresh-pokeapi.timer` (weekly), `pikarag-refresh-pikalytics.timer` (monthly)
 - [ ] Confirm Pikalytics scraping is within their ToS, or find an alternative/API path — not formally revisited; pipeline is live and has been running against it
-- [ ] Set prepaid budget cap for Anthropic API credit — manual console step, not yet done (see `docs/DEPLOYMENT.md` step 1.3)
-- [ ] Set up Oracle Cloud free tier instance + confirm always-on ARM instance specs — not yet provisioned (see `docs/DEPLOYMENT.md` step 1.4)
+- [ ] Set up Oracle Cloud free tier instance + confirm always-on ARM instance specs — not yet provisioned (see `docs/DEPLOYMENT.md` step 1.2)
