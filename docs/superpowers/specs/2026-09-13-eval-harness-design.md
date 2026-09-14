@@ -16,11 +16,14 @@ gets caught instead of discovered by users.
 ## Scope
 
 In scope:
-- A golden Q&A set auto-generated from the project's own processed data
-  (`data/processed/pokemon_records.json`, `data/processed/vgc_items.json`),
-  so it stays in sync with data refreshes at near-zero manual upkeep.
+- A golden Q&A set auto-generated from the project's own data
+  (`data/processed/pokemon_records.json`, `data/source/vgc_items.json`,
+  `data/source/vgc_moves.json`), so it stays in sync with data refreshes at
+  near-zero manual upkeep.
 - A retrieval-quality metric (recall@k) that runs as a normal pytest test in
-  the existing CI suite — deterministic, no network calls, no cost.
+  the existing CI suite — deterministic, no paid API calls, no cost (see
+  "Retrieval metric" below for its one real network dependency, a cached
+  model download).
 - An answer-quality check that exercises the full `/ask` path (including the
   local Ollama model) as an on-demand script, not gated in CI.
 
@@ -49,8 +52,11 @@ Generated categories, mirroring `rag/embed.py`'s chunking:
   question — pick whichever keeps the set closer to ~30-50 total entries).
 - One abilities question per Pokemon (`match_type: "set"` — order-independent).
 - One moveset-membership question per Pokemon ("Does X learn Y?" for a
-  sampled learned + not-learned move, `match_type: "exact"` boolean-ish check
-  against a yes/no answer).
+  sampled learned move from the record's own `learnset`, plus a sampled
+  not-learned move drawn from `data/source/vgc_moves.json`'s full move pool
+  (`moves` key, 501 entries as of Regulation M-C) excluding anything in the
+  record's `learnset`, `match_type: "exact"` boolean-ish check against a
+  yes/no answer).
 - One "what does `<item>` do" question per item (`match_type: "substring"`
   against the item's own description text, since answers will be paraphrased).
 
@@ -62,14 +68,20 @@ reviewable step, not a silent side effect of a cron job.
 ## Retrieval metric — recall@k (CI, every push)
 
 `tests/test_eval_retrieval.py` builds the real `ChromaIndex` +
-`SentenceTransformerEmbedder` against the repo's checked-in processed data
-(same fixtures the rest of the test suite already uses), then for each
-golden entry: does `index.query(question, n_results=5)` include
-`source_chunk_id` in its results? Assert aggregate recall@5 stays at or
-above a fixed threshold (start at 0.9, tune once the golden set exists for
-real). This is pure local computation — no Anthropic, no Ollama, no
-Tailscale — so it belongs in the existing `.github/workflows/test.yml` run
-with zero new infrastructure.
+`SentenceTransformerEmbedder` against the repo's checked-in processed data,
+then for each golden entry: does `index.query(question, n_results=5)`
+include `source_chunk_id` in its results? Assert aggregate recall@5 stays
+at or above a fixed threshold (start at 0.9, tune once the golden set
+exists for real). This makes no calls to a paid API (no Anthropic, no
+Ollama, no Tailscale), but — unlike every other test in the suite, which
+injects a fake/bag-of-words embedder specifically to avoid this — it does
+instantiate the real `SentenceTransformerEmbedder`, so it's the first test
+with a genuine network dependency: a cache-miss run downloads
+`all-MiniLM-L6-v2` (~90MB) from Hugging Face Hub. To keep this from adding
+real per-run latency or coupling CI's reliability to Hugging Face Hub's
+uptime, `.github/workflows/test.yml` gets an `actions/cache` step over the
+sentence-transformers model cache directory, keyed on `requirements.txt`'s
+hash — first run downloads, every run after is a cache hit.
 
 ## Answer-quality metric — on-demand script
 
