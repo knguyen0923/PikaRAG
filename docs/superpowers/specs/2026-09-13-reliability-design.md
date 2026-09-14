@@ -44,19 +44,43 @@ load-tested values — this bot serves a single small Discord server at low
 query volume, so precision here matters less than having the mechanism at
 all. Adjust if real usage shows the numbers wrong.
 
-`OllamaAnswerer` itself doesn't change; the breaker wraps it at
+`OllamaAnswerer.answer` (`rag/answer.py:27-46`) already catches every
+network/parsing failure internally (`requests.RequestException`, `KeyError`,
+`TypeError`) and returns the fixed string `OFFLINE_MESSAGE` — it never
+raises for the "laptop unreachable" case the breaker exists to protect
+against, so a breaker watching for exceptions would see nothing during a
+real outage. The breaker therefore detects failure by value, not by
+exception: it calls the wrapped `.answer(question, context_block)`
+normally, then compares the returned string against `OFFLINE_MESSAGE`
+(imported from `rag.answer`) — that equality check *is* the failure
+signal.
+
+`OllamaAnswerer` itself doesn't change — its interface and internal
+exception handling stay exactly as they are; the breaker wraps it at
 construction time in `bot/main.py` (decorator/composition, matching the
 project's existing preference for small composable pieces over modifying
-an existing class's internals).
+an existing class's internals) and layers its own return-value check on
+top.
 
 ## Health-check command
 
-`/llmstatus` (admin-only, same owner-restriction pattern as
-[[observability]]'s `/debug-last`): sends a short-timeout (e.g. 3s) request
-to Ollama's own `/api/tags` endpoint (lists loaded models — a cheap
-liveness probe that doesn't run inference) and reports up/down plus which
-model is currently loaded. Also reports the circuit breaker's current
-state (closed/open/half-open) so "is it actually down, or just tripped and
+`/llmstatus` is admin-only via a hardcoded Discord user ID: a `BOT_OWNER_ID`
+environment variable (documented in `.env.example`, following the same
+pattern as `DISCORD_TOKEN` and `LLM_HOST`), checked with
+`interaction.user.id == int(os.environ["BOT_OWNER_ID"])` inside an
+`app_commands.check` (or equivalent) gating the command. This bot uses a
+plain `discord.Client` (see `bot/main.py`), not `commands.Bot`, so there is
+no built-in `is_owner()` helper available — the env-var comparison is the
+whole mechanism. It also carries the same
+`@app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)` decorator (the
+constant already defined in `bot/main.py`) as every other command in the
+file, for consistency.
+
+The command sends a short-timeout (e.g. 3s) request to Ollama's own
+`/api/tags` endpoint (lists loaded models — a cheap liveness probe that
+doesn't run inference) and reports up/down plus which model is currently
+loaded. Also reports the circuit breaker's current state
+(closed/open/half-open) so "is it actually down, or just tripped and
 cooling down" is answerable at a glance.
 
 ## Error handling
@@ -74,9 +98,16 @@ cooling down" is answerable at a glance.
 - Circuit breaker state machine: unit tests for closed→open (3 failures),
   open short-circuits without calling the wrapped function, open→half-open
   after cooldown elapses (inject a fake clock rather than sleeping in
-  tests), half-open→closed on success, half-open→open on failure.
+  tests), half-open→closed on success, half-open→open on failure. "Failure"
+  in these tests means the wrapped fake returns `OFFLINE_MESSAGE`, not that
+  it raises — a case that returns any other string must be treated as
+  success even if the fake's setup looks failure-like, confirming the
+  breaker keys off the sentinel string rather than exceptions.
 - `/llmstatus`: up case, down case, and breaker-state reporting, all with
-  a fake HTTP client — no real network calls in tests.
+  a fake HTTP client — no real network calls in tests. Also cover the
+  `BOT_OWNER_ID` gate itself: an interaction from the owner's user ID is
+  allowed through, and one from any other user ID is rejected before the
+  health-check request is made.
 
 ## Out of scope
 

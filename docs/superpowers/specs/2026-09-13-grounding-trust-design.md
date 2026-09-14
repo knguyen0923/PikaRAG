@@ -53,22 +53,77 @@ Sources: Landorus-Therian (stats)
 ```
 
 This is an additive, visible change to `ask_response`'s return shape —
-callers (and their existing tests) that only cared about the answer text
-need a one-line update to read `.answer` instead of treating the return as
-a bare string; not a silent breaking change since it's caught immediately
-by the existing test suite.
+callers that only cared about the answer text need a one-line update to
+read `.answer` instead of treating the return as a bare string. This is
+**not** automatically caught by the existing test suite: the only test
+exercising `/ask` end-to-end, `test_ask_command_includes_stored_team_context`
+(`tests/test_bot_main.py`), never inspects the sent embed's text content,
+and `discord.Embed(description=<a dict>, ...)` does not raise — it silently
+stringifies the dict via `str()`, producing garbage like
+`"{'answer': 'hi', 'sources': []}"` shown directly to real Discord users.
+`bot/main.py`'s `ask` command handler (around line 63-72) is the actual
+integration point that must be explicitly updated: it currently does
+`answer = await ask_response_async(...)` then
+`await interaction.followup.send(embed=_embed("ask", answer))`, passing
+whatever `ask_response_async` returns straight into embed construction.
+This spec touches `bot/main.py` in addition to `bot/commands/ask.py`
+(which formats the sources line) — `bot/main.py`'s embed-construction call
+must change to read the new `.answer`/`.sources` shape rather than
+assuming a bare string, and a new test must be added asserting the sent
+embed's content reflects the sources line correctly, since no existing
+test does this.
+
+## Return shape contract
+
+`ask_response`'s return type is consistently a dict/small structure of the
+shape `{"answer": str, "sources": list[str]}` (or equivalent) across all
+three possible outcomes, never a bare string:
+
+1. **Normal**: answer text plus a non-empty `sources` list, built from
+   `build_context_block`'s `sources` as described above.
+2. **Gate-fired**: confidence too low, including the empty-matches
+   (`best_distance is None`) case from the Confidence gate section below.
+   No LLM call happens; `answer` is the fixed low-confidence message and
+   `sources` is an empty list.
+3. **Offline-degraded**: `OllamaAnswerer.answer()` itself returned its
+   `OFFLINE_MESSAGE` constant (`rag/answer.py`) because the Ollama call
+   failed. This is orthogonal to the confidence gate — the gate passed and
+   the LLM was called, but the call itself failed. `answer` is
+   `OllamaAnswerer`'s `OFFLINE_MESSAGE` string and `sources` is an empty
+   list — wrapped in the same dict shape as the other two cases, not
+   returned as a bare string.
+
+Keeping all three cases in one consistent shape means `bot/main.py`'s
+embed construction (see "Source attribution" above) only ever has to
+handle one shape, with no bare-string special case to remember.
 
 ## Confidence gate
 
-Using `best_distance` from above: if it exceeds a fixed threshold (start at
-a value tuned empirically against the eval harness's golden set —
-[[eval-harness]] — since "too far" only means something relative to this
-project's actual embedding space), skip the Ollama call entirely and
-return a fixed "I don't have solid information on that" response with no
-sources line. This is deliberately a hard-coded numeric threshold, not a
-learned classifier — the corpus is small and static enough that empirical
-tuning against the golden set is sufficient, and a second model call to
-"judge confidence" would cost CPU time on the same constrained laptop for
+Using `best_distance` from above: if it exceeds a fixed threshold, **or if
+`best_distance` is `None`** (matches was empty — an empty/newly-created
+collection, or Chroma returning fewer than `n_results`), skip the Ollama
+call entirely and return a fixed "I don't have solid information on that"
+response with no sources line. The `None` case is treated the same as
+exceeding the threshold: no sources, insufficient confidence, gate fires.
+Gate logic must check for `None` explicitly before any numeric comparison
+(e.g. `best_distance is None or best_distance > threshold`) — comparing
+`None > threshold` directly raises `TypeError`.
+
+The threshold itself should start at a value tuned empirically against the
+eval harness's golden set ([[eval-harness]]), since "too far" only means
+something relative to this project's actual embedding space. However,
+neither `eval/generate_golden_set.py` nor `data/eval/golden_set.json`
+exist yet — [[eval-harness]] is itself only a design spec, not an
+implemented one. Threshold tuning against the golden set should therefore
+happen only after [[eval-harness]] is implemented and a real golden set
+exists. In the meantime, ship with a conservative placeholder threshold,
+chosen to err toward gating (fewer, more-confident answers) rather than
+under-gating, and revisit once real tuning data is available.
+
+This is deliberately a hard-coded numeric threshold, not a learned
+classifier — the corpus is small and static enough that empirical tuning
+against the golden set is sufficient, and a second model call to "judge
+confidence" would cost CPU time on the same constrained laptop for
 marginal benefit.
 
 Rationale for gating before the LLM rather than trusting the system
@@ -79,25 +134,45 @@ backstop.
 
 ## Error handling
 
-- No sources to report (shouldn't happen — `n_results` is always >0 when
-  the collection is non-empty) is handled by an empty `sources` list;
-  formatting code omits the "Sources:" line entirely rather than printing
-  it empty.
-- The confidence gate firing is not treated as an error — it's a normal,
+- No sources to report — `matches` can legitimately be empty (an empty or
+  newly-created collection, or Chroma returning fewer than `n_results`);
+  this is not a rare edge case but an already-tested one (`_FakeIndex.query`
+  returning `[]` exists in `tests/test_bot_main.py`). It is handled by an
+  empty `sources` list, and `best_distance is None` explicitly routes
+  through the confidence gate's "gate fires" path (see "Confidence gate"
+  above) rather than crashing on a `None > threshold` comparison. Once
+  routed there, formatting code omits the "Sources:" line entirely rather
+  than printing it empty.
+- The confidence gate firing (for either reason: over-threshold or
+  `best_distance is None`) is not treated as an error — it's a normal,
   logged (see [[observability]]) response path, distinct from the
   `OllamaAnswerer` "offline" degradation message.
 
 ## Testing plan
 
 - `build_context_block`: returns correct `text`/`sources`/`best_distance`
-  structure against a fake index with known distances/metadata.
+  structure against a fake index with known distances/metadata, including
+  a case where the fake index's `query` returns an empty list (mirroring
+  `_FakeIndex.query` in `tests/test_bot_main.py`), asserting
+  `best_distance` comes back `None` rather than raising.
 - `ask_response`: sources pass through unchanged to the caller; existing
-  tests updated for the new return shape (one-line change per call site).
+  tests updated for the new return shape (one-line change per call site);
+  a test for each of the three outcomes in "Return shape contract" above
+  (normal, gate-fired, offline-degraded) asserting the returned dict has
+  the expected `answer`/`sources` shape in every case.
 - Confidence gate: unit tests for below-threshold (normal path, LLM
-  called) and above-threshold (gate fires, LLM never called — assert the
-  fake answerer's `.answer` was not invoked).
+  called), above-threshold (gate fires, LLM never called — assert the
+  fake answerer's `.answer` was not invoked), and `best_distance is None`
+  from empty matches (gate fires the same way, LLM never called, no
+  `TypeError` raised).
 - `bot/commands/ask.py` formatting: sources line present/absent as
   expected, gate-triggered response formatted without a sources line.
+- `bot/main.py`'s `ask` command handler: a new test asserting the embed
+  sent via `interaction.followup.send` reads the `.answer`/`.sources`
+  shape correctly and reflects the sources line as expected, rather than
+  stringifying the whole returned structure — guarding against the
+  silent-embed-stringification failure mode described in "Source
+  attribution" above.
 
 ## Out of scope
 
