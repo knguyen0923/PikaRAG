@@ -1,0 +1,471 @@
+[
+  {
+    "id": "Abomasnow-stats-question",
+    "question": "What are Abomasnow's base stats?",
+    "match_type": "set",
+    "expected": [
+      "HP 90",
+      "Attack 92",
+      "Defense 75",
+      "Sp. Atk 92",
+      "Sp. Def 85",
+      "Speed 60"
+    ],
+    "source_chunk_id": "Abomasnow-stats"
+  },
+  {
+    "id": "Abomasnow-abilities-question",
+    "question": "What are Abomasnow's abilities?",
+    "match_type": "set",
+    "expected": [
+      "Snow Warning",
+      "Soundproof"
+    ],
+    "source_chunk_id": "Abomasnow-stats"
+  },
+  {
+    "id": "Abomasnow-moveset-learned-question",
+    "question": "Does Abomasnow learn Attract?",
+    "match_type": "exact",
+    "expected": "Yes",
+    "source_chunk_id": "Abomasnow-moveset"
+  },
+  {
+    "id": "Aromatisse-stats-question",
+    "question": "What are Aromatisse's base stats?",
+    "match_type": "set",
+    "expected": [
+      "HP 101",
+      "Attack 72",
+      "Defense 72",
+      "Sp. Atk 99",
+      "Sp. Def 89",
+      "Speed 29"
+    ],
+    "source_chunk_id": "Aromatisse-stats"
+  },
+  {
+    "id": "Aromatisse-abilities-question",
+    "question": "What are Aromatisse's abilities?",
+    "match_type": "set",
+    "expected": [
+      "Aroma Veil",
+      "Healer"
+    ],
+    "source_chunk_id": "Aromatisse-stats"
+  },
+  {
+    "id": "Aromatisse-moveset-not-learned-question",
+    "question": "Does Aromatisse learn Accelerock?",
+    "match_type": "exact",
+    "expected": "No",
+    "source_chunk_id": "Aromatisse-moveset"
+  },
+  {
+    "id": "Castform [Snowy Form]-stats-question",
+    "question": "What are Castform [Snowy Form]'s base stats?",
+    "match_type": "set",
+    "expected": [
+      "HP 70",
+      "Attack 70",
+      "Defense 70",
+      "Sp. Atk 70",
+      "Sp. Def 70",
+      "Speed 70"
+    ],
+    "source_chunk_id": "Castform [Snowy Form]-stats"
+  },
+  {
+    "id": "Castform [Snowy Form]-abilities-question",
+    "question": "What are Castform [Snowy Form]'s abilities?",
+    "match_type": "set",
+    "expected": [
+      "Forecast"
+    ],
+    "source_chunk_id": "Castform [Snowy Form]-stats"
+  },
+  {
+    "id": "Castform [Snowy Form]-moveset-learned-question",
+    "question": "Does Castform [Snowy Form] learn Amnesia?",
+    "match_type": "exact",
+    "expected": "Yes",
+    "source_chunk_id": "Castform [Snowy Form]-moveset"
+  },
+  {
+    "id": "Dragalge-stats-question",
+    "question": "What are Dragalge's base stats?",
+    "match_type": "set",
+    "expected": [
+      "HP 65",
+      "Attack 75",
+      "Defense 90",
+      "Sp. Atk 97",
+      "Sp. Def 123",
+      "Speed 44"
+    ],
+    "source_chunk_id": "Dragalge-stats"
+  },
+  {
+    "id": "Dragalge-abilities-question",
+    "question": "What are Dragalge's abilities?",
+    "match_type": "set",
+    "expected": [
+      "Adaptability",
+      "Poison Point",
+      "Poison Touch"
+    ],
+    "source_chunk_id": "Dragalge-stats"
+  },
+  {
+    "id": "Dragalge-moveset-not-learned-question",
+    "question": "Does Dragalge learn Accelerock?",
+    "match_type": "exact",
+    "expected": "No",
+    "source_chunk_id": "Dragalge-moveset"
+  },
+  {
+    "id": "Forretress-stats-question",
+    "question": "What are Forretress's base stats?",
+    "match_type": "set",
+    "expected": [
+      "HP 75",
+      "Attack 90",
+      "Defense 140",
+      "Sp. Atk 60",
+      "Sp. Def 60",
+      "Speed 40"
+    ],
+    "source_chunk_id": "Forretress-stats"
+  },
+  {
+    "id": "Forretress-abilities-question",
+    "question": "What are Forretress's abilities?",
+    "match_type": "set",
+    "expected": [
+      "Overcoat",
+      "Sturdy"
+    ],
+    "source_chunk_id": "Forretress-stats"
+  },
+  {
+    "id": "Forretress-moveset-learned-question",
+    "question": "Does Forretress learn Ally Switch?",
+    "match_type": "exact",
+    "expected": "Yes",
+    "source_chunk_id": "Forretress-moveset"
+  },
+  {
+    "id": "Goodra [Hisuian Form]-stats-question",
+    "question": "What are Goodra [Hisuian Form]'s base stats?",
+    "match_type": "set",
+    "expected": [
+      "HP 80",
+      "Attack 100",
+      "Defense 100",
+      "Sp. Atk 110",
+      "Sp. Def 150",
+      "Speed 60"
+    ],
+    "source_chunk_id": "Goodra [Hisuian Form]-stats"
+  },
+  {
+    "id": "Goodra [Hisuian Form]-abilities-question",
+    "question": "What are Goodra [Hisuian Form]'s abilities?",
+    "match_type": "set",
+    "expected": [
+      "Gooey",
+      "Sap Sipper",
+      "Shell Armor"
+    ],
+    "source_chunk_id": "Goodra [Hisuian Form]-stats"
+  },
+  {
+    "id": "Goodra [Hisuian Form]-moveset-not-learned-question",
+    "question": "Does Goodra [Hisuian Form] learn Accelerock?",
+    "match_type": "exact",
+    "expected": "No",
+    "source_chunk_id": "Goodra [Hisuian Form]-moveset"
+  },
+  {
+    "id": "Kangaskhan-stats-question",
+    "question": "What are Kangaskhan's base stats?",
+    "match_type": "set",
+    "expected": [
+      "HP 105",
+      "Attack 95",
+      "Defense 80",
+      "Sp. Atk 40",
+      "Sp. Def 80",
+      "Speed 90"
+    ],
+    "source_chunk_id": "Kangaskhan-stats"
+  },
+  {
+    "id": "Kangaskhan-abilities-question",
+    "question": "What are Kangaskhan's abilities?",
+    "match_type": "set",
+    "expected": [
+      "Early Bird",
+      "Inner Focus",
+      "Scrappy"
+    ],
+    "source_chunk_id": "Kangaskhan-stats"
+  },
+  {
+    "id": "Kangaskhan-moveset-learned-question",
+    "question": "Does Kangaskhan learn Aerial Ace?",
+    "match_type": "exact",
+    "expected": "Yes",
+    "source_chunk_id": "Kangaskhan-moveset"
+  },
+  {
+    "id": "Medicham-stats-question",
+    "question": "What are Medicham's base stats?",
+    "match_type": "set",
+    "expected": [
+      "HP 60",
+      "Attack 60",
+      "Defense 75",
+      "Sp. Atk 60",
+      "Sp. Def 75",
+      "Speed 80"
+    ],
+    "source_chunk_id": "Medicham-stats"
+  },
+  {
+    "id": "Medicham-abilities-question",
+    "question": "What are Medicham's abilities?",
+    "match_type": "set",
+    "expected": [
+      "Pure Power",
+      "Telepathy"
+    ],
+    "source_chunk_id": "Medicham-stats"
+  },
+  {
+    "id": "Medicham-moveset-not-learned-question",
+    "question": "Does Medicham learn Accelerock?",
+    "match_type": "exact",
+    "expected": "No",
+    "source_chunk_id": "Medicham-moveset"
+  },
+  {
+    "id": "Pelipper-stats-question",
+    "question": "What are Pelipper's base stats?",
+    "match_type": "set",
+    "expected": [
+      "HP 60",
+      "Attack 50",
+      "Defense 100",
+      "Sp. Atk 95",
+      "Sp. Def 70",
+      "Speed 65"
+    ],
+    "source_chunk_id": "Pelipper-stats"
+  },
+  {
+    "id": "Pelipper-abilities-question",
+    "question": "What are Pelipper's abilities?",
+    "match_type": "set",
+    "expected": [
+      "Drizzle",
+      "Keen Eye",
+      "Rain Dish"
+    ],
+    "source_chunk_id": "Pelipper-stats"
+  },
+  {
+    "id": "Pelipper-moveset-learned-question",
+    "question": "Does Pelipper learn Acrobatics?",
+    "match_type": "exact",
+    "expected": "Yes",
+    "source_chunk_id": "Pelipper-moveset"
+  },
+  {
+    "id": "Frost Rotom-stats-question",
+    "question": "What are Frost Rotom's base stats?",
+    "match_type": "set",
+    "expected": [
+      "HP 50",
+      "Attack 65",
+      "Defense 107",
+      "Sp. Atk 105",
+      "Sp. Def 107",
+      "Speed 86"
+    ],
+    "source_chunk_id": "Frost Rotom-stats"
+  },
+  {
+    "id": "Frost Rotom-abilities-question",
+    "question": "What are Frost Rotom's abilities?",
+    "match_type": "set",
+    "expected": [
+      "Levitate"
+    ],
+    "source_chunk_id": "Frost Rotom-stats"
+  },
+  {
+    "id": "Frost Rotom-moveset-not-learned-question",
+    "question": "Does Frost Rotom learn Accelerock?",
+    "match_type": "exact",
+    "expected": "No",
+    "source_chunk_id": "Frost Rotom-moveset"
+  },
+  {
+    "id": "Simisear-stats-question",
+    "question": "What are Simisear's base stats?",
+    "match_type": "set",
+    "expected": [
+      "HP 75",
+      "Attack 98",
+      "Defense 63",
+      "Sp. Atk 98",
+      "Sp. Def 63",
+      "Speed 101"
+    ],
+    "source_chunk_id": "Simisear-stats"
+  },
+  {
+    "id": "Simisear-abilities-question",
+    "question": "What are Simisear's abilities?",
+    "match_type": "set",
+    "expected": [
+      "Blaze",
+      "Gluttony"
+    ],
+    "source_chunk_id": "Simisear-stats"
+  },
+  {
+    "id": "Simisear-moveset-learned-question",
+    "question": "Does Simisear learn Acrobatics?",
+    "match_type": "exact",
+    "expected": "Yes",
+    "source_chunk_id": "Simisear-moveset"
+  },
+  {
+    "id": "Talonflame-stats-question",
+    "question": "What are Talonflame's base stats?",
+    "match_type": "set",
+    "expected": [
+      "HP 78",
+      "Attack 81",
+      "Defense 71",
+      "Sp. Atk 74",
+      "Sp. Def 69",
+      "Speed 126"
+    ],
+    "source_chunk_id": "Talonflame-stats"
+  },
+  {
+    "id": "Talonflame-abilities-question",
+    "question": "What are Talonflame's abilities?",
+    "match_type": "set",
+    "expected": [
+      "Flame Body",
+      "Gale Wings"
+    ],
+    "source_chunk_id": "Talonflame-stats"
+  },
+  {
+    "id": "Talonflame-moveset-not-learned-question",
+    "question": "Does Talonflame learn Accelerock?",
+    "match_type": "exact",
+    "expected": "No",
+    "source_chunk_id": "Talonflame-moveset"
+  },
+  {
+    "id": "Vivillon-stats-question",
+    "question": "What are Vivillon's base stats?",
+    "match_type": "set",
+    "expected": [
+      "HP 80",
+      "Attack 52",
+      "Defense 50",
+      "Sp. Atk 90",
+      "Sp. Def 50",
+      "Speed 89"
+    ],
+    "source_chunk_id": "Vivillon-stats"
+  },
+  {
+    "id": "Vivillon-abilities-question",
+    "question": "What are Vivillon's abilities?",
+    "match_type": "set",
+    "expected": [
+      "Compound Eyes",
+      "Friend Guard",
+      "Shield Dust"
+    ],
+    "source_chunk_id": "Vivillon-stats"
+  },
+  {
+    "id": "Vivillon-moveset-learned-question",
+    "question": "Does Vivillon learn Acrobatics?",
+    "match_type": "exact",
+    "expected": "Yes",
+    "source_chunk_id": "Vivillon-moveset"
+  },
+  {
+    "id": "item-Abomasite-question",
+    "question": "What does Abomasite do?",
+    "match_type": "substring",
+    "expected": "A held item that allows Abomasnow to Mega Evolve.",
+    "source_chunk_id": "item-Abomasite"
+  },
+  {
+    "id": "item-Chandelurite-question",
+    "question": "What does Chandelurite do?",
+    "match_type": "substring",
+    "expected": "A held item that allows Chandelure to Mega Evolve.",
+    "source_chunk_id": "item-Chandelurite"
+  },
+  {
+    "id": "item-Dragon Gem-question",
+    "question": "What does Dragon Gem do?",
+    "match_type": "substring",
+    "expected": "Boosts the power of the holder's next Dragon-type move by 30%. Disappears for the duration of the battle after a single use.",
+    "source_chunk_id": "item-Dragon Gem"
+  },
+  {
+    "id": "item-Froslassite-question",
+    "question": "What does Froslassite do?",
+    "match_type": "substring",
+    "expected": "A held item that allows Froslass to Mega Evolve.",
+    "source_chunk_id": "item-Froslassite"
+  },
+  {
+    "id": "item-Iron Ball-question",
+    "question": "What does Iron Ball do?",
+    "match_type": "substring",
+    "expected": "Halves the holder's Speed stat. If the holder is off the ground, it will be grounded, meaning it can be affected by Ground-type moves, as well as the Spikes, Toxic Spikes, and Sticky Web statuses.",
+    "source_chunk_id": "item-Iron Ball"
+  },
+  {
+    "id": "item-Metagrossite-question",
+    "question": "What does Metagrossite do?",
+    "match_type": "substring",
+    "expected": "A held item that allows Metagross to Mega Evolve.",
+    "source_chunk_id": "item-Metagrossite"
+  },
+  {
+    "id": "item-Quick Claw-question",
+    "question": "What does Quick Claw do?",
+    "match_type": "substring",
+    "expected": "Gives the holder's moves a 20% chance of going first among moves of the same priority.",
+    "source_chunk_id": "item-Quick Claw"
+  },
+  {
+    "id": "item-Skarmorite-question",
+    "question": "What does Skarmorite do?",
+    "match_type": "substring",
+    "expected": "A held item that allows Skarmory to Mega Evolve.",
+    "source_chunk_id": "item-Skarmorite"
+  },
+  {
+    "id": "item-Wide Lens-question",
+    "question": "What does Wide Lens do?",
+    "match_type": "substring",
+    "expected": "Boosts the accuracy of the holder's moves by 10%.",
+    "source_chunk_id": "item-Wide Lens"
+  }
+]

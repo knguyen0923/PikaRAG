@@ -222,10 +222,10 @@ def _load_usage() -> dict:
     return json.loads(USAGE_DATA_PATH.read_text())
 
 
-def _build_real_index(records: list, items: list) -> ChromaIndex:
+def _build_real_index(records: list, items: list, client=None) -> ChromaIndex:
     # Fixed collection name: build() upserts, so restarting the bot refreshes
     # this same persisted collection in place instead of leaking a new one.
-    index = ChromaIndex(embedder=SentenceTransformerEmbedder(), collection_name="pokemon")
+    index = ChromaIndex(embedder=SentenceTransformerEmbedder(), client=client, collection_name="pokemon")
     index.build(records, items=items)
     return index
 

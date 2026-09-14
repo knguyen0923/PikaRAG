@@ -69,3 +69,31 @@ For always-on deployment (systemd + Oracle Cloud), see `docs/DEPLOYMENT.md`.
 ```bash
 pytest -q
 ```
+
+## Evaluation
+
+`data/eval/golden_set.json` is an auto-generated golden Q&A set (see
+`eval/generate_golden_set.py`), used two ways:
+
+- **Retrieval quality (`recall@5`)** runs as a normal test in CI
+  (`tests/test_eval_retrieval.py`) — no live LLM involved, just the
+  embedding model and Chroma.
+- **Answer quality** exercises the full `/ask` path against a live Ollama
+  model, on demand (not run in CI, since CI has no Tailscale access to the
+  laptop):
+  ```bash
+  .venv/bin/python -m scripts.run_eval --with-answers
+  ```
+  Requires `LLM_HOST` (and optionally `LLM_MODEL`/`LLM_TIMEOUT`) in the
+  shell environment first, e.g. `set -a; source .env; set +a`.
+
+  Run this after a retrieval/prompt change or a model swap, from a machine
+  with tailnet access (the Oracle Cloud instance or a dev machine joined to
+  the same tailnet).
+
+Regenerate the golden set after a data refresh with:
+```bash
+.venv/bin/python -m eval.generate_golden_set
+```
+Review the diff before committing — this is a deliberate step, not
+automatic.
