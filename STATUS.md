@@ -5,15 +5,21 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-12, at commit `4228c08` (main). Bot deployed and
-confirmed live in Discord this session (see `RESUME.md`); a project cleanup
-+ code-review pass landed 5 more commits after that (README/`.gitignore`
-polish, a new spend-tracking feature for `/ask`, five real bug fixes in
-`/calc`, a team-import parsing fix, and a damage-formula correctness fix,
-verified against Bulbapedia); the server was then updated to match (`git
-pull` + restart, confirmed healthy). `TAKEAWAYS.md` added as a portfolio
-retrospective (also published as a Claude Artifact). 262/262 tests passing.
-<!-- STATUS_COMMIT: 4228c08 -->
+**Last updated:** 2026-09-13, at commit `54d41b6` (main). No code changed
+this session — this was a design-only session. Brainstormed a
+production-grade RAG upgrade plus a Discord button-UI idea; mid-discussion
+the user set a new top priority (memory: `pikarag_cost_priority`): eliminate
+the one remaining paid dependency (`/ask`'s Claude Haiku call) by moving to
+a locally-run LLM (Ollama) on a dedicated laptop, reached over Tailscale from
+the always-on Oracle Cloud instance. That became the lead spec, with six more
+specs for the broader production-grade RAG effort (eval harness, retrieval
+quality, grounding & trust, observability, reliability, ingestion
+robustness) written on top of it. All 7 committed to
+`docs/superpowers/specs/2026-09-13-*.md`; none implemented yet — awaiting
+user review before moving to implementation plans. 262/262 tests still
+passing (no code touched). The Discord button-UI idea from the same session
+is still unexplored — not yet brainstormed or spec'd.
+<!-- STATUS_COMMIT: 54d41b6 -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
@@ -65,6 +71,35 @@ restart done after the cleanup/bug-hunt commits landed). Full detail in
 4. ~~Server setup: clone repo, venv, `.env`, run both refresh jobs~~ done
 5. ~~Install systemd units, verify the bot responds in Discord~~ done —
    `/ping` confirmed working live in Discord on 2026-09-12
+
+## Next up (design done, not implemented)
+
+Seven design specs landed 2026-09-13 in `docs/superpowers/specs/` — awaiting
+user review, not yet turned into implementation plans or code:
+
+1. `2026-09-13-local-llm-migration-design.md` — **highest priority**, per
+   the user's explicit cost-zero directive. Deletes `HaikuAnswerer` and
+   `rag/spend_tracker.py`, replaces with `OllamaAnswerer` calling a laptop
+   (8GB RAM, CPU-only) over Tailscale. The bot **still uses paid Haiku
+   today** — this hasn't been implemented yet.
+2. `2026-09-13-eval-harness-design.md` — golden set auto-generated from
+   processed data; recall@k in CI, answer-quality checked manually.
+3. `2026-09-13-retrieval-quality-design.md` — entity-aware retrieval
+   filtering, reusing existing `bot/pokemon_lookup.py` name matching.
+4. `2026-09-13-grounding-trust-design.md` — source attribution + a
+   distance-based confidence gate before the LLM is called.
+5. `2026-09-13-observability-design.md` — SQLite log of every `/ask` call +
+   an admin `/debug-last` command.
+6. `2026-09-13-reliability-design.md` — circuit breaker around Ollama calls
+   + an `/llmstatus` health check.
+7. `2026-09-13-ingestion-robustness-design.md` — schema + freshness
+   validation on pipeline refreshes.
+
+Recommended order: local LLM migration first (it changes the cost/quality
+tradeoff the other six design around), then eval harness (so later changes
+are measurable), then the rest in any order. Also still open: a Discord
+button-UI request (replacing slash commands with clickable message
+components) — raised same session, not yet brainstormed.
 
 Everything below is optional follow-up, none of it blocking:
 
