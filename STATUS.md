@@ -5,23 +5,39 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-13, at commit `a99d173` (main). Still a
-design-only session — no bot/rag/pipeline code changed, only docs. Same
-session as the 7-spec production-grade-RAG brainstorm (memory:
-`pikarag_cost_priority` — user's top priority is $0 cost). The user then
-asked for a time estimate per track (see this session's transcript if
-needed) and asked to turn the highest-priority spec into an implementation
-plan now. `docs/superpowers/plans/2026-09-13-local-llm-migration.md` is
-written and committed: 5 TDD tasks (add `OllamaAnswerer`, wire it into
-`bot/main.py` via `LLM_HOST`/`LLM_MODEL` env vars, delete `HaikuAnswerer` +
-`rag/spend_tracker.py` + the `anthropic` dependency, update
-`.env.example`/`docs/DEPLOYMENT.md`/`README.md`, then a manual
-Tailscale+Ollama setup/verification task). **Not yet executed** — the bot
-still uses paid Haiku today. 262/262 tests still passing (no code touched).
-The other 6 specs have no implementation plans yet. The Discord button-UI
-idea from earlier in this session is still unexplored — not yet
-brainstormed or spec'd.
-<!-- STATUS_COMMIT: a99d173 -->
+**Last updated:** 2026-09-14, at commit `7532f22` (main). The local LLM
+migration plan (`docs/superpowers/plans/2026-09-13-local-llm-migration.md`,
+Tasks 1-4) is implemented and merged to `main` via subagent-driven
+development in an isolated worktree/branch, then squashed to one commit
+and fast-forward merged locally — nothing pushed to origin yet. `/ask` now
+calls a new `OllamaAnswerer` (`rag/answer.py`) over HTTP to a local Ollama
+server, configured via `LLM_HOST`/`LLM_MODEL` env vars; `HaikuAnswerer`,
+`rag/spend_tracker.py`, and the `anthropic` dependency are deleted
+entirely — **the bot no longer has any paid-API path.** The final
+whole-branch review caught and fixed a real bug the plan/spec had missed:
+`/ask` never deferred its Discord interaction, so under CPU-bound Ollama
+inference (much slower than Haiku) both the normal answer and the
+"offline" degradation message would have blown past Discord's 3-second ack
+window — this is now fixed (`interaction.response.defer()` +
+`followup.send()`, mirroring `/import`'s existing pattern), along with
+restoring the dropped `max_tokens`-equivalent output-length bound
+(`num_predict`), adding failure logging to `OllamaAnswerer`, and fixing
+stale doc cross-references in `deploy/cloud-init.sh` and
+`docs/DEPLOYMENT.md`. 262/262 tests passing. **Task 5 (installing
+Tailscale + Ollama on the physical Windows laptop, setting `LLM_HOST` on
+the live Oracle Cloud instance, and verifying `/ask` end-to-end) is
+manual/hands-on-hardware and NOT done** — the live deployed bot still runs
+the old code with `HaikuAnswerer` until someone does that setup and
+deploys this commit. Deferred, non-blocking polish from the final review
+(not yet done): stale section references in `pika-rag-project-plan.md`;
+`LLM_TIMEOUT` isn't env-configurable (only `LLM_HOST`/`LLM_MODEL` are, per
+the plan's Global Constraints — worth adding given cold-model-load risk
+on 8GB CPU-only hardware); minor `docs/DEPLOYMENT.md` wording/ordering
+polish. The other 6 design specs (eval harness, retrieval quality,
+grounding/trust, observability, reliability, ingestion robustness) still
+have no implementation plans. The Discord button-UI idea is still
+unexplored.
+<!-- STATUS_COMMIT: 7532f22 -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
@@ -74,27 +90,38 @@ restart done after the cleanup/bug-hunt commits landed). Full detail in
 5. ~~Install systemd units, verify the bot responds in Discord~~ done —
    `/ping` confirmed working live in Discord on 2026-09-12
 
+## Local LLM migration — code done, hardware setup still open
+
+`2026-09-13-local-llm-migration-design.md`'s Tasks 1-4 are implemented and
+merged to `main` (commit `7532f22`, 2026-09-14) — see the "Last updated"
+paragraph above for what changed. **Task 5 is not done:** the physical
+Windows laptop needs Tailscale + Ollama installed
+(`ollama pull llama3.2:3b`), the live Oracle Cloud instance needs
+Tailscale installed and `LLM_HOST` set in its `.env`, and `/ask` needs to
+be verified end-to-end (including the offline-degradation path) against
+real hardware — see `docs/DEPLOYMENT.md`'s "Local LLM (Ollama +
+Tailscale)" section (now §3) and the plan's Task 5 checklist. **The live
+deployed bot still runs the old paid-Haiku code** until this commit is
+pulled and Task 5 is completed on the server.
+
 ## Next up (design done, not implemented)
 
-Seven design specs landed 2026-09-13 in `docs/superpowers/specs/` — awaiting
-user review, not yet turned into implementation plans or code:
+Six more design specs landed 2026-09-13 in `docs/superpowers/specs/` —
+awaiting user review, not yet turned into implementation plans or code:
 
-1. `2026-09-13-local-llm-migration-design.md` — **highest priority**, per
-   the user's explicit cost-zero directive. Deletes `HaikuAnswerer` and
-   `rag/spend_tracker.py`, replaces with `OllamaAnswerer` calling a laptop
-   (8GB RAM, CPU-only) over Tailscale. The bot **still uses paid Haiku
-   today** — this hasn't been implemented yet.
-2. `2026-09-13-eval-harness-design.md` — golden set auto-generated from
+1. `2026-09-13-eval-harness-design.md` — golden set auto-generated from
    processed data; recall@k in CI, answer-quality checked manually.
-3. `2026-09-13-retrieval-quality-design.md` — entity-aware retrieval
+   Recommended next, now that the local LLM migration (a weaker model)
+   makes answer-quality regression a real risk to catch.
+2. `2026-09-13-retrieval-quality-design.md` — entity-aware retrieval
    filtering, reusing existing `bot/pokemon_lookup.py` name matching.
-4. `2026-09-13-grounding-trust-design.md` — source attribution + a
+3. `2026-09-13-grounding-trust-design.md` — source attribution + a
    distance-based confidence gate before the LLM is called.
-5. `2026-09-13-observability-design.md` — SQLite log of every `/ask` call +
+4. `2026-09-13-observability-design.md` — SQLite log of every `/ask` call +
    an admin `/debug-last` command.
-6. `2026-09-13-reliability-design.md` — circuit breaker around Ollama calls
+5. `2026-09-13-reliability-design.md` — circuit breaker around Ollama calls
    + an `/llmstatus` health check.
-7. `2026-09-13-ingestion-robustness-design.md` — schema + freshness
+6. `2026-09-13-ingestion-robustness-design.md` — schema + freshness
    validation on pipeline refreshes.
 
 Recommended order: local LLM migration first (it changes the cost/quality
