@@ -5,68 +5,29 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-14, at commit `6d021d5` (main, not yet pushed).
-The eval harness (`docs/superpowers/plans/2026-09-14-eval-harness.md`,
-all 8 tasks) is implemented and merged: `eval/generate_golden_set.py`
-builds a 48-entry golden Q&A set from real Pokemon/item/move data
-(`data/eval/golden_set.json`, committed); `tests/test_eval_retrieval.py`
-gates `recall@5 >= 0.9` in CI against the real embedder/index — measured
-0.9583; `scripts.run_eval --with-answers` exercises the full `/ask` path
-against a live Ollama model on demand (never gated in CI, no Tailscale
-access there). Two implementation-level decisions the spec left open, made
-and disclosed in the plan: golden-set sampling is deterministic
-fixed-stride slicing (no RNG, so regenerating reproduces the same output),
-and the answer-quality matcher's `"exact"` type is a whole-word regex
-match rather than full-string equality (a free-text LLM answer will never
-equal a bare "91"/"Yes" verbatim). The final whole-branch review caught a
-real production-safety bug the plan hadn't anticipated: `scripts.run_eval`
-would have written into the bot's *live* persistent Chroma store (the
-same collection `/ask` serves from) since `bot.main._build_real_index`
-had no way to inject an alternate client — fixed by adding an optional,
-backward-compatible `client=` parameter, with the eval harness now using
-an in-memory client instead. The CI test's failure message now names the
-specific missed golden entries rather than just an aggregate score, and
-now reuses `_build_real_index` instead of duplicating its wiring (so it
-can't silently drift from what the bot actually does). 292/292 tests
-passing. Deferred, non-blocking follow-ups noted by the final review (not
-yet done): all six "No"-answer moveset questions in the golden set
-happen to test the same move ("Accelerock", alphabetically first in the
-move pool) — real but low-stakes eval-signal diversity gap; golden-set
-size floor (30-50) isn't enforced at generation time, only in a unit
-test; two genuine retrieval misses were found during review
-(`Abomasnow`/`Dragalge` moveset questions retrieve the wrong chunk) —
-worth its own retrieval-quality investigation, not a harness bug.
-The local LLM migration is fully merged (see "Local LLM migration" section
-below for what changed and what's still open — Task 5, hardware setup).
-264/264 tests passing. This session then ran a verification pass — reading
-every claim in a design spec against the actual current codebase, not just
-trusting the spec's own "Approved" label — across all 6 unimplemented
-design specs from the 2026-09-13 brainstorm (`eval-harness`,
-`retrieval-quality`, `grounding-trust`, `observability`, `reliability`,
-`ingestion-robustness`). **Every single one had real bugs or gaps** —
-wrong file paths, claims about code/tests that don't exist, at least one
-outright crash bug, and one spec (`grounding-trust`) whose own stated
-safety claim ("this change is caught by the existing test suite") was
-verified false. All 6 are now fixed and committed. Highlights: `reliability`'s
-circuit breaker couldn't have worked as designed (`OllamaAnswerer` already
-swallows every failure into a string return, never raises — nothing would
-trip a breaker watching for exceptions); `observability` silently depended
-on `grounding-trust`'s not-yet-built fields with no stated ordering;
-`ingestion-robustness`'s whole justification ("would have caught the M-C
-Pikalytics gap") didn't survive tracing the actual failure mechanics (that
-gap was a *successful* refresh against the wrong format code, not a stale
-one) and was rescoped accordingly; `retrieval-quality`'s entity detection
-would have silently no-op'd for ~1/3 of the roster (Mega/regional-form name
-collisions) without added tie-breaking logic. Two shared conventions were
-decided once and applied consistently: admin-only commands use a
-`BOT_OWNER_ID` env var (this bot uses a bare `discord.Client`, not
-`commands.Bot`, so `is_owner()` isn't available), and failure detection
-against `OllamaAnswerer` uses string-equality against `OFFLINE_MESSAGE`
-rather than an interface change to already-shipped, already-tested code.
-**All 6 specs are now believed ready for implementation plans** — next
-step is picking one (eval-harness was the original recommendation) and
-running `writing-plans`.
-<!-- STATUS_COMMIT: 6d021d5 -->
+**Last updated:** 2026-09-14, at commit `3d3991e` (main, not yet pushed).
+
+**Immediate next action:** run `writing-plans` on
+`docs/superpowers/specs/2026-09-13-retrieval-quality-design.md`, then
+execute via `subagent-driven-development` (same pattern as the local LLM
+migration and eval harness). The spec is reviewed, fixed, and now carries
+measured real-world evidence (see "Retrieval quality — spec ready, real
+evidence in hand" below) — no further brainstorming needed, just go
+straight to a plan. This is genuinely the next unblocked step; nothing
+else needs a decision first.
+
+Session summary (2026-09-13 through 2026-09-14): shipped the local LLM
+migration (code) and the eval harness (both merged to `main`, both fully
+tested — see their own sections below); ran a verification pass that
+caught and fixed real bugs in all 6 unimplemented 2026-09-13 design
+specs (wrong file paths, a false "caught by tests" safety claim, a
+circuit breaker with nothing to catch, an unstated cross-spec
+dependency, a debunked motivating claim — full detail preserved in git
+history, `git log --oneline --grep=eval-harness` and
+`--grep="design specs"` for the commits); then used the eval harness
+itself to find two real retrieval-quality bugs (see below) and traced
+them to root cause. 292/292 tests passing throughout.
+<!-- STATUS_COMMIT: 3d3991e -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
@@ -122,47 +83,100 @@ restart done after the cleanup/bug-hunt commits landed). Full detail in
 ## Local LLM migration — code done, hardware setup still open
 
 `2026-09-13-local-llm-migration-design.md`'s Tasks 1-4 are implemented and
-merged to `main` (commit `7532f22`, 2026-09-14) — see the "Last updated"
-paragraph above for what changed. **Task 5 is not done:** the physical
-Windows laptop needs Tailscale + Ollama installed
-(`ollama pull llama3.2:3b`), the live Oracle Cloud instance needs
-Tailscale installed and `LLM_HOST` set in its `.env`, and `/ask` needs to
-be verified end-to-end (including the offline-degradation path) against
-real hardware — see `docs/DEPLOYMENT.md`'s "Local LLM (Ollama +
-Tailscale)" section (now §3) and the plan's Task 5 checklist. **The live
-deployed bot still runs the old paid-Haiku code** until this commit is
-pulled and Task 5 is completed on the server.
+merged to `main` (commit `7532f22`, 2026-09-14): `/ask` calls a new
+`OllamaAnswerer` (`rag/answer.py`) over HTTP to a local Ollama server
+instead of paid Claude Haiku; `HaikuAnswerer`/`rag/spend_tracker.py`/the
+`anthropic` dependency are deleted entirely, no paid fallback path
+anywhere. The final review for that plan caught a real bug: `/ask` never
+deferred its Discord interaction, so under CPU-bound Ollama inference both
+the normal answer and the offline-degradation message would have missed
+Discord's 3-second ack window — fixed (`interaction.response.defer()` +
+`followup.send()`). **Task 5 is not done:** the physical Windows laptop
+needs Tailscale + Ollama installed (`ollama pull llama3.2:3b`), the live
+Oracle Cloud instance needs Tailscale installed and `LLM_HOST` set in its
+`.env`, and `/ask` needs to be verified end-to-end (including the
+offline-degradation path) against real hardware — see
+`docs/DEPLOYMENT.md`'s "Local LLM (Ollama + Tailscale)" section (now §3)
+and the plan's Task 5 checklist. **The live deployed bot still runs the
+old paid-Haiku code** until this commit is pulled and Task 5 is completed
+on the server.
 
-## Next up (eval harness shipped; 5 more designs, not implemented)
+## Eval harness — shipped, one real bug caught and fixed
 
-`2026-09-13-eval-harness-design.md` is **implemented and merged** (see
-"Last updated" above for what shipped and what's deferred).
+`2026-09-14-eval-harness.md`'s all 8 tasks are implemented and merged
+(commit `6d021d5`). `eval/generate_golden_set.py` builds a 48-entry golden
+Q&A set from real Pokemon/item/move data (`data/eval/golden_set.json`,
+committed to the repo, not gitignored); `tests/test_eval_retrieval.py`
+gates `recall@5 >= 0.9` in CI against the real embedder/index — measured
+0.9583 (46/48); `scripts.run_eval --with-answers` exercises the full
+`/ask` path against a live Ollama model on demand, never gated in CI (no
+Tailscale access there). The final whole-branch review caught a real
+production-safety bug: `scripts.run_eval` would have written into the
+bot's *live* persistent Chroma store (the same collection `/ask` serves
+from) — fixed with a backward-compatible `client=` parameter on
+`bot.main._build_real_index`, with the eval script now using an in-memory
+client. 292/292 tests passing. Deferred, non-blocking: all six
+"No"-answer moveset questions test the same move (low signal diversity,
+not wrong); golden-set size floor isn't enforced at generation time, only
+in a unit test. The two real retrieval misses this harness found are
+being acted on now — see next section.
 
-The other 5 verified-and-fixed design specs from the 2026-09-13 brainstorm
-have no implementation plans yet, but are believed implementation-ready:
+## Retrieval quality — spec ready, real evidence in hand, next to implement
 
-1. `2026-09-13-retrieval-quality-design.md` — entity-aware retrieval
-   filtering, new free-text name-scanning logic (not pure reuse as
-   originally framed) plus Mega/regional-form tie-breaking.
-2. `2026-09-13-grounding-trust-design.md` — source attribution + a
+`2026-09-13-retrieval-quality-design.md` proposes entity-aware retrieval:
+detect a Pokemon/item name in the question, then constrain the Chroma
+query to that entity's own chunks (`where={"pokemon": "Abomasnow"}`)
+instead of searching the whole 542-chunk corpus.
+
+This isn't speculative — the eval harness (`data/eval/golden_set.json`)
+measured a concrete failure it fixes. Two golden questions
+(`Abomasnow-moveset-learned-question`, `Dragalge-moveset-not-learned-question`)
+miss their target `-moveset` chunk in the top 5 entirely. Root cause,
+confirmed by querying the real index directly: every sampled Pokemon that
+also has a Mega Stone item (Abomasnow, Dragalge, Kangaskhan, Medicham)
+ranks that item's chunk and the Pokemon's `-stats` chunk *above* its own
+`-moveset` chunk, every single time, regardless of the question —
+`all-MiniLM-L6-v2`'s mean-pooled embedding favors a short sentence
+repeating the exact Pokemon name over the long, diluted move-list text.
+Kangaskhan/Medicham happened to still squeak into rank 4-5; Abomasnow/
+Dragalge landed at rank 6+. Confirmed (by tracing the design, not
+guessing) that entity-aware filtering eliminates this outright: a
+Pokemon-scoped query only has that Pokemon's own 2 chunks to rank
+between, and the Mega Stone's chunk carries `metadata={"item": ...}` —
+no `"pokemon"` key at all — so it's excluded from a filtered query
+entirely, not just outranked. Full writeup in the spec's Purpose section
+(commit `3d3991e`).
+
+**Next action:** `writing-plans` on this spec, then
+`subagent-driven-development` to implement — no more design discussion
+needed, the spec already reflects this evidence and was reviewed/fixed
+earlier this session (see git history for that pass).
+
+## Next up after that (4 more designs, not implemented)
+
+4 more verified-and-fixed design specs from the 2026-09-13 brainstorm have
+no implementation plans yet, but are believed implementation-ready:
+
+1. `2026-09-13-grounding-trust-design.md` — source attribution + a
    distance-based confidence gate before the LLM is called.
-3. `2026-09-13-observability-design.md` — SQLite log of every `/ask` call +
+2. `2026-09-13-observability-design.md` — SQLite log of every `/ask` call +
    an admin `/debug-last` command. **Depends on grounding-trust landing
    first** (needs its `sources`/`best_distance`/`gate_fired` fields).
-4. `2026-09-13-reliability-design.md` — circuit breaker around Ollama calls
+3. `2026-09-13-reliability-design.md` — circuit breaker around Ollama calls
    (via string-match against `OFFLINE_MESSAGE`, not exceptions) + an
    admin-only `/llmstatus` health check.
-5. `2026-09-13-ingestion-robustness-design.md` — schema + freshness
+4. `2026-09-13-ingestion-robustness-design.md` — schema + freshness
    validation on pipeline refreshes, rescoped to drop a justification that
-   didn't hold up (see "Last updated").
+   didn't hold up (see git history).
 
-Suggested order given the one real dependency: eval-harness (plan ready) or
-retrieval-quality or ingestion-robustness first (all independent), then
-grounding-trust before observability, reliability anytime.
+Suggested order: retrieval-quality (spec ready, see above) first, then
+grounding-trust before observability specifically (the one real
+dependency), reliability and ingestion-robustness anytime, independent of
+everything else.
 
-Recommended order after eval harness: the rest in any order. Also still
-open: a Discord button-UI request (replacing slash commands with clickable
-message components) — raised same session, not yet brainstormed.
+Also still open: a Discord button-UI request (replacing slash commands
+with clickable message components) — raised early in the 2026-09-13
+session, not yet brainstormed at all.
 
 Everything below is optional follow-up, none of it blocking:
 

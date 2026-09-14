@@ -5,83 +5,78 @@ or right before a compaction) so work can pick back up without losing the
 thread. If this says "nothing in progress," there's no live handoff — just
 use `STATUS.md`.
 
-**Paused at:** 2026-09-11, deployment essentially complete — just waiting on
-Discord's global slash-command propagation window (up to ~1hr). Not a
-token-budget pause; safe to resume any time, or just check back in Discord.
-**Working on:** Same `docs/DEPLOYMENT.md` walkthrough as before. The Oracle
-Cloud instance from the prior pause (2026-09-07/08) was successfully
-recreated on 2026-09-11 and the bot is now live and connected to Discord's
-gateway.
-**Why paused:** Nothing left to do but wait for `/ping` to actually appear
-in Discord's slash-command picker (global `tree.sync()` in `bot/main.py`
-propagates over up to ~1hr for a bot's first-ever sync — this is normal
-Discord platform behavior, not a bug). User chose to wait it out rather
-than add a guild-scoped instant-sync for testing.
+**Paused at:** 2026-09-14, end of session (user asked to wrap up, not a
+token-budget pause — safe to resume any time).
+**Working on:** Design/implementation cycle for the 6 specs from the
+2026-09-13 brainstorm. Local LLM migration and the eval harness are both
+shipped; retrieval-quality's spec is ready with real measured evidence but
+has **no implementation plan yet** — that's the next concrete step.
+**Why paused:** User asked to finish documenting the retrieval-quality
+evidence and make sure the project state is legible for a future session,
+then stopped there rather than continuing straight into `writing-plans`.
 
-**Done so far (this session, 2026-09-11):**
-- Recreated the Oracle Cloud instance (`project-pikarag`, `VM.Standard.A1.Flex`,
-  Canonical Ubuntu 22.04 Minimal aarch64), public IP `193.122.155.20`. See
-  memory `pikarag-oracle-deployment` for full connection details (SSH key
-  at `~/.ssh/pikarag-oci.key`) and `pikarag-oracle-networking-gotchas` for
-  the two real bugs hit along the way (manually-created VCNs don't get an
-  Internet Gateway automatically; `cloud-init.sh`'s `useradd -m` + `git clone`
-  ordering bug — the latter is **still unpatched in the repo**, worth fixing
-  before the next from-scratch recreation).
-- Bootstrap (`deploy/cloud-init.sh`'s steps) run manually over SSH, since the
-  instance's "Initialization script" field was left blank at creation time.
-  Repo cloned to `/opt/pikarag`, venv built, systemd units installed.
-- Real secrets copied into the server's `/opt/pikarag/.env` via `scp` of the
-  local `.env` (after two failed attempts hand-typing a heredoc, which
-  corrupted the file with duplicated/garbage lines both times — `scp` of the
-  already-correct local file was the fix).
-- Both refresh pipelines run once: PokeAPI job clean (345/345 from cache);
-  Pikalytics job wrote real data for 208/210 attempted species. The 2
-  failures (Farfetch'd, Sirfetch'd) are **not a bug** — confirmed via direct
-  curl tests against Pikalytics plus `git log` — those two are newly-legal
-  in M-C and were never in M-B, and `PIKALYTICS_FORMAT_CODE` still points at
-  M-B's format code (already a tracked open item below). Nothing to fix here.
-- Found and fixed a real bug: `pip install -r requirements.txt` was resolving
-  `torch==2.14.0`, which crashes on any `sentence_transformers`/`transformers`
-  import (`ValueError: Duplicate dispatch rule for <built-in function intern>`
-  inside `torch._dynamo` triggered via `transformers`' flex_attention
-  integration). Fixed by pinning `torch==2.6.0` in `requirements.txt`
-  (confirmed via direct import test) — **committed to the repo**
-  (uncommitted as of this write; see next step). Installed live in the
-  server's venv already, bot confirmed running past this point.
-- All three systemd units enabled and running:
-  `pikarag-bot.service` (active, connected to Discord gateway as of
-  `2026-09-12 00:48:02 UTC`), `pikarag-refresh-pokeapi.timer`,
-  `pikarag-refresh-pikalytics.timer`.
-- Discord invite: hit two snags along the way — (1) the app had "Requires
-  OAuth2 Code Grant" enabled in Bot settings, which broke the simple invite
-  link until turned off; (2) had to select Guild Install (not User Install)
-  and manually add a placeholder OAuth2 redirect (`https://discord.com`,
-  unused by the actual bot-scope invite flow) to satisfy an unrelated form
-  validation. Bot is now a member of the target server.
+**Done so far (this session, 2026-09-13 through 2026-09-14):**
+- Local LLM migration (code): shipped, merged, pushed. `/ask` uses a local
+  Ollama server instead of paid Claude Haiku. Full detail: `STATUS.md`'s
+  "Local LLM migration" section. **Task 5 (physical hardware setup) is
+  still not done** — separately tracked, not part of this resume point.
+- Eval harness: shipped, merged, pushed. `recall@5` gated in CI, measured
+  0.9583. Full detail: `STATUS.md`'s "Eval harness" section.
+- Verification + fix pass on all 6 unimplemented 2026-09-13 design specs
+  (`eval-harness`, `retrieval-quality`, `grounding-trust`, `observability`,
+  `reliability`, `ingestion-robustness`) — every one had real bugs, all now
+  fixed and committed. See git log for the commits (`git log --oneline
+  --all --grep="design specs"` or similar; committed 2026-09-14).
+- Investigated 2 real retrieval misses the eval harness surfaced
+  (`Abomasnow-moveset-learned-question`,
+  `Dragalge-moveset-not-learned-question`) using systematic-debugging:
+  root-caused to Mega Stone item chunks + stats chunks consistently
+  outranking the correct moveset chunk for "Does X learn Y?" questions
+  (confirmed via direct index queries, not guessed). Confirmed the
+  already-approved `retrieval-quality-design.md` spec's entity-aware
+  `where`-filter design fixes this exact failure mode. Added this evidence
+  to the spec's Purpose section (commit `3d3991e`, local `main` only —
+  **not yet pushed to origin** as of this write; `main` is 1 commit ahead
+  of `origin/main`).
 
 **In flight (not committed / not finished):**
-- `requirements.txt`'s `torch==2.6.0` pin — committed and pushed
-  (`3431f78`). This bullet is stale, no longer in flight.
-- `deploy/cloud-init.sh`'s `useradd -m`/`git clone` bug (see memory
-  `pikarag-oracle-networking-gotchas`) is still unpatched in the repo.
+- Nothing uncommitted. Working tree should be clean — verify with `git
+  status` on resume regardless.
 
-**Next step:** Nothing required — just check Discord in 15-60 min and try
-`/ping`. If it still doesn't respond after ~an hour, that's when it'd be
-worth actually investigating (check `sudo journalctl -u pikarag-bot.service
--f` on the server for errors) rather than assuming it's still propagation
-delay. Everything else from the original deployment checklist is done
-(instance up, bootstrap complete, secrets in place, pipelines run, systemd
-units running, torch fix committed+pushed). Remaining loose ends, all
-low-priority: flip the published legal-docs Artifact
-(`https://claude.ai/code/artifact/c8af5a8a-f5ad-420c-8dfe-9d260f6d0ea7`) to
-public/shareable before submitting the bot anywhere that verifies those
-URLs; patch `cloud-init.sh`'s useradd/git-clone bug before the next
-from-scratch instance recreation; re-verify `PIKALYTICS_FORMAT_CODE` once
-Pikalytics publishes an M-C ranked ladder.
+**Next step:** Run the `superpowers:writing-plans` skill on
+`docs/superpowers/specs/2026-09-13-retrieval-quality-design.md` (already
+fully reviewed and fixed, carries real measured evidence — no more
+brainstorming needed). Then execute the resulting plan via
+`superpowers:subagent-driven-development` (same pattern used for the local
+LLM migration and eval harness plans this session: isolated worktree,
+per-task implementer + reviewer dispatch, squash to one commit, final
+whole-branch review, merge to `main`). After that, `STATUS.md`'s "Next up
+after that" section lists 4 more design specs ready for the same
+treatment (grounding-trust before observability specifically — the one
+real cross-spec dependency; reliability and ingestion-robustness anytime).
 
-**Open questions / decisions still needed:**
-- Whether to patch the `cloud-init.sh` bug now (low urgency — only matters
-  on the next from-scratch instance recreation) or leave it for later.
+**Open questions / decisions still needed:** None blocking — the path
+forward is unambiguous. The only standing preference to carry forward:
+this session's commit-cadence convention (implementers commit per task on
+an isolated branch, squashed to one commit before merging) and the
+established habit of pushing to origin only when explicitly asked, not
+automatically after every merge.
+
+---
+
+## Prior resume point (2026-09-11, deployment) — historical, fully resolved
+
+**Paused at:** 2026-09-11, deployment essentially complete — just waiting on
+Discord's global slash-command propagation window (up to ~1hr).
+**Why paused:** Nothing left to do but wait for `/ping` to actually appear
+in Discord's slash-command picker. Resolved same day — `/ping` confirmed
+working live in Discord on 2026-09-12 (see `STATUS.md`).
+
+Full detail (Oracle Cloud instance recreation, `torch==2.6.0` pin fix,
+systemd units, Discord invite snags) preserved in git history and in
+memory `pikarag-oracle-deployment`/`pikarag-oracle-networking-gotchas` if
+ever needed again — not reproduced here since it's fully resolved and
+`STATUS.md` is the current source of truth for what's live.
 
 ---
 
