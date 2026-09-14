@@ -5,38 +5,21 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-14, at commit `7532f22` (main). The local LLM
-migration plan (`docs/superpowers/plans/2026-09-13-local-llm-migration.md`,
-Tasks 1-4) is implemented and merged to `main` via subagent-driven
-development in an isolated worktree/branch, then squashed to one commit
-and fast-forward merged locally — nothing pushed to origin yet. `/ask` now
-calls a new `OllamaAnswerer` (`rag/answer.py`) over HTTP to a local Ollama
-server, configured via `LLM_HOST`/`LLM_MODEL` env vars; `HaikuAnswerer`,
-`rag/spend_tracker.py`, and the `anthropic` dependency are deleted
-entirely — **the bot no longer has any paid-API path.** The final
-whole-branch review caught and fixed a real bug the plan/spec had missed:
-`/ask` never deferred its Discord interaction, so under CPU-bound Ollama
-inference (much slower than Haiku) both the normal answer and the
-"offline" degradation message would have blown past Discord's 3-second ack
-window — this is now fixed (`interaction.response.defer()` +
-`followup.send()`, mirroring `/import`'s existing pattern), along with
-restoring the dropped `max_tokens`-equivalent output-length bound
-(`num_predict`), adding failure logging to `OllamaAnswerer`, and fixing
-stale doc cross-references in `deploy/cloud-init.sh` and
-`docs/DEPLOYMENT.md`. All 4 deferred-minor follow-ups from that review
-(commit `c9d6d5e`, 2026-09-14) are also done now: `LLM_TIMEOUT` is env-
-configurable (optional, defaults to 30s, alongside `LLM_HOST`/`LLM_MODEL`);
-`pika-rag-project-plan.md`'s stale Anthropic/section-number references are
-fixed; `docs/DEPLOYMENT.md` wording/ordering polish landed. 264/264 tests
-passing. **Task 5 (installing Tailscale + Ollama on the physical Windows
-laptop, setting `LLM_HOST` on the live Oracle Cloud instance, and
-verifying `/ask` end-to-end) is manual/hands-on-hardware and NOT done** —
-the live deployed bot still runs the old code with `HaikuAnswerer` until
-someone does that setup and deploys this commit. The other 6 design specs
-(eval harness, retrieval quality, grounding/trust, observability,
-reliability, ingestion robustness) still have no implementation plans. The
-Discord button-UI idea is still unexplored.
-<!-- STATUS_COMMIT: c9d6d5e -->
+**Last updated:** 2026-09-14, at commit `782d33f` (main, pushed to origin).
+The local LLM migration (code + deferred-minor follow-ups) is fully merged
+and pushed — see "Local LLM migration" section below for what changed and
+what's still open (Task 5, hardware setup). 264/264 tests passing. Since
+then, this session reviewed and refined the existing
+`2026-09-13-eval-harness-design.md` spec against the current codebase: found
+and fixed a file-path bug (`vgc_items.json` is at `data/source/`, not
+`data/processed/`), filled in an unspecified data source for the
+moveset-membership golden-question category (`data/source/vgc_moves.json`),
+and corrected/addressed a "no network calls" claim about the recall@k CI
+test (it uses the real `SentenceTransformerEmbedder`, unlike every other
+test in the suite — added `actions/cache` for the model download). Spec is
+committed; **awaiting the user's review before moving to an implementation
+plan via `writing-plans`.**
+<!-- STATUS_COMMIT: 782d33f -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
@@ -105,29 +88,27 @@ pulled and Task 5 is completed on the server.
 
 ## Next up (design done, not implemented)
 
-Six more design specs landed 2026-09-13 in `docs/superpowers/specs/` —
+`2026-09-13-eval-harness-design.md` is **up next, spec refined and
+committed this session, awaiting the user's go-ahead to turn it into an
+implementation plan** (see "Last updated" above for what was fixed).
+
+Five more design specs landed 2026-09-13 in `docs/superpowers/specs/` —
 awaiting user review, not yet turned into implementation plans or code:
 
-1. `2026-09-13-eval-harness-design.md` — golden set auto-generated from
-   processed data; recall@k in CI, answer-quality checked manually.
-   Recommended next, now that the local LLM migration (a weaker model)
-   makes answer-quality regression a real risk to catch.
-2. `2026-09-13-retrieval-quality-design.md` — entity-aware retrieval
+1. `2026-09-13-retrieval-quality-design.md` — entity-aware retrieval
    filtering, reusing existing `bot/pokemon_lookup.py` name matching.
-3. `2026-09-13-grounding-trust-design.md` — source attribution + a
+2. `2026-09-13-grounding-trust-design.md` — source attribution + a
    distance-based confidence gate before the LLM is called.
-4. `2026-09-13-observability-design.md` — SQLite log of every `/ask` call +
+3. `2026-09-13-observability-design.md` — SQLite log of every `/ask` call +
    an admin `/debug-last` command.
-5. `2026-09-13-reliability-design.md` — circuit breaker around Ollama calls
+4. `2026-09-13-reliability-design.md` — circuit breaker around Ollama calls
    + an `/llmstatus` health check.
-6. `2026-09-13-ingestion-robustness-design.md` — schema + freshness
+5. `2026-09-13-ingestion-robustness-design.md` — schema + freshness
    validation on pipeline refreshes.
 
-Recommended order: local LLM migration first (it changes the cost/quality
-tradeoff the other six design around), then eval harness (so later changes
-are measurable), then the rest in any order. Also still open: a Discord
-button-UI request (replacing slash commands with clickable message
-components) — raised same session, not yet brainstormed.
+Recommended order after eval harness: the rest in any order. Also still
+open: a Discord button-UI request (replacing slash commands with clickable
+message components) — raised same session, not yet brainstormed.
 
 Everything below is optional follow-up, none of it blocking:
 
