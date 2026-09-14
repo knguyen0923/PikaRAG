@@ -23,21 +23,20 @@ window — this is now fixed (`interaction.response.defer()` +
 restoring the dropped `max_tokens`-equivalent output-length bound
 (`num_predict`), adding failure logging to `OllamaAnswerer`, and fixing
 stale doc cross-references in `deploy/cloud-init.sh` and
-`docs/DEPLOYMENT.md`. 262/262 tests passing. **Task 5 (installing
-Tailscale + Ollama on the physical Windows laptop, setting `LLM_HOST` on
-the live Oracle Cloud instance, and verifying `/ask` end-to-end) is
-manual/hands-on-hardware and NOT done** — the live deployed bot still runs
-the old code with `HaikuAnswerer` until someone does that setup and
-deploys this commit. Deferred, non-blocking polish from the final review
-(not yet done): stale section references in `pika-rag-project-plan.md`;
-`LLM_TIMEOUT` isn't env-configurable (only `LLM_HOST`/`LLM_MODEL` are, per
-the plan's Global Constraints — worth adding given cold-model-load risk
-on 8GB CPU-only hardware); minor `docs/DEPLOYMENT.md` wording/ordering
-polish. The other 6 design specs (eval harness, retrieval quality,
-grounding/trust, observability, reliability, ingestion robustness) still
-have no implementation plans. The Discord button-UI idea is still
-unexplored.
-<!-- STATUS_COMMIT: 7532f22 -->
+`docs/DEPLOYMENT.md`. All 4 deferred-minor follow-ups from that review
+(commit `c9d6d5e`, 2026-09-14) are also done now: `LLM_TIMEOUT` is env-
+configurable (optional, defaults to 30s, alongside `LLM_HOST`/`LLM_MODEL`);
+`pika-rag-project-plan.md`'s stale Anthropic/section-number references are
+fixed; `docs/DEPLOYMENT.md` wording/ordering polish landed. 264/264 tests
+passing. **Task 5 (installing Tailscale + Ollama on the physical Windows
+laptop, setting `LLM_HOST` on the live Oracle Cloud instance, and
+verifying `/ask` end-to-end) is manual/hands-on-hardware and NOT done** —
+the live deployed bot still runs the old code with `HaikuAnswerer` until
+someone does that setup and deploys this commit. The other 6 design specs
+(eval harness, retrieval quality, grounding/trust, observability,
+reliability, ingestion robustness) still have no implementation plans. The
+Discord button-UI idea is still unexplored.
+<!-- STATUS_COMMIT: c9d6d5e -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
