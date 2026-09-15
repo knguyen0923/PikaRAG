@@ -15,6 +15,7 @@ from bot.commands.debug import format_debug_last
 from bot.commands.llmstatus import format_llmstatus
 from bot.commands.moves import moves_response
 from bot.commands.ping import ping_response
+from bot.commands.pokemon_info import PokemonInfoView
 from bot.commands.stats import stats_response
 from bot.commands.team import (
     format_team_block,
@@ -22,6 +23,7 @@ from bot.commands.team import (
     scout_response,
     view_team_response,
 )
+from bot.pokemon_lookup import find_record
 from bot.pokepaste_fetch import PokepasteFetchError, resolve_pokepaste_text
 from bot.team_store import find_team_member, get_team, resolve_calc_overrides
 from rag.answer import OFFLINE_MESSAGE, OllamaAnswerer
@@ -130,12 +132,28 @@ def build_client(
     @tree.command(name="stats", description="Look up a Pokemon's base stats, types, and abilities.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
     async def stats(interaction: discord.Interaction, name: str) -> None:
-        await interaction.response.send_message(embed=_embed("stats", stats_response(records, name, usage=usage)))
+        record = find_record(records, name)
+        response = stats_response(records, name, usage=usage)
+        if record is None:
+            await interaction.response.send_message(embed=_embed("stats", response))
+            return
+        await interaction.response.send_message(
+            embed=_embed("stats", response),
+            view=PokemonInfoView(records, usage, record["name"], interaction.user.id, "Stats"),
+        )
 
     @tree.command(name="moves", description="Look up a Pokemon's legal moveset.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
     async def moves_command(interaction: discord.Interaction, name: str) -> None:
-        await interaction.response.send_message(embed=_embed("moves", moves_response(records, name, usage=usage)))
+        record = find_record(records, name)
+        response = moves_response(records, name, usage=usage)
+        if record is None:
+            await interaction.response.send_message(embed=_embed("moves", response))
+            return
+        await interaction.response.send_message(
+            embed=_embed("moves", response),
+            view=PokemonInfoView(records, usage, record["name"], interaction.user.id, "Moves"),
+        )
 
     @tree.command(name="import", description="Import a full Pokemon team from Pokepaste text or a pokepast.es URL.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)

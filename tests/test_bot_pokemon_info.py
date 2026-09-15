@@ -43,3 +43,72 @@ def test_usage_response_omits_empty_sections():
     assert "Items:" not in response
     assert "Abilities: Snow Warning 98.5%" in response
     assert "Moves:" not in response
+
+
+import asyncio
+from unittest.mock import AsyncMock, MagicMock
+
+from bot.commands.pokemon_info import PokemonInfoView
+
+
+def test_pokemon_info_view_has_three_tabs_in_order():
+    view = PokemonInfoView(_RECORDS, {}, "Abomasnow", user_id=1, active_tab="Stats")
+
+    labels = [child.label for child in view.children]
+
+    assert labels == ["Stats", "Moves", "Usage"]
+
+
+def test_pokemon_info_view_styles_the_active_tab_as_primary():
+    import discord
+
+    view = PokemonInfoView(_RECORDS, {}, "Abomasnow", user_id=1, active_tab="Moves")
+
+    styles = {child.label: child.style for child in view.children}
+
+    assert styles["Moves"] == discord.ButtonStyle.primary
+    assert styles["Stats"] == discord.ButtonStyle.secondary
+    assert styles["Usage"] == discord.ButtonStyle.secondary
+
+
+def test_pokemon_info_view_moves_tab_edits_in_the_moveset():
+    view = PokemonInfoView(_RECORDS, {}, "Abomasnow", user_id=1, active_tab="Stats")
+    moves_button = view.children[1]
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.edit_message = AsyncMock()
+
+    asyncio.run(moves_button.callback(interaction))
+
+    _args, kwargs = interaction.response.edit_message.call_args
+    assert "Blizzard" in kwargs["embed"].description
+    assert isinstance(kwargs["view"], PokemonInfoView)
+    assert kwargs["view"].active_tab == "Moves"
+
+
+def test_pokemon_info_view_usage_tab_edits_in_the_usage_breakdown():
+    usage = {"Abomasnow": {"items": [], "abilities": [], "moves": [{"name": "Blizzard", "usage_pct": 91.2}]}}
+    view = PokemonInfoView(_RECORDS, usage, "Abomasnow", user_id=1, active_tab="Stats")
+    usage_button = view.children[2]
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.edit_message = AsyncMock()
+
+    asyncio.run(usage_button.callback(interaction))
+
+    _args, kwargs = interaction.response.edit_message.call_args
+    assert "Blizzard 91.2%" in kwargs["embed"].description
+    assert kwargs["view"].active_tab == "Usage"
+
+
+def test_pokemon_info_view_interaction_check_rejects_a_different_user():
+    view = PokemonInfoView(_RECORDS, {}, "Abomasnow", user_id=1, active_tab="Stats")
+    interaction = MagicMock()
+    interaction.user.id = 999
+    interaction.response.send_message = AsyncMock()
+
+    allowed = asyncio.run(view.interaction_check(interaction))
+
+    assert allowed is False
+    _args, kwargs = interaction.response.send_message.call_args
+    assert kwargs["ephemeral"] is True
