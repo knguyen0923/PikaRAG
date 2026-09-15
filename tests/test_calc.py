@@ -601,3 +601,176 @@ def test_choice_scarf_boosts_the_speed_stat_directly():
     baseline = _effective_stat(combatant_no_item, "speed")
 
     assert boosted == math.floor(baseline * 1.5)
+
+
+def test_adaptability_boosts_stab_beyond_the_normal_1_5x():
+    move = {"name": "Tackle", "type": "Normal", "category": "Physical", "power": 40, "accuracy": 100, "pp": 35, "effect": None}
+    attacker_normal_stab = _make_combatant(_NEUTRAL_STATS, types=["Normal"])
+    attacker_adaptability = _make_combatant(_NEUTRAL_STATS, types=["Normal"], ability="Adaptability")
+    defender = _make_combatant(_NEUTRAL_STATS, types=["Water"])
+
+    normal_stab = calculate_damage(move, attacker_normal_stab, defender, _BASE_CONTEXT)
+    adaptability = calculate_damage(move, attacker_adaptability, defender, _BASE_CONTEXT)
+
+    assert adaptability.max_damage > normal_stab.max_damage
+
+
+def test_adaptability_does_nothing_without_stab():
+    move = {"name": "Tackle", "type": "Normal", "category": "Physical", "power": 40, "accuracy": 100, "pp": 35, "effect": None}
+    attacker_no_stab = _make_combatant(_NEUTRAL_STATS, types=["Water"])
+    attacker_adaptability_no_stab = _make_combatant(_NEUTRAL_STATS, types=["Water"], ability="Adaptability")
+    defender = _make_combatant(_NEUTRAL_STATS, types=["Grass"])
+
+    no_stab = calculate_damage(move, attacker_no_stab, defender, _BASE_CONTEXT)
+    adaptability = calculate_damage(move, attacker_adaptability_no_stab, defender, _BASE_CONTEXT)
+
+    assert adaptability.max_damage == no_stab.max_damage
+
+
+def test_huge_power_doubles_the_attack_stat():
+    from damage_calc.calc import _effective_stat
+
+    baseline = _effective_stat(_make_combatant(_NEUTRAL_STATS), "attack")
+    boosted = _effective_stat(_make_combatant(_NEUTRAL_STATS, ability="Huge Power"), "attack")
+
+    assert boosted == baseline * 2
+
+
+def test_pure_power_doubles_the_attack_stat():
+    from damage_calc.calc import _effective_stat
+
+    baseline = _effective_stat(_make_combatant(_NEUTRAL_STATS), "attack")
+    boosted = _effective_stat(_make_combatant(_NEUTRAL_STATS, ability="Pure Power"), "attack")
+
+    assert boosted == baseline * 2
+
+
+def test_huge_power_does_not_affect_the_defense_stat():
+    from damage_calc.calc import _effective_stat
+
+    baseline = _effective_stat(_make_combatant(_NEUTRAL_STATS), "defense")
+    with_huge_power = _effective_stat(_make_combatant(_NEUTRAL_STATS, ability="Huge Power"), "defense")
+
+    assert with_huge_power == baseline
+
+
+def test_multiscale_halves_damage_taken_at_full_hp():
+    move = {"name": "Tackle", "type": "Normal", "category": "Physical", "power": 40, "accuracy": 100, "pp": 35, "effect": None}
+    attacker = _make_combatant(_NEUTRAL_STATS, types=["Normal"])
+    defender_no_ability = _make_combatant(_NEUTRAL_STATS, types=["Water"])
+    defender_multiscale = _make_combatant(_NEUTRAL_STATS, types=["Water"], ability="Multiscale")
+
+    baseline = calculate_damage(move, attacker, defender_no_ability, _BASE_CONTEXT)
+    multiscale = calculate_damage(move, attacker, defender_multiscale, _BASE_CONTEXT)
+
+    assert multiscale.max_damage < baseline.max_damage
+
+
+def test_multiscale_does_not_apply_below_full_hp():
+    move = {"name": "Tackle", "type": "Normal", "category": "Physical", "power": 40, "accuracy": 100, "pp": 35, "effect": None}
+    attacker = _make_combatant(_NEUTRAL_STATS, types=["Normal"])
+    defender_no_ability = _make_combatant(_NEUTRAL_STATS, types=["Water"])
+    defender_no_ability["current_hp_fraction"] = 0.5
+    defender_multiscale = _make_combatant(_NEUTRAL_STATS, types=["Water"], ability="Multiscale")
+    defender_multiscale["current_hp_fraction"] = 0.5
+
+    baseline = calculate_damage(move, attacker, defender_no_ability, _BASE_CONTEXT)
+    multiscale = calculate_damage(move, attacker, defender_multiscale, _BASE_CONTEXT)
+
+    assert multiscale.max_damage == baseline.max_damage
+
+
+def test_shadow_shield_behaves_the_same_as_multiscale():
+    move = {"name": "Tackle", "type": "Normal", "category": "Physical", "power": 40, "accuracy": 100, "pp": 35, "effect": None}
+    attacker = _make_combatant(_NEUTRAL_STATS, types=["Normal"])
+    defender_no_ability = _make_combatant(_NEUTRAL_STATS, types=["Water"])
+    defender_shadow_shield = _make_combatant(_NEUTRAL_STATS, types=["Water"], ability="Shadow Shield")
+
+    baseline = calculate_damage(move, attacker, defender_no_ability, _BASE_CONTEXT)
+    shadow_shield = calculate_damage(move, attacker, defender_shadow_shield, _BASE_CONTEXT)
+
+    assert shadow_shield.max_damage < baseline.max_damage
+
+
+def test_filter_reduces_super_effective_damage():
+    move = {"name": "Ice Beam", "type": "Ice", "category": "Special", "power": 90, "accuracy": 100, "pp": 10, "effect": None}
+    attacker = _make_combatant(_NEUTRAL_STATS, types=["Ice"])
+    defender_no_ability = _make_combatant(_NEUTRAL_STATS, types=["Grass"])
+    defender_filter = _make_combatant(_NEUTRAL_STATS, types=["Grass"], ability="Filter")
+
+    baseline = calculate_damage(move, attacker, defender_no_ability, _BASE_CONTEXT)
+    filtered = calculate_damage(move, attacker, defender_filter, _BASE_CONTEXT)
+
+    assert filtered.max_damage < baseline.max_damage
+
+
+def test_filter_does_not_apply_on_neutral_damage():
+    move = {"name": "Tackle", "type": "Normal", "category": "Physical", "power": 40, "accuracy": 100, "pp": 35, "effect": None}
+    attacker = _make_combatant(_NEUTRAL_STATS, types=["Normal"])
+    defender_no_ability = _make_combatant(_NEUTRAL_STATS, types=["Water"])
+    defender_filter = _make_combatant(_NEUTRAL_STATS, types=["Water"], ability="Filter")
+
+    baseline = calculate_damage(move, attacker, defender_no_ability, _BASE_CONTEXT)
+    filtered = calculate_damage(move, attacker, defender_filter, _BASE_CONTEXT)
+
+    assert filtered.max_damage == baseline.max_damage
+
+
+def test_solid_rock_and_prism_armor_behave_the_same_as_filter():
+    move = {"name": "Ice Beam", "type": "Ice", "category": "Special", "power": 90, "accuracy": 100, "pp": 10, "effect": None}
+    attacker = _make_combatant(_NEUTRAL_STATS, types=["Ice"])
+    defender_no_ability = _make_combatant(_NEUTRAL_STATS, types=["Grass"])
+
+    baseline = calculate_damage(move, attacker, defender_no_ability, _BASE_CONTEXT)
+    for ability in ("Solid Rock", "Prism Armor"):
+        defender = _make_combatant(_NEUTRAL_STATS, types=["Grass"], ability=ability)
+        result = calculate_damage(move, attacker, defender, _BASE_CONTEXT)
+        assert result.max_damage < baseline.max_damage
+
+
+def test_thick_fat_halves_fire_and_ice_damage_taken():
+    fire_move = {"name": "Ember", "type": "Fire", "category": "Special", "power": 40, "accuracy": 100, "pp": 25, "effect": None}
+    attacker = _make_combatant(_NEUTRAL_STATS, types=["Fire"])
+    defender_no_ability = _make_combatant(_NEUTRAL_STATS, types=["Normal"])
+    defender_thick_fat = _make_combatant(_NEUTRAL_STATS, types=["Normal"], ability="Thick Fat")
+
+    baseline = calculate_damage(fire_move, attacker, defender_no_ability, _BASE_CONTEXT)
+    thick_fat = calculate_damage(fire_move, attacker, defender_thick_fat, _BASE_CONTEXT)
+
+    assert thick_fat.max_damage < baseline.max_damage
+
+
+def test_thick_fat_does_not_apply_to_other_types():
+    move = {"name": "Tackle", "type": "Normal", "category": "Physical", "power": 40, "accuracy": 100, "pp": 35, "effect": None}
+    attacker = _make_combatant(_NEUTRAL_STATS, types=["Normal"])
+    defender_no_ability = _make_combatant(_NEUTRAL_STATS, types=["Water"])
+    defender_thick_fat = _make_combatant(_NEUTRAL_STATS, types=["Water"], ability="Thick Fat")
+
+    baseline = calculate_damage(move, attacker, defender_no_ability, _BASE_CONTEXT)
+    thick_fat = calculate_damage(move, attacker, defender_thick_fat, _BASE_CONTEXT)
+
+    assert thick_fat.max_damage == baseline.max_damage
+
+
+def test_tinted_lens_doubles_not_very_effective_damage():
+    move = {"name": "Tackle", "type": "Normal", "category": "Physical", "power": 40, "accuracy": 100, "pp": 35, "effect": None}
+    attacker_no_ability = _make_combatant(_NEUTRAL_STATS, types=["Normal"])
+    attacker_tinted_lens = _make_combatant(_NEUTRAL_STATS, types=["Normal"], ability="Tinted Lens")
+    defender = _make_combatant(_NEUTRAL_STATS, types=["Rock"])  # Normal resisted by Rock (0.5x)
+
+    baseline = calculate_damage(move, attacker_no_ability, defender, _BASE_CONTEXT)
+    tinted_lens = calculate_damage(move, attacker_tinted_lens, defender, _BASE_CONTEXT)
+
+    assert tinted_lens.max_damage > baseline.max_damage
+
+
+def test_tinted_lens_does_not_apply_on_neutral_or_super_effective_damage():
+    move = {"name": "Tackle", "type": "Normal", "category": "Physical", "power": 40, "accuracy": 100, "pp": 35, "effect": None}
+    attacker_no_ability = _make_combatant(_NEUTRAL_STATS, types=["Normal"])
+    attacker_tinted_lens = _make_combatant(_NEUTRAL_STATS, types=["Normal"], ability="Tinted Lens")
+    defender = _make_combatant(_NEUTRAL_STATS, types=["Water"])  # neutral
+
+    baseline = calculate_damage(move, attacker_no_ability, defender, _BASE_CONTEXT)
+    tinted_lens = calculate_damage(move, attacker_tinted_lens, defender, _BASE_CONTEXT)
+
+    assert tinted_lens.max_damage == baseline.max_damage

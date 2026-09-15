@@ -87,6 +87,35 @@ _RESIST_BERRY_TYPE = {
     "Babiri Berry": "Steel", "Chilan Berry": "Normal", "Roseli Berry": "Fairy",
 }
 
+# Ability (attacker) -> Attack-stat multiplier, applied in _effective_stat the
+# same way _ITEM_STAT_BOOST already is -- Huge Power and Pure Power are
+# mechanically identical (2x Attack), just different Pokemon-specific names.
+ABILITY_ATTACK_DOUBLE_MULTIPLIER = 2.0
+_ABILITY_STAT_BOOST = {
+    "Huge Power": ("attack", ABILITY_ATTACK_DOUBLE_MULTIPLIER),
+    "Pure Power": ("attack", ABILITY_ATTACK_DOUBLE_MULTIPLIER),
+}
+
+# Ability (attacker) -> replaces the normal 1.5x STAB multiplier when the
+# move's type matches the attacker's own type(s).
+ADAPTABILITY_STAB_MULTIPLIER = 2.0
+
+# Ability (defender) -> halves damage taken while at full HP. Final Modifier
+# group, same numerator-chain stage as screens/items/berries.
+MULTISCALE_NUM = 2048  # 0.5x
+_MULTISCALE_ABILITIES = {"Multiscale", "Shadow Shield"}
+
+# Ability (defender) -> 0.75x damage taken on a super-effective hit.
+FILTER_NUM = 3072  # 0.75x
+_FILTER_ABILITIES = {"Filter", "Solid Rock", "Prism Armor"}
+
+# Ability (defender) -> halves Fire/Ice damage taken.
+THICK_FAT_NUM = 2048  # 0.5x
+_THICK_FAT_TYPES = {"Fire", "Ice"}
+
+# Ability (attacker) -> doubles damage on a not-very-effective hit.
+TINTED_LENS_NUM = 8192  # 2.0x
+
 
 def calculate_stat(base: int, iv: int, ev: int, level: int, nature_modifier: float, stat_name: str) -> int:
     core = math.floor((2 * base + iv + math.floor(ev / 4)) * level / 100)
@@ -128,6 +157,9 @@ def _effective_stat(combatant: dict, stat_name: str) -> int:
         item_stat, item_multiplier = _ITEM_STAT_BOOST.get(combatant.get("item"), (None, None))
         if item_stat == stat_name:
             stat = math.floor(stat * item_multiplier)
+        ability_stat, ability_multiplier = _ABILITY_STAT_BOOST.get(combatant.get("ability"), (None, None))
+        if ability_stat == stat_name:
+            stat = math.floor(stat * ability_multiplier)
     return stat
 
 
@@ -222,7 +254,10 @@ def calculate_damage(move: dict, attacker: dict, defender: dict, context: dict) 
         defense_stat = _effective_stat(defender, "sp_defense")
 
     attacker_types = [attacker["tera_type"]] if attacker["tera_type"] else attacker["record"]["types"]
-    stab = STAB_MULTIPLIER if move["type"] in attacker_types else NO_STAB_MULTIPLIER
+    if move["type"] in attacker_types:
+        stab = ADAPTABILITY_STAB_MULTIPLIER if attacker.get("ability") == "Adaptability" else STAB_MULTIPLIER
+    else:
+        stab = NO_STAB_MULTIPLIER
 
     # A Terastallized defender's defensive typing is REPLACED by its Tera type.
     defender_types = [defender["tera_type"]] if defender["tera_type"] else defender["record"]["types"]
@@ -277,6 +312,15 @@ def calculate_damage(move: dict, attacker: dict, defender: dict, context: dict) 
     resist_berry_type = _RESIST_BERRY_TYPE.get(defender.get("item"))
     if resist_berry_type == move["type"] and (type_effectiveness > 1 or resist_berry_type == "Normal"):
         final_numerators.append(RESIST_BERRY_NUM)
+
+    if defender.get("ability") in _MULTISCALE_ABILITIES and defender.get("current_hp_fraction") == 1.0:
+        final_numerators.append(MULTISCALE_NUM)
+    if defender.get("ability") in _FILTER_ABILITIES and type_effectiveness > 1:
+        final_numerators.append(FILTER_NUM)
+    if defender.get("ability") == "Thick Fat" and move["type"] in _THICK_FAT_TYPES:
+        final_numerators.append(THICK_FAT_NUM)
+    if attacker.get("ability") == "Tinted Lens" and 0 < type_effectiveness < 1:
+        final_numerators.append(TINTED_LENS_NUM)
 
     final_modifier_numerator = _chain_numerators(final_numerators)
 
