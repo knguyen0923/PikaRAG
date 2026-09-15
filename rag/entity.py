@@ -1,3 +1,4 @@
+import difflib
 import re
 from typing import Optional
 
@@ -7,6 +8,7 @@ _BRACKET_SUFFIX = re.compile(r"\s*\[([^\]]+)\]$")
 _MEGA_PREFIX = "Mega "
 _MAX_BASE_NGRAM_WORDS = 2
 _MIN_FUZZY_WORD_LEN = 4
+_FUZZY_RATIO_THRESHOLD = 0.75
 
 
 def _species_key(name: str) -> str:
@@ -60,12 +62,15 @@ def _find_species(question: str, bases: list) -> Optional[dict]:
         record = find_record(bases, ngram)
         if record:
             return record
-    words = sorted(set(re.findall(r"[A-Za-z0-9]+", question)), key=len, reverse=True)
+    words = sorted(dict.fromkeys(re.findall(r"[A-Za-z0-9]+", question)), key=lambda w: (-len(w), w))
     for word in words:
         if len(word) < _MIN_FUZZY_WORD_LEN:
             continue
         suggestions = suggest_names(bases, word, n=1)
-        if suggestions:
+        if not suggestions:
+            continue
+        ratio = difflib.SequenceMatcher(None, word.lower(), suggestions[0].lower()).ratio()
+        if ratio >= _FUZZY_RATIO_THRESHOLD:
             return find_record(bases, suggestions[0])
     return None
 

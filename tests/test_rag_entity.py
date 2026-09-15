@@ -10,6 +10,8 @@ _RECORDS = [
     {"name": "Arcanine [Hisuian Form]"},
     {"name": "Gyarados"},
     {"name": "Garchomp"},
+    {"name": "Kommo-o"},
+    {"name": "Kleavor"},
 ]
 
 _ITEMS = [
@@ -64,3 +66,27 @@ def test_detect_entity_falls_back_to_unfiltered_on_genuine_variant_ambiguity():
     entity = detect_entity("What is Mega Absol's Speed stat?", _RECORDS, _ITEMS)
 
     assert entity is None
+
+
+def test_detect_entity_rejects_generic_words_that_score_below_ratio_threshold():
+    """Regression test: generic word "learn" should not fuzzy-match to Kleavor.
+    The word "learn" appears in Pokemon questions like "Does Kommo-o learn Close Combat?"
+    but should not be accepted as a fuzzy match candidate."""
+    entity = detect_entity("Does Kommo-o learn Close Combat?", _RECORDS, _ITEMS)
+
+    assert entity == {"field": "pokemon", "name": "Kommo-o"}
+
+
+def test_detect_entity_fuzzy_matching_is_deterministic():
+    """Regression test: fuzzy matching must be deterministic.
+    Running the same question multiple times should always return the same entity,
+    not vary between runs due to set iteration order randomization."""
+    question = "Does Kommo-o learn Close Combat?"
+
+    # Run multiple times to ensure deterministic behavior
+    results = [detect_entity(question, _RECORDS, _ITEMS) for _ in range(5)]
+
+    # All results should be identical and correct
+    expected = {"field": "pokemon", "name": "Kommo-o"}
+    for result in results:
+        assert result == expected
