@@ -1,23 +1,6 @@
 import discord
 
 
-class _SelectWithSettableValues(discord.ui.Select):
-    """Helper select that allows setting values for testing."""
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self._test_values = None
-
-    @property
-    def values(self):
-        if self._test_values is not None:
-            return self._test_values
-        return self._values
-
-    @values.setter
-    def values(self, val):
-        self._test_values = val
-
-
 class NameSuggestionView(discord.ui.View):
     """Shared 'did you mean...?' dropdown, offered wherever a name lookup
     misses but bot.pokemon_lookup.suggest_names has close matches. on_select
@@ -31,7 +14,7 @@ class NameSuggestionView(discord.ui.View):
         self.user_id = user_id
         self._on_select = on_select
         options = [discord.SelectOption(label=name) for name in suggestions[:25]]
-        select = _SelectWithSettableValues(placeholder="Did you mean...", options=options)
+        select = discord.ui.Select(placeholder="Did you mean...", options=options)
         select.callback = self._make_callback(select)
         self.add_item(select)
 

@@ -23,7 +23,7 @@ def test_picking_a_suggestion_calls_on_select_with_the_chosen_name():
     on_select = AsyncMock()
     view = NameSuggestionView(user_id=1, suggestions=["Abomasnow", "Absol"], on_select=on_select)
     select = view.children[0]
-    select.values = ["Absol"]  # simulates Discord populating .values on submit
+    select._values = ["Absol"]  # simulates Discord populating .values on submit
     interaction = MagicMock()
     interaction.user.id = 1
 
