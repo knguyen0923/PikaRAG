@@ -116,6 +116,36 @@ _THICK_FAT_TYPES = {"Fire", "Ice"}
 # Ability (attacker) -> doubles damage on a not-very-effective hit.
 TINTED_LENS_NUM = 8192  # 2.0x
 
+# Every ability this calculator actually models (the union of all the
+# ability-keyed maps/sets above). bot/commands/calc.py uses this to warn
+# when a resolved attacker_ability/defender_ability is real but silently
+# ignored -- see the "(ability '...' is not modeled)" note in calc_response.
+_IMPLEMENTED_ABILITIES = frozenset(
+    set(_ABILITY_STAT_BOOST)
+    | {"Adaptability"}
+    | _MULTISCALE_ABILITIES
+    | _FILTER_ABILITIES
+    | {"Thick Fat"}
+    | {"Tinted Lens"}
+)
+
+
+def _canonicalize_ability(ability, known_abilities=_IMPLEMENTED_ABILITIES):
+    """Case-fold `ability` to its canonical spelling if it matches one of
+    `known_abilities` case-insensitively; otherwise return it unchanged.
+
+    This lets an ability supplied in any case (e.g. "multiscale") apply
+    exactly as if typed with correct casing, without adding any validation
+    or suggestion UX for unrecognized/typo'd abilities -- unmatched strings
+    pass through untouched, same as `item` does when no items list is given.
+    """
+    if not ability:
+        return ability
+    for known in known_abilities:
+        if ability.casefold() == known.casefold():
+            return known
+    return ability
+
 
 def calculate_stat(base: int, iv: int, ev: int, level: int, nature_modifier: float, stat_name: str) -> int:
     core = math.floor((2 * base + iv + math.floor(ev / 4)) * level / 100)
@@ -154,12 +184,16 @@ def _effective_stat(combatant: dict, stat_name: str) -> int:
     if stat_name != "hp":
         stage = combatant["stat_stages"].get(stat_name, 0)
         stat = math.floor(stat * get_stage_multiplier(stage))
+        # Ability boosts apply before item boosts (e.g. Huge Power then
+        # Choice Band) -- the games compute the stat this way, and the
+        # order affects the final floored value whenever both apply.
+        ability = _canonicalize_ability(combatant.get("ability"))
+        ability_stat, ability_multiplier = _ABILITY_STAT_BOOST.get(ability, (None, None))
+        if ability_stat == stat_name:
+            stat = math.floor(stat * ability_multiplier)
         item_stat, item_multiplier = _ITEM_STAT_BOOST.get(combatant.get("item"), (None, None))
         if item_stat == stat_name:
             stat = math.floor(stat * item_multiplier)
-        ability_stat, ability_multiplier = _ABILITY_STAT_BOOST.get(combatant.get("ability"), (None, None))
-        if ability_stat == stat_name:
-            stat = math.floor(stat * ability_multiplier)
     return stat
 
 
@@ -231,6 +265,10 @@ def calculate_damage(move: dict, attacker: dict, defender: dict, context: dict) 
     level = attacker["level"]
     power = move["power"]
     attacker_item = attacker.get("item")
+    # Case-fold ability names once so a correctly-spelled ability supplied in
+    # any case (e.g. "multiscale") matches the same as its canonical spelling.
+    attacker_ability = _canonicalize_ability(attacker.get("ability"))
+    defender_ability = _canonicalize_ability(defender.get("ability"))
 
     terrain = context.get("terrain")
     terrain_applies = bool(terrain) and _TERRAIN_TYPE_MAP.get(terrain) == move["type"]
@@ -255,7 +293,7 @@ def calculate_damage(move: dict, attacker: dict, defender: dict, context: dict) 
 
     attacker_types = [attacker["tera_type"]] if attacker["tera_type"] else attacker["record"]["types"]
     if move["type"] in attacker_types:
-        stab = ADAPTABILITY_STAB_MULTIPLIER if attacker.get("ability") == "Adaptability" else STAB_MULTIPLIER
+        stab = ADAPTABILITY_STAB_MULTIPLIER if attacker_ability == "Adaptability" else STAB_MULTIPLIER
     else:
         stab = NO_STAB_MULTIPLIER
 
@@ -313,13 +351,13 @@ def calculate_damage(move: dict, attacker: dict, defender: dict, context: dict) 
     if resist_berry_type == move["type"] and (type_effectiveness > 1 or resist_berry_type == "Normal"):
         final_numerators.append(RESIST_BERRY_NUM)
 
-    if defender.get("ability") in _MULTISCALE_ABILITIES and defender.get("current_hp_fraction") == 1.0:
+    if defender_ability in _MULTISCALE_ABILITIES and defender.get("current_hp_fraction") == 1.0:
         final_numerators.append(MULTISCALE_NUM)
-    if defender.get("ability") in _FILTER_ABILITIES and type_effectiveness > 1:
+    if defender_ability in _FILTER_ABILITIES and type_effectiveness > 1:
         final_numerators.append(FILTER_NUM)
-    if defender.get("ability") == "Thick Fat" and move["type"] in _THICK_FAT_TYPES:
+    if defender_ability == "Thick Fat" and move["type"] in _THICK_FAT_TYPES:
         final_numerators.append(THICK_FAT_NUM)
-    if attacker.get("ability") == "Tinted Lens" and 0 < type_effectiveness < 1:
+    if attacker_ability == "Tinted Lens" and 0 < type_effectiveness < 1:
         final_numerators.append(TINTED_LENS_NUM)
 
     final_modifier_numerator = _chain_numerators(final_numerators)

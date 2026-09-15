@@ -654,6 +654,54 @@ def test_huge_power_does_not_affect_the_defense_stat():
     assert with_huge_power == baseline
 
 
+def test_ability_matching_is_case_insensitive_for_a_stat_boost():
+    from damage_calc.calc import _effective_stat
+
+    baseline = _effective_stat(_make_combatant(_NEUTRAL_STATS), "attack")
+    boosted = _effective_stat(_make_combatant(_NEUTRAL_STATS, ability="huge power"), "attack")
+
+    assert boosted == baseline * 2
+
+
+def test_ability_matching_is_case_insensitive_for_adaptability_stab():
+    move = {"name": "Tackle", "type": "Normal", "category": "Physical", "power": 40, "accuracy": 100, "pp": 35, "effect": None}
+    attacker_normal_stab = _make_combatant(_NEUTRAL_STATS, types=["Normal"])
+    attacker_adaptability = _make_combatant(_NEUTRAL_STATS, types=["Normal"], ability="ADAPTABILITY")
+    defender = _make_combatant(_NEUTRAL_STATS, types=["Water"])
+
+    normal_stab = calculate_damage(move, attacker_normal_stab, defender, _BASE_CONTEXT)
+    adaptability = calculate_damage(move, attacker_adaptability, defender, _BASE_CONTEXT)
+
+    assert adaptability.max_damage > normal_stab.max_damage
+
+
+def test_ability_matching_is_case_insensitive_for_a_defender_final_modifier():
+    move = {"name": "Tackle", "type": "Normal", "category": "Physical", "power": 40, "accuracy": 100, "pp": 35, "effect": None}
+    attacker = _make_combatant(_NEUTRAL_STATS, types=["Normal"])
+    defender_no_ability = _make_combatant(_NEUTRAL_STATS, types=["Water"])
+    defender_multiscale = _make_combatant(_NEUTRAL_STATS, types=["Water"], ability="MULTISCALE")
+
+    baseline = calculate_damage(move, attacker, defender_no_ability, _BASE_CONTEXT)
+    multiscale = calculate_damage(move, attacker, defender_multiscale, _BASE_CONTEXT)
+
+    assert multiscale.max_damage < baseline.max_damage
+
+
+def test_ability_boost_is_applied_before_item_boost():
+    # Real games apply ability boosts (Huge Power, 2x) before item boosts
+    # (Choice Band, 1.5x) -- a real VGC set, Azumarill with Huge Power +
+    # Choice Band, at base Attack 101/31 IV/0 EV/level 50/neutral nature the
+    # pre-boost Attack stat is 121, and the two orders round differently:
+    #   ability-then-item (correct): floor(floor(121 * 2) * 1.5) = floor(242 * 1.5) = 363
+    #   item-then-ability (wrong):   floor(floor(121 * 1.5) * 2) = floor(181.5) * 2 = 181 * 2 = 362
+    from damage_calc.calc import _effective_stat
+
+    stats = {"hp": 100, "attack": 101, "defense": 100, "sp_attack": 100, "sp_defense": 100, "speed": 100}
+    combatant = _make_combatant(stats, ability="Huge Power", item="Choice Band")
+
+    assert _effective_stat(combatant, "attack") == 363
+
+
 def test_multiscale_halves_damage_taken_at_full_hp():
     move = {"name": "Tackle", "type": "Normal", "category": "Physical", "power": 40, "accuracy": 100, "pp": 35, "effect": None}
     attacker = _make_combatant(_NEUTRAL_STATS, types=["Normal"])

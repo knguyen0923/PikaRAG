@@ -1,7 +1,7 @@
 from typing import Optional
 
 from bot.pokemon_lookup import find_record, not_found_message
-from damage_calc.calc import calculate_damage
+from damage_calc.calc import _IMPLEMENTED_ABILITIES, calculate_damage
 from damage_calc.data.natures import get_nature_modifiers
 from damage_calc.data.type_chart import ALL_TYPES
 
@@ -162,8 +162,24 @@ def calc_response(
     result = calculate_damage(move, attacker, defender, context)
 
     ko_note = " (KO chance)" if result.is_ko_chance else ""
-    return (
+    response = (
         f"{attacker_record['name']}'s {move['name']} vs {defender_record['name']}: "
         f"{result.min_damage}-{result.max_damage} damage "
         f"({result.min_percent}%-{result.max_percent}%){ko_note}."
     )
+
+    # Flag when a real, correctly-spelled ability was passed in but isn't one
+    # of the ~10 abilities this calculator actually models -- otherwise the
+    # damage above silently ignores it (e.g. Levitate vs. Ground moves) with
+    # no indication that happened. Case-insensitive, matching the case-fold
+    # damage_calc itself applies to recognized abilities.
+    for unmodeled_ability in _unmodeled_abilities(attacker_ability, defender_ability):
+        response += f" (ability '{unmodeled_ability}' is not modeled)"
+
+    return response
+
+
+def _unmodeled_abilities(*abilities: Optional[str]) -> list:
+    """Abilities from `abilities` that are set but not in _IMPLEMENTED_ABILITIES."""
+    known = {name.casefold() for name in _IMPLEMENTED_ABILITIES}
+    return [ability for ability in abilities if ability and ability.casefold() not in known]
