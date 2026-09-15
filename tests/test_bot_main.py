@@ -276,8 +276,14 @@ def test_ask_command_includes_stored_team_context():
             return "an answer"
 
     class _FakeIndex:
-        def query(self, question, n_results=5):
-            return []
+        def query(self, question, n_results=5, where=None):
+            return [
+                {
+                    "text": "Some chunk",
+                    "metadata": {"pokemon": "Whatever", "chunk_type": "stats"},
+                    "distance": 0.3,
+                }
+            ]
 
     _client, tree = build_client(index=_FakeIndex(), answerer=_FakeAnswerer())
     ask_command = tree.get_command("ask")
@@ -299,7 +305,7 @@ def test_ask_command_narrows_retrieval_when_a_known_pokemon_is_named():
 
         def query(self, question, n_results=5, where=None):
             self.queries.append(where)
-            return [{"text": "context from narrowed query", "metadata": {}}]
+            return [{"text": "context from narrowed query", "metadata": {"chunk_type": "stats"}, "distance": 0.3}]
 
     class _FakeAnswerer:
         def answer(self, question, context_block):
@@ -528,3 +534,32 @@ def test_build_answerer_defaults_timeout_when_unset(monkeypatch):
     _build_answerer().answer("question", "context")
 
     assert calls[0]["timeout"] == 30.0
+
+
+def test_ask_command_embed_includes_a_sources_line():
+    class _FakeIndex:
+        def query(self, question, n_results=5, where=None):
+            return [
+                {
+                    "text": "Landorus-Therian stats chunk",
+                    "metadata": {"pokemon": "Landorus-Therian", "chunk_type": "stats"},
+                    "distance": 0.3,
+                }
+            ]
+
+    class _FakeAnswerer:
+        def answer(self, question, context_block):
+            return "Landorus-Therian has base 91 Speed."
+
+    _client, tree = build_client(index=_FakeIndex(), answerer=_FakeAnswerer())
+    ask_command = tree.get_command("ask")
+    interaction = MagicMock()
+    interaction.user.id = 9100
+    interaction.response.defer = AsyncMock()
+    interaction.followup.send = AsyncMock()
+
+    asyncio.run(ask_command.callback(interaction, question="How fast is Landorus-Therian?"))
+
+    sent_text = _extract_text(interaction.followup.send)
+    assert "Landorus-Therian has base 91 Speed." in sent_text
+    assert "Sources: Landorus-Therian (stats)" in sent_text
