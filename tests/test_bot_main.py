@@ -462,6 +462,93 @@ def test_moves_command_uses_usage_data_when_provided():
     assert "top moves" in sent_text.lower()
 
 
+def test_stats_command_shows_a_suggestion_view_on_a_close_miss():
+    records = [{
+        "name": "Abomasnow", "types": ["Grass", "Ice"],
+        "base_stats": {"hp": 90, "attack": 92, "defense": 75, "sp_attack": 92, "sp_defense": 85, "speed": 60},
+        "abilities": ["Snow Warning"], "learnset": ["Blizzard"], "legal_in": ["M-B"],
+    }]
+    _client, tree = build_client(records=records)
+    stats_cmd = tree.get_command("stats")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(stats_cmd.callback(interaction, name="Abomasno"))
+
+    from bot.ui import NameSuggestionView
+
+    _args, kwargs = interaction.response.send_message.call_args
+    assert isinstance(kwargs["view"], NameSuggestionView)
+
+
+def test_stats_command_picking_a_suggestion_edits_in_the_real_stats():
+    records = [{
+        "name": "Abomasnow", "types": ["Grass", "Ice"],
+        "base_stats": {"hp": 90, "attack": 92, "defense": 75, "sp_attack": 92, "sp_defense": 85, "speed": 60},
+        "abilities": ["Snow Warning"], "learnset": ["Blizzard"], "legal_in": ["M-B"],
+    }]
+    _client, tree = build_client(records=records)
+    stats_cmd = tree.get_command("stats")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(stats_cmd.callback(interaction, name="Abomasno"))
+
+    _args, kwargs = interaction.response.send_message.call_args
+    view = kwargs["view"]
+    select = view.children[0]
+    select._values = ["Abomasnow"]  # simulates Discord populating .values on submit
+    pick_interaction = MagicMock()
+    pick_interaction.user.id = 1
+    pick_interaction.response.edit_message = AsyncMock()
+
+    asyncio.run(select.callback(pick_interaction))
+
+    _args, edit_kwargs = pick_interaction.response.edit_message.call_args
+    assert "Abomasnow" in edit_kwargs["embed"].description
+    assert "HP 90" in edit_kwargs["embed"].description
+
+
+def test_stats_command_shows_no_view_when_there_are_no_close_matches():
+    records = [{
+        "name": "Abomasnow", "types": ["Grass", "Ice"],
+        "base_stats": {"hp": 90, "attack": 92, "defense": 75, "sp_attack": 92, "sp_defense": 85, "speed": 60},
+        "abilities": ["Snow Warning"], "learnset": ["Blizzard"], "legal_in": ["M-B"],
+    }]
+    _client, tree = build_client(records=records)
+    stats_cmd = tree.get_command("stats")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(stats_cmd.callback(interaction, name="Zzzznotarealpokemon"))
+
+    _args, kwargs = interaction.response.send_message.call_args
+    assert kwargs.get("view") is None
+
+
+def test_moves_command_shows_a_suggestion_view_on_a_close_miss():
+    records = [{
+        "name": "Abomasnow", "types": ["Grass", "Ice"],
+        "base_stats": {"hp": 90, "attack": 92, "defense": 75, "sp_attack": 92, "sp_defense": 85, "speed": 60},
+        "abilities": ["Snow Warning"], "learnset": ["Blizzard"], "legal_in": ["M-B"],
+    }]
+    _client, tree = build_client(records=records)
+    moves_cmd = tree.get_command("moves")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(moves_cmd.callback(interaction, name="Abomasno"))
+
+    from bot.ui import NameSuggestionView
+
+    _args, kwargs = interaction.response.send_message.call_args
+    assert isinstance(kwargs["view"], NameSuggestionView)
+
+
 def test_tree_error_handler_gives_an_ephemeral_permission_message_on_check_failure():
     from discord import app_commands
 

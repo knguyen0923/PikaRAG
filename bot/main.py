@@ -22,8 +22,10 @@ from bot.commands.team import (
     scout_response,
     view_team_response,
 )
+from bot.pokemon_lookup import find_record, not_found_message, suggest_names
 from bot.pokepaste_fetch import PokepasteFetchError, resolve_pokepaste_text
 from bot.team_store import find_team_member, get_team, resolve_calc_overrides
+from bot.ui import NameSuggestionView
 from rag.answer import OFFLINE_MESSAGE, OllamaAnswerer
 from rag.circuit_breaker import CircuitBreaker
 from rag.embed import SentenceTransformerEmbedder
@@ -130,11 +132,37 @@ def build_client(
     @tree.command(name="stats", description="Look up a Pokemon's base stats, types, and abilities.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
     async def stats(interaction: discord.Interaction, name: str) -> None:
+        if find_record(records, name) is None:
+            suggestions = suggest_names(records, name)
+            if suggestions:
+                async def _on_select(inner_interaction: discord.Interaction, chosen: str) -> None:
+                    await inner_interaction.response.edit_message(
+                        embed=_embed("stats", stats_response(records, chosen, usage=usage)), view=None
+                    )
+
+                await interaction.response.send_message(
+                    embed=_embed("stats", not_found_message(records, name)),
+                    view=NameSuggestionView(interaction.user.id, suggestions, _on_select),
+                )
+                return
         await interaction.response.send_message(embed=_embed("stats", stats_response(records, name, usage=usage)))
 
     @tree.command(name="moves", description="Look up a Pokemon's legal moveset.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
     async def moves_command(interaction: discord.Interaction, name: str) -> None:
+        if find_record(records, name) is None:
+            suggestions = suggest_names(records, name)
+            if suggestions:
+                async def _on_select(inner_interaction: discord.Interaction, chosen: str) -> None:
+                    await inner_interaction.response.edit_message(
+                        embed=_embed("moves", moves_response(records, chosen, usage=usage)), view=None
+                    )
+
+                await interaction.response.send_message(
+                    embed=_embed("moves", not_found_message(records, name)),
+                    view=NameSuggestionView(interaction.user.id, suggestions, _on_select),
+                )
+                return
         await interaction.response.send_message(embed=_embed("moves", moves_response(records, name, usage=usage)))
 
     @tree.command(name="import", description="Import a full Pokemon team from Pokepaste text or a pokepast.es URL.")
