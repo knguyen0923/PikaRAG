@@ -10,6 +10,8 @@ _MAX_BASE_NGRAM_WORDS = 2
 _MIN_FUZZY_WORD_LEN = 4
 _FUZZY_RATIO_THRESHOLD = 0.75
 
+_AMBIGUOUS = object()  # sentinel: genuinely ambiguous -- distinct from "not found" (None)
+
 
 def _species_key(name: str) -> str:
     """Canonical species/item name a form-variant's full record name
@@ -53,15 +55,19 @@ def _base_records(candidates: list) -> list:
     return [c for c in candidates if _qualifier_word(c["name"]) is None]
 
 
-def _find_species(question: str, bases: list) -> Optional[dict]:
-    """Resolve which known species/item family the question is about.
-    Exact match first (reusing find_record as-is), falling back to
-    fuzzy/typo matching (reusing suggest_names as-is) when nothing matches
-    exactly."""
+def _exact_species(question: str, bases: list) -> Optional[dict]:
+    """Exact match only (reusing find_record as-is)."""
     for ngram in _question_ngrams(question, _MAX_BASE_NGRAM_WORDS):
         record = find_record(bases, ngram)
         if record:
             return record
+    return None
+
+
+def _fuzzy_species(question: str, bases: list) -> Optional[dict]:
+    """Fuzzy/typo match only (reusing suggest_names as-is, gated by a
+    stricter similarity ratio so generic English words in the question
+    can't spuriously match an unrelated name)."""
     words = sorted(dict.fromkeys(re.findall(r"[A-Za-z0-9]+", question)), key=lambda w: (-len(w), w))
     for word in words:
         if len(word) < _MIN_FUZZY_WORD_LEN:
@@ -75,28 +81,42 @@ def _find_species(question: str, bases: list) -> Optional[dict]:
     return None
 
 
-def _resolve_variant(question_lower: str, base: dict, candidates: list) -> Optional[dict]:
+def _resolve_variant(question_lower: str, base: dict, candidates: list):
     """Given the recognized base species/item, pick the specific
     Mega/regional-form variant the question means, fall back to the base
-    when no variant is specifically named, or signal genuine ambiguity
-    (None) when more than one variant's qualifying word is present."""
+    when no variant is specifically named, or return _AMBIGUOUS when more
+    than one variant's qualifying word is present -- or when a same-key
+    sibling has no qualifier of its own to disambiguate by (e.g. two
+    item names that collide on _species_key by accident, not because
+    either is actually a Mega/bracket variant of the other)."""
     key = _species_key(base["name"])
     variants = [c for c in candidates if c is not base and _species_key(c["name"]) == key]
     if not variants:
         return base
-    qualified = [v for v in variants if _word_present(question_lower, _qualifier_word(v["name"]))]
+    qualified = []
+    for v in variants:
+        qualifier = _qualifier_word(v["name"])
+        if qualifier is None:
+            # A same-key sibling with no qualifier of its own can't be
+            # told apart from the recognized base -- genuinely ambiguous.
+            return _AMBIGUOUS
+        if _word_present(question_lower, qualifier):
+            qualified.append(v)
     if not qualified:
         return base
     if len(qualified) == 1:
         return qualified[0]
-    return None
+    return _AMBIGUOUS
 
 
-def _resolve(question: str, candidates: list) -> Optional[dict]:
+def _resolve(question: str, candidates: list, finder) -> Optional[dict]:
+    """Resolve `candidates` (one vocabulary: records or items) against a
+    single matching strategy (`finder` is `_exact_species` or
+    `_fuzzy_species`). Returns the resolved record, `_AMBIGUOUS`, or None."""
     if not candidates:
         return None
     bases = _base_records(candidates)
-    base = _find_species(question, bases)
+    base = finder(question, bases)
     if base is None:
         return None
     return _resolve_variant(question.lower(), base, candidates)
@@ -105,15 +125,30 @@ def _resolve(question: str, candidates: list) -> Optional[dict]:
 def detect_entity(question: str, records: list, items: list) -> Optional[dict]:
     """Detect a known Pokemon or item name mentioned in a free-text question.
 
-    Returns {"field": "pokemon", "name": <canonical name>} or
+    Tries an exact match across BOTH vocabularies before trying a fuzzy/typo
+    match against either -- an exact item match must never be shadowed by a
+    looser fuzzy Pokemon match, or vice versa. Returns
+    {"field": "pokemon", "name": <canonical name>} or
     {"field": "item", "name": <canonical name>}, or None when nothing is
     recognized, or recognition is genuinely ambiguous between two
-    form-variants (see the retrieval-quality design's tie-breaking rules).
+    form-variants (see the retrieval-quality design's tie-breaking rules) --
+    ambiguity short-circuits to None immediately rather than falling through
+    to try the other vocabulary.
     """
-    pokemon_match = _resolve(question, records or [])
-    if pokemon_match:
-        return {"field": "pokemon", "name": pokemon_match["name"]}
-    item_match = _resolve(question, items or [])
-    if item_match:
-        return {"field": "item", "name": item_match["name"]}
+    records = records or []
+    items = items or []
+
+    for finder in (_exact_species, _fuzzy_species):
+        pokemon_match = _resolve(question, records, finder)
+        if pokemon_match is _AMBIGUOUS:
+            return None
+        if pokemon_match is not None:
+            return {"field": "pokemon", "name": pokemon_match["name"]}
+
+        item_match = _resolve(question, items, finder)
+        if item_match is _AMBIGUOUS:
+            return None
+        if item_match is not None:
+            return {"field": "item", "name": item_match["name"]}
+
     return None

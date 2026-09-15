@@ -1,3 +1,7 @@
+import os
+import subprocess
+import sys
+
 from rag.entity import detect_entity
 
 _RECORDS = [
@@ -77,16 +81,73 @@ def test_detect_entity_rejects_generic_words_that_score_below_ratio_threshold():
     assert entity == {"field": "pokemon", "name": "Kommo-o"}
 
 
-def test_detect_entity_fuzzy_matching_is_deterministic():
-    """Regression test: fuzzy matching must be deterministic.
-    Running the same question multiple times should always return the same entity,
-    not vary between runs due to set iteration order randomization."""
-    question = "Does Kommo-o learn Close Combat?"
+def test_detect_entity_fuzzy_matching_is_deterministic_across_hash_seeds():
+    """Regression test: fuzzy matching must be deterministic regardless of
+    Python's hash randomization. A same-process repeat loop doesn't prove
+    this (hash seed is fixed within one process) -- this runs the same
+    call in fresh subprocesses under different explicit PYTHONHASHSEED
+    values and confirms the result never changes."""
+    script = (
+        "from rag.entity import detect_entity\n"
+        "records = [{'name': 'Kommo-o'}, {'name': 'Kleavor'}]\n"
+        "print(detect_entity('Does Kommo-o learn Close Combat?', records, []))\n"
+    )
+    outputs = set()
+    for seed in ("0", "1", "42"):
+        env = dict(os.environ, PYTHONHASHSEED=seed)
+        result = subprocess.run(
+            [sys.executable, "-c", script], capture_output=True, text=True, env=env, check=True
+        )
+        outputs.add(result.stdout.strip())
+    assert outputs == {"{'field': 'pokemon', 'name': 'Kommo-o'}"}, (
+        f"detect_entity result varies across PYTHONHASHSEED values: {outputs}"
+    )
 
-    # Run multiple times to ensure deterministic behavior
-    results = [detect_entity(question, _RECORDS, _ITEMS) for _ in range(5)]
 
-    # All results should be identical and correct
-    expected = {"field": "pokemon", "name": "Kommo-o"}
-    for result in results:
-        assert result == expected
+def test_detect_entity_ambiguous_pokemon_does_not_leak_to_item_vocabulary():
+    """Regression test for a real bug: an ambiguous Pokemon match (Mega Absol
+    vs Mega Absol Z) must return None, not fall through and get bound to an
+    unrelated item just because the item vocabulary happens to have
+    something fuzzy-close to "Absol" (its own Mega Stone, "Absolite")."""
+    items_with_mega_stone = _ITEMS + [{"name": "Absolite"}]
+
+    entity = detect_entity("What is Mega Absol's Speed stat?", _RECORDS, items_with_mega_stone)
+
+    assert entity is None
+
+
+def test_detect_entity_does_not_crash_on_a_same_key_sibling_with_no_qualifier():
+    """Regression test for a real crash: two item names that collide on
+    _species_key (e.g. both end in a lone capital letter) but are NOT
+    actually Mega/bracket variants of each other must not raise -- they're
+    genuinely ambiguous, not a crash."""
+    records_with_charizard_family = _RECORDS + [
+        {"name": "Charizard"},
+        {"name": "Mega Charizard X"},
+        {"name": "Mega Charizard Y"},
+    ]
+    items_with_charizardite_family = _ITEMS + [
+        {"name": "Charizardite X"},
+        {"name": "Charizardite Y"},
+    ]
+
+    entity = detect_entity(
+        "What are Mega Charizard's base stats?",
+        records_with_charizard_family,
+        items_with_charizardite_family,
+    )
+
+    assert entity is None
+
+
+def test_detect_entity_exact_item_match_is_not_shadowed_by_fuzzy_pokemon_match():
+    """Regression test for a real recall regression: an exact item match
+    (e.g. "Chandelurite") must not be shadowed by a looser fuzzy Pokemon
+    match (e.g. "Chandelure") found by iterating the Pokemon vocabulary's
+    fuzzy stage before the item vocabulary is ever tried."""
+    records_with_chandelure = _RECORDS + [{"name": "Chandelure"}]
+    items_with_chandelurite = _ITEMS + [{"name": "Chandelurite"}]
+
+    entity = detect_entity("What does Chandelurite do?", records_with_chandelure, items_with_chandelurite)
+
+    assert entity == {"field": "item", "name": "Chandelurite"}
