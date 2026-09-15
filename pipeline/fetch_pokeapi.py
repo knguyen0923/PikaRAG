@@ -108,6 +108,7 @@ import requests
 
 POKEAPI_BASE_URL = "https://pokeapi.co/api/v2/pokemon"
 POKEAPI_SPECIES_URL = "https://pokeapi.co/api/v2/pokemon-species"
+POKEAPI_REQUEST_TIMEOUT = (5, 10)  # (connect, read) seconds -- matches fetch_pikalytics.py's established pattern
 
 _STAT_NAME_MAP = {
     "hp": "hp",
@@ -125,7 +126,7 @@ class PokeApiFetchError(Exception):
 
 def _get(session, url, display_name, slug):
     try:
-        return session.get(url)
+        return session.get(url, timeout=POKEAPI_REQUEST_TIMEOUT)
     except requests.exceptions.RequestException as e:
         raise PokeApiFetchError(
             f"Network error fetching '{display_name}' (slug '{slug}'): {e}"
@@ -202,14 +203,22 @@ def fetch_pokemon_data(display_name: str, session=None) -> dict:
         raise PokeApiFetchError(
             f"PokeAPI returned {response.status_code} for '{display_name}' (slug '{slug}')"
         )
-    payload = response.json()
-    base_stats = {
-        _STAT_NAME_MAP[s["stat"]["name"]]: s["base_stat"]
-        for s in payload["stats"]
-        if s["stat"]["name"] in _STAT_NAME_MAP
-    }
-    learnset = [m["move"]["name"] for m in payload["moves"]]
-    abilities = [a["ability"]["name"] for a in payload["abilities"]]
+    try:
+        payload = response.json()
+        base_stats = {
+            _STAT_NAME_MAP[s["stat"]["name"]]: s["base_stat"]
+            for s in payload["stats"]
+            if s["stat"]["name"] in _STAT_NAME_MAP
+        }
+        learnset = [m["move"]["name"] for m in payload["moves"]]
+        abilities = [a["ability"]["name"] for a in payload["abilities"]]
+    except (ValueError, KeyError, TypeError) as e:
+        # ValueError covers a non-JSON body (json.JSONDecodeError is a
+        # subclass); KeyError/TypeError cover a 200 response whose body
+        # parses fine but doesn't have the expected shape.
+        raise PokeApiFetchError(
+            f"Malformed response body for '{display_name}' (slug '{slug}'): {e}"
+        ) from e
     return {"base_stats": base_stats, "learnset": learnset, "abilities": abilities}
 
 

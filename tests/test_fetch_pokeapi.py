@@ -249,3 +249,48 @@ def test_fetch_all_continues_after_request_exception(tmp_path):
     assert summary["fetched"] == 1
     assert summary["failed"] == ["Timeout Name"]
     assert (tmp_path / "absol.json").exists()
+
+
+def test_fetch_pokemon_data_uses_a_request_timeout():
+    session = _mock_session(_SAMPLE_POKEAPI_RESPONSE)
+
+    fetch_pokemon_data("Abomasnow", session=session)
+
+    _args, kwargs = session.get.call_args
+    assert kwargs["timeout"] == (5, 10)
+
+
+def test_fetch_pokemon_data_raises_on_malformed_response_body():
+    session = MagicMock()
+    response = MagicMock(status_code=200)
+    response.json.return_value = {"unexpected": "shape"}
+    session.get.return_value = response
+
+    with pytest.raises(PokeApiFetchError) as exc_info:
+        fetch_pokemon_data("Abomasnow", session=session)
+    assert "Malformed response body" in str(exc_info.value)
+
+
+def test_fetch_pokemon_data_raises_on_a_non_json_response_body():
+    session = MagicMock()
+    response = MagicMock(status_code=200)
+    response.json.side_effect = ValueError("not JSON")
+    session.get.return_value = response
+
+    with pytest.raises(PokeApiFetchError):
+        fetch_pokemon_data("Abomasnow", session=session)
+
+
+def test_fetch_all_continues_after_a_malformed_response(tmp_path):
+    session = MagicMock()
+    bad_response = MagicMock(status_code=200)
+    bad_response.json.return_value = {"unexpected": "shape"}
+    ok_response = MagicMock(status_code=200)
+    ok_response.json.return_value = _SAMPLE_POKEAPI_RESPONSE
+    session.get.side_effect = [bad_response, ok_response]
+
+    summary = fetch_all(["Broken", "Absol"], cache_dir=tmp_path, session=session)
+
+    assert summary["fetched"] == 1
+    assert summary["failed"] == ["Broken"]
+    assert (tmp_path / "absol.json").exists()
