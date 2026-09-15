@@ -23,15 +23,21 @@ def record_successful_refresh(timestamp_path, now: float) -> None:
 
 def check_freshness(timestamp_path, now: float, max_age_seconds: float) -> Optional[str]:
     """Returns a warning string if the last recorded refresh is older than
-    max_age_seconds, or None if fresh. A missing timestamp file (no refresh
-    has ever succeeded, or a fresh setup) is treated as "unknown," not
-    "stale" -- returns None rather than false-positiving."""
+    max_age_seconds, or None if fresh. A missing OR corrupted/incomplete
+    timestamp file (no refresh has ever succeeded, a fresh setup, or a
+    timestamp write that was interrupted mid-write) is treated as
+    "unknown," not "stale" -- returns None rather than false-positiving or
+    crashing the caller."""
     timestamp_path = Path(timestamp_path)
     if not timestamp_path.exists():
         return None
-    with open(timestamp_path) as f:
-        data = json.load(f)
-    age_seconds = now - data["last_refresh"]
+    try:
+        with open(timestamp_path) as f:
+            data = json.load(f)
+        last_refresh = data["last_refresh"]
+    except (json.JSONDecodeError, KeyError):
+        return None
+    age_seconds = now - last_refresh
     if age_seconds > max_age_seconds:
         age_days = age_seconds / 86400
         threshold_days = max_age_seconds / 86400

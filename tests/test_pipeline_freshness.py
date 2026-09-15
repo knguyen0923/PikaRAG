@@ -94,3 +94,21 @@ def test_check_all_freshness_reports_a_stale_job_by_name(monkeypatch, tmp_path):
 
     assert len(warnings) == 1
     assert str(pokeapi_path) in warnings[0]
+
+
+def test_check_freshness_returns_none_when_the_file_is_corrupted(tmp_path):
+    timestamp_path = tmp_path / "last_refresh.json"
+    timestamp_path.write_text("not valid json{{{")
+
+    result = check_freshness(timestamp_path, now=1000.0, max_age_seconds=100.0)
+
+    assert result is None
+
+
+def test_check_freshness_returns_none_when_the_file_is_missing_the_timestamp_key(tmp_path):
+    timestamp_path = tmp_path / "last_refresh.json"
+    timestamp_path.write_text("{}")
+
+    result = check_freshness(timestamp_path, now=1000.0, max_age_seconds=100.0)
+
+    assert result is None
