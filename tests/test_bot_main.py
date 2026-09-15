@@ -292,6 +292,33 @@ def test_ask_command_includes_stored_team_context():
     assert "Garchomp" in captured["context_block"]
 
 
+def test_ask_command_narrows_retrieval_when_a_known_pokemon_is_named():
+    class _FakeIndex:
+        def __init__(self):
+            self.queries = []
+
+        def query(self, question, n_results=5, where=None):
+            self.queries.append(where)
+            return [{"text": "context from narrowed query", "metadata": {}}]
+
+    class _FakeAnswerer:
+        def answer(self, question, context_block):
+            return "an answer"
+
+    fake_index = _FakeIndex()
+    records = [{"name": "Abomasnow"}]
+    _client, tree = build_client(index=fake_index, answerer=_FakeAnswerer(), records=records, items=[])
+    ask_command = tree.get_command("ask")
+    interaction = MagicMock()
+    interaction.user.id = 9099
+    interaction.response.defer = AsyncMock()
+    interaction.followup.send = AsyncMock()
+
+    asyncio.run(ask_command.callback(interaction, question="Does Abomasnow learn Attract?"))
+
+    assert fake_index.queries == [{"pokemon": "Abomasnow"}]
+
+
 def test_import_then_calc_uses_the_real_parsed_team_data():
     records = [{
         "name": "Garchomp", "types": ["Dragon", "Ground"],

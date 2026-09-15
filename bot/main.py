@@ -68,7 +68,9 @@ def build_client(
             format_team_block(get_team(user_id, "opponent"), "Opponent's team"),
         ]
         extra_context = "\n\n".join(block for block in team_blocks if block) or None
-        answer = await ask_response_async(index, answerer, question, extra_context=extra_context)
+        answer = await ask_response_async(
+            index, answerer, question, records=records, items=items, extra_context=extra_context
+        )
         await interaction.followup.send(embed=_embed("ask", answer))
 
     @tree.command(name="stats", description="Look up a Pokemon's base stats, types, and abilities.")
