@@ -42,7 +42,9 @@ def _is_valid_nature(nature: str) -> bool:
         return False
 
 
-def _build_combatant(record: dict, evs: dict, nature: str, item: Optional[str], tera_type: Optional[str]) -> dict:
+def _build_combatant(
+    record: dict, evs: dict, nature: str, item: Optional[str], ability: Optional[str], tera_type: Optional[str]
+) -> dict:
     return {
         "record": record,
         "level": _VGC_LEVEL,
@@ -52,6 +54,7 @@ def _build_combatant(record: dict, evs: dict, nature: str, item: Optional[str], 
         "stat_stages": _NO_STAT_STAGES,
         "tera_type": tera_type,
         "item": item,
+        "ability": ability,
     }
 
 
@@ -80,10 +83,12 @@ def calc_response(
     attacker_evs: str = "0/0/0/0/0/0",
     attacker_nature: str = "Hardy",
     attacker_item: Optional[str] = None,
+    attacker_ability: Optional[str] = None,
     attacker_tera: Optional[str] = None,
     defender_evs: str = "0/0/0/0/0/0",
     defender_nature: str = "Hardy",
     defender_item: Optional[str] = None,
+    defender_ability: Optional[str] = None,
     defender_tera: Optional[str] = None,
     defender_hp_percent: int = 100,
     weather: Optional[str] = None,
@@ -138,8 +143,12 @@ def calc_response(
     if not 1 <= defender_hp_percent <= 100:
         return "Invalid defender HP percent. Must be between 1 and 100."
 
-    attacker = _build_combatant(attacker_record, parsed_attacker_evs, attacker_nature, attacker_item, attacker_tera)
-    defender = _build_combatant(defender_record, parsed_defender_evs, defender_nature, defender_item, defender_tera)
+    attacker = _build_combatant(
+        attacker_record, parsed_attacker_evs, attacker_nature, attacker_item, attacker_ability, attacker_tera
+    )
+    defender = _build_combatant(
+        defender_record, parsed_defender_evs, defender_nature, defender_item, defender_ability, defender_tera
+    )
     defender["current_hp_fraction"] = defender_hp_percent / 100
 
     context = {

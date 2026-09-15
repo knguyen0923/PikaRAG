@@ -110,28 +110,31 @@ def test_find_team_member_does_not_grow_the_store_for_unseen_users():
 
 
 def test_resolve_calc_overrides_uses_neutral_defaults_when_nothing_stored_or_explicit():
-    evs, nature, item, tera = resolve_calc_overrides(401, "Nonexistent", None, None, None, None)
+    evs, nature, item, tera, ability = resolve_calc_overrides(401, "Nonexistent", None, None, None, None, None)
 
     assert evs == "0/0/0/0/0/0"
     assert nature == "Hardy"
     assert item is None
     assert tera is None
+    assert ability is None
 
 
 def test_resolve_calc_overrides_falls_back_to_stored_team_member():
     store_team(402, "mine", [_GARCHOMP])
 
-    evs, nature, item, tera = resolve_calc_overrides(402, "Garchomp", None, None, None, None)
+    evs, nature, item, tera, ability = resolve_calc_overrides(402, "Garchomp", None, None, None, None, None)
 
     assert evs == "4/252/0/0/0/252"
     assert nature == "Jolly"
     assert item == "Life Orb"
     assert tera == "Dragon"
+    assert ability == "Rough Skin"
 
 
 def test_resolve_calc_overrides_explicit_value_wins_over_stored_team_member():
     store_team(403, "mine", [_GARCHOMP])
 
-    _, _, item, _ = resolve_calc_overrides(403, "Garchomp", None, None, "Choice Band", None)
+    _, _, item, _, ability = resolve_calc_overrides(403, "Garchomp", None, None, "Choice Band", None, "Sand Veil")
 
     assert item == "Choice Band"
+    assert ability == "Sand Veil"

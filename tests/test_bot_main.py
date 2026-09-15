@@ -333,6 +333,30 @@ def test_ask_command_narrows_retrieval_when_a_known_pokemon_is_named():
     assert fake_index.queries == [{"pokemon": "Abomasnow"}]
 
 
+def test_calc_command_resolves_a_stored_team_members_ability():
+    from bot.team_store import store_team
+
+    store_team(9101, "mine", [{
+        "species": "Garchomp", "nickname": None, "gender": None, "item": None,
+        "ability": "Rough Skin", "level": 50, "tera_type": None,
+        "evs": {"hp": 0, "attack": 0, "defense": 0, "sp_attack": 0, "sp_defense": 0, "speed": 0},
+        "ivs": {"hp": 31, "attack": 31, "defense": 31, "sp_attack": 31, "sp_defense": 31, "speed": 31},
+        "nature": "Hardy", "moves": ["Earthquake"],
+    }])
+    _client, tree = build_client(records=_CALC_TEST_RECORDS, moves=_CALC_TEST_MOVES)
+    calc_command = tree.get_command("calc")
+    interaction = MagicMock()
+    interaction.user.id = 9101
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(calc_command.callback(interaction, attacker="Garchomp", defender="Garchomp", move="Earthquake"))
+
+    # No assertion on damage output here (Rough Skin isn't one of Task 3's
+    # implemented abilities) -- this test only proves the handler resolves
+    # and forwards the stored ability without crashing.
+    interaction.response.send_message.assert_awaited_once()
+
+
 def test_import_then_calc_uses_the_real_parsed_team_data():
     records = [{
         "name": "Garchomp", "types": ["Dragon", "Ground"],

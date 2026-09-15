@@ -191,3 +191,19 @@ def test_calc_response_defender_item_reduces_damage():
     )
 
     assert _max_damage(with_vest) < _max_damage(baseline)
+
+
+def test_calc_response_accepts_an_attacker_ability():
+    response = calc_response(
+        _RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam", attacker_ability="Snow Warning"
+    )
+
+    assert not is_error_response(response)
+
+
+def test_calc_response_accepts_a_defender_ability():
+    response = calc_response(
+        _RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam", defender_ability="Intimidate"
+    )
+
+    assert not is_error_response(response)

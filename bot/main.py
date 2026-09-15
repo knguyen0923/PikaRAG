@@ -190,10 +190,12 @@ def build_client(
         attacker_evs: Optional[str] = None,
         attacker_nature: Optional[str] = None,
         attacker_item: Optional[str] = None,
+        attacker_ability: Optional[str] = None,
         attacker_tera: Optional[str] = None,
         defender_evs: Optional[str] = None,
         defender_nature: Optional[str] = None,
         defender_item: Optional[str] = None,
+        defender_ability: Optional[str] = None,
         defender_tera: Optional[str] = None,
         defender_hp_percent: app_commands.Range[int, 1, 100] = 100,
         weather: Optional[str] = None,
@@ -202,11 +204,17 @@ def build_client(
         spread: bool = False,
     ) -> None:
         user_id = interaction.user.id
-        resolved_attacker_evs, resolved_attacker_nature, resolved_attacker_item, resolved_attacker_tera = (
-            resolve_calc_overrides(user_id, attacker, attacker_evs, attacker_nature, attacker_item, attacker_tera)
+        (
+            resolved_attacker_evs, resolved_attacker_nature,
+            resolved_attacker_item, resolved_attacker_tera, resolved_attacker_ability,
+        ) = resolve_calc_overrides(
+            user_id, attacker, attacker_evs, attacker_nature, attacker_item, attacker_tera, attacker_ability
         )
-        resolved_defender_evs, resolved_defender_nature, resolved_defender_item, resolved_defender_tera = (
-            resolve_calc_overrides(user_id, defender, defender_evs, defender_nature, defender_item, defender_tera)
+        (
+            resolved_defender_evs, resolved_defender_nature,
+            resolved_defender_item, resolved_defender_tera, resolved_defender_ability,
+        ) = resolve_calc_overrides(
+            user_id, defender, defender_evs, defender_nature, defender_item, defender_tera, defender_ability
         )
         response = calc_response(
             records,
@@ -218,10 +226,12 @@ def build_client(
             attacker_evs=resolved_attacker_evs,
             attacker_nature=resolved_attacker_nature,
             attacker_item=resolved_attacker_item,
+            attacker_ability=resolved_attacker_ability,
             attacker_tera=resolved_attacker_tera,
             defender_evs=resolved_defender_evs,
             defender_nature=resolved_defender_nature,
             defender_item=resolved_defender_item,
+            defender_ability=resolved_defender_ability,
             defender_tera=resolved_defender_tera,
             defender_hp_percent=defender_hp_percent,
             weather=weather,
