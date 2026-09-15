@@ -3,8 +3,14 @@ from rag.answer import OFFLINE_MESSAGE
 
 
 class _FakeIndex:
-    def query(self, text, n_results=5):
-        return []
+    def query(self, text, n_results=5, where=None):
+        return [
+            {
+                "text": "Some context chunk.",
+                "metadata": {"pokemon": "Whatever", "chunk_type": "stats"},
+                "distance": 0.3,
+            }
+        ]
 
 
 class _FakeAnswerer:

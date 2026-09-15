@@ -18,7 +18,7 @@ ITEMS_PATH = Path("data/source/vgc_items.json")
 def run_answer_quality(index, answerer, golden_set: list[dict]) -> list[dict]:
     results = []
     for entry in golden_set:
-        actual = ask_response(index, answerer, entry["question"])
+        actual = ask_response(index, answerer, entry["question"])["answer"]
         offline = actual == OFFLINE_MESSAGE
         passed = (not offline) and matches(actual, entry["expected"], entry["match_type"])
         results.append({
