@@ -5,45 +5,15 @@ or right before a compaction) so work can pick back up without losing the
 thread. If this says "nothing in progress," there's no live handoff — just
 use `STATUS.md`.
 
-**Paused at:** 2026-09-15, mid-morning (user said "pause everything i need
-to go to work" — not a token-budget pause, safe to resume any time).
-**Working on:** Executing `docs/superpowers/plans/2026-09-14-observability.md`
-(`/ask` call logging to SQLite + owner-only `/debug-last` command) via
-`superpowers:subagent-driven-development`, in an isolated worktree.
-**Why paused:** Deliberate user request to stop while background subagents
-were running — the in-flight Task 2 implementer finished cleanly just as
-the pause landed, so nothing was interrupted mid-write.
-
-**State (all committed, isolated, nothing pushed/merged):**
-- Worktree: `.claude/worktrees/observability`, branch `worktree-observability`,
-  fast-forwarded onto local `main` (`84268cd`) at start since the worktree
-  auto-created from a stale `origin/main` (local `main` was 8 commits ahead,
-  unpushed, at pause time — includes the whole grounding-trust feature and
-  this observability plan file itself).
-- Ledger: `.claude/worktrees/observability/.superpowers/sdd/2026-09-14-observability/progress.md`
-  — read this first on resume, it has the authoritative task-by-task state.
-- Task 1 (SQLite `rag/observability.py` module): **complete**, reviewed
-  clean (commits `84268cd..c1e4e30`), 2 minor findings deferred (pre-existing
-  in the plan's own reference code, not implementer errors).
-- Task 2 (thread `retrieved_chunks`/`best_distance` through
-  `build_context_block`/`ask_response`): **implemented, NOT yet reviewed**
-  (commit `dfa972b`, implementer reported 335/335 tests passing). This is
-  the exact next step on resume: generate the review package
-  (`scripts/review-package PLAN_FILE c1e4e30 dfa972b` from the
-  subagent-driven-development skill dir) and dispatch the Task 2 task
-  reviewer, then continue the plan (Tasks 3-4, final whole-branch review,
-  merge to `main`) per the skill.
-- Nothing uncommitted in the worktree as of pause.
-
-**Separate, older, still-unresolved item — Local LLM migration Task 5**
-(kept from the prior pause below, not touched this session): physical
-hardware setup connecting the live Oracle bot to a Windows laptop running
-Ollama is still mid-troubleshooting. See the untouched section immediately
-below for exact state.
+Nothing in progress. The observability feature (session of 2026-09-15) is
+done, reviewed, and merged to `main` — see `STATUS.md`'s "Observability"
+section for what shipped. The only still-open item is the local LLM
+migration's Task 5 (physical hardware setup), carried forward unchanged
+from 2026-09-14 below.
 
 ---
 
-## Prior resume point (2026-09-14, local LLM hardware) — still open, not superseded
+## Local LLM migration Task 5 (2026-09-14, hardware) — still open
 
 **Paused at:** 2026-09-14, late evening (user asked to pivot to something
 else, not a token-budget pause — safe to resume any time).

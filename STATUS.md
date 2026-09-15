@@ -5,16 +5,15 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-14 (late evening), at commit (see `git log -1
---oneline`; grounding-trust just merged, pushed status TBD).
+**Last updated:** 2026-09-15, at commit `6550405` (observability just
+merged to `main`, not pushed to origin).
 
 **Immediate next action:** finish Task 5 of the local LLM migration
 (physical hardware setup) — see "Local LLM migration" section below for
 exact in-progress state and the specific network fix still needed on the
 Windows laptop. That remains the only open item unrelated to the design
-specs; retrieval-quality and grounding-trust (see below) both shipped this
-session, and observability/reliability/ingestion-robustness are being
-worked through next in that order.
+specs; retrieval-quality, grounding-trust, and observability (see below)
+have all shipped; reliability and ingestion-robustness are next.
 
 ## Grounding & trust — shipped
 
@@ -49,7 +48,7 @@ preserved in git history, `git log --oneline --grep=eval-harness` and
 itself to find two real retrieval-quality bugs and fixed them via
 entity-aware retrieval, and grounding & trust (see below). 329/329 tests
 passing throughout.
-<!-- STATUS_COMMIT: fd6af6b -->
+<!-- STATUS_COMMIT: 6550405 -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
@@ -231,27 +230,61 @@ a word with a variant qualifier (e.g. "Does Abomasnow learn Mega Kick?")
 can still misfire. Neither is in the golden set or believed to affect
 typical `/ask` usage; worth revisiting only if real usage surfaces it.
 
-## Next up (4 more designs, not implemented)
+## Observability — shipped
 
-4 more verified-and-fixed design specs from the 2026-09-13 brainstorm have
+`2026-09-13-observability-design.md` is implemented and merged (plan
+`docs/superpowers/plans/2026-09-14-observability.md`, 4 tasks via
+`subagent-driven-development`, commits `c1e4e30..6550405`): every `/ask`
+call is now logged to a local SQLite database (`data/observability.db`,
+gitignored) via a new `rag/observability.py` module (`log_ask`/
+`get_last_ask_log`, stdlib `sqlite3`/`json` only, no new dependencies) —
+question, per-chunk retrieved-chunk ids + distances, sources, best
+distance, `gate_fired`/`degraded` (both derived by string-sentinel
+comparison against `GATE_MESSAGE`/`OFFLINE_MESSAGE`, the one place each is
+derived), the answer, and `latency_ms` spanning the whole
+`ask_response_async` call. A new owner-only `/debug-last` command
+(`bot/commands/debug.py`'s pure `format_debug_last`, wired into
+`bot/main.py`) shows the most recent call's full detail, gated by a
+`BOT_OWNER_ID` env var via an `app_commands.check` predicate (this bot uses
+a bare `discord.Client` + separate `CommandTree`, so `is_owner()` isn't
+available) that fails closed on both an unset *and* a malformed
+`BOT_OWNER_ID` — the malformed case was a real bug caught in Task 4's own
+review loop and fixed before task completion.
+
+The final whole-branch review caught 3 real Important bugs only visible
+once all 4 tasks' changes sat together: (1) three pre-existing `/ask`
+handler tests didn't isolate the real `log_ask` call, so running the test
+suite on the deploy box would have written fixture rows into the live
+`data/observability.db` and poisoned `/debug-last`'s output with test data
+instead of the real most recent call — fixed via an autouse `tests/conftest.py`
+fixture that patches `log_ask`'s/`get_last_ask_log`'s `db_path` default
+(Python binds a default-argument value at function-definition time, so a
+naive monkeypatch of the module-level constant alone would have been a
+silent no-op — the fixture patches `__defaults__` directly, verified by
+running the full suite twice and confirming no DB file appears); (2)
+`/debug-last`'s output had no length cap and could exceed Discord's
+4096-char embed limit on a long question/answer, hard-failing exactly when
+the operator needs the debug view most — fixed with truncation; (3)
+`/debug-last` replied non-ephemerally, publicly re-broadcasting another
+user's `/ask` question/answer/chunk-ids to the whole channel — fixed with
+`ephemeral=True`. All three fixed in one coordinated pass, plus 2 new
+handler-level tests proving `gate_fired`/`degraded` actually evaluate
+`True` (previously only the `False`/normal path was covered at that
+layer). 352/352 tests passing.
+
+## Next up (2 more designs, not implemented)
+
+2 more verified-and-fixed design specs from the 2026-09-13 brainstorm have
 no implementation plans yet, but are believed implementation-ready:
 
-1. `2026-09-13-grounding-trust-design.md` — source attribution + a
-   distance-based confidence gate before the LLM is called.
-2. `2026-09-13-observability-design.md` — SQLite log of every `/ask` call +
-   an admin `/debug-last` command. **Depends on grounding-trust landing
-   first** (needs its `sources`/`best_distance`/`gate_fired` fields).
-3. `2026-09-13-reliability-design.md` — circuit breaker around Ollama calls
+1. `2026-09-13-reliability-design.md` — circuit breaker around Ollama calls
    (via string-match against `OFFLINE_MESSAGE`, not exceptions) + an
    admin-only `/llmstatus` health check.
-4. `2026-09-13-ingestion-robustness-design.md` — schema + freshness
+2. `2026-09-13-ingestion-robustness-design.md` — schema + freshness
    validation on pipeline refreshes, rescoped to drop a justification that
    didn't hold up (see git history).
 
-Suggested order: retrieval-quality (spec ready, see above) first, then
-grounding-trust before observability specifically (the one real
-dependency), reliability and ingestion-robustness anytime, independent of
-everything else.
+Suggested order: either one, independent of everything else.
 
 Also still open: a Discord button-UI request (replacing slash commands
 with clickable message components) — raised early in the 2026-09-13
