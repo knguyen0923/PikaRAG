@@ -137,6 +137,40 @@ def test_ask_response_gate_fires_when_there_are_no_matches_at_all():
     assert answerer.calls == []
 
 
+def test_ask_response_gate_is_bypassed_when_extra_context_is_provided():
+    far_match = {
+        "text": "Some barely related chunk.",
+        "metadata": {"pokemon": "Whatever", "chunk_type": "stats"},
+        "distance": 1.6,
+    }
+    index = _FakeIndex(context_matches=[far_match])
+    answerer = _FakeAnswerer(response_text="Here's some strategy advice.")
+
+    result = ask_response(
+        index, answerer, "What should I lead with?", extra_context="Your team: Gyarados, Garchomp"
+    )
+
+    assert result["answer"] == "Here's some strategy advice."
+    assert len(answerer.calls) == 1
+    question, context_text = answerer.calls[0]
+    assert context_text.startswith("Your team: Gyarados, Garchomp")
+
+
+def test_ask_response_does_not_gate_when_best_distance_is_exactly_the_threshold():
+    boundary_match = {
+        "text": "Some chunk.",
+        "metadata": {"pokemon": "Whatever", "chunk_type": "stats"},
+        "distance": 1.4,
+    }
+    index = _FakeIndex(context_matches=[boundary_match])
+    answerer = _FakeAnswerer(response_text="An answer.")
+
+    result = ask_response(index, answerer, "A question")
+
+    assert result["answer"] == "An answer."
+    assert answerer.calls != []
+
+
 def test_ask_response_returns_no_sources_when_the_answerer_reports_offline():
     index = _FakeIndex(context_matches=[_CLOSE_MATCH])
     answerer = _FakeAnswerer(response_text=OFFLINE_MESSAGE)
@@ -144,6 +178,7 @@ def test_ask_response_returns_no_sources_when_the_answerer_reports_offline():
     result = ask_response(index, answerer, "How bulky is Gyarados?")
 
     assert result == {"answer": OFFLINE_MESSAGE, "sources": []}
+    assert answerer.calls != []  # confirms the LLM WAS called -- distinct from the gate-fired path, where it never is
 
 
 class _FakeIndexWithWhere:

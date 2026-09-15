@@ -281,7 +281,7 @@ def test_ask_command_includes_stored_team_context():
                 {
                     "text": "Some chunk",
                     "metadata": {"pokemon": "Whatever", "chunk_type": "stats"},
-                    "distance": 0.3,
+                    "distance": 1.6,
                 }
             ]
 

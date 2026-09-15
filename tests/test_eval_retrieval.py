@@ -3,6 +3,7 @@ from pathlib import Path
 
 import chromadb
 
+from bot.commands.ask import DISTANCE_THRESHOLD
 from bot.main import _build_real_index
 from eval.metrics import recall_at_k
 from rag.entity import detect_entity
@@ -89,3 +90,62 @@ def test_recall_at_5_through_entity_aware_retrieval_does_not_regress():
     assert score >= baseline, (
         f"entity-aware recall@5 {score:.4f} dropped below the {baseline} pre-change baseline; misses: {misses}"
     )
+
+
+def test_golden_set_best_distances_stay_under_the_confidence_gate_threshold():
+    """Regression guard for bot.commands.ask.DISTANCE_THRESHOLD: if the
+    embedding model or Chroma's distance metric ever changes, this catches
+    the gate silently mis-firing on real, answerable questions before it
+    ships."""
+    records = json.loads(RECORDS_PATH.read_text())
+    items = json.loads(ITEMS_PATH.read_text())
+    golden_set = json.loads(GOLDEN_SET_PATH.read_text())
+
+    index = _build_real_index(records, items, client=chromadb.Client())
+
+    worst = 0.0
+    for entry in golden_set:
+        entity = detect_entity(entry["question"], records, items)
+        if entity:
+            matches = index.query(entry["question"], n_results=5, where={entity["field"]: entity["name"]})
+            if not matches:
+                matches = index.query(entry["question"], n_results=5)
+        else:
+            matches = index.query(entry["question"], n_results=5)
+        best_distance = min((m["distance"] for m in matches), default=None)
+        if best_distance is not None:
+            worst = max(worst, best_distance)
+
+    assert worst < DISTANCE_THRESHOLD, (
+        f"golden-set worst best_distance {worst:.4f} is no longer safely under "
+        f"DISTANCE_THRESHOLD ({DISTANCE_THRESHOLD}) -- real answerable questions would now be gated"
+    )
+
+
+def test_a_sample_of_out_of_domain_questions_exceed_the_confidence_gate_threshold():
+    """Companion guard: confirms the threshold still meaningfully gates
+    obviously irrelevant questions, not just that it never gates real ones."""
+    records = json.loads(RECORDS_PATH.read_text())
+    items = json.loads(ITEMS_PATH.read_text())
+    out_of_domain_questions = [
+        "What is the capital of France?",
+        "How do I bake a chocolate cake?",
+        "What time is it in Tokyo?",
+        "Can you recommend a good movie?",
+    ]
+
+    index = _build_real_index(records, items, client=chromadb.Client())
+
+    for question in out_of_domain_questions:
+        entity = detect_entity(question, records, items)
+        matches = (
+            index.query(question, n_results=5, where={entity["field"]: entity["name"]})
+            if entity
+            else index.query(question, n_results=5)
+        )
+        if entity and not matches:
+            matches = index.query(question, n_results=5)
+        best_distance = min((m["distance"] for m in matches), default=None)
+        assert best_distance is None or best_distance > DISTANCE_THRESHOLD, (
+            f"{question!r} scored {best_distance} -- expected it to exceed DISTANCE_THRESHOLD ({DISTANCE_THRESHOLD})"
+        )

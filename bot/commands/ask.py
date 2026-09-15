@@ -8,10 +8,16 @@ GATE_MESSAGE = "I don't have solid information on that."
 
 # Empirically tuned against the real embedding index (all-MiniLM-L6-v2) and
 # the eval harness's 48-question golden set: every golden question's best
-# match distance measured <= 1.3565 (recall@5 = 1.0), while a sample of
-# clearly out-of-domain questions ("What is the capital of France?", etc.)
-# all measured >= 1.4923. 1.4 sits in that gap, leaning toward the golden
-# set's side so real, answerable questions are never falsely gated.
+# match distance measured <= 1.3565 -- this is the hard, reproducible
+# ceiling (re-derive it by running the golden set through
+# build_context_block if the embedding model or Chroma's distance metric
+# ever changes; see tests/test_eval_retrieval.py's
+# test_golden_set_best_distances_stay_under_the_confidence_gate_threshold,
+# which guards this automatically). A sample of out-of-domain questions
+# ("What is the capital of France?", etc.) measured as low as ~1.42 in one
+# sample, so the margin above 1.4 is thin, not a wide gap -- 1.4 was chosen
+# to sit just above the golden set's ceiling, favoring never gating a real
+# answerable question over catching every possible out-of-domain one.
 DISTANCE_THRESHOLD = 1.4
 
 
@@ -39,7 +45,7 @@ def ask_response(
 ) -> dict:
     context = build_context_block(index, question, records=records, items=items, n_results=n_results)
 
-    if context["best_distance"] is None or context["best_distance"] > DISTANCE_THRESHOLD:
+    if not extra_context and (context["best_distance"] is None or context["best_distance"] > DISTANCE_THRESHOLD):
         return {"answer": GATE_MESSAGE, "sources": []}
 
     context_text = context["text"]
