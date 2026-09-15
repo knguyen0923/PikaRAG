@@ -17,7 +17,7 @@ from pipeline.freshness import (
 )
 from pipeline.validate import validate_legal_count, validate_records, validate_write_count
 
-_SOURCE_LOAD_ERRORS = (FileNotFoundError, json.JSONDecodeError, KeyError)
+_SOURCE_LOAD_ERRORS = (OSError, json.JSONDecodeError, UnicodeDecodeError, KeyError)
 
 
 def _empty_summary(problem: str) -> dict:
@@ -46,7 +46,7 @@ def run_refresh(
         # caught too.
         expected_count = legal_data.get("count", len(legal_names))
     except _SOURCE_LOAD_ERRORS as e:
-        return _empty_summary(f"Could not load legal-Pokemon source data: {e}")
+        return _empty_summary(f"Could not load legal-Pokemon source data: {type(e).__name__}: {e}")
 
     summary = fetch_all(legal_names, cache_dir=raw_dir, session=session)
 
@@ -55,7 +55,7 @@ def run_refresh(
     except _SOURCE_LOAD_ERRORS as e:
         summary["records_written"] = 0
         summary["expected_count"] = expected_count
-        summary["validation_problems"] = [f"Could not build records from source data: {e}"]
+        summary["validation_problems"] = [f"Could not build records from source data: {type(e).__name__}: {e}"]
         summary["swapped"] = False
         return summary
 
@@ -74,8 +74,8 @@ def run_refresh(
         return summary
 
     temp_path = output_path.with_name(output_path.name + ".tmp")
-    write_processed_records(records, temp_path)
     try:
+        write_processed_records(records, temp_path)
         os.replace(temp_path, output_path)
     except OSError as e:
         summary["swapped"] = False

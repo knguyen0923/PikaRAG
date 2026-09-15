@@ -294,3 +294,71 @@ def test_fetch_all_continues_after_a_malformed_response(tmp_path):
     assert summary["fetched"] == 1
     assert summary["failed"] == ["Broken"]
     assert (tmp_path / "absol.json").exists()
+
+
+def test_fetch_raises_on_a_malformed_species_response_during_default_variety_lookup():
+    # Bare-species 404 triggers the species-lookup fallback (as in
+    # test_fetch_falls_back_to_species_default_variety), but this time the
+    # species endpoint returns a malformed (non-JSON) body instead of a clean
+    # 404 or a well-shaped payload. This must raise PokeApiFetchError, not a
+    # raw ValueError/AttributeError, so fetch_all can catch and record it.
+    session = MagicMock()
+    miss = MagicMock(status_code=404)
+    malformed_species = MagicMock(status_code=200)
+    malformed_species.json.side_effect = ValueError("not JSON")
+    session.get.side_effect = [miss, malformed_species]
+
+    with pytest.raises(PokeApiFetchError) as exc_info:
+        fetch_pokemon_data("Lycanroc", session=session)
+    assert "Malformed response body" in str(exc_info.value)
+
+
+def test_fetch_raises_on_a_non_dict_species_response_during_default_variety_lookup():
+    # A 200 species response whose body is valid JSON but not an object (e.g.
+    # a bare list) would previously raise a raw AttributeError from
+    # `.get("varieties", [])` on a list -- neither PokeApiFetchError nor
+    # caught by fetch_all's except clause.
+    session = MagicMock()
+    miss = MagicMock(status_code=404)
+    non_dict_species = MagicMock(status_code=200)
+    non_dict_species.json.return_value = ["not", "a", "dict"]
+    session.get.side_effect = [miss, non_dict_species]
+
+    with pytest.raises(PokeApiFetchError) as exc_info:
+        fetch_pokemon_data("Lycanroc", session=session)
+    assert "Malformed response body" in str(exc_info.value)
+
+
+def test_fetch_raises_on_a_malformed_species_response_during_gendered_mega_lookup():
+    # Mega slug 404s, its own species lookup 404s too (existing substitution
+    # fallback exhausted), and the base-species lookup for the gendered-mega
+    # fallback returns a malformed body. Must raise PokeApiFetchError instead
+    # of crashing raw.
+    session = MagicMock()
+    mega_miss = MagicMock(status_code=404)
+    mega_species_miss = MagicMock(status_code=404)
+    malformed_base_species = MagicMock(status_code=200)
+    malformed_base_species.json.side_effect = ValueError("not JSON")
+    session.get.side_effect = [mega_miss, mega_species_miss, malformed_base_species]
+
+    with pytest.raises(PokeApiFetchError) as exc_info:
+        fetch_pokemon_data("Mega Meowstic", session=session)
+    assert "Malformed response body" in str(exc_info.value)
+
+
+def test_fetch_all_continues_after_a_malformed_species_response_during_fallback(tmp_path):
+    # End-to-end through fetch_all: a malformed species-lookup body during the
+    # default-variety fallback must land in "failed", not crash fetch_all.
+    session = MagicMock()
+    miss = MagicMock(status_code=404)
+    malformed_species = MagicMock(status_code=200)
+    malformed_species.json.side_effect = ValueError("not JSON")
+    ok_response = MagicMock(status_code=200)
+    ok_response.json.return_value = _SAMPLE_POKEAPI_RESPONSE
+    session.get.side_effect = [miss, malformed_species, ok_response]
+
+    summary = fetch_all(["Lycanroc", "Absol"], cache_dir=tmp_path, session=session)
+
+    assert summary["fetched"] == 1
+    assert summary["failed"] == ["Lycanroc"]
+    assert (tmp_path / "absol.json").exists()
