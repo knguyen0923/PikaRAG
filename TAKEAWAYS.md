@@ -177,5 +177,8 @@ process was itself worth learning from:
 - A CI check that pins-and-explains dependency versions the way
   `requirements.txt`'s `torch` comment does, so future upgrades don't
   silently reintroduce the same class of import-time crash
-- Revisit the Pikalytics scraping question formally (ToS compliance) before
-  ever making this a public/multi-server bot rather than a personal one
+- ~~Revisit the Pikalytics scraping question formally (ToS compliance)~~ —
+  checked: `robots.txt` explicitly allows the `/ai/` path this bot's
+  pipeline hits for AI/bot user-agents, and Pikalytics' Privacy Policy (the
+  only legal doc they publish) has no scraping/rate-limit/reuse
+  restriction. Resolved 2026-09-15, no code change needed.
