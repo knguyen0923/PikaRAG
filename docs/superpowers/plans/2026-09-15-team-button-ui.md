@@ -12,7 +12,7 @@
 
 ## Global Constraints
 
-- No persistence: the view relies on discord.py's default (non-`custom_id`) ~180-second timeout; after it elapses Discord greys out the buttons automatically. No `on_timeout` override.
+- No persistence: the view relies on discord.py's default (non-`custom_id`) 180-second timeout. `View.on_timeout` is a no-op in the base class, so nothing automatically greys out the buttons or notifies the user when it elapses — a stale click after timeout just fails with Discord's generic "This interaction failed" error toast. No `on_timeout` override.
 - Only `/team` changes. `/ask`, `/stats`, `/moves`, `/calc`, `/import`, `/scout`, `/debug-last`, `/llmstatus`, `/ping` are untouched.
 - No per-slot pagination, no modal editing — clicking a button only swaps which side's team is displayed.
 - `interaction_check` must send its own ephemeral rejection before returning `False` — a bare `return False` silently no-ops the click with zero feedback to the user, which reads as a broken button.

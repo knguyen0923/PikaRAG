@@ -84,10 +84,12 @@ already tested.
   — this is the entire reason to use a View instead of a fresh command
   invocation.
 - **No persistence:** the view relies on discord.py's default
-  (non-`custom_id`) timeout (~15 minutes of inactivity). After it
-  times out, Discord automatically disables the buttons on the last
-  rendered message. No explicit `on_timeout` handling is added for
-  this pilot — greyed-out buttons are an acceptable end state, and a
+  (non-`custom_id`) timeout (180 seconds of inactivity). `View.on_timeout`
+  is a no-op in the base class, so nothing automatically greys out the
+  buttons or notifies the user when it elapses — a stale click after
+  timeout just fails with Discord's generic "This interaction failed"
+  error toast. No explicit `on_timeout` handling is added for this
+  pilot — that stale-click failure is an acceptable end state, and a
   user can just re-run `/team` for a fresh view.
 
 ## Error handling
