@@ -40,6 +40,10 @@ def test_run_pikalytics_refresh_finds_legal_file_and_writes_output(tmp_path):
 
 
 def test_run_pikalytics_refresh_counts_species_with_no_data(tmp_path):
+    # Zero species with usage data and nothing outright failed is the
+    # stale-PIKALYTICS_FORMAT_CODE failure signature -- it must NOT swap or
+    # record a successful refresh, since that would clobber the live file
+    # with {} and defeat the freshness signal for exactly this failure.
     source_dir = tmp_path / "source"
     source_dir.mkdir()
     (source_dir / "legal_pokemon_m-b.json").write_text(json.dumps({
@@ -47,18 +51,22 @@ def test_run_pikalytics_refresh_counts_species_with_no_data(tmp_path):
     }))
     cache_dir = tmp_path / "raw_pikalytics"
     output_path = tmp_path / "processed" / "pikalytics_usage.json"
+    timestamp_path = tmp_path / "last_refresh_pikalytics.json"
 
     session = MagicMock()
     session.get.return_value = MagicMock(status_code=404, text="Pokemon not found")
 
     result = run_pikalytics_refresh(
         source_dir, cache_dir, output_path, session=session,
-        timestamp_path=tmp_path / "last_refresh_pikalytics.json",
+        timestamp_path=timestamp_path,
     )
 
     assert result["species_with_data"] == 0
-    written = json.loads(output_path.read_text())
-    assert written == {}
+    assert result["stale_format_code"] is True
+    assert result["swapped"] is False
+    assert result["validation_problems"] != []
+    assert not output_path.exists()
+    assert not timestamp_path.exists()
 
 
 def test_run_pikalytics_refresh_leaves_the_live_file_unchanged_on_an_unknown_species(tmp_path, monkeypatch):

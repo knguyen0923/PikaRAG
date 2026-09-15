@@ -70,6 +70,18 @@ def test_validate_records_reports_a_problem_per_broken_record():
     assert len(problems) == 2
 
 
+def test_validate_records_accepts_the_repos_own_committed_data():
+    from pathlib import Path
+    from pipeline.build_records import build_records
+
+    records = build_records(Path("data/source"), Path("data/raw"))
+    assert records, "expected the real committed data to build at least one record"
+
+    problems = validate_records(records)
+
+    assert problems == []
+
+
 def test_validate_items_returns_no_problems_for_good_data():
     items = [{"name": "Life Orb", "description": "Boosts move power."}]
 

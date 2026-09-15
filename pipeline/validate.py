@@ -16,22 +16,46 @@ EXPECTED_REGULATION_COUNTS = {
 }
 COUNT_TOLERANCE = 0.05
 
+# Some records (e.g. community-created Mega forms PokeAPI has no learnset
+# data for -- verified against this repo's own data: Mega Absol Z, Mega
+# Baxcalibur, Mega Garchomp Z, Mega Golisopod, Mega Lucario Z) legitimately
+# have an empty learnset. A truly corrupted/truncated fetch would produce
+# far more than a small, stable fraction of these -- close to 100% of
+# records, not a handful -- so this is a proportional check, not a
+# per-record one, mirroring validate_legal_count's tolerance pattern.
+EMPTY_LEARNSET_TOLERANCE = 0.05
+
 
 def validate_records(records: list) -> list:
     """Returns a list of problems found; empty means valid."""
     problems = []
+    empty_learnset_names = []
     for r in records:
         if not r.get("name"):
             problems.append(f"record missing name: {r}")
         if not r.get("learnset"):
-            problems.append(f"{r.get('name', '?')} has an empty learnset")
+            empty_learnset_names.append(r.get("name", "?"))
         if not r.get("base_stats", {}).keys() >= REQUIRED_STATS:
             problems.append(f"{r.get('name', '?')} missing base stat fields")
+    if records and len(empty_learnset_names) / len(records) > EMPTY_LEARNSET_TOLERANCE:
+        shown = ", ".join(empty_learnset_names[:10])
+        more = "..." if len(empty_learnset_names) > 10 else ""
+        problems.append(
+            f"{len(empty_learnset_names)}/{len(records)} records have an empty learnset "
+            f"(over the {int(EMPTY_LEARNSET_TOLERANCE * 100)}% tolerance): {shown}{more}"
+        )
     return problems
 
 
 def validate_items(items: list) -> list:
-    """Returns a list of problems found; empty means valid."""
+    """Returns a list of problems found; empty means valid.
+
+    Not currently wired into any refresh job's validate-before-swap gate --
+    data/source/vgc_items.json is static source data with no refresh job
+    that regenerates it, unlike pokemon_records.json/pikalytics_usage.json.
+    Implemented per the ingestion-robustness spec's schema-validation scope
+    and available for a future items-refresh job, or for manual/on-demand
+    validation, if one is ever added."""
     problems = []
     for item in items:
         if not item.get("name"):
@@ -45,7 +69,17 @@ def validate_usage(usage: dict, known_species: set) -> list:
     """Referential check only: every usage entry must reference a known
     species. Does NOT check for completeness -- a species legitimately
     having no usage data is not a problem this function detects (see the
-    ingestion-robustness spec's Purpose section for why)."""
+    ingestion-robustness spec's Purpose section for why).
+
+    Note: in production, pipeline.refresh_pikalytics_job.run_pikalytics_refresh
+    always passes usage data whose keys are drawn from the same legal-species
+    list this function checks against, so this check can never actually find
+    a problem in that call site today -- it exists as a general-purpose
+    referential validator (e.g. useful if usage data is ever sourced or
+    merged from elsewhere), not as active production protection. A shape
+    check on usage entries' contents (moves/items/abilities present,
+    usage_pct numeric) would give real teeth against a corrupted Pikalytics
+    fetch, but that's a larger addition than this function's current scope."""
     problems = []
     for species in usage:
         if species not in known_species:

@@ -29,7 +29,16 @@ def run_pikalytics_refresh(
     usage_by_species = result["usage_by_species"]
     result["species_with_data"] = len(usage_by_species)
 
+    stale_format_code = result["species_with_data"] == 0 and not result["failed"]
+    result["stale_format_code"] = stale_format_code
+
     problems = validate_usage(usage_by_species, known_species=set(legal_names))
+    if stale_format_code:
+        problems = problems + [
+            "every species came back with no usage data and nothing outright "
+            "failed -- this looks like a stale PIKALYTICS_FORMAT_CODE rather "
+            "than a real 0%-usage regulation"
+        ]
     result["validation_problems"] = problems
 
     if problems:
@@ -61,15 +70,7 @@ if __name__ == "__main__":
         for name in summary["failed"]:
             print(f"  - {name}")
 
-    # Mirror refresh_job.py's coverage guard: a scheduled run that silently
-    # writes a degenerate result is worse than one that fails loudly. Real
-    # HTTP/network failures are an unambiguous problem. Zero species with
-    # any usage data despite processing a full legal list is *also* a
-    # failure signature (most likely a stale PIKALYTICS_FORMAT_CODE making
-    # every page 404, which looks identical to "no usage data" per-species)
-    # rather than a legitimate reg where nothing gets played.
-    stale_format_code = summary["species_with_data"] == 0 and not summary["failed"]
-    if stale_format_code:
+    if summary["stale_format_code"]:
         print(
             "\nERROR: every species came back with no usage data and nothing "
             "outright failed -- this looks like a stale PIKALYTICS_FORMAT_CODE "
@@ -84,5 +85,5 @@ if __name__ == "__main__":
         for problem in summary["validation_problems"]:
             print(f"  - {problem}")
 
-    if summary["failed"] or stale_format_code or summary["validation_problems"]:
+    if summary["failed"] or summary["validation_problems"]:
         sys.exit(1)

@@ -122,6 +122,21 @@ What each unit does:
 | `pikarag-refresh-pokeapi.timer` | weekly | Re-runs `pipeline.refresh_job` to pick up any newly-added species in `data/source`'s legal list. Restarts the bot on success only. |
 | `pikarag-refresh-pikalytics.timer` | monthly | Clears `data/raw_pikalytics/` and re-runs `pipeline.refresh_pikalytics_job`, since that pipeline's own cache never expires on its own -- see `deploy/refresh-pikalytics-monthly.sh`. Restarts the bot on success only. |
 
+Both refresh jobs validate their output before it goes live: each builds
+its new data in memory, runs it through a schema/count check, and only then
+swaps it into place over the existing file. If validation fails, the job
+aborts -- the previous data is left in place untouched, the specific
+problems are logged, and the job exits non-zero, so the systemd
+`ExecStartPost` restart never fires and the bot keeps serving the last-known
+good data instead of partial or corrupted output.
+
+On every successful run, each job also writes its own last-successful-
+refresh timestamp to `data/processed/.last_refresh_pokeapi.json` or
+`data/processed/.last_refresh_pikalytics.json`. These files are gitignored
+and purely informational (used to detect a stalled refresh) -- if you
+notice them on disk, that's expected; they're safe to delete and will be
+recreated on the next successful run.
+
 Check status any time:
 
 ```bash
