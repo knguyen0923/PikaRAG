@@ -5,8 +5,9 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-15, at commit `db73b6c` (ingestion-robustness
-merged; not pushed to origin).
+**Last updated:** 2026-09-15, at commit `2db9869` (ingestion-robustness
+merged, plus a small `TAKEAWAYS.md` follow-up-item cleanup; not pushed to
+origin).
 
 **Immediate next action:** all 6 design specs from the 2026-09-13
 brainstorm are now shipped (eval-harness, retrieval-quality,
@@ -54,7 +55,7 @@ preserved in git history, `git log --oneline --grep=eval-harness` and
 itself to find two real retrieval-quality bugs and fixed them via
 entity-aware retrieval, and grounding & trust (see below). 329/329 tests
 passing throughout.
-<!-- STATUS_COMMIT: db73b6c -->
+<!-- STATUS_COMMIT: 2db9869 -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
