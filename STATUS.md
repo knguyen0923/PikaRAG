@@ -5,8 +5,9 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-15, at commit `6550405` (observability just
-merged to `main`, not pushed to origin).
+**Last updated:** 2026-09-15, at commit `26d1e60` (observability merged to
+`main` at `6550405`; this commit is the STATUS.md/RESUME.md refresh for
+that merge, not pushed to origin).
 
 **Immediate next action:** finish Task 5 of the local LLM migration
 (physical hardware setup) — see "Local LLM migration" section below for
@@ -48,7 +49,7 @@ preserved in git history, `git log --oneline --grep=eval-harness` and
 itself to find two real retrieval-quality bugs and fixed them via
 entity-aware retrieval, and grounding & trust (see below). 329/329 tests
 passing throughout.
-<!-- STATUS_COMMIT: 6550405 -->
+<!-- STATUS_COMMIT: 26d1e60 -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
