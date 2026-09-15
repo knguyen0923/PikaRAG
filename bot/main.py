@@ -11,6 +11,7 @@ from discord import app_commands
 
 from bot.commands.ask import GATE_MESSAGE, ask_response_async, format_ask_response
 from bot.commands.calc import calc_response, is_error_response
+from bot.commands.debug import format_debug_last
 from bot.commands.moves import moves_response
 from bot.commands.ping import ping_response
 from bot.commands.stats import stats_response
@@ -24,7 +25,7 @@ from bot.pokepaste_fetch import PokepasteFetchError, resolve_pokepaste_text
 from bot.team_store import find_team_member, get_team, resolve_calc_overrides
 from rag.answer import OFFLINE_MESSAGE, OllamaAnswerer
 from rag.embed import SentenceTransformerEmbedder
-from rag.observability import log_ask
+from rag.observability import get_last_ask_log, log_ask
 from rag.store import ChromaIndex
 
 PROCESSED_RECORDS_PATH = Path("data/processed/pokemon_records.json")
@@ -42,11 +43,17 @@ _COMMAND_COLORS = {
     "import": discord.Color.green(),
     "scout": discord.Color.gold(),
     "team": discord.Color.blurple(),
+    "debug": discord.Color.dark_grey(),
 }
 
 
 def _embed(command_name: str, description: str) -> discord.Embed:
     return discord.Embed(description=description, color=_COMMAND_COLORS[command_name])
+
+
+def _owner_only(interaction: discord.Interaction) -> bool:
+    owner_id = os.environ.get("BOT_OWNER_ID")
+    return owner_id is not None and interaction.user.id == int(owner_id)
 
 
 def build_client(
@@ -91,6 +98,12 @@ def build_client(
         except Exception:
             pass  # observability is best-effort; never blocks the answer
         await interaction.followup.send(embed=_embed("ask", format_ask_response(result)))
+
+    @tree.command(name="debug-last", description="Show the most recent /ask call's full detail (bot owner only).")
+    @app_commands.check(_owner_only)
+    async def debug_last(interaction: discord.Interaction) -> None:
+        row = get_last_ask_log()
+        await interaction.response.send_message(embed=_embed("debug", format_debug_last(row)))
 
     @tree.command(name="stats", description="Look up a Pokemon's base stats, types, and abilities.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)

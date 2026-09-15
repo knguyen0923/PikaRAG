@@ -651,3 +651,87 @@ def test_ask_command_embed_includes_a_sources_line():
     sent_text = _extract_text(interaction.followup.send)
     assert "Landorus-Therian has base 91 Speed." in sent_text
     assert "Sources: Landorus-Therian (stats)" in sent_text
+
+
+def test_owner_only_rejects_a_non_owner(monkeypatch):
+    from bot.main import _owner_only
+
+    monkeypatch.setenv("BOT_OWNER_ID", "12345")
+    interaction = MagicMock()
+    interaction.user.id = 99999
+
+    assert _owner_only(interaction) is False
+
+
+def test_owner_only_allows_the_owner(monkeypatch):
+    from bot.main import _owner_only
+
+    monkeypatch.setenv("BOT_OWNER_ID", "12345")
+    interaction = MagicMock()
+    interaction.user.id = 12345
+
+    assert _owner_only(interaction) is True
+
+
+def test_owner_only_rejects_everyone_when_bot_owner_id_is_unset(monkeypatch):
+    from bot.main import _owner_only
+
+    monkeypatch.delenv("BOT_OWNER_ID", raising=False)
+    interaction = MagicMock()
+    interaction.user.id = 12345
+
+    assert _owner_only(interaction) is False
+
+
+def test_debug_last_command_is_registered_with_an_owner_only_check():
+    _client, tree = build_client()
+    command = tree.get_command("debug-last")
+
+    assert command is not None
+    assert len(command.checks) >= 1
+
+
+def test_debug_last_shows_the_most_recent_logged_call(monkeypatch):
+    monkeypatch.setenv("BOT_OWNER_ID", "12345")
+    monkeypatch.setattr(
+        "bot.main.get_last_ask_log",
+        lambda: {
+            "timestamp": "2026-09-14T12:00:00+00:00",
+            "question": "How bulky is Gyarados?",
+            "answer": "Gyarados has 95 base HP.",
+            "sources": [{"name": "Gyarados", "chunk_type": "stats"}],
+            "retrieved_chunks": [{"id": "Gyarados-stats", "distance": 0.4}],
+            "best_distance": 0.4,
+            "gate_fired": False,
+            "degraded": False,
+            "latency_ms": 900,
+        },
+    )
+
+    _client, tree = build_client()
+    debug_command = tree.get_command("debug-last")
+    interaction = MagicMock()
+    interaction.user.id = 12345
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(debug_command.callback(interaction))
+
+    sent_text = _extract_text(interaction.response.send_message)
+    assert "How bulky is Gyarados?" in sent_text
+    assert "Gyarados has 95 base HP." in sent_text
+
+
+def test_debug_last_reports_plainly_when_nothing_is_logged_yet(monkeypatch):
+    monkeypatch.setenv("BOT_OWNER_ID", "12345")
+    monkeypatch.setattr("bot.main.get_last_ask_log", lambda: None)
+
+    _client, tree = build_client()
+    debug_command = tree.get_command("debug-last")
+    interaction = MagicMock()
+    interaction.user.id = 12345
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(debug_command.callback(interaction))
+
+    sent_text = _extract_text(interaction.response.send_message)
+    assert "No /ask calls logged yet." in sent_text
