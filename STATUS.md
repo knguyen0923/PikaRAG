@@ -5,32 +5,27 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-14 (evening), at commit `ed07cd3` (main, not yet
+**Last updated:** 2026-09-14 (evening), at commit `7ec5b05` (main, not yet
 pushed).
 
 **Immediate next action:** finish Task 5 of the local LLM migration
 (physical hardware setup) — see "Local LLM migration" section below for
 exact in-progress state and the specific network fix still needed on the
-Windows laptop. Once `/ask` is confirmed working end-to-end against the
-live Ollama server, the next unblocked step after that is running
-`writing-plans` on
-`docs/superpowers/specs/2026-09-13-retrieval-quality-design.md`, then
-executing via `subagent-driven-development` (same pattern as the local LLM
-migration and eval harness) — spec is reviewed, fixed, and carries
-measured real-world evidence, no further brainstorming needed.
+Windows laptop. That is now the only open item; retrieval-quality (see
+below) shipped this session.
 
 Session summary (2026-09-13 through 2026-09-14): shipped the local LLM
-migration (code) and the eval harness (both merged to `main`, both fully
-tested — see their own sections below); ran a verification pass that
-caught and fixed real bugs in all 6 unimplemented 2026-09-13 design
-specs (wrong file paths, a false "caught by tests" safety claim, a
-circuit breaker with nothing to catch, an unstated cross-spec
-dependency, a debunked motivating claim — full detail preserved in git
-history, `git log --oneline --grep=eval-harness` and
+migration (code), the eval harness, and entity-aware retrieval quality
+(all three merged to `main`, all fully tested — see their own sections
+below); ran a verification pass that caught and fixed real bugs in all 6
+unimplemented 2026-09-13 design specs (wrong file paths, a false "caught
+by tests" safety claim, a circuit breaker with nothing to catch, an
+unstated cross-spec dependency, a debunked motivating claim — full detail
+preserved in git history, `git log --oneline --grep=eval-harness` and
 `--grep="design specs"` for the commits); then used the eval harness
-itself to find two real retrieval-quality bugs (see below) and traced
-them to root cause. 292/292 tests passing throughout.
-<!-- STATUS_COMMIT: ed07cd3 -->
+itself to find two real retrieval-quality bugs and fixed them via
+entity-aware retrieval (see below). 315/315 tests passing throughout.
+<!-- STATUS_COMMIT: 7ec5b05 -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
@@ -171,38 +166,48 @@ not wrong); golden-set size floor isn't enforced at generation time, only
 in a unit test. The two real retrieval misses this harness found are
 being acted on now — see next section.
 
-## Retrieval quality — spec ready, real evidence in hand, next to implement
+## Retrieval quality — shipped
 
-`2026-09-13-retrieval-quality-design.md` proposes entity-aware retrieval:
-detect a Pokemon/item name in the question, then constrain the Chroma
-query to that entity's own chunks (`where={"pokemon": "Abomasnow"}`)
-instead of searching the whole 542-chunk corpus.
+`2026-09-13-retrieval-quality-design.md` is implemented and merged
+(plan `docs/superpowers/plans/2026-09-14-retrieval-quality.md`, 6 tasks via
+`subagent-driven-development`, commits `0e322bb..7ec5b05`): `/ask` now
+detects a known Pokemon/item name in the question (`rag/entity.py`'s
+`detect_entity` — exact + fuzzy/typo matching, Mega/regional-form
+tie-breaking) and constrains the Chroma query to that entity's own chunks
+(`ChromaIndex.query`'s new `where` param) — falling back to the old
+unfiltered search whenever no entity is detected, detection is ambiguous,
+or the filtered query comes back empty.
 
-This isn't speculative — the eval harness (`data/eval/golden_set.json`)
-measured a concrete failure it fixes. Two golden questions
-(`Abomasnow-moveset-learned-question`, `Dragalge-moveset-not-learned-question`)
-miss their target `-moveset` chunk in the top 5 entirely. Root cause,
-confirmed by querying the real index directly: every sampled Pokemon that
-also has a Mega Stone item (Abomasnow, Dragalge, Kangaskhan, Medicham)
-ranks that item's chunk and the Pokemon's `-stats` chunk *above* its own
-`-moveset` chunk, every single time, regardless of the question —
-`all-MiniLM-L6-v2`'s mean-pooled embedding favors a short sentence
-repeating the exact Pokemon name over the long, diluted move-list text.
-Kangaskhan/Medicham happened to still squeak into rank 4-5; Abomasnow/
-Dragalge landed at rank 6+. Confirmed (by tracing the design, not
-guessing) that entity-aware filtering eliminates this outright: a
-Pokemon-scoped query only has that Pokemon's own 2 chunks to rank
-between, and the Mega Stone's chunk carries `metadata={"item": ...}` —
-no `"pokemon"` key at all — so it's excluded from a filtered query
-entirely, not just outranked. Full writeup in the spec's Purpose section
-(commit `3d3991e`).
+This fixed the two eval-harness-measured misses it was built for
+(`Abomasnow-moveset-learned-question`, `Dragalge-moveset-not-learned-question`
+— both previously lost to their own Mega Stone item chunk + stats chunk,
+per the root-cause writeup this section used to carry, now superseded).
+The final whole-branch review caught 3 real Critical bugs before merge — a
+crash on real questions naming a letter-suffixed Mega form (e.g. "Mega
+Charizard"), a measured recall@5 regression (0.9583→0.8958) from the
+Pokemon vocabulary's fuzzy match being tried before the item vocabulary's
+exact match, and genuine Pokemon-name ambiguity silently leaking into a
+wrong item binding instead of falling back — all three fixed in one
+coordinated rewrite (`detect_entity` now tries an exact match across both
+vocabularies before any fuzzy match, and uses a distinct ambiguous-sentinel
+that short-circuits to the unfiltered fallback). Final measured recall@5
+through the entity-aware path: **1.0000 (48/48)**, up from the 0.9583
+pre-change baseline. 315/315 tests passing.
 
-**Next action:** `writing-plans` on this spec, then
-`subagent-driven-development` to implement — no more design discussion
-needed, the spec already reflects this evidence and was reviewed/fixed
-earlier this session (see git history for that pass).
+Two narrow limitations were deliberately parked, not fixed (full rulings
+in the session's git history / conversation record): (1) a
+Mega-letter-variant question (e.g. "Mega Charizard X") and the real nested
+`Tauros [Paldean Form (... Breed)]` family can't be disambiguated with full
+precision — both fall back to a safe default/unfiltered result rather than
+crashing or answering wrong, matching the spec's own stated tolerance for
+this class of imprecision; (2) a qualifier word (e.g. "Mega") is matched
+anywhere in the question rather than adjacent to the species it modifies,
+so an adversarial phrasing naming an unrelated move that happens to share
+a word with a variant qualifier (e.g. "Does Abomasnow learn Mega Kick?")
+can still misfire. Neither is in the golden set or believed to affect
+typical `/ask` usage; worth revisiting only if real usage surfaces it.
 
-## Next up after that (4 more designs, not implemented)
+## Next up (4 more designs, not implemented)
 
 4 more verified-and-fixed design specs from the 2026-09-13 brainstorm have
 no implementation plans yet, but are believed implementation-ready:
