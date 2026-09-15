@@ -5,22 +5,56 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-15, at commit `2db9869` (ingestion-robustness
-merged, plus a small `TAKEAWAYS.md` follow-up-item cleanup; not pushed to
-origin).
+**Last updated:** 2026-09-15, after merging `worktree-team-button-ui-plan`
+into `main` (docs/CI only, nothing implemented yet).
 
 **Immediate next action:** all 6 design specs from the 2026-09-13
-brainstorm are now shipped (eval-harness, retrieval-quality,
-grounding-trust, observability, reliability, ingestion-robustness). The
-only work item with an approved design not yet planned/built is
-`2026-09-15-team-button-ui-design.md` (Phase 1 of the open Discord
-button-UI backlog item — a `/team` side-switcher) — written and
-committed, awaiting the user's review before an implementation plan is
-written; per the user's explicit instruction, do NOT execute that plan
-once written without their go-ahead. Separately, and not blocking that:
-Task 5 of the local LLM migration (physical hardware setup) is still
-open — see "Local LLM migration" section below for exact in-progress
-state and the specific network fix still needed on the Windows laptop.
+brainstorm are shipped (eval-harness, retrieval-quality, grounding-trust,
+observability, reliability, ingestion-robustness). A separate,
+previously-undocumented session then ran a full planning pass on a
+`worktree-team-button-ui-plan` branch/worktree — pushed to origin, never
+merged, and never reflected here until this update. That branch has now
+been merged into `main` (docs/CI-only merge commit, no application code
+changed, 407/407 tests still passing). It contains **6 ready,
+not-yet-executed implementation plans and 1 new design spec**, none
+involving the LLM:
+
+- `docs/superpowers/plans/2026-09-15-team-button-ui.md` — `/team` gets a
+  `TeamView` with "Your team"/"Opponent's team" buttons (Phase 1 of the
+  button-UI backlog item; spec: `2026-09-15-team-button-ui-design.md`).
+- `docs/superpowers/specs/2026-09-15-poketwo-style-ui-design.md` — a
+  broader cross-command Poketwo-style UI design, split into 4
+  independently-scoped slice plans:
+  - `2026-09-15-name-suggestion-dropdown.md` (Slice A) — typo-miss dropdown
+    for `/stats`, `/moves`, `/calc`'s 5 lookup points; adds `bot/ui.py`.
+  - `2026-09-15-stats-moves-tabbed-panel.md` (Slice B) — shared
+    Stats/Moves/Usage tab panel opened by `/stats` or `/moves`; adds
+    `bot/commands/pokemon_info.py`.
+  - `2026-09-15-import-confirmation-view-team-link.md` (Slice C) — `/import`
+    gains a Confirm/Cancel overwrite prompt + "View team" button.
+    **Depends on Task 1 of the team-button-ui plan** (constructs `TeamView`
+    directly) — does not require the rest of that plan.
+  - `2026-09-15-dex-browse-command.md` (Slice D) — new `/dex` Prev/Next
+    roster browser. Core browsing has no dependency on anything else; its
+    `start`-not-found fallback specifically needs Slice A's
+    `NameSuggestionView` implemented first.
+- `docs/superpowers/plans/2026-09-15-damage-calc-abilities.md` — no spec
+  (derived from an audit); adds Choice Scarf + threads `ability` through
+  `/calc` + implements 6 ability modifiers (Adaptability, Huge/Pure Power,
+  Multiscale/Shadow Shield, Filter/Solid Rock/Prism Armor, Thick Fat,
+  Tinted Lens).
+- `docs/superpowers/plans/2026-09-15-pipeline-error-handling.md` — no spec
+  (derived from a 2-pass `pipeline/` audit); adds network timeouts and
+  try/except hardening around fetch/refresh/atomic-swap/freshness-write
+  so a scheduled job degrades cleanly instead of crashing with a raw
+  traceback.
+
+None of these plans have been executed — per standing instruction, do not
+execute any of them without the user's explicit go-ahead each time.
+Separately, and not blocking any of the above: Task 5 of the local LLM
+migration (physical hardware setup) is still open — see "Local LLM
+migration" section below for exact in-progress state and the specific
+network fix still needed on the Windows laptop.
 
 ## Grounding & trust — shipped
 
@@ -55,7 +89,7 @@ preserved in git history, `git log --oneline --grep=eval-harness` and
 itself to find two real retrieval-quality bugs and fixed them via
 entity-aware retrieval, and grounding & trust (see below). 329/329 tests
 passing throughout.
-<!-- STATUS_COMMIT: 2db9869 -->
+<!-- STATUS_COMMIT: 2bce15b -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
@@ -350,29 +384,28 @@ from (`vgc_items.json` is static source data) — both now carry an explicit
 code comment explaining why, rather than silently implying protection that
 isn't there. 407/407 tests passing.
 
-## Discord button UI — Phase 1 spec written, awaiting review
+## Discord button UI — fully planned (6 plans), nothing built yet
 
-`2026-09-15-team-button-ui-design.md` is a new design spec (committed,
-not yet built) addressing the long-open "Discord button-UI request"
-backlog item. Scoped deliberately small as Phase 1 of a staged migration
-rather than redesigning all 10 commands at once (this bot has zero
-`discord.ui` usage today, so the pattern needs validating before
-committing to it everywhere): `/team` gains two buttons ("Your team" /
-"Opponent's team") replacing its current `side` slash-command parameter,
-re-rendering the same message in place via a new `TeamView` class,
-restricted to whoever ran `/team` (a `discord.ui.View.interaction_check`
-sending its own ephemeral rejection — note this does NOT route through
-`bot/main.py`'s existing `@tree.error`/`CheckFailure` handler, since View
-checks are a separate mechanism from `app_commands.check`). All existing
-pure functions (`view_team_response`, `format_team_block`) are reused
-unchanged. Once this ships and the pattern (View construction,
-invoker-only checks, edit-in-place re-rendering) proves out in production,
-each remaining command gets its own short follow-up brainstorm applying
-the same recipe, rather than a large upfront redesign. Awaiting the user's
-review of the spec before an implementation plan is written — and per
-explicit user instruction, once a plan exists it should NOT be executed
-until the user gives the go-ahead (they want to stop once everything is
-planned, not proceed straight into implementation).
+`2026-09-15-team-button-ui-design.md` (Phase 1 of the long-open "Discord
+button-UI request" backlog item) plus a follow-on
+`2026-09-15-poketwo-style-ui-design.md` spec covering 4 more slices were
+both designed and fully planned in a separate session that worked on a
+`worktree-team-button-ui-plan` branch/worktree — merged into `main` this
+session (docs/CI only; see "Immediate next action" above for the full
+list of 6 plans + what each does). Nothing from any of these plans has
+been implemented yet. Per explicit user instruction, none should be
+executed without the user's go-ahead each time (they want to stop once
+everything is planned, not proceed straight into implementation).
+
+Original Phase 1 scope (`/team` button-UI plan): `/team` gains two
+buttons ("Your team" / "Opponent's team") replacing its current `side`
+slash-command parameter, re-rendering the same message in place via a new
+`TeamView` class, restricted to whoever ran `/team` (a
+`discord.ui.View.interaction_check` sending its own ephemeral rejection —
+note this does NOT route through `bot/main.py`'s existing
+`@tree.error`/`CheckFailure` handler, since View checks are a separate
+mechanism from `app_commands.check`). All existing pure functions
+(`view_team_response`, `format_team_block`) are reused unchanged.
 
 ## Housekeeping — resolved (2026-09-15)
 
@@ -400,10 +433,6 @@ code, still below):
   the embed-overflow risk for a future larger `n_results` or longer source
   names; `README.md`'s Commands table and `docs/DEPLOYMENT.md` now document
   `/debug-last` and `BOT_OWNER_ID`. 354/354 tests passing.
-
-Also still open: a Discord button-UI request (replacing slash commands
-with clickable message components) — raised early in the 2026-09-13
-session, not yet brainstormed at all.
 
 Everything below is optional follow-up, none of it blocking:
 
