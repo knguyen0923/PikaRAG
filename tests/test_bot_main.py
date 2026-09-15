@@ -255,6 +255,56 @@ def test_calc_command_omits_the_note_on_an_error_response():
     assert "using stored data" not in sent_text.lower()
 
 
+def test_calc_command_shows_a_suggestion_view_for_a_mistyped_attacker():
+    _client, tree = build_client(records=_CALC_TEST_RECORDS, moves=_CALC_TEST_MOVES)
+    calc_cmd = tree.get_command("calc")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(calc_cmd.callback(interaction, attacker="Garchom", defender="Garchomp", move="Earthquake"))
+
+    from bot.ui import NameSuggestionView
+
+    _args, kwargs = interaction.response.send_message.call_args
+    assert isinstance(kwargs["view"], NameSuggestionView)
+
+
+def test_calc_command_picking_an_attacker_suggestion_replays_the_whole_calc():
+    _client, tree = build_client(records=_CALC_TEST_RECORDS, moves=_CALC_TEST_MOVES)
+    calc_cmd = tree.get_command("calc")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(calc_cmd.callback(interaction, attacker="Garchom", defender="Garchomp", move="Earthquake"))
+
+    _args, kwargs = interaction.response.send_message.call_args
+    select = kwargs["view"].children[0]
+    select._values = ["Garchomp"]  # simulates Discord populating .values on submit
+    pick_interaction = MagicMock()
+    pick_interaction.user.id = 1
+    pick_interaction.response.edit_message = AsyncMock()
+
+    asyncio.run(select.callback(pick_interaction))
+
+    _args, edit_kwargs = pick_interaction.response.edit_message.call_args
+    assert "Garchomp's Earthquake vs Garchomp" in edit_kwargs["embed"].description
+
+
+def test_calc_command_shows_no_view_for_a_completely_unrecognized_name():
+    _client, tree = build_client(records=_CALC_TEST_RECORDS, moves=_CALC_TEST_MOVES)
+    calc_cmd = tree.get_command("calc")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(calc_cmd.callback(interaction, attacker="Zzzznotreal", defender="Garchomp", move="Earthquake"))
+
+    _args, kwargs = interaction.response.send_message.call_args
+    assert kwargs.get("view") is None
+
+
 def test_ask_command_includes_stored_team_context():
     from unittest.mock import AsyncMock, MagicMock
     from bot.team_store import store_team
