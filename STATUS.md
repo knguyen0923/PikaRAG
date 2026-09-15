@@ -5,16 +5,21 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-15, after the reliability merge (see
-`STATUS_COMMIT` marker for the exact commit, not pushed to origin).
+**Last updated:** 2026-09-15, at commit `df7c528` (not pushed to origin).
 
-**Immediate next action:** ingestion-robustness is the last ready design
-spec without an implementation plan — next up via the same
-`subagent-driven-development` playbook used for observability and
-reliability. Separately, and not blocking that work: Task 5 of the local
-LLM migration (physical hardware setup) is still open — see "Local LLM
-migration" section below for exact in-progress state and the specific
-network fix still needed on the Windows laptop.
+**Immediate next action:** ingestion-robustness is implemented (all 4
+tasks done and individually reviewed) and its final whole-branch review is
+in a fix round — see "Ingestion robustness — in progress" below for the
+critical finding it caught and the fix being applied; merge to `main` once
+the scoped re-review comes back clean. Separately, a new design spec,
+`2026-09-15-team-button-ui-design.md`, is written and committed (Phase 1
+of the open Discord button-UI backlog item — a `/team` side-switcher, see
+its own section below) and awaiting the user's review before an
+implementation plan is written. Also separately, and not blocking either
+of the above: Task 5 of the local LLM migration (physical hardware setup)
+is still open — see "Local LLM migration" section below for exact
+in-progress state and the specific network fix still needed on the
+Windows laptop.
 
 ## Grounding & trust — shipped
 
@@ -49,7 +54,7 @@ preserved in git history, `git log --oneline --grep=eval-harness` and
 itself to find two real retrieval-quality bugs and fixed them via
 entity-aware retrieval, and grounding & trust (see below). 329/329 tests
 passing throughout.
-<!-- STATUS_COMMIT: 74a6820 -->
+<!-- STATUS_COMMIT: df7c528 -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
@@ -301,14 +306,62 @@ mirroring `/ask`'s existing pattern); and `/llmstatus` was undocumented in
 `README.md` plus `docs/DEPLOYMENT.md` had drifted out of sync with
 `.env.example` (fixed). 376/376 tests passing.
 
-## Next up (1 more design, not implemented)
+## Ingestion robustness — implemented, final-review fix in progress
 
-The last verified-and-fixed design spec from the 2026-09-13 brainstorm
-without an implementation plan yet, believed implementation-ready:
+`2026-09-13-ingestion-robustness-design.md` is implemented (plan
+`docs/superpowers/plans/2026-09-15-ingestion-robustness.md`, 4 tasks via
+`subagent-driven-development`, all individually reviewed and approved) on
+branch `worktree-ingestion-robustness` — **not yet merged to `main`**.
+`pipeline/validate.py` (schema/count checks, all plain assertions, no new
+dependency) and `pipeline/freshness.py` (per-job last-successful-refresh
+timestamps, 14-day/60-day independent thresholds) are wired into both
+`pipeline/refresh_job.py` and `pipeline/refresh_pikalytics_job.py` via a
+validate-before-swap step: each job now builds its output in memory,
+validates it, and only writes it live (temp file + atomic `os.replace`) if
+there are no hard failures — otherwise the previous live data is left
+completely untouched. The task loop itself caught and fixed a real
+test-pollution bug twice (tests silently writing real timestamp files into
+the live `data/processed/` directory) before either job's task review.
 
-1. `2026-09-13-ingestion-robustness-design.md` — schema + freshness
-   validation on pipeline refreshes, rescoped to drop a justification that
-   didn't hold up (see git history).
+The final whole-branch review caught something more serious: the new
+empty-learnset schema check, run against this repo's own real committed
+data, permanently rejects 5 legitimate Mega-form records (PokeAPI has no
+learnset data for them) — in production this would have silently stalled
+the weekly PokeAPI refresh forever, and *because* a failed validation never
+records a success timestamp, the freshness check (missing timestamp =
+"unknown," not "stale") could never have reported the stall either. A fix
+is in progress: the empty-learnset check becomes a tolerance/percentage
+check (mirroring the already-established `validate_legal_count` pattern)
+instead of failing on any single record, plus a new regression test that
+runs the validators against this repo's real `data/source`/`data/raw` data
+and asserts zero problems, so this exact class of bug can't recur
+silently. Also being fixed in the same pass: `refresh_pikalytics_job.py`'s
+pre-existing `stale_format_code` guard was firing *after* a stale run had
+already swapped in an empty `{}` and recorded itself as a successful
+refresh — now folded into the validate-before-swap gate so it actually
+blocks the swap. Once the scoped re-review of this fix comes back clean,
+the branch merges to `main`.
+
+## Discord button UI — Phase 1 spec written, awaiting review
+
+`2026-09-15-team-button-ui-design.md` is a new design spec (committed,
+not yet built) addressing the long-open "Discord button-UI request"
+backlog item. Scoped deliberately small as Phase 1 of a staged migration
+rather than redesigning all 10 commands at once (this bot has zero
+`discord.ui` usage today, so the pattern needs validating before
+committing to it everywhere): `/team` gains two buttons ("Your team" /
+"Opponent's team") replacing its current `side` slash-command parameter,
+re-rendering the same message in place via a new `TeamView` class,
+restricted to whoever ran `/team` (a `discord.ui.View.interaction_check`
+sending its own ephemeral rejection — note this does NOT route through
+`bot/main.py`'s existing `@tree.error`/`CheckFailure` handler, since View
+checks are a separate mechanism from `app_commands.check`). All existing
+pure functions (`view_team_response`, `format_team_block`) are reused
+unchanged. Once this ships and the pattern (View construction,
+invoker-only checks, edit-in-place re-rendering) proves out in production,
+each remaining command gets its own short follow-up brainstorm applying
+the same recipe, rather than a large upfront redesign. Awaiting the user's
+review of the spec before an implementation plan is written.
 
 ## Housekeeping — resolved (2026-09-15)
 
