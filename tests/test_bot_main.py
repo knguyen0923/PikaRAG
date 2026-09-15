@@ -877,3 +877,89 @@ def test_ask_command_logs_degraded_true_when_the_answerer_is_offline(monkeypatch
     assert len(calls) == 1
     assert calls[0]["degraded"] is True
     assert calls[0]["gate_fired"] is False
+
+
+def test_llmstatus_command_is_registered_with_cooldown_and_owner_only_checks():
+    _client, tree = build_client()
+    command = tree.get_command("llmstatus")
+
+    assert command is not None
+    assert len(command.checks) >= 2
+
+
+def test_llmstatus_command_reports_up_with_configured_model_and_breaker_state():
+    class _FakeRawAnswerer:
+        model = "llama3.2:3b"
+
+        def check_health(self):
+            return {"up": True, "models": ["llama3.2:3b"]}
+
+    class _FakeBreaker:
+        state = "closed"
+
+        def answer(self, question, context_block):
+            return "unused"
+
+    _client, tree = build_client(answerer=_FakeBreaker(), raw_answerer=_FakeRawAnswerer())
+    command = tree.get_command("llmstatus")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(command.callback(interaction))
+
+    sent_text = _extract_text(interaction.response.send_message)
+    assert "Online" in sent_text
+    assert "llama3.2:3b" in sent_text
+    assert "closed" in sent_text
+
+
+def test_llmstatus_command_reports_down_with_the_breaker_state():
+    class _FakeRawAnswerer:
+        model = "llama3.2:3b"
+
+        def check_health(self):
+            return {"up": False, "models": []}
+
+    class _FakeBreaker:
+        state = "open"
+
+        def answer(self, question, context_block):
+            return "unused"
+
+    _client, tree = build_client(answerer=_FakeBreaker(), raw_answerer=_FakeRawAnswerer())
+    command = tree.get_command("llmstatus")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(command.callback(interaction))
+
+    sent_text = _extract_text(interaction.response.send_message)
+    assert "Offline" in sent_text
+    assert "open" in sent_text
+
+
+def test_llmstatus_replies_ephemerally():
+    class _FakeRawAnswerer:
+        model = "llama3.2:3b"
+
+        def check_health(self):
+            return {"up": False, "models": []}
+
+    class _FakeBreaker:
+        state = "open"
+
+        def answer(self, question, context_block):
+            return "unused"
+
+    _client, tree = build_client(answerer=_FakeBreaker(), raw_answerer=_FakeRawAnswerer())
+    command = tree.get_command("llmstatus")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(command.callback(interaction))
+
+    _args, kwargs = interaction.response.send_message.call_args
+    assert kwargs["ephemeral"] is True

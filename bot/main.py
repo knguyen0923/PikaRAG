@@ -12,6 +12,7 @@ from discord import app_commands
 from bot.commands.ask import GATE_MESSAGE, ask_response_async, format_ask_response
 from bot.commands.calc import calc_response, is_error_response
 from bot.commands.debug import format_debug_last
+from bot.commands.llmstatus import format_llmstatus
 from bot.commands.moves import moves_response
 from bot.commands.ping import ping_response
 from bot.commands.stats import stats_response
@@ -24,6 +25,7 @@ from bot.commands.team import (
 from bot.pokepaste_fetch import PokepasteFetchError, resolve_pokepaste_text
 from bot.team_store import find_team_member, get_team, resolve_calc_overrides
 from rag.answer import OFFLINE_MESSAGE, OllamaAnswerer
+from rag.circuit_breaker import CircuitBreaker
 from rag.embed import SentenceTransformerEmbedder
 from rag.observability import get_last_ask_log, log_ask
 from rag.store import ChromaIndex
@@ -44,6 +46,7 @@ _COMMAND_COLORS = {
     "scout": discord.Color.gold(),
     "team": discord.Color.blurple(),
     "debug": discord.Color.dark_grey(),
+    "llmstatus": discord.Color.orange(),
 }
 
 
@@ -62,7 +65,7 @@ def _owner_only(interaction: discord.Interaction) -> bool:
 
 
 def build_client(
-    index=None, answerer=None, records=None, moves=None, usage=None, items=None
+    index=None, answerer=None, raw_answerer=None, records=None, moves=None, usage=None, items=None
 ) -> tuple[discord.Client, app_commands.CommandTree]:
     intents = discord.Intents.default()
     client = discord.Client(intents=intents)
@@ -109,6 +112,19 @@ def build_client(
     async def debug_last(interaction: discord.Interaction) -> None:
         row = get_last_ask_log()
         await interaction.response.send_message(embed=_embed("debug", format_debug_last(row)), ephemeral=True)
+
+    @tree.command(name="llmstatus", description="Check the local LLM's health and circuit breaker state (bot owner only).")
+    @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
+    @app_commands.check(_owner_only)
+    async def llmstatus(interaction: discord.Interaction) -> None:
+        health = await asyncio.to_thread(raw_answerer.check_health)
+        formatted = format_llmstatus(
+            up=health["up"],
+            models=health["models"],
+            configured_model=raw_answerer.model,
+            breaker_state=answerer.state,
+        )
+        await interaction.response.send_message(embed=_embed("llmstatus", formatted), ephemeral=True)
 
     @tree.command(name="stats", description="Look up a Pokemon's base stats, types, and abilities.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
@@ -289,9 +305,11 @@ def main() -> None:
     token = os.environ["DISCORD_TOKEN"]
     records = _load_records()
     items = _load_items()
+    raw_answerer = _build_answerer()
     client, _tree = build_client(
         index=_build_real_index(records, items),
-        answerer=_build_answerer(),
+        answerer=CircuitBreaker(raw_answerer),
+        raw_answerer=raw_answerer,
         records=records,
         moves=_load_moves(),
         usage=_load_usage(),
