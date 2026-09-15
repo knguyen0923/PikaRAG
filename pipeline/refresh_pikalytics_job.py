@@ -1,12 +1,23 @@
 import json
+import os
 import sys
+import time
 from pathlib import Path
 
 from pipeline.build_records import find_legal_pokemon_file
 from pipeline.fetch_pikalytics import fetch_all_usage
+from pipeline.freshness import (
+    PIKALYTICS_TIMESTAMP_PATH,
+    check_all_freshness,
+    record_successful_refresh,
+)
+from pipeline.validate import validate_usage
 
 
-def run_pikalytics_refresh(source_dir, cache_dir, output_path, session=None) -> dict:
+def run_pikalytics_refresh(
+    source_dir, cache_dir, output_path, session=None,
+    timestamp_path=PIKALYTICS_TIMESTAMP_PATH, now_func=time.time,
+) -> dict:
     source_dir = Path(source_dir)
     output_path = Path(output_path)
 
@@ -15,12 +26,23 @@ def run_pikalytics_refresh(source_dir, cache_dir, output_path, session=None) -> 
     legal_names = legal_data["legal_pokemon"]
 
     result = fetch_all_usage(legal_names, cache_dir=cache_dir, session=session)
+    usage_by_species = result["usage_by_species"]
+    result["species_with_data"] = len(usage_by_species)
+
+    problems = validate_usage(usage_by_species, known_species=set(legal_names))
+    result["validation_problems"] = problems
+
+    if problems:
+        result["swapped"] = False
+        return result
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(output_path, "w") as f:
-        json.dump(result["usage_by_species"], f, indent=2)
-
-    result["species_with_data"] = len(result["usage_by_species"])
+    temp_path = output_path.with_name(output_path.name + ".tmp")
+    with open(temp_path, "w") as f:
+        json.dump(usage_by_species, f, indent=2)
+    os.replace(temp_path, output_path)
+    result["swapped"] = True
+    record_successful_refresh(timestamp_path, now_func())
     return result
 
 
@@ -53,5 +75,14 @@ if __name__ == "__main__":
             "outright failed -- this looks like a stale PIKALYTICS_FORMAT_CODE "
             "rather than a real 0%-usage regulation."
         )
-    if summary["failed"] or stale_format_code:
+
+    for warning in check_all_freshness():
+        print(f"\nWARNING: {warning}")
+
+    if summary["validation_problems"]:
+        print("\nERROR: validation failed, live data left unchanged:")
+        for problem in summary["validation_problems"]:
+            print(f"  - {problem}")
+
+    if summary["failed"] or stale_format_code or summary["validation_problems"]:
         sys.exit(1)
