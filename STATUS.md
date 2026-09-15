@@ -5,18 +5,41 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-14 (evening), at commit `7ec5b05` (main, not yet
-pushed).
+**Last updated:** 2026-09-14 (late evening), at commit (see `git log -1
+--oneline`; grounding-trust just merged, pushed status TBD).
 
 **Immediate next action:** finish Task 5 of the local LLM migration
 (physical hardware setup) — see "Local LLM migration" section below for
 exact in-progress state and the specific network fix still needed on the
-Windows laptop. That is now the only open item; retrieval-quality (see
-below) shipped this session.
+Windows laptop. That remains the only open item unrelated to the design
+specs; retrieval-quality and grounding-trust (see below) both shipped this
+session, and observability/reliability/ingestion-robustness are being
+worked through next in that order.
+
+## Grounding & trust — shipped
+
+`2026-09-13-grounding-trust-design.md` is implemented and merged (plan
+`docs/superpowers/plans/2026-09-14-grounding-trust.md`, 4 tasks):
+`build_context_block` returns `{"text","sources","best_distance"}` instead
+of a bare string; `ask_response`/`ask_response_async` apply a hard-coded
+confidence gate (`DISTANCE_THRESHOLD = 1.4` in `bot/commands/ask.py`,
+empirically derived from the real golden set — measured ceiling 1.3565 —
+and a real out-of-domain sample, guarded by two regression tests in
+`tests/test_eval_retrieval.py`) and always return
+`{"answer","sources"}`; `/ask`'s embed now shows a trailing
+`Sources: Name (chunk_type), ...` line via a new `format_ask_response`
+helper. The final whole-branch review caught a real regression before
+merge: the gate ran before the caller's stored-team `extra_context` was
+merged in, silently disabling team-strategy `/ask` questions (an
+already-shipped feature) — fixed so the gate never fires when
+`extra_context` is present. Parked, not fixed: `sources` lists every
+retrieved chunk unfiltered by relevance, which can show a misleading
+source line for unfocused questions — a real design question for a future
+spec revision, not an implementation bug. 329/329 tests passing.
 
 Session summary (2026-09-13 through 2026-09-14): shipped the local LLM
-migration (code), the eval harness, and entity-aware retrieval quality
-(all three merged to `main`, all fully tested — see their own sections
+migration (code), the eval harness, entity-aware retrieval quality, and
+grounding & trust (all four merged to `main`, all fully tested — see their own sections
 below); ran a verification pass that caught and fixed real bugs in all 6
 unimplemented 2026-09-13 design specs (wrong file paths, a false "caught
 by tests" safety claim, a circuit breaker with nothing to catch, an
@@ -24,8 +47,9 @@ unstated cross-spec dependency, a debunked motivating claim — full detail
 preserved in git history, `git log --oneline --grep=eval-harness` and
 `--grep="design specs"` for the commits); then used the eval harness
 itself to find two real retrieval-quality bugs and fixed them via
-entity-aware retrieval (see below). 315/315 tests passing throughout.
-<!-- STATUS_COMMIT: 7ec5b05 -->
+entity-aware retrieval, and grounding & trust (see below). 329/329 tests
+passing throughout.
+<!-- STATUS_COMMIT: fd6af6b -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
