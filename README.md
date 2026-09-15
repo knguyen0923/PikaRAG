@@ -32,6 +32,7 @@ updated and `pipeline.refresh_pikalytics_job` re-run.
 | `/scout` | Add or update one Pokemon in a stored team with only what you currently know. |
 | `/team` | View the Pokemon currently stored for your team or the opponent's team. |
 | `/debug-last` | Show the most recent `/ask` call's full retrieval/answer detail (bot owner only). |
+| `/llmstatus` | Check the local LLM's health and circuit breaker state (bot owner only). |
 
 `/import`/`/scout`/`/team` feed stored team data into `/calc` and `/ask`, so
 those commands can reference "my Landorus" instead of spelling out a full

@@ -117,6 +117,7 @@ def build_client(
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
     @app_commands.check(_owner_only)
     async def llmstatus(interaction: discord.Interaction) -> None:
+        await interaction.response.defer(ephemeral=True)
         health = await asyncio.to_thread(raw_answerer.check_health)
         formatted = format_llmstatus(
             up=health["up"],
@@ -124,7 +125,7 @@ def build_client(
             configured_model=raw_answerer.model,
             breaker_state=answerer.state,
         )
-        await interaction.response.send_message(embed=_embed("llmstatus", formatted), ephemeral=True)
+        await interaction.followup.send(embed=_embed("llmstatus", formatted), ephemeral=True)
 
     @tree.command(name="stats", description="Look up a Pokemon's base stats, types, and abilities.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)

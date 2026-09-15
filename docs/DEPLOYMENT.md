@@ -49,10 +49,11 @@ sudo -u pikarag $EDITOR .env   # fill in DISCORD_TOKEN; leave LLM_HOST blank
                                 # value goes there once the laptop is set up.
                                 # Also set BOT_OWNER_ID to your own Discord
                                 # user ID to enable the admin-only
-                                # /debug-last command (optional -- if left
-                                # unset, /debug-last is rejected for
-                                # everyone). See .env.example's comment for
-                                # how to find your user ID.
+                                # /debug-last and /llmstatus commands
+                                # (optional -- if left unset, both commands
+                                # are rejected for everyone). See
+                                # .env.example's comment for how to find
+                                # your user ID.
 sudo chmod 600 /opt/pikarag/.env
 ```
 

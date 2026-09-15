@@ -904,11 +904,13 @@ def test_llmstatus_command_reports_up_with_configured_model_and_breaker_state():
     command = tree.get_command("llmstatus")
     interaction = MagicMock()
     interaction.user.id = 1
-    interaction.response.send_message = AsyncMock()
+    interaction.response.defer = AsyncMock()
+    interaction.followup.send = AsyncMock()
 
     asyncio.run(command.callback(interaction))
 
-    sent_text = _extract_text(interaction.response.send_message)
+    interaction.response.defer.assert_awaited_once()
+    sent_text = _extract_text(interaction.followup.send)
     assert "Online" in sent_text
     assert "llama3.2:3b" in sent_text
     assert "closed" in sent_text
@@ -931,11 +933,13 @@ def test_llmstatus_command_reports_down_with_the_breaker_state():
     command = tree.get_command("llmstatus")
     interaction = MagicMock()
     interaction.user.id = 1
-    interaction.response.send_message = AsyncMock()
+    interaction.response.defer = AsyncMock()
+    interaction.followup.send = AsyncMock()
 
     asyncio.run(command.callback(interaction))
 
-    sent_text = _extract_text(interaction.response.send_message)
+    interaction.response.defer.assert_awaited_once()
+    sent_text = _extract_text(interaction.followup.send)
     assert "Offline" in sent_text
     assert "open" in sent_text
 
@@ -957,9 +961,11 @@ def test_llmstatus_replies_ephemerally():
     command = tree.get_command("llmstatus")
     interaction = MagicMock()
     interaction.user.id = 1
-    interaction.response.send_message = AsyncMock()
+    interaction.response.defer = AsyncMock()
+    interaction.followup.send = AsyncMock()
 
     asyncio.run(command.callback(interaction))
 
-    _args, kwargs = interaction.response.send_message.call_args
+    interaction.response.defer.assert_awaited_once()
+    _args, kwargs = interaction.followup.send.call_args
     assert kwargs["ephemeral"] is True
