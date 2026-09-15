@@ -75,6 +75,27 @@ def test_format_debug_last_truncates_a_very_long_question_and_answer():
     assert formatted.count("…[truncated]") == 2
 
 
+def test_format_debug_last_truncates_a_very_long_sources_or_chunks_list():
+    # A future config change (bigger n_results, longer source names) could
+    # grow this list well past what a handful of short entries costs today.
+    row = {
+        "timestamp": "2026-09-14T12:00:00+00:00",
+        "question": "A short question?",
+        "answer": "A short answer.",
+        "sources": [{"name": f"VeryLongPokemonNameNumber{i}" * 5, "chunk_type": "stats"} for i in range(50)],
+        "retrieved_chunks": [{"id": f"VeryLongChunkIdNumber{i}" * 5, "distance": 0.1} for i in range(50)],
+        "best_distance": 0.1,
+        "gate_fired": False,
+        "degraded": False,
+        "latency_ms": 900,
+    }
+
+    formatted = format_debug_last(row)
+
+    assert len(formatted) <= 4096
+    assert "…[truncated]" in formatted
+
+
 def test_format_debug_last_stays_under_discord_embed_description_limit_worst_case():
     # Worst case: a long question, a long answer (the answerer can produce
     # up to ~1024 tokens, which can exceed 4096 characters on its own), and

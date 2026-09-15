@@ -28,7 +28,15 @@ elsewhere -- nothing below is Oracle-specific except the instance shape.
 ssh ubuntu@<instance-ip>
 sudo apt update && sudo apt install -y python3.11 python3.11-venv git
 
-sudo useradd -r -m -d /opt/pikarag -s /usr/sbin/nologin pikarag
+sudo useradd -r -M -d /opt/pikarag -s /usr/sbin/nologin pikarag  # -M: don't
+                                                                  # pre-populate the
+                                                                  # home dir from
+                                                                  # /etc/skel, or the
+                                                                  # git clone below
+                                                                  # fails on a
+                                                                  # non-empty directory
+sudo mkdir -p /opt/pikarag
+sudo chown pikarag:pikarag /opt/pikarag
 sudo -u pikarag git clone <your-repo-url> /opt/pikarag
 cd /opt/pikarag
 
@@ -38,7 +46,13 @@ sudo -u pikarag .venv/bin/pip install -r requirements.txt
 sudo -u pikarag cp .env.example .env
 sudo -u pikarag $EDITOR .env   # fill in DISCORD_TOKEN; leave LLM_HOST blank
                                 # for now -- section 3 below tells you what
-                                # value goes there once the laptop is set up
+                                # value goes there once the laptop is set up.
+                                # Also set BOT_OWNER_ID to your own Discord
+                                # user ID to enable the admin-only
+                                # /debug-last command (optional -- if left
+                                # unset, /debug-last is rejected for
+                                # everyone). See .env.example's comment for
+                                # how to find your user ID.
 sudo chmod 600 /opt/pikarag/.env
 ```
 

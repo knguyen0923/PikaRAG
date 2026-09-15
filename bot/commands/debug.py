@@ -25,13 +25,13 @@ def format_debug_last(row: Optional[dict]) -> str:
     answer = _truncate(row["answer"])
 
     if row["sources"]:
-        sources_text = ", ".join(f"{s['name']} ({s['chunk_type']})" for s in row["sources"])
+        sources_text = _truncate(", ".join(f"{s['name']} ({s['chunk_type']})" for s in row["sources"]))
     else:
         sources_text = "none"
 
     if row["retrieved_chunks"]:
-        chunks_text = ", ".join(
-            f"{c['id']} (distance {c['distance']:.4f})" for c in row["retrieved_chunks"]
+        chunks_text = _truncate(
+            ", ".join(f"{c['id']} (distance {c['distance']:.4f})" for c in row["retrieved_chunks"])
         )
     else:
         chunks_text = "none"

@@ -22,8 +22,15 @@ apt-get update
 apt-get install -y python3.11 python3.11-venv git
 
 if ! id -u pikarag &>/dev/null; then
-  useradd -r -m -d "$APP_DIR" -s /usr/sbin/nologin pikarag
+  # -M (not -m): skip populating $APP_DIR from /etc/skel. With -m, useradd
+  # writes .bashrc/.profile/.bash_logout into $APP_DIR, so the directory is
+  # never empty by the time git clone runs into it below, and clone fails
+  # with "destination path already exists and is not an empty directory."
+  useradd -r -M -d "$APP_DIR" -s /usr/sbin/nologin pikarag
 fi
+
+mkdir -p "$APP_DIR"
+chown pikarag:pikarag "$APP_DIR"
 
 if [ ! -d "$APP_DIR/.git" ]; then
   sudo -u pikarag git clone "$REPO_URL" "$APP_DIR"

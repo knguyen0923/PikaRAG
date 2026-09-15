@@ -31,6 +31,7 @@ updated and `pipeline.refresh_pikalytics_job` re-run.
 | `/import` | Import a full Pokemon team from Pokepaste text or a pokepast.es URL. |
 | `/scout` | Add or update one Pokemon in a stored team with only what you currently know. |
 | `/team` | View the Pokemon currently stored for your team or the opponent's team. |
+| `/debug-last` | Show the most recent `/ask` call's full retrieval/answer detail (bot owner only). |
 
 `/import`/`/scout`/`/team` feed stored team data into `/calc` and `/ask`, so
 those commands can reference "my Landorus" instead of spelling out a full

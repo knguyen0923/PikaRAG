@@ -227,18 +227,26 @@ def build_client(
     @tree.error
     async def on_tree_error(interaction: discord.Interaction, error: app_commands.AppCommandError) -> None:
         command_name = interaction.command.name if interaction.command else "?"
+        ephemeral = False
         if isinstance(error, app_commands.CommandOnCooldown):
             message = f"Slow down! Please wait {error.retry_after:.1f}s before using that again."
             color = discord.Color.orange()
+        elif isinstance(error, app_commands.CheckFailure):
+            # A correctly-rejected request (e.g. a non-owner running
+            # /debug-last), not a malfunction -- don't log it as one, and
+            # don't broadcast the rejection to the whole channel.
+            message = "You don't have permission to use that command."
+            color = discord.Color.orange()
+            ephemeral = True
         else:
             print(f"Unhandled error in /{command_name}: {error!r}")
             message = "Something went wrong running that command. Please try again."
             color = discord.Color.red()
         embed = discord.Embed(description=message, color=color)
         if interaction.response.is_done():
-            await interaction.followup.send(embed=embed)
+            await interaction.followup.send(embed=embed, ephemeral=ephemeral)
         else:
-            await interaction.response.send_message(embed=embed)
+            await interaction.response.send_message(embed=embed, ephemeral=ephemeral)
 
     return client, tree
 

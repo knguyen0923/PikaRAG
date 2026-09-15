@@ -5,16 +5,16 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-15, at commit `26d1e60` (observability merged to
-`main` at `6550405`; this commit is the STATUS.md/RESUME.md refresh for
-that merge, not pushed to origin).
+**Last updated:** 2026-09-15, after the housekeeping pass below (see
+`STATUS_COMMIT` marker for the exact commit, not pushed to origin).
 
-**Immediate next action:** finish Task 5 of the local LLM migration
-(physical hardware setup) — see "Local LLM migration" section below for
-exact in-progress state and the specific network fix still needed on the
-Windows laptop. That remains the only open item unrelated to the design
-specs; retrieval-quality, grounding-trust, and observability (see below)
-have all shipped; reliability and ingestion-robustness are next.
+**Immediate next action:** implementation plans for the two ready design
+specs (reliability, ingestion-robustness) are next up, via the same
+`subagent-driven-development` playbook used for observability. Separately,
+and not blocking that work: Task 5 of the local LLM migration (physical
+hardware setup) is still open — see "Local LLM migration" section below
+for exact in-progress state and the specific network fix still needed on
+the Windows laptop.
 
 ## Grounding & trust — shipped
 
@@ -287,6 +287,33 @@ no implementation plans yet, but are believed implementation-ready:
 
 Suggested order: either one, independent of everything else.
 
+## Housekeeping — resolved (2026-09-15)
+
+All of the previously-listed low-priority follow-up items are now closed
+except the one genuinely external one (Pikalytics' missing M-C format
+code, still below):
+
+- `deploy/cloud-init.sh`'s `useradd -m` / `git clone` ordering bug (see
+  memory `pikarag-oracle-networking-gotchas`) is fixed: switched to
+  `useradd -M` (skip `/etc/skel` population) plus an explicit
+  `mkdir`+`chown` before the clone, so `$APP_DIR` is empty when `git
+  clone` runs into it. The same bug existed in `docs/DEPLOYMENT.md`'s
+  manual runbook (section 2) and got the identical fix there.
+- Confirmed Pikalytics scraping is fine: `robots.txt` explicitly allows
+  `/ai/` (the exact path `pipeline/fetch_pikalytics.py` hits) for AI/bot
+  user-agents including `ClaudeBot`/`anthropic-ai`, no crawl-delay is set,
+  and their Privacy Policy (the only legal doc they publish -- no separate
+  ToS exists) has no scraping/rate-limit/reuse restriction.
+- 3 parked minors from the observability final review, closed: a non-owner
+  running `/debug-last` now gets a friendly ephemeral "no permission"
+  message instead of being logged as an "Unhandled error" and shown the
+  generic public error embed (`bot/main.py`'s `on_tree_error` gained a
+  `CheckFailure` branch); `/debug-last`'s `sources`/`retrieved_chunks` text
+  is now truncated the same way `question`/`answer` already were, closing
+  the embed-overflow risk for a future larger `n_results` or longer source
+  names; `README.md`'s Commands table and `docs/DEPLOYMENT.md` now document
+  `/debug-last` and `BOT_OWNER_ID`. 354/354 tests passing.
+
 Also still open: a Discord button-UI request (replacing slash commands
 with clickable message components) — raised early in the 2026-09-13
 session, not yet brainstormed at all.
@@ -305,13 +332,6 @@ Everything below is optional follow-up, none of it blocking:
   (`https://claude.ai/code/artifact/c8af5a8a-f5ad-420c-8dfe-9d260f6d0ea7`)
   is still private -- only matters if the bot is ever submitted somewhere
   that verifies those URLs (e.g. Discord's public bot verification).
-- Confirm Pikalytics scraping is within their ToS (pipeline has been
-  running against it, never formally checked).
-- `deploy/cloud-init.sh` has a real bug (see memory
-  `pikarag-oracle-networking-gotchas`): `useradd -m` populates `/opt/pikarag`
-  with skeleton dotfiles before `git clone` runs into it, which fails since
-  the directory isn't empty. Only matters on the next from-scratch instance
-  recreation -- doesn't affect the currently-running instance.
 
 ## Useful pointers
 

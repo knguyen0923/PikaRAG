@@ -462,6 +462,22 @@ def test_moves_command_uses_usage_data_when_provided():
     assert "top moves" in sent_text.lower()
 
 
+def test_tree_error_handler_gives_an_ephemeral_permission_message_on_check_failure():
+    from discord import app_commands
+
+    _client, tree = build_client()
+    interaction = MagicMock()
+    interaction.response.is_done.return_value = False
+    interaction.response.send_message = AsyncMock()
+
+    error = app_commands.CheckFailure("owner only")
+    asyncio.run(tree.on_error(interaction, error))
+
+    _args, kwargs = interaction.response.send_message.call_args
+    assert kwargs["ephemeral"] is True
+    assert "permission" in kwargs["embed"].description.lower()
+
+
 def test_tree_error_handler_gives_a_friendly_message_on_cooldown():
     from discord import app_commands
     from discord.app_commands.checks import Cooldown
