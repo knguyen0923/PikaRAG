@@ -29,6 +29,12 @@ class _FakeOllamaClient:
             raise self._exception
         return _FakeOllamaResponse(self._response_json, status_code=self._status_code)
 
+    def get(self, url, timeout=None):
+        self.calls.append({"url": url, "timeout": timeout})
+        if self._exception:
+            raise self._exception
+        return _FakeOllamaResponse(self._response_json, status_code=self._status_code)
+
 
 def test_ollama_answer_returns_the_models_response_text():
     client = _FakeOllamaClient(response_json={"message": {"content": "Gyarados has 95 base HP."}})
@@ -108,3 +114,58 @@ def test_ollama_answer_returns_offline_message_on_malformed_response():
     result = answerer.answer("question", "context")
 
     assert result == OFFLINE_MESSAGE
+
+
+def test_ollama_check_health_reports_up_and_lists_loaded_models():
+    client = _FakeOllamaClient(
+        response_json={"models": [{"name": "llama3.2:3b"}, {"name": "nomic-embed-text"}]}
+    )
+    answerer = OllamaAnswerer(host="100.1.2.3:11434", client=client)
+
+    result = answerer.check_health()
+
+    assert result == {"up": True, "models": ["llama3.2:3b", "nomic-embed-text"]}
+
+
+def test_ollama_check_health_hits_the_tags_endpoint_with_a_short_timeout():
+    client = _FakeOllamaClient(response_json={"models": []})
+    answerer = OllamaAnswerer(host="100.1.2.3:11434", client=client)
+
+    answerer.check_health()
+
+    call = client.calls[0]
+    assert call["url"] == "http://100.1.2.3:11434/api/tags"
+    assert call["timeout"] == 3.0
+
+
+def test_ollama_check_health_reports_down_on_connection_error():
+    client = _FakeOllamaClient(exception=requests.exceptions.ConnectionError("refused"))
+    answerer = OllamaAnswerer(host="100.1.2.3:11434", client=client)
+
+    result = answerer.check_health()
+
+    assert result == {"up": False, "models": []}
+
+
+def test_ollama_check_health_reports_down_on_timeout():
+    client = _FakeOllamaClient(exception=requests.exceptions.Timeout("slow"))
+    answerer = OllamaAnswerer(host="100.1.2.3:11434", client=client)
+
+    result = answerer.check_health()
+
+    assert result == {"up": False, "models": []}
+
+
+def test_ollama_check_health_reports_down_on_malformed_response():
+    client = _FakeOllamaClient(response_json={"unexpected": "shape"})
+    answerer = OllamaAnswerer(host="100.1.2.3:11434", client=client)
+
+    result = answerer.check_health()
+
+    assert result == {"up": False, "models": []}
+
+
+def test_ollama_answerer_exposes_its_configured_model():
+    answerer = OllamaAnswerer(host="100.1.2.3:11434", model="phi3:mini")
+
+    assert answerer.model == "phi3:mini"
