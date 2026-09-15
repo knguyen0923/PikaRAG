@@ -100,6 +100,23 @@ def test_build_also_indexes_item_chunks():
     assert matches[0]["metadata"]["chunk_type"] == "item"
 
 
+def test_query_with_where_filter_narrows_to_matching_metadata():
+    index = _build_test_index()
+
+    matches = index.query("Pokemon", n_results=10, where={"pokemon": "Abomasnow"})
+
+    assert len(matches) == 2
+    assert all(m["metadata"]["pokemon"] == "Abomasnow" for m in matches)
+
+
+def test_query_without_where_filter_is_unaffected():
+    index = _build_test_index()
+
+    matches = index.query("Pokemon", n_results=10)
+
+    assert len(matches) == 4
+
+
 def test_default_client_persists_data_across_instances_at_same_path(tmp_path):
     persist_dir = tmp_path / "chroma"
     embedder = _BagOfWordsEmbedder()

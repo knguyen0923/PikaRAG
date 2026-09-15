@@ -40,9 +40,9 @@ class ChromaIndex:
             ],
         )
 
-    def query(self, text: str, n_results: int = 5) -> list[dict]:
+    def query(self, text: str, n_results: int = 5, where: Optional[dict] = None) -> list[dict]:
         embedding = self._embedder.embed([text])[0]
-        result = self._collection.query(query_embeddings=[embedding], n_results=n_results)
+        result = self._collection.query(query_embeddings=[embedding], n_results=n_results, where=where)
         return [
             {
                 "id": result["ids"][0][i],
