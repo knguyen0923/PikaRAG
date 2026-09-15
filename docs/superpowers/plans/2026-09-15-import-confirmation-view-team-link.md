@@ -527,8 +527,21 @@ to:
             view = ViewTeamButtonView(user_id, side) if result["ok"] else None
             embed = _embed("import", result["message"])
             if as_followup:
-                await target_interaction.followup.send(embed=embed, view=view)
+                # discord.py's Webhook.send (unlike edit_message) treats
+                # view=None the same as an invalid view object and raises
+                # TypeError -- omit the kwarg entirely instead of passing
+                # None through (the same class of bug caught and fixed in
+                # Slice A's /calc: interaction.response.send_message has an
+                # identical `view is not MISSING` check that crashes on
+                # view=None; followup.send has its own copy of that check).
+                if view is None:
+                    await target_interaction.followup.send(embed=embed)
+                else:
+                    await target_interaction.followup.send(embed=embed, view=view)
             else:
+                # edit_message is None-safe (uses truthiness, not `is not
+                # MISSING`), so view=None here correctly clears any existing
+                # view -- no special-casing needed on this branch.
                 await target_interaction.response.edit_message(embed=embed, view=view)
 
         if get_team(user_id, side):
