@@ -5,6 +5,7 @@ __pycache__/
 .env
 data/chroma/
 data/state/
+data/observability.db
 .vscode/
 
 .worktrees/
