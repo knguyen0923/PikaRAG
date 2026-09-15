@@ -5,21 +5,21 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-15, at commit `df7c528` (not pushed to origin).
+**Last updated:** 2026-09-15, at commit `db73b6c` (ingestion-robustness
+merged; not pushed to origin).
 
-**Immediate next action:** ingestion-robustness is implemented (all 4
-tasks done and individually reviewed) and its final whole-branch review is
-in a fix round — see "Ingestion robustness — in progress" below for the
-critical finding it caught and the fix being applied; merge to `main` once
-the scoped re-review comes back clean. Separately, a new design spec,
-`2026-09-15-team-button-ui-design.md`, is written and committed (Phase 1
-of the open Discord button-UI backlog item — a `/team` side-switcher, see
-its own section below) and awaiting the user's review before an
-implementation plan is written. Also separately, and not blocking either
-of the above: Task 5 of the local LLM migration (physical hardware setup)
-is still open — see "Local LLM migration" section below for exact
-in-progress state and the specific network fix still needed on the
-Windows laptop.
+**Immediate next action:** all 6 design specs from the 2026-09-13
+brainstorm are now shipped (eval-harness, retrieval-quality,
+grounding-trust, observability, reliability, ingestion-robustness). The
+only work item with an approved design not yet planned/built is
+`2026-09-15-team-button-ui-design.md` (Phase 1 of the open Discord
+button-UI backlog item — a `/team` side-switcher) — written and
+committed, awaiting the user's review before an implementation plan is
+written; per the user's explicit instruction, do NOT execute that plan
+once written without their go-ahead. Separately, and not blocking that:
+Task 5 of the local LLM migration (physical hardware setup) is still
+open — see "Local LLM migration" section below for exact in-progress
+state and the specific network fix still needed on the Windows laptop.
 
 ## Grounding & trust — shipped
 
@@ -54,7 +54,7 @@ preserved in git history, `git log --oneline --grep=eval-harness` and
 itself to find two real retrieval-quality bugs and fixed them via
 entity-aware retrieval, and grounding & trust (see below). 329/329 tests
 passing throughout.
-<!-- STATUS_COMMIT: df7c528 -->
+<!-- STATUS_COMMIT: db73b6c -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
@@ -306,12 +306,11 @@ mirroring `/ask`'s existing pattern); and `/llmstatus` was undocumented in
 `README.md` plus `docs/DEPLOYMENT.md` had drifted out of sync with
 `.env.example` (fixed). 376/376 tests passing.
 
-## Ingestion robustness — implemented, final-review fix in progress
+## Ingestion robustness — shipped
 
-`2026-09-13-ingestion-robustness-design.md` is implemented (plan
-`docs/superpowers/plans/2026-09-15-ingestion-robustness.md`, 4 tasks via
-`subagent-driven-development`, all individually reviewed and approved) on
-branch `worktree-ingestion-robustness` — **not yet merged to `main`**.
+`2026-09-13-ingestion-robustness-design.md` is implemented and merged
+(plan `docs/superpowers/plans/2026-09-15-ingestion-robustness.md`, 4 tasks
+via `subagent-driven-development`, commits `8f304f9..71da1a9`).
 `pipeline/validate.py` (schema/count checks, all plain assertions, no new
 dependency) and `pipeline/freshness.py` (per-job last-successful-refresh
 timestamps, 14-day/60-day independent thresholds) are wired into both
@@ -325,22 +324,30 @@ the live `data/processed/` directory) before either job's task review.
 
 The final whole-branch review caught something more serious: the new
 empty-learnset schema check, run against this repo's own real committed
-data, permanently rejects 5 legitimate Mega-form records (PokeAPI has no
+data, permanently rejected 5 legitimate Mega-form records (PokeAPI has no
 learnset data for them) — in production this would have silently stalled
 the weekly PokeAPI refresh forever, and *because* a failed validation never
 records a success timestamp, the freshness check (missing timestamp =
-"unknown," not "stale") could never have reported the stall either. A fix
-is in progress: the empty-learnset check becomes a tolerance/percentage
-check (mirroring the already-established `validate_legal_count` pattern)
-instead of failing on any single record, plus a new regression test that
-runs the validators against this repo's real `data/source`/`data/raw` data
-and asserts zero problems, so this exact class of bug can't recur
-silently. Also being fixed in the same pass: `refresh_pikalytics_job.py`'s
-pre-existing `stale_format_code` guard was firing *after* a stale run had
-already swapped in an empty `{}` and recorded itself as a successful
-refresh — now folded into the validate-before-swap gate so it actually
-blocks the swap. Once the scoped re-review of this fix comes back clean,
-the branch merges to `main`.
+"unknown," not "stale") could never have reported the stall either. Fixed:
+the empty-learnset check is now a tolerance/percentage check (5%, mirroring
+the already-established `validate_legal_count` pattern) instead of failing
+on any single record, plus a new regression test
+(`test_validate_records_accepts_the_repos_own_committed_data`) that runs
+the real `data/source`/`data/raw` through the validators and asserts zero
+problems, so this exact class of bug can't recur silently — confirmed
+directly against the merged `main` (345 records, 5 known empty-learnset
+Mega forms, 0 problems). Also fixed in the same pass:
+`refresh_pikalytics_job.py`'s `stale_format_code` guard used to fire
+*after* a stale run had already swapped in an empty `{}` and recorded
+itself as a successful refresh — now folded into the validate-before-swap
+gate so it actually blocks the swap and the timestamp write. Two
+deliberately-documented-not-fixed gaps: `validate_usage`'s referential
+check is structurally unreachable in production (the fetch function only
+ever inserts keys drawn from the same list it's checked against) and
+`validate_items` is implemented/tested but has no refresh job to be called
+from (`vgc_items.json` is static source data) — both now carry an explicit
+code comment explaining why, rather than silently implying protection that
+isn't there. 407/407 tests passing.
 
 ## Discord button UI — Phase 1 spec written, awaiting review
 
@@ -361,7 +368,10 @@ unchanged. Once this ships and the pattern (View construction,
 invoker-only checks, edit-in-place re-rendering) proves out in production,
 each remaining command gets its own short follow-up brainstorm applying
 the same recipe, rather than a large upfront redesign. Awaiting the user's
-review of the spec before an implementation plan is written.
+review of the spec before an implementation plan is written — and per
+explicit user instruction, once a plan exists it should NOT be executed
+until the user gives the go-ahead (they want to stop once everything is
+planned, not proceed straight into implementation).
 
 ## Housekeeping — resolved (2026-09-15)
 
