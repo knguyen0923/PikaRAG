@@ -108,7 +108,7 @@ def build_client(
     @app_commands.check(_owner_only)
     async def debug_last(interaction: discord.Interaction) -> None:
         row = get_last_ask_log()
-        await interaction.response.send_message(embed=_embed("debug", format_debug_last(row)))
+        await interaction.response.send_message(embed=_embed("debug", format_debug_last(row)), ephemeral=True)
 
     @tree.command(name="stats", description="Look up a Pokemon's base stats, types, and abilities.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)

@@ -745,3 +745,119 @@ def test_debug_last_reports_plainly_when_nothing_is_logged_yet(monkeypatch):
 
     sent_text = _extract_text(interaction.response.send_message)
     assert "No /ask calls logged yet." in sent_text
+
+
+def test_debug_last_replies_ephemerally_so_it_is_not_leaked_to_the_channel(monkeypatch):
+    # /debug-last shows the MOST RECENT /ask call, which may belong to any
+    # user in the server -- not the owner running the command. It must be
+    # ephemeral so the question/answer/chunk IDs aren't republished publicly.
+    monkeypatch.setenv("BOT_OWNER_ID", "12345")
+    monkeypatch.setattr(
+        "bot.main.get_last_ask_log",
+        lambda: {
+            "timestamp": "2026-09-14T12:00:00+00:00",
+            "question": "How bulky is Gyarados?",
+            "answer": "Gyarados has 95 base HP.",
+            "sources": [{"name": "Gyarados", "chunk_type": "stats"}],
+            "retrieved_chunks": [{"id": "Gyarados-stats", "distance": 0.4}],
+            "best_distance": 0.4,
+            "gate_fired": False,
+            "degraded": False,
+            "latency_ms": 900,
+        },
+    )
+
+    _client, tree = build_client()
+    debug_command = tree.get_command("debug-last")
+    interaction = MagicMock()
+    interaction.user.id = 12345
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(debug_command.callback(interaction))
+
+    _args, kwargs = interaction.response.send_message.call_args
+    assert kwargs["ephemeral"] is True
+
+
+def test_ask_command_logs_gate_fired_true_when_only_far_matches_are_retrieved(monkeypatch):
+    # DISTANCE_THRESHOLD in bot/commands/ask.py is 1.4 -- a best match
+    # farther than that (and no extra_context) should trip the confidence
+    # gate. This proves `gate_fired=result["answer"] == GATE_MESSAGE` in
+    # bot/main.py's ask handler actually evaluates True when it should,
+    # at the handler-integration layer (not just inside ask_response()).
+    calls = []
+
+    def _fake_log_ask(**kwargs):
+        calls.append(kwargs)
+
+    monkeypatch.setattr("bot.main.log_ask", _fake_log_ask)
+
+    class _FakeIndex:
+        def query(self, question, n_results=5, where=None):
+            return [
+                {
+                    "id": "Whatever-stats",
+                    "text": "Some chunk",
+                    "metadata": {"pokemon": "Whatever", "chunk_type": "stats"},
+                    "distance": 1.6,
+                }
+            ]
+
+    class _FakeAnswerer:
+        def answer(self, question, context_block):
+            raise AssertionError("answerer should not be called when the gate fires")
+
+    _client, tree = build_client(index=_FakeIndex(), answerer=_FakeAnswerer())
+    ask_command = tree.get_command("ask")
+    interaction = MagicMock()
+    interaction.user.id = 9300  # no stored team context for this user
+    interaction.response.defer = AsyncMock()
+    interaction.followup.send = AsyncMock()
+
+    asyncio.run(ask_command.callback(interaction, question="What is the capital of France?"))
+
+    assert len(calls) == 1
+    assert calls[0]["gate_fired"] is True
+    assert calls[0]["degraded"] is False
+
+
+def test_ask_command_logs_degraded_true_when_the_answerer_is_offline(monkeypatch):
+    # Proves `degraded=result["answer"] == OFFLINE_MESSAGE` actually
+    # evaluates True at the handler-integration layer when the answerer
+    # reports it's offline.
+    from rag.answer import OFFLINE_MESSAGE
+
+    calls = []
+
+    def _fake_log_ask(**kwargs):
+        calls.append(kwargs)
+
+    monkeypatch.setattr("bot.main.log_ask", _fake_log_ask)
+
+    class _FakeIndex:
+        def query(self, question, n_results=5, where=None):
+            return [
+                {
+                    "id": "Gyarados-stats",
+                    "text": "Gyarados stats chunk",
+                    "metadata": {"pokemon": "Gyarados", "chunk_type": "stats"},
+                    "distance": 0.3,
+                }
+            ]
+
+    class _FakeAnswerer:
+        def answer(self, question, context_block):
+            return OFFLINE_MESSAGE
+
+    _client, tree = build_client(index=_FakeIndex(), answerer=_FakeAnswerer())
+    ask_command = tree.get_command("ask")
+    interaction = MagicMock()
+    interaction.user.id = 9301
+    interaction.response.defer = AsyncMock()
+    interaction.followup.send = AsyncMock()
+
+    asyncio.run(ask_command.callback(interaction, question="How bulky is Gyarados?"))
+
+    assert len(calls) == 1
+    assert calls[0]["degraded"] is True
+    assert calls[0]["gate_fired"] is False

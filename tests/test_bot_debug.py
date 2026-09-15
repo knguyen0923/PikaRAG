@@ -50,3 +50,47 @@ def test_format_debug_last_shows_none_for_empty_sources_and_chunks():
     assert "**Retrieved chunks:** none" in formatted
     assert "**Best distance:** none" in formatted
     assert "**Gate fired:** True" in formatted
+
+
+def test_format_debug_last_truncates_a_very_long_question_and_answer():
+    row = {
+        "timestamp": "2026-09-14T12:00:00+00:00",
+        "question": "Q" * 5000,
+        "answer": "A" * 5000,
+        "sources": [{"name": "Gyarados", "chunk_type": "stats"}],
+        "retrieved_chunks": [{"id": "Gyarados-stats", "distance": 0.4}],
+        "best_distance": 0.4,
+        "gate_fired": False,
+        "degraded": False,
+        "latency_ms": 900,
+    }
+
+    formatted = format_debug_last(row)
+
+    assert "Q" * 5000 not in formatted
+    assert "A" * 5000 not in formatted
+    assert "…[truncated]" in formatted
+    # Truncation marker should appear twice: once for the question, once
+    # for the answer.
+    assert formatted.count("…[truncated]") == 2
+
+
+def test_format_debug_last_stays_under_discord_embed_description_limit_worst_case():
+    # Worst case: a long question, a long answer (the answerer can produce
+    # up to ~1024 tokens, which can exceed 4096 characters on its own), and
+    # several retrieved chunks/sources.
+    row = {
+        "timestamp": "2026-09-14T12:00:00+00:00",
+        "question": "Q" * 6000,
+        "answer": "A" * 6000,
+        "sources": [{"name": f"Pokemon{i}", "chunk_type": "stats"} for i in range(10)],
+        "retrieved_chunks": [{"id": f"Pokemon{i}-stats", "distance": 0.1 * i} for i in range(10)],
+        "best_distance": 0.1,
+        "gate_fired": False,
+        "degraded": False,
+        "latency_ms": 900,
+    }
+
+    formatted = format_debug_last(row)
+
+    assert len(formatted) <= 4096
