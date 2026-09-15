@@ -53,7 +53,12 @@ def _embed(command_name: str, description: str) -> discord.Embed:
 
 def _owner_only(interaction: discord.Interaction) -> bool:
     owner_id = os.environ.get("BOT_OWNER_ID")
-    return owner_id is not None and interaction.user.id == int(owner_id)
+    if owner_id is None:
+        return False
+    try:
+        return interaction.user.id == int(owner_id)
+    except (TypeError, ValueError):
+        return False
 
 
 def build_client(

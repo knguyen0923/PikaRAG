@@ -683,6 +683,16 @@ def test_owner_only_rejects_everyone_when_bot_owner_id_is_unset(monkeypatch):
     assert _owner_only(interaction) is False
 
 
+def test_owner_only_rejects_everyone_when_bot_owner_id_is_malformed(monkeypatch):
+    from bot.main import _owner_only
+
+    monkeypatch.setenv("BOT_OWNER_ID", "not-a-number")
+    interaction = MagicMock()
+    interaction.user.id = 12345
+
+    assert _owner_only(interaction) is False
+
+
 def test_debug_last_command_is_registered_with_an_owner_only_check():
     _client, tree = build_client()
     command = tree.get_command("debug-last")
