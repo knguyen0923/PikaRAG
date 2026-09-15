@@ -7,6 +7,8 @@ User=pikarag
 WorkingDirectory=/opt/pikarag
 EnvironmentFile=/opt/pikarag/.env
 ExecStart=/opt/pikarag/.venv/bin/python -m pipeline.refresh_job
-# Runs only if ExecStart exited 0 -- refresh_job.py exits 1 on a record-count
-# mismatch, so a bad refresh never restarts the bot onto incomplete data.
+# Runs only if ExecStart exited 0 -- refresh_job.py exits 1 if validation
+# fails (schema problems, the independent legal-count check, or any write-
+# count shortfall), so a bad refresh never restarts the bot onto incomplete
+# or corrupted data.
 ExecStartPost=/usr/bin/sudo /usr/bin/systemctl restart pikarag-bot.service
