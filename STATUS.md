@@ -5,16 +5,16 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-15, after the housekeeping pass below (see
+**Last updated:** 2026-09-15, after the reliability merge (see
 `STATUS_COMMIT` marker for the exact commit, not pushed to origin).
 
-**Immediate next action:** implementation plans for the two ready design
-specs (reliability, ingestion-robustness) are next up, via the same
-`subagent-driven-development` playbook used for observability. Separately,
-and not blocking that work: Task 5 of the local LLM migration (physical
-hardware setup) is still open — see "Local LLM migration" section below
-for exact in-progress state and the specific network fix still needed on
-the Windows laptop.
+**Immediate next action:** ingestion-robustness is the last ready design
+spec without an implementation plan — next up via the same
+`subagent-driven-development` playbook used for observability and
+reliability. Separately, and not blocking that work: Task 5 of the local
+LLM migration (physical hardware setup) is still open — see "Local LLM
+migration" section below for exact in-progress state and the specific
+network fix still needed on the Windows laptop.
 
 ## Grounding & trust — shipped
 
@@ -49,7 +49,7 @@ preserved in git history, `git log --oneline --grep=eval-harness` and
 itself to find two real retrieval-quality bugs and fixed them via
 entity-aware retrieval, and grounding & trust (see below). 329/329 tests
 passing throughout.
-<!-- STATUS_COMMIT: e9996b0 -->
+<!-- STATUS_COMMIT: 74a6820 -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
@@ -273,19 +273,42 @@ handler-level tests proving `gate_fired`/`degraded` actually evaluate
 `True` (previously only the `False`/normal path was covered at that
 layer). 352/352 tests passing.
 
-## Next up (2 more designs, not implemented)
+## Reliability — shipped
 
-2 more verified-and-fixed design specs from the 2026-09-13 brainstorm have
-no implementation plans yet, but are believed implementation-ready:
+`2026-09-13-reliability-design.md` is implemented and merged (plan
+`docs/superpowers/plans/2026-09-15-reliability.md`, 4 tasks via
+`subagent-driven-development`, commits `b227395..74a6820`): a
+`rag/circuit_breaker.py` `CircuitBreaker` wraps the LLM answerer and
+detects failure the same way the rest of the codebase does — by comparing
+the return value against `OFFLINE_MESSAGE`, never by catching an exception
+(`OllamaAnswerer.answer` already never raises). After 3 consecutive
+failures it opens for a 60-second cooldown, short-circuiting further
+`/ask` calls immediately instead of each paying a full 30-second network
+timeout against a laptop that's known to be down; after the cooldown, the
+next call probes for real (half-open), closing the breaker on success or
+reopening it on failure. A new owner-only `/llmstatus` command (gated by
+the same `BOT_OWNER_ID`/`_owner_only` mechanism as `/debug-last`) reports
+LLM reachability via a new short-timeout `OllamaAnswerer.check_health()`
+liveness probe against `/api/tags`, the configured vs. loaded model, and
+the breaker's live state. The final whole-branch review caught 2 real
+Important bugs only visible once all 4 tasks sat together: `/llmstatus`
+didn't defer its interaction before the 3-second-timeout health check,
+and Discord's own ACK deadline is also 3 seconds — so in the exact
+"laptop asleep, not actively refusing" outage scenario the command exists
+to diagnose, it could time out and show Discord's generic failure instead
+of the intended offline report (fixed with `defer()`/`followup.send()`,
+mirroring `/ask`'s existing pattern); and `/llmstatus` was undocumented in
+`README.md` plus `docs/DEPLOYMENT.md` had drifted out of sync with
+`.env.example` (fixed). 376/376 tests passing.
 
-1. `2026-09-13-reliability-design.md` — circuit breaker around Ollama calls
-   (via string-match against `OFFLINE_MESSAGE`, not exceptions) + an
-   admin-only `/llmstatus` health check.
-2. `2026-09-13-ingestion-robustness-design.md` — schema + freshness
+## Next up (1 more design, not implemented)
+
+The last verified-and-fixed design spec from the 2026-09-13 brainstorm
+without an implementation plan yet, believed implementation-ready:
+
+1. `2026-09-13-ingestion-robustness-design.md` — schema + freshness
    validation on pipeline refreshes, rescoped to drop a justification that
    didn't hold up (see git history).
-
-Suggested order: either one, independent of everything else.
 
 ## Housekeeping — resolved (2026-09-15)
 
