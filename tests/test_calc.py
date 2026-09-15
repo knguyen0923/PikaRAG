@@ -575,3 +575,29 @@ def test_chilan_berry_reduces_normal_type_damage_without_needing_super_effective
     chilan_berry = calculate_damage(move, attacker, defender_chilan_berry, _BASE_CONTEXT)
 
     assert chilan_berry.max_damage < no_item.max_damage
+
+
+def test_choice_scarf_boosts_speed_but_not_damage():
+    move = {"name": "Tackle", "type": "Normal", "category": "Physical", "power": 40, "accuracy": 100, "pp": 35, "effect": None}
+    attacker_no_item = _make_combatant(_NEUTRAL_STATS, types=["Normal"])
+    attacker_choice_scarf = _make_combatant(_NEUTRAL_STATS, types=["Normal"], item="Choice Scarf")
+    defender = _make_combatant(_NEUTRAL_STATS, types=["Water"])
+
+    no_item = calculate_damage(move, attacker_no_item, defender, _BASE_CONTEXT)
+    choice_scarf = calculate_damage(move, attacker_choice_scarf, defender, _BASE_CONTEXT)
+
+    # Choice Scarf boosts Speed, which calculate_damage never reads -- so unlike
+    # Choice Band it must NOT change the damage roll at all.
+    assert choice_scarf.max_damage == no_item.max_damage
+
+
+def test_choice_scarf_boosts_the_speed_stat_directly():
+    from damage_calc.calc import _effective_stat
+
+    combatant_no_item = _make_combatant(_NEUTRAL_STATS)
+    combatant_choice_scarf = _make_combatant(_NEUTRAL_STATS, item="Choice Scarf")
+
+    boosted = _effective_stat(combatant_choice_scarf, "speed")
+    baseline = _effective_stat(combatant_no_item, "speed")
+
+    assert boosted == math.floor(baseline * 1.5)

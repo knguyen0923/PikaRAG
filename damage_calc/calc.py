@@ -51,6 +51,7 @@ _TERRAIN_TYPE_MAP = {"Electric": "Electric", "Grassy": "Grass", "Psychic": "Psyc
 _ITEM_STAT_BOOST = {
     "Choice Band": ("attack", CHOICE_ITEM_STAT_MULTIPLIER),
     "Choice Specs": ("sp_attack", CHOICE_ITEM_STAT_MULTIPLIER),
+    "Choice Scarf": ("speed", CHOICE_ITEM_STAT_MULTIPLIER),
     "Assault Vest": ("sp_defense", ASSAULT_VEST_MULTIPLIER),
 }
 
