@@ -105,6 +105,26 @@ def test_calc_command_sends_an_embed_with_the_calc_color():
     assert embed.color == discord.Color.red()
 
 
+def test_calc_command_ordinary_success_passes_no_view_kwarg_at_all():
+    # Regression test for the Critical bug: _calc_send used to pass
+    # view=None through to interaction.response.send_message(...) on every
+    # ORDINARY /calc call (no suggestion needed), which crashes under real
+    # discord.py 2.7.1 with AttributeError: 'NoneType' object has no
+    # attribute 'is_finished'. The fix omits the view kwarg entirely when
+    # view is None, so it must be genuinely ABSENT here -- not just None --
+    # or this test would pass identically before and after a regression.
+    _client, tree = build_client(records=_CALC_TEST_RECORDS, moves=_CALC_TEST_MOVES)
+    calc_cmd = tree.get_command("calc")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(calc_cmd.callback(interaction, attacker="Garchomp", defender="Garchomp", move="Earthquake"))
+
+    _args, kwargs = interaction.response.send_message.call_args
+    assert "view" not in kwargs
+
+
 def test_import_command_is_registered_on_the_tree():
     _client, tree = build_client()
     commands = {command.name: command for command in tree.get_commands()}
@@ -302,7 +322,10 @@ def test_calc_command_shows_no_view_for_a_completely_unrecognized_name():
     asyncio.run(calc_cmd.callback(interaction, attacker="Zzzznotreal", defender="Garchomp", move="Earthquake"))
 
     _args, kwargs = interaction.response.send_message.call_args
-    assert kwargs.get("view") is None
+    # Regression guard: the view kwarg must be genuinely ABSENT here, not just
+    # None -- discord.py 2.7.1 crashes on send_message(view=None) with
+    # AttributeError: 'NoneType' object has no attribute 'is_finished'.
+    assert "view" not in kwargs
 
 
 def test_calc_command_picking_a_suggestion_preserves_optional_fields_and_clears_the_view():
@@ -665,7 +688,10 @@ def test_stats_command_shows_no_view_when_there_are_no_close_matches():
     asyncio.run(stats_cmd.callback(interaction, name="Zzzznotarealpokemon"))
 
     _args, kwargs = interaction.response.send_message.call_args
-    assert kwargs.get("view") is None
+    # Regression guard: the view kwarg must be genuinely ABSENT here, not just
+    # None -- discord.py 2.7.1 crashes on send_message(view=None) with
+    # AttributeError: 'NoneType' object has no attribute 'is_finished'.
+    assert "view" not in kwargs
 
 
 def test_moves_command_shows_a_suggestion_view_on_a_close_miss():

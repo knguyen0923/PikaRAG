@@ -10,6 +10,8 @@ class NameSuggestionView(discord.ui.View):
     field corrected, etc.)."""
 
     def __init__(self, user_id: int, suggestions: list, on_select):
+        if not suggestions:
+            raise ValueError("NameSuggestionView requires at least one suggestion, got an empty list.")
         super().__init__()
         self.user_id = user_id
         self._on_select = on_select
@@ -29,3 +31,19 @@ class NameSuggestionView(discord.ui.View):
             await interaction.response.send_message("This isn't your suggestion menu.", ephemeral=True)
             return False
         return True
+
+    async def on_error(self, interaction: discord.Interaction, error: Exception, item: discord.ui.Item) -> None:
+        # discord.ui.View's default on_error only logs a traceback and lets
+        # Discord show its own generic failure message -- every other error
+        # path in this bot (see on_tree_error in bot/main.py) instead shows a
+        # friendly red embed. Mirror that same fallback message/style here so
+        # a raise from on_select (e.g. a /calc replay) behaves consistently.
+        print(f"Unhandled error in NameSuggestionView: {error!r}")
+        embed = discord.Embed(
+            description="Something went wrong running that command. Please try again.",
+            color=discord.Color.red(),
+        )
+        if interaction.response.is_done():
+            await interaction.followup.send(embed=embed, ephemeral=True)
+        else:
+            await interaction.response.send_message(embed=embed, ephemeral=True)
