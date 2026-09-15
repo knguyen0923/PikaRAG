@@ -5,21 +5,74 @@ or right before a compaction) so work can pick back up without losing the
 thread. If this says "nothing in progress," there's no live handoff — just
 use `STATUS.md`.
 
-**Paused at:** 2026-09-14, end of session (user asked to wrap up, not a
-token-budget pause — safe to resume any time).
-**Working on:** Design/implementation cycle for the 6 specs from the
-2026-09-13 brainstorm. Local LLM migration and the eval harness are both
-shipped; retrieval-quality's spec is ready with real measured evidence but
-has **no implementation plan yet** — that's the next concrete step.
-**Why paused:** User asked to finish documenting the retrieval-quality
-evidence and make sure the project state is legible for a future session,
-then stopped there rather than continuing straight into `writing-plans`.
+**Paused at:** 2026-09-14, late evening (user asked to pivot to something
+else, not a token-budget pause — safe to resume any time).
+**Working on:** Local LLM migration Task 5 — physical hardware setup
+connecting the live Oracle bot to a Windows laptop running Ollama. This is
+**mid-troubleshooting, not finished** — see exact state below.
+**Why paused:** User asked to note down what happened so far and switch
+to a different task; this isn't a token-budget pause, just a deliberate
+break with a network issue left unresolved.
 
-**Done so far (this session, 2026-09-13 through 2026-09-14):**
+**Done so far (Task 5, this session, 2026-09-14 evening):**
+- Windows laptop (Dell Inspiron 14 7435 2-in-1, no dedicated GPU): Ollama
+  installed via `winget`, pulled `llama3.2:latest` (3.2B Q4_K_M) and
+  `nomic-embed-text`; confirmed both work locally
+  (`curl localhost:11434/api/tags` from the laptop itself returns both).
+  Tailscale installed and connected; laptop's Tailscale IP is
+  `100.111.225.17`.
+- Oracle instance (`193.122.155.20`, SSH via
+  `ssh -i ~/.ssh/pikarag-oci.key ubuntu@193.122.155.20`): confirmed
+  running current `main`. Edited `/opt/pikarag/.env` (as the `pikarag`
+  user) to remove the stale unused `ANTHROPIC_API_KEY` line and add
+  `LLM_HOST=100.111.225.17:11434` / `LLM_MODEL=llama3.2:3b`. Tailscale was
+  **not previously installed** on this box (a gap versus what
+  `docs/DEPLOYMENT.md` assumes) — installed and connected it this
+  session. Restarted `pikarag-bot.service`; it comes up clean, connects to
+  Discord's Gateway, `/ping` responds correctly.
+- **Blocked on:** `curl http://100.111.225.17:11434/api/tags` run *from
+  the Oracle box* hangs/times out, even though both machines show as
+  connected peers on the same Tailscale network. Two suspected causes,
+  neither yet applied/verified:
+  1. Ollama defaults to binding only `127.0.0.1` — needs the Windows
+     laptop's `OLLAMA_HOST` user environment variable set to
+     `0.0.0.0:11434`, then Ollama restarted (quit + relaunch from the
+     tray/Start menu).
+  2. Windows Firewall likely blocking inbound TCP 11434 — needs, in an
+     elevated PowerShell on the laptop:
+     `New-NetFirewallRule -DisplayName "Ollama" -Direction Inbound
+     -Protocol TCP -LocalPort 11434 -Action Allow`
+- **Also flagged, not yet done:** the live Discord bot token got printed
+  in plaintext into this chat session (via a `cat .env` over SSH) — it
+  should be rotated in the Discord Developer Portal (Bot -> Reset Token)
+  and the new value updated in the Oracle `.env`, independent of the LLM
+  work.
+- **Separate unresolved oddity, may be moot once the network is fixed:**
+  earlier `/ask` attempts (before the missing-Tailscale-on-Oracle gap was
+  discovered) returned Discord's generic "application did not respond"
+  error with **zero corresponding lines** in
+  `journalctl -u pikarag-bot.service -f` — no traceback, nothing. Only one
+  bot process was confirmed running via `ps aux` (ruling out a
+  duplicate-token conflict). Worth re-checking after the network fix; if
+  `/ask` still fails silently with no server-side log output at all, that
+  needs a proper `systematic-debugging` pass rather than more ad hoc log
+  watching.
+
+**Next step on resume:** on the Windows laptop, set
+`OLLAMA_HOST=0.0.0.0:11434` (user environment variable) and add the
+firewall rule above, restart Ollama, then from the Mac re-run
+`ssh -i ~/.ssh/pikarag-oci.key ubuntu@193.122.155.20 "curl
+http://100.111.225.17:11434/api/tags"` to confirm the Oracle box can now
+reach it. Once that curl succeeds, retry `/ask <question>` in Discord with
+`journalctl -u pikarag-bot.service -f` open on the Oracle box, and confirm
+a real model-generated answer comes back (not just the offline-fallback
+message) to close out Task 5.
+
+**Older, already-shipped work (this session, 2026-09-13 through
+2026-09-14), kept for context:**
 - Local LLM migration (code): shipped, merged, pushed. `/ask` uses a local
   Ollama server instead of paid Claude Haiku. Full detail: `STATUS.md`'s
-  "Local LLM migration" section. **Task 5 (physical hardware setup) is
-  still not done** — separately tracked, not part of this resume point.
+  "Local LLM migration" section.
 - Eval harness: shipped, merged, pushed. `recall@5` gated in CI, measured
   0.9583. Full detail: `STATUS.md`'s "Eval harness" section.
 - Verification + fix pass on all 6 unimplemented 2026-09-13 design specs

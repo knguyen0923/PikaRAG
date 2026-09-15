@@ -5,16 +5,19 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-14, at commit `a6e12b9` (main, not yet pushed).
+**Last updated:** 2026-09-14 (evening), at commit `ed07cd3` (main, not yet
+pushed).
 
-**Immediate next action:** run `writing-plans` on
+**Immediate next action:** finish Task 5 of the local LLM migration
+(physical hardware setup) — see "Local LLM migration" section below for
+exact in-progress state and the specific network fix still needed on the
+Windows laptop. Once `/ask` is confirmed working end-to-end against the
+live Ollama server, the next unblocked step after that is running
+`writing-plans` on
 `docs/superpowers/specs/2026-09-13-retrieval-quality-design.md`, then
-execute via `subagent-driven-development` (same pattern as the local LLM
-migration and eval harness). The spec is reviewed, fixed, and now carries
-measured real-world evidence (see "Retrieval quality — spec ready, real
-evidence in hand" below) — no further brainstorming needed, just go
-straight to a plan. This is genuinely the next unblocked step; nothing
-else needs a decision first.
+executing via `subagent-driven-development` (same pattern as the local LLM
+migration and eval harness) — spec is reviewed, fixed, and carries
+measured real-world evidence, no further brainstorming needed.
 
 Session summary (2026-09-13 through 2026-09-14): shipped the local LLM
 migration (code) and the eval harness (both merged to `main`, both fully
@@ -27,7 +30,7 @@ history, `git log --oneline --grep=eval-harness` and
 `--grep="design specs"` for the commits); then used the eval harness
 itself to find two real retrieval-quality bugs (see below) and traced
 them to root cause. 292/292 tests passing throughout.
-<!-- STATUS_COMMIT: a6e12b9 -->
+<!-- STATUS_COMMIT: ed07cd3 -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
@@ -100,6 +103,53 @@ offline-degradation path) against real hardware — see
 and the plan's Task 5 checklist. **The live deployed bot still runs the
 old paid-Haiku code** until this commit is pulled and Task 5 is completed
 on the server.
+
+**Task 5 progress as of 2026-09-14 evening (in progress, not done):**
+- Laptop (Windows, Dell Inspiron 14 7435 2-in-1, no dedicated GPU): Ollama
+  installed, `llama3.2:latest` (3.2B, Q4_K_M) and `nomic-embed-text`
+  pulled, confirmed reachable from the laptop itself
+  (`curl localhost:11434/api/tags` returned both models). Tailscale
+  installed and connected; laptop's Tailscale IP is `100.111.225.17`.
+- Oracle instance (`193.122.155.20`): `git pull`'d to current `main`
+  (commit `7532f22`+), `.env` updated with `LLM_HOST=100.111.225.17:11434`
+  and `LLM_MODEL=llama3.2:3b`, stale unused `ANTHROPIC_API_KEY` removed
+  from `.env`. Tailscale installed and connected (was missing entirely
+  before this session — not previously done despite the DEPLOYMENT.md
+  checklist implying it). Bot service restarted successfully on the new
+  config, connects to Discord fine, `/ping` works.
+- **Blocking issue found:** `curl http://100.111.225.17:11434/api/tags`
+  from the Oracle box hangs/times out even though both machines show
+  connected on the same Tailscale network. Root cause not yet confirmed
+  but two likely culprits (not yet verified fixed): (1) Ollama by default
+  only binds to `127.0.0.1`, refusing any non-local connection regardless
+  of network reachability — fix is setting the `OLLAMA_HOST=0.0.0.0:11434`
+  environment variable on the Windows laptop and restarting Ollama; (2)
+  Windows Firewall likely blocking inbound TCP 11434 — fix is
+  `New-NetFirewallRule -DisplayName "Ollama" -Direction Inbound -Protocol
+  TCP -LocalPort 11434 -Action Allow` in an elevated PowerShell. Neither
+  fix has been applied/verified yet as of this write.
+- **Separate unresolved oddity:** before the Tailscale-on-Oracle gap was
+  found, `/ask` in Discord returned "the application did not respond" /
+  "something went wrong" with **zero corresponding lines** in
+  `journalctl -u pikarag-bot.service -f` — not even the traceback
+  `OllamaAnswerer`'s error handling or discord.py's default
+  `app_commands` error logger should normally produce. Only one bot
+  process was confirmed running (`ps aux`), ruling out a duplicate-token
+  conflict. This may simply resolve itself once the network path above is
+  fixed (the offline-degradation fallback path has direct test coverage
+  in `tests/test_rag_answer.py` and should be reliable) — but if `/ask`
+  still fails silently after both network fixes above, this needs its own
+  investigation via `systematic-debugging`, not more ad hoc log-watching.
+- **Also worth doing:** the Discord bot token was inadvertently printed in
+  plaintext during a terminal session pasted into chat this session —
+  should be rotated (Discord Developer Portal -> application -> Bot ->
+  Reset Token) and the new value updated in the Oracle `.env`, independent
+  of the LLM work above.
+- **Next step on resume:** apply both Ollama fixes on the Windows laptop
+  (env var + firewall rule), re-run the `curl` check from the Oracle box,
+  then retry `/ask` in Discord with `journalctl -f` open to confirm it
+  actually reaches the model and answers end-to-end (including the
+  offline-degradation path, per the plan's Task 5 checklist).
 
 ## Eval harness — shipped, one real bug caught and fixed
 
