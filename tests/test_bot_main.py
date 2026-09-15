@@ -279,6 +279,7 @@ def test_ask_command_includes_stored_team_context():
         def query(self, question, n_results=5, where=None):
             return [
                 {
+                    "id": "Whatever-stats",
                     "text": "Some chunk",
                     "metadata": {"pokemon": "Whatever", "chunk_type": "stats"},
                     "distance": 1.6,
@@ -305,7 +306,14 @@ def test_ask_command_narrows_retrieval_when_a_known_pokemon_is_named():
 
         def query(self, question, n_results=5, where=None):
             self.queries.append(where)
-            return [{"text": "context from narrowed query", "metadata": {"chunk_type": "stats"}, "distance": 0.3}]
+            return [
+                {
+                    "id": "Abomasnow-stats",
+                    "text": "context from narrowed query",
+                    "metadata": {"chunk_type": "stats"},
+                    "distance": 0.3,
+                }
+            ]
 
     class _FakeAnswerer:
         def answer(self, question, context_block):
@@ -541,6 +549,7 @@ def test_ask_command_embed_includes_a_sources_line():
         def query(self, question, n_results=5, where=None):
             return [
                 {
+                    "id": "Landorus-Therian-stats",
                     "text": "Landorus-Therian stats chunk",
                     "metadata": {"pokemon": "Landorus-Therian", "chunk_type": "stats"},
                     "distance": 0.3,

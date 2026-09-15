@@ -24,6 +24,7 @@ class _FakeAnswerer:
 
 
 _CLOSE_MATCH = {
+    "id": "Gyarados-stats",
     "text": "Gyarados base HP: 95.",
     "metadata": {"pokemon": "Gyarados", "chunk_type": "stats"},
     "distance": 0.4,
@@ -46,6 +47,16 @@ def test_ask_response_returns_sources_from_the_matched_chunks():
     result = ask_response(index, answerer, "How bulky is Gyarados?")
 
     assert result["sources"] == [{"name": "Gyarados", "chunk_type": "stats"}]
+
+
+def test_ask_response_returns_retrieved_chunks_and_best_distance_from_the_matched_chunks():
+    index = _FakeIndex(context_matches=[_CLOSE_MATCH])
+    answerer = _FakeAnswerer(response_text="Gyarados has 95 base HP.")
+
+    result = ask_response(index, answerer, "How bulky is Gyarados?")
+
+    assert result["retrieved_chunks"] == [{"id": "Gyarados-stats", "distance": 0.4}]
+    assert result["best_distance"] == 0.4
 
 
 def test_ask_response_passes_retrieved_context_to_the_answerer():
@@ -114,6 +125,7 @@ def test_ask_response_prepends_extra_context_when_given():
 
 def test_ask_response_gate_fires_when_best_distance_exceeds_the_threshold():
     far_match = {
+        "id": "Whatever-stats",
         "text": "Some barely related chunk.",
         "metadata": {"pokemon": "Whatever", "chunk_type": "stats"},
         "distance": 1.6,
@@ -123,7 +135,12 @@ def test_ask_response_gate_fires_when_best_distance_exceeds_the_threshold():
 
     result = ask_response(index, answerer, "What is the capital of France?")
 
-    assert result == {"answer": "I don't have solid information on that.", "sources": []}
+    assert result == {
+        "answer": "I don't have solid information on that.",
+        "sources": [],
+        "retrieved_chunks": [{"id": "Whatever-stats", "distance": 1.6}],
+        "best_distance": 1.6,
+    }
     assert answerer.calls == []
 
 
@@ -133,12 +150,18 @@ def test_ask_response_gate_fires_when_there_are_no_matches_at_all():
 
     result = ask_response(index, answerer, "Anything")
 
-    assert result == {"answer": "I don't have solid information on that.", "sources": []}
+    assert result == {
+        "answer": "I don't have solid information on that.",
+        "sources": [],
+        "retrieved_chunks": [],
+        "best_distance": None,
+    }
     assert answerer.calls == []
 
 
 def test_ask_response_gate_is_bypassed_when_extra_context_is_provided():
     far_match = {
+        "id": "Whatever-stats",
         "text": "Some barely related chunk.",
         "metadata": {"pokemon": "Whatever", "chunk_type": "stats"},
         "distance": 1.6,
@@ -158,6 +181,7 @@ def test_ask_response_gate_is_bypassed_when_extra_context_is_provided():
 
 def test_ask_response_does_not_gate_when_best_distance_is_exactly_the_threshold():
     boundary_match = {
+        "id": "Whatever-stats",
         "text": "Some chunk.",
         "metadata": {"pokemon": "Whatever", "chunk_type": "stats"},
         "distance": 1.4,
@@ -177,7 +201,12 @@ def test_ask_response_returns_no_sources_when_the_answerer_reports_offline():
 
     result = ask_response(index, answerer, "How bulky is Gyarados?")
 
-    assert result == {"answer": OFFLINE_MESSAGE, "sources": []}
+    assert result == {
+        "answer": OFFLINE_MESSAGE,
+        "sources": [],
+        "retrieved_chunks": [{"id": "Gyarados-stats", "distance": 0.4}],
+        "best_distance": 0.4,
+    }
     assert answerer.calls != []  # confirms the LLM WAS called -- distinct from the gate-fired path, where it never is
 
 
@@ -189,6 +218,7 @@ class _FakeIndexWithWhere:
         self.queries.append(where)
         return [
             {
+                "id": "Abomasnow-stats",
                 "text": "context from narrowed query",
                 "metadata": {"pokemon": "Abomasnow", "chunk_type": "stats"},
                 "distance": 0.3,

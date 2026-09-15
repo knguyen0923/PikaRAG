@@ -6,6 +6,7 @@ class _FakeIndex:
     def query(self, text, n_results=5, where=None):
         return [
             {
+                "id": "Whatever-stats",
                 "text": "Some context chunk.",
                 "metadata": {"pokemon": "Whatever", "chunk_type": "stats"},
                 "distance": 0.3,

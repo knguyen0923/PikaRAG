@@ -26,5 +26,8 @@ def build_context_block(
             }
             for match in matches
         ],
+        "retrieved_chunks": [
+            {"id": match["id"], "distance": match["distance"]} for match in matches
+        ],
         "best_distance": min((match["distance"] for match in matches), default=None),
     }

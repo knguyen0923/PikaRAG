@@ -23,11 +23,13 @@ def test_build_context_block_includes_each_matched_chunks_text():
     index = _FakeIndex(
         matches=[
             {
+                "id": "Gyarados-stats",
                 "text": "Gyarados is a Water/Flying-type Pokemon.",
                 "metadata": {"pokemon": "Gyarados", "chunk_type": "stats"},
                 "distance": 0.4,
             },
             {
+                "id": "Gyarados-moveset",
                 "text": "Gyarados's legal moveset includes: Waterfall.",
                 "metadata": {"pokemon": "Gyarados", "chunk_type": "moveset"},
                 "distance": 0.5,
@@ -49,17 +51,20 @@ def test_build_context_block_returns_empty_text_sources_and_distance_for_no_matc
     assert result["text"] == ""
     assert result["sources"] == []
     assert result["best_distance"] is None
+    assert result["retrieved_chunks"] == []
 
 
 def test_build_context_block_returns_sources_from_matched_chunk_metadata():
     index = _FakeIndex(
         matches=[
             {
+                "id": "Gyarados-stats",
                 "text": "Gyarados is a Water/Flying-type Pokemon.",
                 "metadata": {"pokemon": "Gyarados", "chunk_type": "stats"},
                 "distance": 0.4,
             },
             {
+                "id": "item-Life Orb",
                 "text": "Life Orb: Boosts move power.",
                 "metadata": {"item": "Life Orb", "chunk_type": "item"},
                 "distance": 0.6,
@@ -75,12 +80,38 @@ def test_build_context_block_returns_sources_from_matched_chunk_metadata():
     ]
 
 
+def test_build_context_block_returns_retrieved_chunks_with_ids_and_distances():
+    index = _FakeIndex(
+        matches=[
+            {
+                "id": "Gyarados-stats",
+                "text": "Gyarados is a Water/Flying-type Pokemon.",
+                "metadata": {"pokemon": "Gyarados", "chunk_type": "stats"},
+                "distance": 0.4,
+            },
+            {
+                "id": "item-Life Orb",
+                "text": "Life Orb: Boosts move power.",
+                "metadata": {"item": "Life Orb", "chunk_type": "item"},
+                "distance": 0.6,
+            },
+        ]
+    )
+
+    result = build_context_block(index, "How bulky is Gyarados?")
+
+    assert result["retrieved_chunks"] == [
+        {"id": "Gyarados-stats", "distance": 0.4},
+        {"id": "item-Life Orb", "distance": 0.6},
+    ]
+
+
 def test_build_context_block_returns_the_smallest_distance_as_best_distance():
     index = _FakeIndex(
         matches=[
-            {"text": "a", "metadata": {"pokemon": "A", "chunk_type": "stats"}, "distance": 0.9},
-            {"text": "b", "metadata": {"pokemon": "B", "chunk_type": "stats"}, "distance": 0.3},
-            {"text": "c", "metadata": {"pokemon": "C", "chunk_type": "stats"}, "distance": 0.7},
+            {"id": "a-stats", "text": "a", "metadata": {"pokemon": "A", "chunk_type": "stats"}, "distance": 0.9},
+            {"id": "b-stats", "text": "b", "metadata": {"pokemon": "B", "chunk_type": "stats"}, "distance": 0.3},
+            {"id": "c-stats", "text": "c", "metadata": {"pokemon": "C", "chunk_type": "stats"}, "distance": 0.7},
         ]
     )
 
@@ -111,11 +142,13 @@ _ITEMS = []
 def test_build_context_block_narrows_the_query_when_an_entity_is_detected():
     index = _FakeIndexWithWhere(matches=[
         {
+            "id": "Abomasnow-stats",
             "text": "Abomasnow stats chunk",
             "metadata": {"pokemon": "Abomasnow", "chunk_type": "stats"},
             "distance": 0.4,
         },
         {
+            "id": "Gyarados-stats",
             "text": "Unrelated Gyarados chunk",
             "metadata": {"pokemon": "Gyarados", "chunk_type": "stats"},
             "distance": 0.5,
@@ -129,7 +162,12 @@ def test_build_context_block_narrows_the_query_when_an_entity_is_detected():
 
 def test_build_context_block_falls_back_to_unfiltered_when_no_entity_detected():
     index = _FakeIndexWithWhere(matches=[
-        {"text": "Some chunk", "metadata": {"pokemon": "Whatever", "chunk_type": "stats"}, "distance": 0.5},
+        {
+            "id": "Whatever-stats",
+            "text": "Some chunk",
+            "metadata": {"pokemon": "Whatever", "chunk_type": "stats"},
+            "distance": 0.5,
+        },
     ])
 
     build_context_block(index, "What is the weather like?", records=_RECORDS, items=_ITEMS)
@@ -140,6 +178,7 @@ def test_build_context_block_falls_back_to_unfiltered_when_no_entity_detected():
 def test_build_context_block_falls_back_to_unfiltered_when_filtered_query_returns_nothing():
     index = _FakeIndexWithWhere(matches=[
         {
+            "id": "item-Some Item",
             "text": "Unrelated chunk with no pokemon metadata",
             "metadata": {"item": "Some Item", "chunk_type": "item"},
             "distance": 0.6,

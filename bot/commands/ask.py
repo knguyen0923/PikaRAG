@@ -46,7 +46,12 @@ def ask_response(
     context = build_context_block(index, question, records=records, items=items, n_results=n_results)
 
     if not extra_context and (context["best_distance"] is None or context["best_distance"] > DISTANCE_THRESHOLD):
-        return {"answer": GATE_MESSAGE, "sources": []}
+        return {
+            "answer": GATE_MESSAGE,
+            "sources": [],
+            "retrieved_chunks": context["retrieved_chunks"],
+            "best_distance": context["best_distance"],
+        }
 
     context_text = context["text"]
     if extra_context:
@@ -54,9 +59,19 @@ def ask_response(
 
     answer = answerer.answer(question, context_text)
     if answer == OFFLINE_MESSAGE:
-        return {"answer": answer, "sources": []}
+        return {
+            "answer": answer,
+            "sources": [],
+            "retrieved_chunks": context["retrieved_chunks"],
+            "best_distance": context["best_distance"],
+        }
 
-    return {"answer": answer, "sources": context["sources"]}
+    return {
+        "answer": answer,
+        "sources": context["sources"],
+        "retrieved_chunks": context["retrieved_chunks"],
+        "best_distance": context["best_distance"],
+    }
 
 
 async def ask_response_async(
