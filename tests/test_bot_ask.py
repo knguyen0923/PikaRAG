@@ -93,3 +93,34 @@ def test_ask_response_prepends_extra_context_when_given():
     question, context_block = answerer.calls[0]
     assert context_block.startswith("Your team: Gyarados")
     assert "Gyarados base HP: 95." in context_block
+
+
+class _FakeIndexWithWhere:
+    def __init__(self):
+        self.queries = []
+
+    def query(self, text, n_results=5, where=None):
+        self.queries.append(where)
+        return [{"text": "context from narrowed query", "metadata": {}}]
+
+
+def test_ask_response_narrows_retrieval_when_a_known_pokemon_is_named():
+    index = _FakeIndexWithWhere()
+    answerer = _FakeAnswerer(response_text="an answer")
+    records = [{"name": "Abomasnow"}]
+
+    ask_response(index, answerer, "Does Abomasnow learn Attract?", records=records, items=[])
+
+    assert index.queries == [{"pokemon": "Abomasnow"}]
+
+
+def test_ask_response_async_narrows_retrieval_when_a_known_pokemon_is_named():
+    index = _FakeIndexWithWhere()
+    answerer = _FakeAnswerer(response_text="an answer")
+    records = [{"name": "Abomasnow"}]
+
+    asyncio.run(ask_response_async(
+        index, answerer, "Does Abomasnow learn Attract?", records=records, items=[]
+    ))
+
+    assert index.queries == [{"pokemon": "Abomasnow"}]
