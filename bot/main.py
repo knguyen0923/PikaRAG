@@ -17,6 +17,7 @@ from bot.commands.moves import moves_response
 from bot.commands.ping import ping_response
 from bot.commands.stats import stats_response
 from bot.commands.team import (
+    TeamView,
     format_team_block,
     import_team_response,
     scout_response,
@@ -177,8 +178,11 @@ def build_client(
 
     @tree.command(name="team", description="View the Pokemon currently stored for your team or the opponent's team.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
-    async def team(interaction: discord.Interaction, side: Literal["mine", "opponent"]) -> None:
-        await interaction.response.send_message(embed=_embed("team", view_team_response(interaction.user.id, side)))
+    async def team(interaction: discord.Interaction) -> None:
+        await interaction.response.send_message(
+            embed=_embed("team", view_team_response(interaction.user.id, "mine")),
+            view=TeamView(interaction.user.id, "mine"),
+        )
 
     @tree.command(name="calc", description="Calculate a damage range for attacker's move vs defender.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
