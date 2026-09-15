@@ -193,7 +193,7 @@ def test_scout_response_reports_team_full_without_crashing():
 
 
 def test_team_view_has_your_team_and_opponents_team_buttons_in_order():
-    view = TeamView(user_id=9001, side="mine")
+    view = TeamView(user_id=9400, side="mine")
 
     labels = [child.label for child in view.children]
 
@@ -201,10 +201,10 @@ def test_team_view_has_your_team_and_opponents_team_buttons_in_order():
 
 
 def test_team_view_mine_button_edits_message_with_mine_side_and_a_fresh_view():
-    view = TeamView(user_id=9001, side="opponent")
+    view = TeamView(user_id=9400, side="opponent")
     mine_button = view.children[0]
     interaction = MagicMock()
-    interaction.user.id = 9001
+    interaction.user.id = 9400
     interaction.response.edit_message = AsyncMock()
 
     asyncio.run(mine_button.callback(interaction))
@@ -213,14 +213,14 @@ def test_team_view_mine_button_edits_message_with_mine_side_and_a_fresh_view():
     assert "no team" in kwargs["embed"].description.lower()
     assert isinstance(kwargs["view"], TeamView)
     assert kwargs["view"].side == "mine"
-    assert kwargs["view"].user_id == 9001
+    assert kwargs["view"].user_id == 9400
 
 
 def test_team_view_opponent_button_edits_message_with_opponent_side():
-    view = TeamView(user_id=9001, side="mine")
+    view = TeamView(user_id=9400, side="mine")
     opponent_button = view.children[1]
     interaction = MagicMock()
-    interaction.user.id = 9001
+    interaction.user.id = 9400
     interaction.response.edit_message = AsyncMock()
 
     asyncio.run(opponent_button.callback(interaction))
@@ -231,7 +231,7 @@ def test_team_view_opponent_button_edits_message_with_opponent_side():
 
 
 def test_team_view_interaction_check_rejects_a_different_user_with_an_ephemeral_message():
-    view = TeamView(user_id=9001, side="mine")
+    view = TeamView(user_id=9400, side="mine")
     interaction = MagicMock()
     interaction.user.id = 424242
     interaction.response.send_message = AsyncMock()
@@ -245,9 +245,9 @@ def test_team_view_interaction_check_rejects_a_different_user_with_an_ephemeral_
 
 
 def test_team_view_interaction_check_allows_the_original_invoker():
-    view = TeamView(user_id=9001, side="mine")
+    view = TeamView(user_id=9400, side="mine")
     interaction = MagicMock()
-    interaction.user.id = 9001
+    interaction.user.id = 9400
     interaction.response.send_message = AsyncMock()
 
     allowed = asyncio.run(view.interaction_check(interaction))
