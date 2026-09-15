@@ -210,7 +210,10 @@ def build_client(
 
     async def _calc_send(interaction: discord.Interaction, send_new_message: bool, embed, view=None) -> None:
         if send_new_message:
-            await interaction.response.send_message(embed=embed, view=view)
+            if view is None:
+                await interaction.response.send_message(embed=embed)
+            else:
+                await interaction.response.send_message(embed=embed, view=view)
         else:
             await interaction.response.edit_message(embed=embed, view=view)
 

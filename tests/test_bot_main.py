@@ -305,6 +305,95 @@ def test_calc_command_shows_no_view_for_a_completely_unrecognized_name():
     assert kwargs.get("view") is None
 
 
+def test_calc_command_picking_a_suggestion_preserves_optional_fields_and_clears_the_view():
+    # Finding 2: prove that optional fields beyond attacker/defender/move
+    # (attacker_evs, attacker_nature, defender_hp_percent, screen here)
+    # actually survive a suggestion-pick retry instead of being silently
+    # dropped/reset to default.
+    # Finding 4: prove the dropdown is cleared (view=None) after a
+    # successful retry, not left showing.
+    from bot.commands.calc import calc_response
+
+    _client, tree = build_client(records=_CALC_TEST_RECORDS, moves=_CALC_TEST_MOVES)
+    calc_cmd = tree.get_command("calc")
+    interaction = MagicMock()
+    interaction.user.id = 9102
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(calc_cmd.callback(
+        interaction, attacker="Garchom", defender="Garchomp", move="Earthquake",
+        attacker_evs="4/252/0/0/0/252", attacker_nature="Adamant",
+        defender_hp_percent=50, screen="Reflect",
+    ))
+
+    _args, kwargs = interaction.response.send_message.call_args
+    select = kwargs["view"].children[0]
+    select._values = ["Garchomp"]  # simulates Discord populating .values on submit
+    pick_interaction = MagicMock()
+    pick_interaction.user.id = 9102
+    pick_interaction.response.edit_message = AsyncMock()
+
+    asyncio.run(select.callback(pick_interaction))
+
+    _args, edit_kwargs = pick_interaction.response.edit_message.call_args
+    replayed_text = edit_kwargs["embed"].description
+
+    expected_text = calc_response(
+        _CALC_TEST_RECORDS, _CALC_TEST_MOVES, "Garchomp", "Garchomp", "Earthquake",
+        attacker_evs="4/252/0/0/0/252", attacker_nature="Adamant",
+        defender_hp_percent=50, screen="Reflect",
+    )
+    assert replayed_text == expected_text
+
+    # Sanity check: the optional fields actually changed the output, so the
+    # equality above isn't vacuously true because both paths use defaults.
+    default_text = calc_response(_CALC_TEST_RECORDS, _CALC_TEST_MOVES, "Garchomp", "Garchomp", "Earthquake")
+    assert replayed_text != default_text
+
+    assert edit_kwargs["view"] is None
+
+
+_CALC_TEST_ITEMS = [{"name": "Life Orb"}]
+
+
+def test_calc_command_shows_a_suggestion_view_for_a_mistyped_attacker_item():
+    # Finding 3: the item-suggestion paths (attacker_item/defender_item) sit
+    # behind `if items:`, run after resolve_calc_overrides, and use
+    # resolved_attacker_item/resolved_defender_item -- a structurally
+    # different code path from the species/move ones covered above.
+    from bot.commands.calc import is_error_response
+    from bot.ui import NameSuggestionView
+
+    _client, tree = build_client(
+        records=_CALC_TEST_RECORDS, moves=_CALC_TEST_MOVES, items=_CALC_TEST_ITEMS,
+    )
+    calc_cmd = tree.get_command("calc")
+    interaction = MagicMock()
+    interaction.user.id = 9103
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(calc_cmd.callback(
+        interaction, attacker="Garchomp", defender="Garchomp", move="Earthquake",
+        attacker_item="Life Orbb",
+    ))
+
+    _args, kwargs = interaction.response.send_message.call_args
+    assert isinstance(kwargs["view"], NameSuggestionView)
+
+    select = kwargs["view"].children[0]
+    select._values = ["Life Orb"]  # simulates Discord populating .values on submit
+    pick_interaction = MagicMock()
+    pick_interaction.user.id = 9103
+    pick_interaction.response.edit_message = AsyncMock()
+
+    asyncio.run(select.callback(pick_interaction))
+
+    _args, edit_kwargs = pick_interaction.response.edit_message.call_args
+    replayed_text = edit_kwargs["embed"].description
+    assert "Garchomp's Earthquake vs Garchomp" in replayed_text
+    assert not is_error_response(replayed_text)
+
+
 def test_ask_command_includes_stored_team_context():
     from unittest.mock import AsyncMock, MagicMock
     from bot.team_store import store_team
