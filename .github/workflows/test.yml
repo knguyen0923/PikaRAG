@@ -21,4 +21,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-hf-
       - run: pip install -r requirements.txt
+      # A bad torch/transformers/sentence-transformers combo has crashed on
+      # import before (see the comment above the torch pin in
+      # requirements.txt) -- catch that here with a clear, fast-failing
+      # error instead of a confusing mid-test crash buried in pytest output.
+      - name: Verify fragile ML dependencies import cleanly
+        run: python -c "import torch, transformers, sentence_transformers, chromadb"
       - run: python -m pytest -q
