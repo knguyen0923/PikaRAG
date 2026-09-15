@@ -1,13 +1,15 @@
 import asyncio
 import json
 import os
+import time
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Literal, Optional
 
 import discord
 from discord import app_commands
 
-from bot.commands.ask import ask_response_async, format_ask_response
+from bot.commands.ask import GATE_MESSAGE, ask_response_async, format_ask_response
 from bot.commands.calc import calc_response, is_error_response
 from bot.commands.moves import moves_response
 from bot.commands.ping import ping_response
@@ -20,8 +22,9 @@ from bot.commands.team import (
 )
 from bot.pokepaste_fetch import PokepasteFetchError, resolve_pokepaste_text
 from bot.team_store import find_team_member, get_team, resolve_calc_overrides
-from rag.answer import OllamaAnswerer
+from rag.answer import OFFLINE_MESSAGE, OllamaAnswerer
 from rag.embed import SentenceTransformerEmbedder
+from rag.observability import log_ask
 from rag.store import ChromaIndex
 
 PROCESSED_RECORDS_PATH = Path("data/processed/pokemon_records.json")
@@ -68,9 +71,25 @@ def build_client(
             format_team_block(get_team(user_id, "opponent"), "Opponent's team"),
         ]
         extra_context = "\n\n".join(block for block in team_blocks if block) or None
+        start_time = time.monotonic()
         result = await ask_response_async(
             index, answerer, question, records=records, items=items, extra_context=extra_context
         )
+        latency_ms = int((time.monotonic() - start_time) * 1000)
+        try:
+            log_ask(
+                timestamp=datetime.now(timezone.utc).isoformat(),
+                question=question,
+                retrieved_chunks=result["retrieved_chunks"],
+                sources=result["sources"],
+                best_distance=result["best_distance"],
+                gate_fired=result["answer"] == GATE_MESSAGE,
+                answer=result["answer"],
+                degraded=result["answer"] == OFFLINE_MESSAGE,
+                latency_ms=latency_ms,
+            )
+        except Exception:
+            pass  # observability is best-effort; never blocks the answer
         await interaction.followup.send(embed=_embed("ask", format_ask_response(result)))
 
     @tree.command(name="stats", description="Look up a Pokemon's base stats, types, and abilities.")

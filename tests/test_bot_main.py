@@ -544,6 +544,85 @@ def test_build_answerer_defaults_timeout_when_unset(monkeypatch):
     assert calls[0]["timeout"] == 30.0
 
 
+def test_ask_command_logs_the_call_via_log_ask(monkeypatch):
+    calls = []
+
+    def _fake_log_ask(**kwargs):
+        calls.append(kwargs)
+
+    monkeypatch.setattr("bot.main.log_ask", _fake_log_ask)
+
+    class _FakeIndex:
+        def query(self, question, n_results=5, where=None):
+            return [
+                {
+                    "id": "Gyarados-stats",
+                    "text": "Gyarados stats chunk",
+                    "metadata": {"pokemon": "Gyarados", "chunk_type": "stats"},
+                    "distance": 0.3,
+                }
+            ]
+
+    class _FakeAnswerer:
+        def answer(self, question, context_block):
+            return "Gyarados has 95 base HP."
+
+    _client, tree = build_client(index=_FakeIndex(), answerer=_FakeAnswerer())
+    ask_command = tree.get_command("ask")
+    interaction = MagicMock()
+    interaction.user.id = 9200
+    interaction.response.defer = AsyncMock()
+    interaction.followup.send = AsyncMock()
+
+    asyncio.run(ask_command.callback(interaction, question="How bulky is Gyarados?"))
+
+    assert len(calls) == 1
+    logged = calls[0]
+    assert logged["question"] == "How bulky is Gyarados?"
+    assert logged["answer"] == "Gyarados has 95 base HP."
+    assert logged["retrieved_chunks"] == [{"id": "Gyarados-stats", "distance": 0.3}]
+    assert logged["sources"] == [{"name": "Gyarados", "chunk_type": "stats"}]
+    assert logged["best_distance"] == 0.3
+    assert logged["gate_fired"] is False
+    assert logged["degraded"] is False
+    assert isinstance(logged["latency_ms"], int)
+    assert isinstance(logged["timestamp"], str)
+
+
+def test_ask_command_still_sends_the_answer_when_log_ask_raises(monkeypatch):
+    def _raising_log_ask(**kwargs):
+        raise RuntimeError("disk full")
+
+    monkeypatch.setattr("bot.main.log_ask", _raising_log_ask)
+
+    class _FakeIndex:
+        def query(self, question, n_results=5, where=None):
+            return [
+                {
+                    "id": "Gyarados-stats",
+                    "text": "Gyarados stats chunk",
+                    "metadata": {"pokemon": "Gyarados", "chunk_type": "stats"},
+                    "distance": 0.3,
+                }
+            ]
+
+    class _FakeAnswerer:
+        def answer(self, question, context_block):
+            return "Gyarados has 95 base HP."
+
+    _client, tree = build_client(index=_FakeIndex(), answerer=_FakeAnswerer())
+    ask_command = tree.get_command("ask")
+    interaction = MagicMock()
+    interaction.user.id = 9201
+    interaction.response.defer = AsyncMock()
+    interaction.followup.send = AsyncMock()
+
+    asyncio.run(ask_command.callback(interaction, question="How bulky is Gyarados?"))
+
+    sent_text = _extract_text(interaction.followup.send)
+    assert "Gyarados has 95 base HP." in sent_text
+
+
 def test_ask_command_embed_includes_a_sources_line():
     class _FakeIndex:
         def query(self, question, n_results=5, where=None):
