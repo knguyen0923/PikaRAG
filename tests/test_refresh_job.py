@@ -44,7 +44,7 @@ def test_run_refresh_fetches_and_writes_records(tmp_path):
     response.json.return_value = _SAMPLE_RESPONSE
     session.get.return_value = response
 
-    summary = run_refresh(source_dir, raw_dir, output_path, session=session)
+    summary = run_refresh(source_dir, raw_dir, output_path, session=session, timestamp_path=tmp_path / "last_refresh_pokeapi.json")
 
     assert summary["fetched"] == 1
     assert summary["failed"] == []
@@ -92,7 +92,7 @@ def test_run_refresh_finds_legal_file_by_glob_not_hardcoded_name(tmp_path):
     response.json.return_value = _SAMPLE_RESPONSE
     session.get.return_value = response
 
-    summary = run_refresh(source_dir, raw_dir, output_path, session=session)
+    summary = run_refresh(source_dir, raw_dir, output_path, session=session, timestamp_path=tmp_path / "last_refresh_pokeapi.json")
 
     assert summary["records_written"] == 1
     assert summary["expected_count"] == 1
