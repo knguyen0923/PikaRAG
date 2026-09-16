@@ -4,7 +4,10 @@ from unittest.mock import AsyncMock, MagicMock
 from bot.commands.team import (
     import_team_response, scout_response, view_team_response, format_team_block, TeamView,
 )
-from bot.team_store import get_team
+from bot.commands.team import (
+    ImportConfirmView, ViewTeamButtonView, finalize_import, prepare_import,
+)
+from bot.team_store import get_team, store_team
 
 _ABOMASNOW = {
     "name": "Abomasnow", "types": ["Grass", "Ice"],
@@ -254,3 +257,111 @@ def test_team_view_interaction_check_allows_the_original_invoker():
 
     assert allowed is True
     interaction.response.send_message.assert_not_awaited()
+
+
+def test_prepare_import_reports_a_parse_error_without_touching_the_store():
+    result = prepare_import(_RECORDS, _MOVES, "mine", "")
+
+    assert result["ok"] is False
+    assert "Could not parse team" in result["message"]
+
+
+def test_prepare_import_returns_members_and_warnings_on_success():
+    result = prepare_import(_RECORDS, _MOVES, "mine", "Abomasnow\n- Wood Hammer\n")
+
+    assert result["ok"] is True
+    assert result["members"][0]["species"] == "Abomasnow"
+    assert result["warnings"] == []
+
+
+def test_prepare_import_does_not_store_anything():
+    prepare_import(_RECORDS, _MOVES, "mine", "Abomasnow\n- Wood Hammer\n")
+
+    assert get_team(701, "mine") == []
+
+
+def test_finalize_import_stores_and_reports_success():
+    prepared = prepare_import(_RECORDS, _MOVES, "mine", "Abomasnow\n- Wood Hammer\n")
+
+    result = finalize_import(702, "mine", prepared["members"], prepared["warnings"])
+
+    assert result["ok"] is True
+    assert "Loaded 1 Pokemon" in result["message"]
+    assert get_team(702, "mine")[0]["species"] == "Abomasnow"
+
+
+def test_finalize_import_reports_the_size_cap_without_storing():
+    seven_members = [dict(_ABOMASNOW_TEAM_MEMBER, species="Abomasnow") for _ in range(7)]
+
+    result = finalize_import(703, "mine", seven_members, [])
+
+    assert result["ok"] is False
+    assert "at most" in result["message"]
+    assert get_team(703, "mine") == []
+
+
+def test_import_confirm_view_confirm_button_calls_on_confirm():
+    on_confirm = AsyncMock()
+    on_cancel = AsyncMock()
+    view = ImportConfirmView(user_id=1, on_confirm=on_confirm, on_cancel=on_cancel)
+    confirm_button = view.children[0]
+    interaction = MagicMock()
+    interaction.user.id = 1
+
+    asyncio.run(confirm_button.callback(interaction))
+
+    on_confirm.assert_awaited_once_with(interaction)
+    on_cancel.assert_not_awaited()
+
+
+def test_import_confirm_view_cancel_button_calls_on_cancel():
+    on_confirm = AsyncMock()
+    on_cancel = AsyncMock()
+    view = ImportConfirmView(user_id=1, on_confirm=on_confirm, on_cancel=on_cancel)
+    cancel_button = view.children[1]
+    interaction = MagicMock()
+    interaction.user.id = 1
+
+    asyncio.run(cancel_button.callback(interaction))
+
+    on_cancel.assert_awaited_once_with(interaction)
+    on_confirm.assert_not_awaited()
+
+
+def test_import_confirm_view_interaction_check_rejects_a_different_user():
+    view = ImportConfirmView(user_id=1, on_confirm=AsyncMock(), on_cancel=AsyncMock())
+    interaction = MagicMock()
+    interaction.user.id = 999
+    interaction.response.send_message = AsyncMock()
+
+    allowed = asyncio.run(view.interaction_check(interaction))
+
+    assert allowed is False
+
+
+def test_view_team_button_view_edits_in_the_team_panel():
+    store_team(704, "mine", [_ABOMASNOW_TEAM_MEMBER])
+    view = ViewTeamButtonView(user_id=704, side="mine")
+    button = view.children[0]
+    interaction = MagicMock()
+    interaction.user.id = 704
+    interaction.response.edit_message = AsyncMock()
+
+    asyncio.run(button.callback(interaction))
+
+    _args, kwargs = interaction.response.edit_message.call_args
+    assert "Abomasnow" in kwargs["embed"].description
+    from bot.commands.team import TeamView
+    assert isinstance(kwargs["view"], TeamView)
+    assert kwargs["view"].side == "mine"
+
+
+def test_view_team_button_view_interaction_check_rejects_a_different_user():
+    view = ViewTeamButtonView(user_id=704, side="mine")
+    interaction = MagicMock()
+    interaction.user.id = 999
+    interaction.response.send_message = AsyncMock()
+
+    allowed = asyncio.run(view.interaction_check(interaction))
+
+    assert allowed is False

@@ -100,27 +100,51 @@ def _format_warnings(warnings: list) -> list:
     return ["", "Warnings:"] + [f"- {w}" for w in warnings]
 
 
-def import_team_response(
-    records: list, moves: list, user_id: int, side: str, pokepaste_text: str, items: list = None
-) -> str:
+def prepare_import(records: list, moves: list, side: str, pokepaste_text: str, items: list = None) -> dict:
+    """Parse and validate a Pokepaste import WITHOUT storing it, so a caller
+    can show an overwrite-confirmation prompt before finalize_import commits
+    anything. Returns {"ok": False, "message": str} on a parse error, or
+    {"ok": True, "members": list, "warnings": list} on success."""
     try:
         members = parse_pokepaste(pokepaste_text)
     except PokepasteParseError as e:
-        return f"Could not parse team: {e}"
+        return {"ok": False, "message": f"Could not parse team: {e}"}
 
     warnings = []
     for member in members:
         warnings.extend(_validate_member(records, moves, items, member))
 
+    return {"ok": True, "members": members, "warnings": warnings}
+
+
+def finalize_import(user_id: int, side: str, members: list, warnings: list) -> dict:
+    """Actually stores an already-prepared import. Returns
+    {"ok": False, "message": str} if store_team rejects it (e.g. over the
+    6-Pokemon cap), or {"ok": True, "message": str} on success."""
     try:
         store_team(user_id, side, members)
     except ValueError as e:
-        return str(e)
+        return {"ok": False, "message": str(e)}
 
     lines = [f"Loaded {len(members)} Pokemon into {_POSSESSIVE_LABELS[side]} team:"]
     lines.extend(f"- {m['species']}" for m in members)
     lines.extend(_format_warnings(warnings))
-    return "\n".join(lines)
+    return {"ok": True, "message": "\n".join(lines)}
+
+
+def import_team_response(
+    records: list, moves: list, user_id: int, side: str, pokepaste_text: str, items: list = None
+) -> str:
+    """Backward-compatible one-shot wrapper: parse, validate, and store in
+    a single call with no overwrite confirmation. bot/main.py's /import
+    handler no longer calls this directly -- it calls prepare_import/
+    finalize_import itself so it can show ImportConfirmView in between --
+    but every existing caller/test of this function keeps working exactly
+    as before."""
+    prepared = prepare_import(records, moves, side, pokepaste_text, items=items)
+    if not prepared["ok"]:
+        return prepared["message"]
+    return finalize_import(user_id, side, prepared["members"], prepared["warnings"])["message"]
 
 
 _EMPTY_EVS = {"hp": 0, "attack": 0, "defense": 0, "sp_attack": 0, "sp_defense": 0, "speed": 0}
@@ -159,3 +183,58 @@ def scout_response(
     lines = [f"Updated {stored['species']} in {_POSSESSIVE_LABELS[side]} team -- known moves: {moves_text}."]
     lines.extend(_format_warnings(warnings))
     return "\n".join(lines)
+
+
+class ImportConfirmView(discord.ui.View):
+    """Shown when /import would overwrite an already-stored team on the
+    target side. on_confirm/on_cancel are async (interaction) -> None
+    callbacks the call site supplies -- this view has no opinion on what
+    either one actually does."""
+
+    def __init__(self, user_id: int, on_confirm, on_cancel):
+        super().__init__()
+        self.user_id = user_id
+        confirm_button = discord.ui.Button(label="Confirm", style=discord.ButtonStyle.danger)
+        confirm_button.callback = self._wrap(on_confirm)
+        cancel_button = discord.ui.Button(label="Cancel", style=discord.ButtonStyle.secondary)
+        cancel_button.callback = self._wrap(on_cancel)
+        self.add_item(confirm_button)
+        self.add_item(cancel_button)
+
+    def _wrap(self, handler):
+        async def callback(interaction: discord.Interaction) -> None:
+            await handler(interaction)
+
+        return callback
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user.id != self.user_id:
+            await interaction.response.send_message("This isn't your import confirmation.", ephemeral=True)
+            return False
+        return True
+
+
+class ViewTeamButtonView(discord.ui.View):
+    """Attached to a successful /import result: one button that jumps
+    straight into the same panel /team itself produces for that side,
+    reusing view_team_response/TeamView completely unchanged."""
+
+    def __init__(self, user_id: int, side: str):
+        super().__init__()
+        self.user_id = user_id
+        self.side = side
+        button = discord.ui.Button(label="View team", style=discord.ButtonStyle.secondary)
+        button.callback = self._callback
+        self.add_item(button)
+
+    async def _callback(self, interaction: discord.Interaction) -> None:
+        await interaction.response.edit_message(
+            embed=_team_embed(view_team_response(self.user_id, self.side)),
+            view=TeamView(self.user_id, self.side),
+        )
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user.id != self.user_id:
+            await interaction.response.send_message("This isn't your team.", ephemeral=True)
+            return False
+        return True

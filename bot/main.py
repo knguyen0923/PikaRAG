@@ -18,9 +18,12 @@ from bot.commands.moves import moves_response
 from bot.commands.ping import ping_response
 from bot.commands.stats import stats_response
 from bot.commands.team import (
+    ImportConfirmView,
     TeamView,
+    ViewTeamButtonView,
+    finalize_import,
     format_team_block,
-    import_team_response,
+    prepare_import,
     scout_response,
     view_team_response,
 )
@@ -181,8 +184,56 @@ def build_client(
         except PokepasteFetchError as e:
             await interaction.followup.send(embed=_embed("import", str(e)))
             return
-        response = import_team_response(records, moves, interaction.user.id, side, raw_text, items=items)
-        await interaction.followup.send(embed=_embed("import", response))
+
+        prepared = prepare_import(records, moves, side, raw_text, items=items)
+        if not prepared["ok"]:
+            await interaction.followup.send(embed=_embed("import", prepared["message"]))
+            return
+
+        user_id = interaction.user.id
+        members, warnings = prepared["members"], prepared["warnings"]
+
+        async def _finalize_and_send(target_interaction: discord.Interaction, as_followup: bool) -> None:
+            result = finalize_import(user_id, side, members, warnings)
+            view = ViewTeamButtonView(user_id, side) if result["ok"] else None
+            embed = _embed("import", result["message"])
+            if as_followup:
+                # discord.py's Webhook.send (unlike edit_message) treats
+                # view=None the same as an invalid view object and raises
+                # TypeError -- omit the kwarg entirely instead of passing
+                # None through (the same class of bug caught and fixed in
+                # Slice A's /calc: interaction.response.send_message has an
+                # identical `view is not MISSING` check that crashes on
+                # view=None; followup.send has its own copy of that check).
+                if view is None:
+                    await target_interaction.followup.send(embed=embed)
+                else:
+                    await target_interaction.followup.send(embed=embed, view=view)
+            else:
+                # edit_message is None-safe (uses truthiness, not `is not
+                # MISSING`), so view=None here correctly clears any existing
+                # view -- no special-casing needed on this branch.
+                await target_interaction.response.edit_message(embed=embed, view=view)
+
+        if get_team(user_id, side):
+            async def _on_confirm(confirm_interaction: discord.Interaction) -> None:
+                await _finalize_and_send(confirm_interaction, as_followup=False)
+
+            async def _on_cancel(cancel_interaction: discord.Interaction) -> None:
+                await cancel_interaction.response.edit_message(
+                    embed=_embed("import", f"Import cancelled -- your stored '{side}' team is unchanged."),
+                    view=None,
+                )
+
+            await interaction.followup.send(
+                embed=_embed(
+                    "import", f"You already have a team stored for '{side}'. Replace it with this import?"
+                ),
+                view=ImportConfirmView(user_id, _on_confirm, _on_cancel),
+            )
+            return
+
+        await _finalize_and_send(interaction, as_followup=True)
 
     @tree.command(name="scout", description="Add or update one Pokemon in a stored team with only what you currently know.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
