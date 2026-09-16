@@ -16,6 +16,7 @@ from bot.commands.dex import DexBrowseView, dex_page_response
 from bot.commands.llmstatus import format_llmstatus
 from bot.commands.moves import moves_response
 from bot.commands.ping import ping_response
+from bot.commands.pokemon_info import PokemonInfoView
 from bot.commands.stats import stats_response
 from bot.commands.team import (
     ImportConfirmView,
@@ -138,12 +139,14 @@ def build_client(
     @tree.command(name="stats", description="Look up a Pokemon's base stats, types, and abilities.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
     async def stats(interaction: discord.Interaction, name: str) -> None:
-        if find_record(records, name) is None:
+        record = find_record(records, name)
+        if record is None:
             suggestions = suggest_names(records, name)
             if suggestions:
                 async def _on_select(inner_interaction: discord.Interaction, chosen: str) -> None:
                     await inner_interaction.response.edit_message(
-                        embed=_embed("stats", stats_response(records, chosen, usage=usage)), view=None
+                        embed=_embed("stats", stats_response(records, chosen, usage=usage)),
+                        view=PokemonInfoView(records, usage, chosen, inner_interaction.user.id, "Stats"),
                     )
 
                 await interaction.response.send_message(
@@ -151,17 +154,22 @@ def build_client(
                     view=NameSuggestionView(interaction.user.id, suggestions, _on_select),
                 )
                 return
-        await interaction.response.send_message(embed=_embed("stats", stats_response(records, name, usage=usage)))
+        await interaction.response.send_message(
+            embed=_embed("stats", stats_response(records, name, usage=usage)),
+            view=PokemonInfoView(records, usage, record["name"], interaction.user.id, "Stats"),
+        )
 
     @tree.command(name="moves", description="Look up a Pokemon's legal moveset.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
     async def moves_command(interaction: discord.Interaction, name: str) -> None:
-        if find_record(records, name) is None:
+        record = find_record(records, name)
+        if record is None:
             suggestions = suggest_names(records, name)
             if suggestions:
                 async def _on_select(inner_interaction: discord.Interaction, chosen: str) -> None:
                     await inner_interaction.response.edit_message(
-                        embed=_embed("moves", moves_response(records, chosen, usage=usage)), view=None
+                        embed=_embed("moves", moves_response(records, chosen, usage=usage)),
+                        view=PokemonInfoView(records, usage, chosen, inner_interaction.user.id, "Moves"),
                     )
 
                 await interaction.response.send_message(
@@ -169,7 +177,10 @@ def build_client(
                     view=NameSuggestionView(interaction.user.id, suggestions, _on_select),
                 )
                 return
-        await interaction.response.send_message(embed=_embed("moves", moves_response(records, name, usage=usage)))
+        await interaction.response.send_message(
+            embed=_embed("moves", moves_response(records, name, usage=usage)),
+            view=PokemonInfoView(records, usage, record["name"], interaction.user.id, "Moves"),
+        )
 
     @tree.command(name="import", description="Import a full Pokemon team from Pokepaste text or a pokepast.es URL.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)

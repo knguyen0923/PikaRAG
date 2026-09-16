@@ -1278,6 +1278,48 @@ def test_dex_command_shows_a_suggestion_view_for_a_mistyped_start():
     assert isinstance(kwargs["view"], NameSuggestionView)
 
 
+def test_stats_command_attaches_a_pokemon_info_view_starting_on_stats():
+    from bot.commands.pokemon_info import PokemonInfoView
+
+    records = [{
+        "name": "Abomasnow", "types": ["Grass", "Ice"],
+        "base_stats": {"hp": 90, "attack": 92, "defense": 75, "sp_attack": 92, "sp_defense": 85, "speed": 60},
+        "abilities": ["Snow Warning"], "learnset": ["Blizzard"], "legal_in": ["M-B"],
+    }]
+    _client, tree = build_client(records=records)
+    stats_cmd = tree.get_command("stats")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(stats_cmd.callback(interaction, name="Abomasnow"))
+
+    _args, kwargs = interaction.response.send_message.call_args
+    assert isinstance(kwargs["view"], PokemonInfoView)
+    assert kwargs["view"].active_tab == "Stats"
+
+
+def test_moves_command_attaches_a_pokemon_info_view_starting_on_moves():
+    from bot.commands.pokemon_info import PokemonInfoView
+
+    records = [{
+        "name": "Abomasnow", "types": ["Grass", "Ice"],
+        "base_stats": {"hp": 90, "attack": 92, "defense": 75, "sp_attack": 92, "sp_defense": 85, "speed": 60},
+        "abilities": ["Snow Warning"], "learnset": ["Blizzard"], "legal_in": ["M-B"],
+    }]
+    _client, tree = build_client(records=records)
+    moves_cmd = tree.get_command("moves")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(moves_cmd.callback(interaction, name="Abomasnow"))
+
+    _args, kwargs = interaction.response.send_message.call_args
+    assert isinstance(kwargs["view"], PokemonInfoView)
+    assert kwargs["view"].active_tab == "Moves"
+
+
 def test_llmstatus_replies_ephemerally():
     class _FakeRawAnswerer:
         model = "llama3.2:3b"
