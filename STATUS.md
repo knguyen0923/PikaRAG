@@ -394,18 +394,14 @@ from (`vgc_items.json` is static source data) — both now carry an explicit
 code comment explaining why, rather than silently implying protection that
 isn't there. 407/407 tests passing.
 
-## Discord button UI — fully planned (6 plans), nothing built yet
+## Discord button UI — shipped
 
 `2026-09-15-team-button-ui-design.md` (Phase 1 of the long-open "Discord
-button-UI request" backlog item) plus a follow-on
-`2026-09-15-poketwo-style-ui-design.md` spec covering 4 more slices were
-both designed and fully planned in a separate session that worked on a
-`worktree-team-button-ui-plan` branch/worktree — merged into `main` this
-session (docs/CI only; see "Immediate next action" above for the full
-list of 6 plans + what each does). Nothing from any of these plans has
-been implemented yet. Per explicit user instruction, none should be
-executed without the user's go-ahead each time (they want to stop once
-everything is planned, not proceed straight into implementation).
+button-UI request" backlog item) plus the follow-on
+`2026-09-15-poketwo-style-ui-design.md` spec's 4 slices are all
+implemented and merged to `main` — see the "Immediate next action"
+section above for the full list of 7 plans, merge order, and how the 2
+real merge conflicts were resolved.
 
 Original Phase 1 scope (`/team` button-UI plan): `/team` gains two
 buttons ("Your team" / "Opponent's team") replacing its current `side`
