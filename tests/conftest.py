@@ -1,6 +1,18 @@
 import pytest
 
+import bot.team_store
 import rag.observability
+
+
+@pytest.fixture(autouse=True)
+def _isolate_team_store(monkeypatch):
+    """Reset bot.team_store's module-level _store dict to empty before each
+    test, so per-user team state stored by one test (e.g. via store_team or
+    merge_scout) can never leak into another test that happens to reuse the
+    same user id. Without this, two unrelated test files picking the same
+    user id can silently pollute each other (as happened between a TeamView
+    test and test_bot_main.py's stored-team fixture)."""
+    monkeypatch.setattr(bot.team_store, "_store", {})
 
 
 @pytest.fixture(autouse=True)

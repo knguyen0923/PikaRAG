@@ -1279,3 +1279,27 @@ def test_llmstatus_replies_ephemerally():
     interaction.response.defer.assert_awaited_once()
     _args, kwargs = interaction.followup.send.call_args
     assert kwargs["ephemeral"] is True
+
+
+def test_team_command_has_no_side_parameter():
+    _client, tree = build_client()
+    command = tree.get_command("team")
+
+    assert command.get_parameter("side") is None
+
+
+def test_team_command_attaches_a_team_view_starting_on_mine():
+    from bot.commands.team import TeamView
+
+    _client, tree = build_client()
+    command = tree.get_command("team")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(command.callback(interaction))
+
+    _args, kwargs = interaction.response.send_message.call_args
+    assert isinstance(kwargs["view"], TeamView)
+    assert kwargs["view"].side == "mine"
+    assert kwargs["view"].user_id == 1

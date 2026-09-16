@@ -1,3 +1,5 @@
+import discord
+
 from bot.pokemon_lookup import find_record, format_with_suggestions, suggest_names
 from bot.pokepaste import parse_pokepaste, PokepasteParseError
 from bot.team_store import get_team, merge_scout, store_team
@@ -26,6 +28,42 @@ def view_team_response(user_id: int, side: str) -> str:
     if not team:
         return f"No team loaded for '{side}'. Use /import or /scout to load one."
     return format_team_block(team, _SIDE_LABELS[side])
+
+
+def _team_embed(description: str) -> discord.Embed:
+    return discord.Embed(description=description, color=discord.Color.blurple())
+
+
+class TeamView(discord.ui.View):
+    """Side-switcher for /team: two buttons that re-render the same message
+    in place with the other side's team. discord.ui.View's interaction_check
+    is a separate mechanism from app_commands.check (used by /debug-last and
+    /llmstatus) and does not route through bot/main.py's @tree.error handler,
+    so a rejected click must send its own ephemeral message here."""
+
+    def __init__(self, user_id: int, side: str):
+        super().__init__()
+        self.user_id = user_id
+        self.side = side
+        for button_side, label in _SIDE_LABELS.items():
+            button = discord.ui.Button(label=label)
+            button.callback = self._make_callback(button_side)
+            self.add_item(button)
+
+    def _make_callback(self, side: str):
+        async def callback(interaction: discord.Interaction) -> None:
+            response = view_team_response(self.user_id, side)
+            await interaction.response.edit_message(
+                embed=_team_embed(response), view=TeamView(self.user_id, side)
+            )
+
+        return callback
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user.id != self.user_id:
+            await interaction.response.send_message("This isn't your team view.", ephemeral=True)
+            return False
+        return True
 
 
 def _validate_member(records: list, moves: list, items: list, member: dict) -> list:
