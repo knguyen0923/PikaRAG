@@ -109,14 +109,16 @@ message) to close out Task 5.
 **Next step:** Run the `superpowers:writing-plans` skill on
 `docs/superpowers/specs/2026-09-13-retrieval-quality-design.md` (already
 fully reviewed and fixed, carries real measured evidence — no more
-brainstorming needed). Then execute the resulting plan via
+brainstorming needed). Then, **with the user's explicit go-ahead before
+spinning up any agents**, execute the resulting plan via
 `superpowers:subagent-driven-development` (same pattern used for the local
 LLM migration and eval harness plans this session: isolated worktree,
 per-task implementer + reviewer dispatch, squash to one commit, final
 whole-branch review, merge to `main`). After that, `STATUS.md`'s "Next up
 after that" section lists 4 more design specs ready for the same
 treatment (grounding-trust before observability specifically — the one
-real cross-spec dependency; reliability and ingestion-robustness anytime).
+real cross-spec dependency; reliability and ingestion-robustness anytime)
+— same approval gate applies each time before agents are spun up.
 
 **Open questions / decisions still needed:** None blocking — the path
 forward is unambiguous. The only standing preference to carry forward:
