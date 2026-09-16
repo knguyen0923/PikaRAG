@@ -154,6 +154,8 @@ def build_client(
                     view=NameSuggestionView(interaction.user.id, suggestions, _on_select),
                 )
                 return
+            await interaction.response.send_message(embed=_embed("stats", stats_response(records, name, usage=usage)))
+            return
         await interaction.response.send_message(
             embed=_embed("stats", stats_response(records, name, usage=usage)),
             view=PokemonInfoView(records, usage, record["name"], interaction.user.id, "Stats"),
@@ -177,6 +179,8 @@ def build_client(
                     view=NameSuggestionView(interaction.user.id, suggestions, _on_select),
                 )
                 return
+            await interaction.response.send_message(embed=_embed("moves", moves_response(records, name, usage=usage)))
+            return
         await interaction.response.send_message(
             embed=_embed("moves", moves_response(records, name, usage=usage)),
             view=PokemonInfoView(records, usage, record["name"], interaction.user.id, "Moves"),
