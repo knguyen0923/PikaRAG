@@ -1196,6 +1196,64 @@ def test_llmstatus_command_reports_down_with_the_breaker_state():
     assert "open" in sent_text
 
 
+def test_dex_command_is_registered_on_the_tree():
+    _client, tree = build_client()
+    commands = {command.name: command for command in tree.get_commands()}
+
+    assert "dex" in commands
+    assert "browse" in commands["dex"].description.lower() or "roster" in commands["dex"].description.lower()
+
+
+def test_dex_command_opens_at_the_first_page_with_no_start():
+    _client, tree = build_client(records=_CALC_TEST_RECORDS)
+    dex_cmd = tree.get_command("dex")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(dex_cmd.callback(interaction, start=None))
+
+    from bot.commands.dex import DexBrowseView
+
+    _args, kwargs = interaction.response.send_message.call_args
+    assert isinstance(kwargs["view"], DexBrowseView)
+    assert kwargs["view"].index == 0
+
+
+def test_dex_command_jumps_to_a_named_start():
+    records = _CALC_TEST_RECORDS + [{
+        "name": "Absol", "types": ["Dark"],
+        "base_stats": {"hp": 65, "attack": 130, "defense": 60, "sp_attack": 75, "sp_defense": 60, "speed": 75},
+        "abilities": ["Pressure"], "learnset": ["Night Slash"], "legal_in": ["M-B"],
+    }]
+    _client, tree = build_client(records=records)
+    dex_cmd = tree.get_command("dex")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(dex_cmd.callback(interaction, start="Absol"))
+
+    _args, kwargs = interaction.response.send_message.call_args
+    assert "Absol" in kwargs["embed"].description
+    assert kwargs["view"].index == 1
+
+
+def test_dex_command_shows_a_suggestion_view_for_a_mistyped_start():
+    _client, tree = build_client(records=_CALC_TEST_RECORDS)
+    dex_cmd = tree.get_command("dex")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(dex_cmd.callback(interaction, start="Garchom"))
+
+    from bot.ui import NameSuggestionView
+
+    _args, kwargs = interaction.response.send_message.call_args
+    assert isinstance(kwargs["view"], NameSuggestionView)
+
+
 def test_llmstatus_replies_ephemerally():
     class _FakeRawAnswerer:
         model = "llama3.2:3b"
