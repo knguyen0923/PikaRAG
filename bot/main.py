@@ -12,6 +12,7 @@ from discord import app_commands
 from bot.commands.ask import GATE_MESSAGE, ask_response_async, format_ask_response
 from bot.commands.calc import calc_response, is_error_response
 from bot.commands.debug import format_debug_last
+from bot.commands.dex import DexBrowseView, dex_page_response
 from bot.commands.llmstatus import format_llmstatus
 from bot.commands.moves import moves_response
 from bot.commands.ping import ping_response
@@ -47,6 +48,7 @@ _COMMAND_COLORS = {
     "import": discord.Color.green(),
     "scout": discord.Color.gold(),
     "team": discord.Color.blurple(),
+    "dex": discord.Color.magenta(),
     "debug": discord.Color.dark_grey(),
     "llmstatus": discord.Color.orange(),
 }
@@ -207,6 +209,38 @@ def build_client(
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
     async def team(interaction: discord.Interaction, side: Literal["mine", "opponent"]) -> None:
         await interaction.response.send_message(embed=_embed("team", view_team_response(interaction.user.id, side)))
+
+    @tree.command(name="dex", description="Browse the current regulation's legal Pokemon roster, Pokedex-style.")
+    @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
+    async def dex(interaction: discord.Interaction, start: Optional[str] = None) -> None:
+        index = 0
+        if start is not None:
+            record = find_record(records, start)
+            if record is None:
+                suggestions = suggest_names(records, start)
+                message = not_found_message(records, start)
+                if not suggestions:
+                    await interaction.response.send_message(embed=_embed("dex", message))
+                    return
+
+                async def _on_select(inner_interaction: discord.Interaction, chosen: str) -> None:
+                    chosen_index = records.index(find_record(records, chosen))
+                    await inner_interaction.response.edit_message(
+                        embed=_embed("dex", dex_page_response(records, chosen_index)),
+                        view=DexBrowseView(records, chosen_index, inner_interaction.user.id),
+                    )
+
+                await interaction.response.send_message(
+                    embed=_embed("dex", message),
+                    view=NameSuggestionView(interaction.user.id, suggestions, _on_select),
+                )
+                return
+            index = records.index(record)
+
+        await interaction.response.send_message(
+            embed=_embed("dex", dex_page_response(records, index)),
+            view=DexBrowseView(records, index, interaction.user.id),
+        )
 
     async def _calc_send(interaction: discord.Interaction, send_new_message: bool, embed, view=None) -> None:
         if send_new_message:
