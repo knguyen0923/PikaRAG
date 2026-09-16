@@ -51,6 +51,7 @@ _TERRAIN_TYPE_MAP = {"Electric": "Electric", "Grassy": "Grass", "Psychic": "Psyc
 _ITEM_STAT_BOOST = {
     "Choice Band": ("attack", CHOICE_ITEM_STAT_MULTIPLIER),
     "Choice Specs": ("sp_attack", CHOICE_ITEM_STAT_MULTIPLIER),
+    "Choice Scarf": ("speed", CHOICE_ITEM_STAT_MULTIPLIER),
     "Assault Vest": ("sp_defense", ASSAULT_VEST_MULTIPLIER),
 }
 
@@ -85,6 +86,65 @@ _RESIST_BERRY_TYPE = {
     "Kasib Berry": "Ghost", "Haban Berry": "Dragon", "Colbur Berry": "Dark",
     "Babiri Berry": "Steel", "Chilan Berry": "Normal", "Roseli Berry": "Fairy",
 }
+
+# Ability (attacker) -> Attack-stat multiplier, applied in _effective_stat the
+# same way _ITEM_STAT_BOOST already is -- Huge Power and Pure Power are
+# mechanically identical (2x Attack), just different Pokemon-specific names.
+ABILITY_ATTACK_DOUBLE_MULTIPLIER = 2.0
+_ABILITY_STAT_BOOST = {
+    "Huge Power": ("attack", ABILITY_ATTACK_DOUBLE_MULTIPLIER),
+    "Pure Power": ("attack", ABILITY_ATTACK_DOUBLE_MULTIPLIER),
+}
+
+# Ability (attacker) -> replaces the normal 1.5x STAB multiplier when the
+# move's type matches the attacker's own type(s).
+ADAPTABILITY_STAB_MULTIPLIER = 2.0
+
+# Ability (defender) -> halves damage taken while at full HP. Final Modifier
+# group, same numerator-chain stage as screens/items/berries.
+MULTISCALE_NUM = 2048  # 0.5x
+_MULTISCALE_ABILITIES = {"Multiscale", "Shadow Shield"}
+
+# Ability (defender) -> 0.75x damage taken on a super-effective hit.
+FILTER_NUM = 3072  # 0.75x
+_FILTER_ABILITIES = {"Filter", "Solid Rock", "Prism Armor"}
+
+# Ability (defender) -> halves Fire/Ice damage taken.
+THICK_FAT_NUM = 2048  # 0.5x
+_THICK_FAT_TYPES = {"Fire", "Ice"}
+
+# Ability (attacker) -> doubles damage on a not-very-effective hit.
+TINTED_LENS_NUM = 8192  # 2.0x
+
+# Every ability this calculator actually models (the union of all the
+# ability-keyed maps/sets above). bot/commands/calc.py uses this to warn
+# when a resolved attacker_ability/defender_ability is real but silently
+# ignored -- see the "(ability '...' is not modeled)" note in calc_response.
+_IMPLEMENTED_ABILITIES = frozenset(
+    set(_ABILITY_STAT_BOOST)
+    | {"Adaptability"}
+    | _MULTISCALE_ABILITIES
+    | _FILTER_ABILITIES
+    | {"Thick Fat"}
+    | {"Tinted Lens"}
+)
+
+
+def _canonicalize_ability(ability, known_abilities=_IMPLEMENTED_ABILITIES):
+    """Case-fold `ability` to its canonical spelling if it matches one of
+    `known_abilities` case-insensitively; otherwise return it unchanged.
+
+    This lets an ability supplied in any case (e.g. "multiscale") apply
+    exactly as if typed with correct casing, without adding any validation
+    or suggestion UX for unrecognized/typo'd abilities -- unmatched strings
+    pass through untouched, same as `item` does when no items list is given.
+    """
+    if not ability:
+        return ability
+    for known in known_abilities:
+        if ability.casefold() == known.casefold():
+            return known
+    return ability
 
 
 def calculate_stat(base: int, iv: int, ev: int, level: int, nature_modifier: float, stat_name: str) -> int:
@@ -124,6 +184,13 @@ def _effective_stat(combatant: dict, stat_name: str) -> int:
     if stat_name != "hp":
         stage = combatant["stat_stages"].get(stat_name, 0)
         stat = math.floor(stat * get_stage_multiplier(stage))
+        # Ability boosts apply before item boosts (e.g. Huge Power then
+        # Choice Band) -- the games compute the stat this way, and the
+        # order affects the final floored value whenever both apply.
+        ability = _canonicalize_ability(combatant.get("ability"))
+        ability_stat, ability_multiplier = _ABILITY_STAT_BOOST.get(ability, (None, None))
+        if ability_stat == stat_name:
+            stat = math.floor(stat * ability_multiplier)
         item_stat, item_multiplier = _ITEM_STAT_BOOST.get(combatant.get("item"), (None, None))
         if item_stat == stat_name:
             stat = math.floor(stat * item_multiplier)
@@ -198,6 +265,10 @@ def calculate_damage(move: dict, attacker: dict, defender: dict, context: dict) 
     level = attacker["level"]
     power = move["power"]
     attacker_item = attacker.get("item")
+    # Case-fold ability names once so a correctly-spelled ability supplied in
+    # any case (e.g. "multiscale") matches the same as its canonical spelling.
+    attacker_ability = _canonicalize_ability(attacker.get("ability"))
+    defender_ability = _canonicalize_ability(defender.get("ability"))
 
     terrain = context.get("terrain")
     terrain_applies = bool(terrain) and _TERRAIN_TYPE_MAP.get(terrain) == move["type"]
@@ -221,7 +292,10 @@ def calculate_damage(move: dict, attacker: dict, defender: dict, context: dict) 
         defense_stat = _effective_stat(defender, "sp_defense")
 
     attacker_types = [attacker["tera_type"]] if attacker["tera_type"] else attacker["record"]["types"]
-    stab = STAB_MULTIPLIER if move["type"] in attacker_types else NO_STAB_MULTIPLIER
+    if move["type"] in attacker_types:
+        stab = ADAPTABILITY_STAB_MULTIPLIER if attacker_ability == "Adaptability" else STAB_MULTIPLIER
+    else:
+        stab = NO_STAB_MULTIPLIER
 
     # A Terastallized defender's defensive typing is REPLACED by its Tera type.
     defender_types = [defender["tera_type"]] if defender["tera_type"] else defender["record"]["types"]
@@ -276,6 +350,15 @@ def calculate_damage(move: dict, attacker: dict, defender: dict, context: dict) 
     resist_berry_type = _RESIST_BERRY_TYPE.get(defender.get("item"))
     if resist_berry_type == move["type"] and (type_effectiveness > 1 or resist_berry_type == "Normal"):
         final_numerators.append(RESIST_BERRY_NUM)
+
+    if defender_ability in _MULTISCALE_ABILITIES and defender.get("current_hp_fraction") == 1.0:
+        final_numerators.append(MULTISCALE_NUM)
+    if defender_ability in _FILTER_ABILITIES and type_effectiveness > 1:
+        final_numerators.append(FILTER_NUM)
+    if defender_ability == "Thick Fat" and move["type"] in _THICK_FAT_TYPES:
+        final_numerators.append(THICK_FAT_NUM)
+    if attacker_ability == "Tinted Lens" and 0 < type_effectiveness < 1:
+        final_numerators.append(TINTED_LENS_NUM)
 
     final_modifier_numerator = _chain_numerators(final_numerators)
 

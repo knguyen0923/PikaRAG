@@ -191,3 +191,61 @@ def test_calc_response_defender_item_reduces_damage():
     )
 
     assert _max_damage(with_vest) < _max_damage(baseline)
+
+
+def test_calc_response_accepts_an_attacker_ability():
+    response = calc_response(
+        _RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam", attacker_ability="Snow Warning"
+    )
+
+    assert not is_error_response(response)
+
+
+def test_calc_response_accepts_a_defender_ability():
+    response = calc_response(
+        _RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam", defender_ability="Intimidate"
+    )
+
+    assert not is_error_response(response)
+
+
+def test_calc_response_discloses_an_unmodeled_defender_ability():
+    # Levitate isn't one of the ~10 abilities this calculator models, so the
+    # damage figure silently ignores it -- the response must say so.
+    response = calc_response(
+        _RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam", defender_ability="Levitate"
+    )
+
+    assert "(ability 'Levitate' is not modeled)" in response
+
+
+def test_calc_response_discloses_an_unmodeled_attacker_ability():
+    response = calc_response(
+        _RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam", attacker_ability="Intimidate"
+    )
+
+    assert "(ability 'Intimidate' is not modeled)" in response
+
+
+def test_calc_response_discloses_both_unmodeled_abilities_when_both_are_set():
+    response = calc_response(
+        _RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam",
+        attacker_ability="Intimidate", defender_ability="Levitate",
+    )
+
+    assert "(ability 'Intimidate' is not modeled)" in response
+    assert "(ability 'Levitate' is not modeled)" in response
+
+
+def test_calc_response_does_not_disclose_an_implemented_ability():
+    response = calc_response(
+        _RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam", defender_ability="Multiscale"
+    )
+
+    assert "is not modeled" not in response
+
+
+def test_calc_response_does_not_disclose_anything_when_no_ability_given():
+    response = calc_response(_RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam")
+
+    assert "is not modeled" not in response

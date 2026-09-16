@@ -1,7 +1,7 @@
 from typing import Optional
 
 from bot.pokemon_lookup import find_record, not_found_message
-from damage_calc.calc import calculate_damage
+from damage_calc.calc import _IMPLEMENTED_ABILITIES, calculate_damage
 from damage_calc.data.natures import get_nature_modifiers
 from damage_calc.data.type_chart import ALL_TYPES
 
@@ -42,7 +42,9 @@ def _is_valid_nature(nature: str) -> bool:
         return False
 
 
-def _build_combatant(record: dict, evs: dict, nature: str, item: Optional[str], tera_type: Optional[str]) -> dict:
+def _build_combatant(
+    record: dict, evs: dict, nature: str, item: Optional[str], ability: Optional[str], tera_type: Optional[str]
+) -> dict:
     return {
         "record": record,
         "level": _VGC_LEVEL,
@@ -52,6 +54,7 @@ def _build_combatant(record: dict, evs: dict, nature: str, item: Optional[str], 
         "stat_stages": _NO_STAT_STAGES,
         "tera_type": tera_type,
         "item": item,
+        "ability": ability,
     }
 
 
@@ -80,10 +83,12 @@ def calc_response(
     attacker_evs: str = "0/0/0/0/0/0",
     attacker_nature: str = "Hardy",
     attacker_item: Optional[str] = None,
+    attacker_ability: Optional[str] = None,
     attacker_tera: Optional[str] = None,
     defender_evs: str = "0/0/0/0/0/0",
     defender_nature: str = "Hardy",
     defender_item: Optional[str] = None,
+    defender_ability: Optional[str] = None,
     defender_tera: Optional[str] = None,
     defender_hp_percent: int = 100,
     weather: Optional[str] = None,
@@ -138,8 +143,12 @@ def calc_response(
     if not 1 <= defender_hp_percent <= 100:
         return "Invalid defender HP percent. Must be between 1 and 100."
 
-    attacker = _build_combatant(attacker_record, parsed_attacker_evs, attacker_nature, attacker_item, attacker_tera)
-    defender = _build_combatant(defender_record, parsed_defender_evs, defender_nature, defender_item, defender_tera)
+    attacker = _build_combatant(
+        attacker_record, parsed_attacker_evs, attacker_nature, attacker_item, attacker_ability, attacker_tera
+    )
+    defender = _build_combatant(
+        defender_record, parsed_defender_evs, defender_nature, defender_item, defender_ability, defender_tera
+    )
     defender["current_hp_fraction"] = defender_hp_percent / 100
 
     context = {
@@ -153,8 +162,24 @@ def calc_response(
     result = calculate_damage(move, attacker, defender, context)
 
     ko_note = " (KO chance)" if result.is_ko_chance else ""
-    return (
+    response = (
         f"{attacker_record['name']}'s {move['name']} vs {defender_record['name']}: "
         f"{result.min_damage}-{result.max_damage} damage "
         f"({result.min_percent}%-{result.max_percent}%){ko_note}."
     )
+
+    # Flag when a real, correctly-spelled ability was passed in but isn't one
+    # of the ~10 abilities this calculator actually models -- otherwise the
+    # damage above silently ignores it (e.g. Levitate vs. Ground moves) with
+    # no indication that happened. Case-insensitive, matching the case-fold
+    # damage_calc itself applies to recognized abilities.
+    for unmodeled_ability in _unmodeled_abilities(attacker_ability, defender_ability):
+        response += f" (ability '{unmodeled_ability}' is not modeled)"
+
+    return response
+
+
+def _unmodeled_abilities(*abilities: Optional[str]) -> list:
+    """Abilities from `abilities` that are set but not in _IMPLEMENTED_ABILITIES."""
+    known = {name.casefold() for name in _IMPLEMENTED_ABILITIES}
+    return [ability for ability in abilities if ability and ability.casefold() not in known]

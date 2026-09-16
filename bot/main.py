@@ -309,10 +309,11 @@ def build_client(
     async def _run_calc(interaction: discord.Interaction, send_new_message: bool, **fields) -> None:
         """fields holds /calc's parameters exactly as originally typed:
         attacker, defender, move, attacker_evs, attacker_nature,
-        attacker_item, attacker_tera, defender_evs, defender_nature,
-        defender_item, defender_tera, defender_hp_percent, weather,
-        terrain, screen, spread. A suggestion pick re-invokes this with
-        exactly one field replaced and every other one untouched."""
+        attacker_item, attacker_ability, attacker_tera, defender_evs,
+        defender_nature, defender_item, defender_ability, defender_tera,
+        defender_hp_percent, weather, terrain, screen, spread. A suggestion
+        pick re-invokes this with exactly one field replaced and every
+        other one untouched."""
         attacker, defender, move = fields["attacker"], fields["defender"], fields["move"]
 
         if find_record(records, attacker) is None:
@@ -364,17 +365,19 @@ def build_client(
             return
 
         user_id = interaction.user.id
-        resolved_attacker_evs, resolved_attacker_nature, resolved_attacker_item, resolved_attacker_tera = (
-            resolve_calc_overrides(
-                user_id, attacker, fields["attacker_evs"], fields["attacker_nature"],
-                fields["attacker_item"], fields["attacker_tera"],
-            )
+        (
+            resolved_attacker_evs, resolved_attacker_nature,
+            resolved_attacker_item, resolved_attacker_tera, resolved_attacker_ability,
+        ) = resolve_calc_overrides(
+            user_id, attacker, fields["attacker_evs"], fields["attacker_nature"],
+            fields["attacker_item"], fields["attacker_tera"], fields["attacker_ability"],
         )
-        resolved_defender_evs, resolved_defender_nature, resolved_defender_item, resolved_defender_tera = (
-            resolve_calc_overrides(
-                user_id, defender, fields["defender_evs"], fields["defender_nature"],
-                fields["defender_item"], fields["defender_tera"],
-            )
+        (
+            resolved_defender_evs, resolved_defender_nature,
+            resolved_defender_item, resolved_defender_tera, resolved_defender_ability,
+        ) = resolve_calc_overrides(
+            user_id, defender, fields["defender_evs"], fields["defender_nature"],
+            fields["defender_item"], fields["defender_tera"], fields["defender_ability"],
         )
 
         if items:
@@ -406,9 +409,11 @@ def build_client(
         response = calc_response(
             records, moves, attacker, defender, move, items=items,
             attacker_evs=resolved_attacker_evs, attacker_nature=resolved_attacker_nature,
-            attacker_item=resolved_attacker_item, attacker_tera=resolved_attacker_tera,
+            attacker_item=resolved_attacker_item, attacker_ability=resolved_attacker_ability,
+            attacker_tera=resolved_attacker_tera,
             defender_evs=resolved_defender_evs, defender_nature=resolved_defender_nature,
-            defender_item=resolved_defender_item, defender_tera=resolved_defender_tera,
+            defender_item=resolved_defender_item, defender_ability=resolved_defender_ability,
+            defender_tera=resolved_defender_tera,
             defender_hp_percent=fields["defender_hp_percent"], weather=fields["weather"],
             terrain=fields["terrain"], screen=fields["screen"], spread=fields["spread"],
         )
@@ -430,10 +435,12 @@ def build_client(
         attacker_evs: Optional[str] = None,
         attacker_nature: Optional[str] = None,
         attacker_item: Optional[str] = None,
+        attacker_ability: Optional[str] = None,
         attacker_tera: Optional[str] = None,
         defender_evs: Optional[str] = None,
         defender_nature: Optional[str] = None,
         defender_item: Optional[str] = None,
+        defender_ability: Optional[str] = None,
         defender_tera: Optional[str] = None,
         defender_hp_percent: app_commands.Range[int, 1, 100] = 100,
         weather: Optional[str] = None,
@@ -445,9 +452,9 @@ def build_client(
             interaction, True,
             attacker=attacker, defender=defender, move=move,
             attacker_evs=attacker_evs, attacker_nature=attacker_nature,
-            attacker_item=attacker_item, attacker_tera=attacker_tera,
+            attacker_item=attacker_item, attacker_ability=attacker_ability, attacker_tera=attacker_tera,
             defender_evs=defender_evs, defender_nature=defender_nature,
-            defender_item=defender_item, defender_tera=defender_tera,
+            defender_item=defender_item, defender_ability=defender_ability, defender_tera=defender_tera,
             defender_hp_percent=defender_hp_percent, weather=weather,
             terrain=terrain, screen=screen, spread=spread,
         )

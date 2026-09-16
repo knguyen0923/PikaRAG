@@ -57,6 +57,7 @@ def resolve_calc_overrides(
     explicit_nature: Optional[str],
     explicit_item: Optional[str],
     explicit_tera: Optional[str],
+    explicit_ability: Optional[str],
 ) -> tuple:
     member = find_team_member(user_id, name)
 
@@ -81,4 +82,8 @@ def resolve_calc_overrides(
     if tera is None and member is not None:
         tera = member["tera_type"]
 
-    return evs, nature, item, tera
+    ability = explicit_ability
+    if ability is None and member is not None:
+        ability = member["ability"]
+
+    return evs, nature, item, tera, ability
