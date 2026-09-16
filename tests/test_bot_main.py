@@ -993,3 +993,110 @@ def test_team_command_attaches_a_team_view_starting_on_mine():
     assert isinstance(kwargs["view"], TeamView)
     assert kwargs["view"].side == "mine"
     assert kwargs["view"].user_id == 1
+
+
+def test_import_command_imports_immediately_when_nothing_is_stored_yet():
+    _client, tree = build_client(records=_CALC_TEST_RECORDS, moves=_CALC_TEST_MOVES)
+    import_cmd = tree.get_command("import")
+    interaction = MagicMock()
+    interaction.user.id = 8001
+    interaction.response.defer = AsyncMock()
+    interaction.followup.send = AsyncMock()
+
+    asyncio.run(import_cmd.callback(interaction, side="mine", pokepaste="Garchomp\n- Earthquake\n"))
+
+    interaction.followup.send.assert_awaited_once()
+    _args, kwargs = interaction.followup.send.call_args
+    assert "Loaded 1 Pokemon" in kwargs["embed"].description
+    from bot.commands.team import ViewTeamButtonView
+    assert isinstance(kwargs["view"], ViewTeamButtonView)
+
+
+def test_import_command_shows_a_confirmation_view_when_a_team_is_already_stored():
+    from bot.team_store import store_team
+
+    store_team(8002, "mine", [{
+        "species": "Absol", "nickname": None, "gender": None, "item": None, "ability": None,
+        "level": 50, "tera_type": None,
+        "evs": {"hp": 0, "attack": 0, "defense": 0, "sp_attack": 0, "sp_defense": 0, "speed": 0},
+        "ivs": {"hp": 31, "attack": 31, "defense": 31, "sp_attack": 31, "sp_defense": 31, "speed": 31},
+        "nature": "Hardy", "moves": [],
+    }])
+    _client, tree = build_client(records=_CALC_TEST_RECORDS, moves=_CALC_TEST_MOVES)
+    import_cmd = tree.get_command("import")
+    interaction = MagicMock()
+    interaction.user.id = 8002
+    interaction.response.defer = AsyncMock()
+    interaction.followup.send = AsyncMock()
+
+    asyncio.run(import_cmd.callback(interaction, side="mine", pokepaste="Garchomp\n- Earthquake\n"))
+
+    from bot.commands.team import ImportConfirmView
+
+    interaction.followup.send.assert_awaited_once()
+    _args, kwargs = interaction.followup.send.call_args
+    assert isinstance(kwargs["view"], ImportConfirmView)
+    from bot.team_store import get_team
+    assert get_team(8002, "mine")[0]["species"] == "Absol"  # not yet overwritten
+
+
+def test_import_command_confirm_button_completes_the_overwrite():
+    from bot.team_store import get_team, store_team
+
+    store_team(8003, "mine", [{
+        "species": "Absol", "nickname": None, "gender": None, "item": None, "ability": None,
+        "level": 50, "tera_type": None,
+        "evs": {"hp": 0, "attack": 0, "defense": 0, "sp_attack": 0, "sp_defense": 0, "speed": 0},
+        "ivs": {"hp": 31, "attack": 31, "defense": 31, "sp_attack": 31, "sp_defense": 31, "speed": 31},
+        "nature": "Hardy", "moves": [],
+    }])
+    _client, tree = build_client(records=_CALC_TEST_RECORDS, moves=_CALC_TEST_MOVES)
+    import_cmd = tree.get_command("import")
+    interaction = MagicMock()
+    interaction.user.id = 8003
+    interaction.response.defer = AsyncMock()
+    interaction.followup.send = AsyncMock()
+
+    asyncio.run(import_cmd.callback(interaction, side="mine", pokepaste="Garchomp\n- Earthquake\n"))
+
+    _args, kwargs = interaction.followup.send.call_args
+    confirm_button = kwargs["view"].children[0]
+    confirm_interaction = MagicMock()
+    confirm_interaction.user.id = 8003
+    confirm_interaction.response.edit_message = AsyncMock()
+
+    asyncio.run(confirm_button.callback(confirm_interaction))
+
+    assert get_team(8003, "mine")[0]["species"] == "Garchomp"
+    _args, edit_kwargs = confirm_interaction.response.edit_message.call_args
+    assert "Loaded 1 Pokemon" in edit_kwargs["embed"].description
+
+
+def test_import_command_cancel_button_leaves_the_stored_team_untouched():
+    from bot.team_store import get_team, store_team
+
+    store_team(8004, "mine", [{
+        "species": "Absol", "nickname": None, "gender": None, "item": None, "ability": None,
+        "level": 50, "tera_type": None,
+        "evs": {"hp": 0, "attack": 0, "defense": 0, "sp_attack": 0, "sp_defense": 0, "speed": 0},
+        "ivs": {"hp": 31, "attack": 31, "defense": 31, "sp_attack": 31, "sp_defense": 31, "speed": 31},
+        "nature": "Hardy", "moves": [],
+    }])
+    _client, tree = build_client(records=_CALC_TEST_RECORDS, moves=_CALC_TEST_MOVES)
+    import_cmd = tree.get_command("import")
+    interaction = MagicMock()
+    interaction.user.id = 8004
+    interaction.response.defer = AsyncMock()
+    interaction.followup.send = AsyncMock()
+
+    asyncio.run(import_cmd.callback(interaction, side="mine", pokepaste="Garchomp\n- Earthquake\n"))
+
+    _args, kwargs = interaction.followup.send.call_args
+    cancel_button = kwargs["view"].children[1]
+    cancel_interaction = MagicMock()
+    cancel_interaction.user.id = 8004
+    cancel_interaction.response.edit_message = AsyncMock()
+
+    asyncio.run(cancel_button.callback(cancel_interaction))
+
+    assert get_team(8004, "mine")[0]["species"] == "Absol"  # unchanged
