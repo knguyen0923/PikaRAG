@@ -119,3 +119,85 @@ def test_run_refresh_swaps_and_records_a_timestamp_on_a_clean_run(tmp_path):
     assert output_path.exists()
     recorded = json.loads(timestamp_path.read_text())
     assert recorded == {"last_refresh": 12345.0}
+
+
+def test_run_refresh_reports_a_clean_error_when_the_legal_file_is_missing(tmp_path):
+    source_dir = tmp_path / "source"
+    source_dir.mkdir()  # no legal_pokemon_*.json inside
+    raw_dir = tmp_path / "raw"
+    output_path = tmp_path / "processed" / "pokemon_records.json"
+
+    summary = run_refresh(
+        source_dir, raw_dir, output_path, session=MagicMock(), timestamp_path=tmp_path / "ts.json"
+    )
+
+    assert summary["swapped"] is False
+    assert summary["validation_problems"]
+    assert not output_path.exists()
+
+
+def test_run_refresh_reports_a_clean_error_when_a_source_file_is_corrupted(tmp_path):
+    source_dir = _fixture_source(tmp_path)
+    (source_dir / "vgc_moves.json").write_text("{not valid json")
+    raw_dir = tmp_path / "raw"
+    output_path = tmp_path / "processed" / "pokemon_records.json"
+    session = MagicMock()
+    response = MagicMock(status_code=200)
+    response.json.return_value = _SAMPLE_RESPONSE
+    session.get.return_value = response
+
+    summary = run_refresh(
+        source_dir, raw_dir, output_path, session=session, timestamp_path=tmp_path / "ts.json"
+    )
+
+    assert summary["swapped"] is False
+    assert summary["validation_problems"]
+    assert not output_path.exists()
+
+
+def test_run_refresh_reports_a_clean_error_when_the_atomic_swap_fails(tmp_path, monkeypatch):
+    source_dir = _fixture_source(tmp_path)
+    raw_dir = tmp_path / "raw"
+    output_path = tmp_path / "processed" / "pokemon_records.json"
+    output_path.parent.mkdir(parents=True)
+    output_path.write_text("[]")  # pre-existing live data
+    session = MagicMock()
+    response = MagicMock(status_code=200)
+    response.json.return_value = _SAMPLE_RESPONSE
+    session.get.return_value = response
+
+    def _boom(*args, **kwargs):
+        raise OSError("disk full")
+
+    monkeypatch.setattr("pipeline.refresh_job.os.replace", _boom)
+
+    summary = run_refresh(
+        source_dir, raw_dir, output_path, session=session, timestamp_path=tmp_path / "ts.json"
+    )
+
+    assert summary["swapped"] is False
+    assert summary["validation_problems"]
+    assert output_path.read_text() == "[]"  # live data left completely untouched
+
+
+def test_run_refresh_records_a_successful_swap_even_if_the_freshness_write_fails(tmp_path, monkeypatch):
+    source_dir = _fixture_source(tmp_path)
+    raw_dir = tmp_path / "raw"
+    output_path = tmp_path / "processed" / "pokemon_records.json"
+    session = MagicMock()
+    response = MagicMock(status_code=200)
+    response.json.return_value = _SAMPLE_RESPONSE
+    session.get.return_value = response
+
+    def _boom(*args, **kwargs):
+        raise OSError("disk full")
+
+    monkeypatch.setattr("pipeline.refresh_job.record_successful_refresh", _boom)
+
+    summary = run_refresh(
+        source_dir, raw_dir, output_path, session=session, timestamp_path=tmp_path / "ts.json"
+    )
+
+    assert summary["swapped"] is True
+    assert output_path.exists()
+    assert summary["freshness_write_failed"] == "disk full"

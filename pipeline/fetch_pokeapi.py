@@ -108,6 +108,7 @@ import requests
 
 POKEAPI_BASE_URL = "https://pokeapi.co/api/v2/pokemon"
 POKEAPI_SPECIES_URL = "https://pokeapi.co/api/v2/pokemon-species"
+POKEAPI_REQUEST_TIMEOUT = (5, 10)  # (connect, read) seconds -- matches fetch_pikalytics.py's established pattern
 
 _STAT_NAME_MAP = {
     "hp": "hp",
@@ -125,10 +126,34 @@ class PokeApiFetchError(Exception):
 
 def _get(session, url, display_name, slug):
     try:
-        return session.get(url)
+        return session.get(url, timeout=POKEAPI_REQUEST_TIMEOUT)
     except requests.exceptions.RequestException as e:
         raise PokeApiFetchError(
             f"Network error fetching '{display_name}' (slug '{slug}'): {e}"
+        ) from e
+
+
+def _parse_json_response(response, display_name, slug) -> dict:
+    """Parse a PokeAPI response body as JSON, raising PokeApiFetchError with a
+    consistent "malformed response body" message if the body isn't valid JSON
+    or isn't a JSON object.
+
+    Shared by fetch_pokemon_data and the two species-variety lookup helpers
+    (_default_variety_slug, _gendered_mega_variety_slug) -- all three call
+    response.json() on a 200 response and need the same guard, since a
+    malformed-but-200 body is a real (if rare) PokeAPI failure mode.
+    """
+    try:
+        payload = response.json()
+        if not isinstance(payload, dict):
+            raise TypeError(f"expected a JSON object, got {type(payload).__name__}")
+        return payload
+    except (ValueError, TypeError) as e:
+        # ValueError covers a non-JSON body (json.JSONDecodeError is a
+        # subclass); TypeError covers a 200 response whose body parses fine
+        # but isn't a JSON object (e.g. a bare list or string).
+        raise PokeApiFetchError(
+            f"Malformed response body for '{display_name}' (slug '{slug}'): {e}"
         ) from e
 
 
@@ -146,7 +171,8 @@ def _default_variety_slug(session, slug: str, display_name: str):
     response = _get(session, f"{POKEAPI_SPECIES_URL}/{slug}", display_name, slug)
     if response.status_code != 200:
         return None
-    for variety in response.json().get("varieties", []):
+    payload = _parse_json_response(response, display_name, slug)
+    for variety in payload.get("varieties", []):
         if variety.get("is_default"):
             name = variety.get("pokemon", {}).get("name")
             if name and name != slug:
@@ -174,7 +200,8 @@ def _gendered_mega_variety_slug(session, mega_slug: str, display_name: str):
     response = _get(session, f"{POKEAPI_SPECIES_URL}/{base}", display_name, mega_slug)
     if response.status_code != 200:
         return None
-    for variety in response.json().get("varieties", []):
+    payload = _parse_json_response(response, display_name, mega_slug)
+    for variety in payload.get("varieties", []):
         if variety.get("is_default"):
             default_name = variety.get("pokemon", {}).get("name", "")
             if default_name.startswith(f"{base}-"):
@@ -202,14 +229,24 @@ def fetch_pokemon_data(display_name: str, session=None) -> dict:
         raise PokeApiFetchError(
             f"PokeAPI returned {response.status_code} for '{display_name}' (slug '{slug}')"
         )
-    payload = response.json()
-    base_stats = {
-        _STAT_NAME_MAP[s["stat"]["name"]]: s["base_stat"]
-        for s in payload["stats"]
-        if s["stat"]["name"] in _STAT_NAME_MAP
-    }
-    learnset = [m["move"]["name"] for m in payload["moves"]]
-    abilities = [a["ability"]["name"] for a in payload["abilities"]]
+    try:
+        payload = _parse_json_response(response, display_name, slug)
+        base_stats = {
+            _STAT_NAME_MAP[s["stat"]["name"]]: s["base_stat"]
+            for s in payload["stats"]
+            if s["stat"]["name"] in _STAT_NAME_MAP
+        }
+        learnset = [m["move"]["name"] for m in payload["moves"]]
+        abilities = [a["ability"]["name"] for a in payload["abilities"]]
+    except (ValueError, KeyError, TypeError) as e:
+        # _parse_json_response already raises PokeApiFetchError directly for a
+        # non-JSON or non-object body, so it passes through this except
+        # untouched. KeyError/TypeError here cover a 200 response whose body
+        # parses as a JSON object but doesn't have the expected shape (e.g.
+        # missing "stats"/"moves"/"abilities" keys, or malformed entries).
+        raise PokeApiFetchError(
+            f"Malformed response body for '{display_name}' (slug '{slug}'): {e}"
+        ) from e
     return {"base_stats": base_stats, "learnset": learnset, "abilities": abilities}
 
 

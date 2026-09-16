@@ -1,5 +1,5 @@
 import json
-from pipeline.build_records import build_records, write_processed_records
+from pipeline.build_records import build_records, find_legal_pokemon_file, write_processed_records
 
 def _write_json(path, data):
     with open(path, "w") as f:
@@ -107,3 +107,13 @@ def test_build_records_filters_abilities_against_vgc_abilities(tmp_path):
     # Only the two listed abilities should be included; some-unlisted-ability must be dropped
     assert set(record["abilities"]) == {"Snow Warning", "Soundproof"}
     assert "some-unlisted-ability" not in record["abilities"]
+
+def test_find_legal_pokemon_file_picks_the_latest_when_multiple_exist(tmp_path):
+    source_dir = tmp_path / "source"
+    source_dir.mkdir()
+    (source_dir / "legal_pokemon_m-b.json").write_text("{}")
+    (source_dir / "legal_pokemon_m-c.json").write_text("{}")
+
+    result = find_legal_pokemon_file(source_dir)
+
+    assert result.name == "legal_pokemon_m-c.json"

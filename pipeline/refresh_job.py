@@ -17,6 +17,16 @@ from pipeline.freshness import (
 )
 from pipeline.validate import validate_legal_count, validate_records, validate_write_count
 
+_SOURCE_LOAD_ERRORS = (OSError, json.JSONDecodeError, UnicodeDecodeError, KeyError)
+
+
+def _empty_summary(problem: str) -> dict:
+    return {
+        "fetched": 0, "cached": 0, "failed": [],
+        "records_written": 0, "expected_count": 0,
+        "validation_problems": [problem], "swapped": False,
+    }
+
 
 def run_refresh(
     source_dir, raw_dir, output_path, session=None,
@@ -26,17 +36,29 @@ def run_refresh(
     raw_dir = Path(raw_dir)
     output_path = Path(output_path)
 
-    with open(find_legal_pokemon_file(source_dir)) as f:
-        legal_data = json.load(f)
-    legal_names = legal_data["legal_pokemon"]
-    regulation = legal_data["regulation"]
-    # The source file declares its own count; trust that as the expected total
-    # so a truncated or partially-parsed legal_pokemon list is caught too.
-    expected_count = legal_data.get("count", len(legal_names))
+    try:
+        with open(find_legal_pokemon_file(source_dir)) as f:
+            legal_data = json.load(f)
+        legal_names = legal_data["legal_pokemon"]
+        regulation = legal_data["regulation"]
+        # The source file declares its own count; trust that as the expected
+        # total so a truncated or partially-parsed legal_pokemon list is
+        # caught too.
+        expected_count = legal_data.get("count", len(legal_names))
+    except _SOURCE_LOAD_ERRORS as e:
+        return _empty_summary(f"Could not load legal-Pokemon source data: {type(e).__name__}: {e}")
 
     summary = fetch_all(legal_names, cache_dir=raw_dir, session=session)
 
-    records = build_records(source_dir, raw_dir)
+    try:
+        records = build_records(source_dir, raw_dir)
+    except _SOURCE_LOAD_ERRORS as e:
+        summary["records_written"] = 0
+        summary["expected_count"] = expected_count
+        summary["validation_problems"] = [f"Could not build records from source data: {type(e).__name__}: {e}"]
+        summary["swapped"] = False
+        return summary
+
     summary["records_written"] = len(records)
     summary["expected_count"] = expected_count
 
@@ -52,10 +74,19 @@ def run_refresh(
         return summary
 
     temp_path = output_path.with_name(output_path.name + ".tmp")
-    write_processed_records(records, temp_path)
-    os.replace(temp_path, output_path)
+    try:
+        write_processed_records(records, temp_path)
+        os.replace(temp_path, output_path)
+    except OSError as e:
+        summary["swapped"] = False
+        summary["validation_problems"] = [f"Could not write live data (filesystem error): {e}"]
+        return summary
     summary["swapped"] = True
-    record_successful_refresh(timestamp_path, now_func())
+
+    try:
+        record_successful_refresh(timestamp_path, now_func())
+    except OSError as e:
+        summary["freshness_write_failed"] = str(e)
     return summary
 
 
@@ -82,6 +113,9 @@ if __name__ == "__main__":
 
     for warning in check_all_freshness():
         print(f"\nWARNING: {warning}")
+
+    if result.get("freshness_write_failed"):
+        print(f"\nWARNING: could not record successful-refresh timestamp: {result['freshness_write_failed']}")
 
     if problems:
         print("\nERROR: validation failed, live data left unchanged:")
