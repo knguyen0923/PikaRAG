@@ -105,6 +105,26 @@ def test_calc_command_sends_an_embed_with_the_calc_color():
     assert embed.color == discord.Color.red()
 
 
+def test_calc_command_ordinary_success_passes_no_view_kwarg_at_all():
+    # Regression test for the Critical bug: _calc_send used to pass
+    # view=None through to interaction.response.send_message(...) on every
+    # ORDINARY /calc call (no suggestion needed), which crashes under real
+    # discord.py 2.7.1 with AttributeError: 'NoneType' object has no
+    # attribute 'is_finished'. The fix omits the view kwarg entirely when
+    # view is None, so it must be genuinely ABSENT here -- not just None --
+    # or this test would pass identically before and after a regression.
+    _client, tree = build_client(records=_CALC_TEST_RECORDS, moves=_CALC_TEST_MOVES)
+    calc_cmd = tree.get_command("calc")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(calc_cmd.callback(interaction, attacker="Garchomp", defender="Garchomp", move="Earthquake"))
+
+    _args, kwargs = interaction.response.send_message.call_args
+    assert "view" not in kwargs
+
+
 def test_import_command_is_registered_on_the_tree():
     _client, tree = build_client()
     commands = {command.name: command for command in tree.get_commands()}
@@ -253,6 +273,148 @@ def test_calc_command_omits_the_note_on_an_error_response():
 
     sent_text = _extract_text(interaction.response.send_message)
     assert "using stored data" not in sent_text.lower()
+
+
+def test_calc_command_shows_a_suggestion_view_for_a_mistyped_attacker():
+    _client, tree = build_client(records=_CALC_TEST_RECORDS, moves=_CALC_TEST_MOVES)
+    calc_cmd = tree.get_command("calc")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(calc_cmd.callback(interaction, attacker="Garchom", defender="Garchomp", move="Earthquake"))
+
+    from bot.ui import NameSuggestionView
+
+    _args, kwargs = interaction.response.send_message.call_args
+    assert isinstance(kwargs["view"], NameSuggestionView)
+
+
+def test_calc_command_picking_an_attacker_suggestion_replays_the_whole_calc():
+    _client, tree = build_client(records=_CALC_TEST_RECORDS, moves=_CALC_TEST_MOVES)
+    calc_cmd = tree.get_command("calc")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(calc_cmd.callback(interaction, attacker="Garchom", defender="Garchomp", move="Earthquake"))
+
+    _args, kwargs = interaction.response.send_message.call_args
+    select = kwargs["view"].children[0]
+    select._values = ["Garchomp"]  # simulates Discord populating .values on submit
+    pick_interaction = MagicMock()
+    pick_interaction.user.id = 1
+    pick_interaction.response.edit_message = AsyncMock()
+
+    asyncio.run(select.callback(pick_interaction))
+
+    _args, edit_kwargs = pick_interaction.response.edit_message.call_args
+    assert "Garchomp's Earthquake vs Garchomp" in edit_kwargs["embed"].description
+
+
+def test_calc_command_shows_no_view_for_a_completely_unrecognized_name():
+    _client, tree = build_client(records=_CALC_TEST_RECORDS, moves=_CALC_TEST_MOVES)
+    calc_cmd = tree.get_command("calc")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(calc_cmd.callback(interaction, attacker="Zzzznotreal", defender="Garchomp", move="Earthquake"))
+
+    _args, kwargs = interaction.response.send_message.call_args
+    # Regression guard: the view kwarg must be genuinely ABSENT here, not just
+    # None -- discord.py 2.7.1 crashes on send_message(view=None) with
+    # AttributeError: 'NoneType' object has no attribute 'is_finished'.
+    assert "view" not in kwargs
+
+
+def test_calc_command_picking_a_suggestion_preserves_optional_fields_and_clears_the_view():
+    # Finding 2: prove that optional fields beyond attacker/defender/move
+    # (attacker_evs, attacker_nature, defender_hp_percent, screen here)
+    # actually survive a suggestion-pick retry instead of being silently
+    # dropped/reset to default.
+    # Finding 4: prove the dropdown is cleared (view=None) after a
+    # successful retry, not left showing.
+    from bot.commands.calc import calc_response
+
+    _client, tree = build_client(records=_CALC_TEST_RECORDS, moves=_CALC_TEST_MOVES)
+    calc_cmd = tree.get_command("calc")
+    interaction = MagicMock()
+    interaction.user.id = 9102
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(calc_cmd.callback(
+        interaction, attacker="Garchom", defender="Garchomp", move="Earthquake",
+        attacker_evs="4/252/0/0/0/252", attacker_nature="Adamant",
+        defender_hp_percent=50, screen="Reflect",
+    ))
+
+    _args, kwargs = interaction.response.send_message.call_args
+    select = kwargs["view"].children[0]
+    select._values = ["Garchomp"]  # simulates Discord populating .values on submit
+    pick_interaction = MagicMock()
+    pick_interaction.user.id = 9102
+    pick_interaction.response.edit_message = AsyncMock()
+
+    asyncio.run(select.callback(pick_interaction))
+
+    _args, edit_kwargs = pick_interaction.response.edit_message.call_args
+    replayed_text = edit_kwargs["embed"].description
+
+    expected_text = calc_response(
+        _CALC_TEST_RECORDS, _CALC_TEST_MOVES, "Garchomp", "Garchomp", "Earthquake",
+        attacker_evs="4/252/0/0/0/252", attacker_nature="Adamant",
+        defender_hp_percent=50, screen="Reflect",
+    )
+    assert replayed_text == expected_text
+
+    # Sanity check: the optional fields actually changed the output, so the
+    # equality above isn't vacuously true because both paths use defaults.
+    default_text = calc_response(_CALC_TEST_RECORDS, _CALC_TEST_MOVES, "Garchomp", "Garchomp", "Earthquake")
+    assert replayed_text != default_text
+
+    assert edit_kwargs["view"] is None
+
+
+_CALC_TEST_ITEMS = [{"name": "Life Orb"}]
+
+
+def test_calc_command_shows_a_suggestion_view_for_a_mistyped_attacker_item():
+    # Finding 3: the item-suggestion paths (attacker_item/defender_item) sit
+    # behind `if items:`, run after resolve_calc_overrides, and use
+    # resolved_attacker_item/resolved_defender_item -- a structurally
+    # different code path from the species/move ones covered above.
+    from bot.commands.calc import is_error_response
+    from bot.ui import NameSuggestionView
+
+    _client, tree = build_client(
+        records=_CALC_TEST_RECORDS, moves=_CALC_TEST_MOVES, items=_CALC_TEST_ITEMS,
+    )
+    calc_cmd = tree.get_command("calc")
+    interaction = MagicMock()
+    interaction.user.id = 9103
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(calc_cmd.callback(
+        interaction, attacker="Garchomp", defender="Garchomp", move="Earthquake",
+        attacker_item="Life Orbb",
+    ))
+
+    _args, kwargs = interaction.response.send_message.call_args
+    assert isinstance(kwargs["view"], NameSuggestionView)
+
+    select = kwargs["view"].children[0]
+    select._values = ["Life Orb"]  # simulates Discord populating .values on submit
+    pick_interaction = MagicMock()
+    pick_interaction.user.id = 9103
+    pick_interaction.response.edit_message = AsyncMock()
+
+    asyncio.run(select.callback(pick_interaction))
+
+    _args, edit_kwargs = pick_interaction.response.edit_message.call_args
+    replayed_text = edit_kwargs["embed"].description
+    assert "Garchomp's Earthquake vs Garchomp" in replayed_text
+    assert not is_error_response(replayed_text)
 
 
 def test_ask_command_includes_stored_team_context():
@@ -460,6 +622,96 @@ def test_moves_command_uses_usage_data_when_provided():
 
     sent_text = _extract_text(interaction.response.send_message)
     assert "top moves" in sent_text.lower()
+
+
+def test_stats_command_shows_a_suggestion_view_on_a_close_miss():
+    records = [{
+        "name": "Abomasnow", "types": ["Grass", "Ice"],
+        "base_stats": {"hp": 90, "attack": 92, "defense": 75, "sp_attack": 92, "sp_defense": 85, "speed": 60},
+        "abilities": ["Snow Warning"], "learnset": ["Blizzard"], "legal_in": ["M-B"],
+    }]
+    _client, tree = build_client(records=records)
+    stats_cmd = tree.get_command("stats")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(stats_cmd.callback(interaction, name="Abomasno"))
+
+    from bot.ui import NameSuggestionView
+
+    _args, kwargs = interaction.response.send_message.call_args
+    assert isinstance(kwargs["view"], NameSuggestionView)
+
+
+def test_stats_command_picking_a_suggestion_edits_in_the_real_stats():
+    records = [{
+        "name": "Abomasnow", "types": ["Grass", "Ice"],
+        "base_stats": {"hp": 90, "attack": 92, "defense": 75, "sp_attack": 92, "sp_defense": 85, "speed": 60},
+        "abilities": ["Snow Warning"], "learnset": ["Blizzard"], "legal_in": ["M-B"],
+    }]
+    _client, tree = build_client(records=records)
+    stats_cmd = tree.get_command("stats")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(stats_cmd.callback(interaction, name="Abomasno"))
+
+    _args, kwargs = interaction.response.send_message.call_args
+    view = kwargs["view"]
+    select = view.children[0]
+    select._values = ["Abomasnow"]  # simulates Discord populating .values on submit
+    pick_interaction = MagicMock()
+    pick_interaction.user.id = 1
+    pick_interaction.response.edit_message = AsyncMock()
+
+    asyncio.run(select.callback(pick_interaction))
+
+    _args, edit_kwargs = pick_interaction.response.edit_message.call_args
+    assert "Abomasnow" in edit_kwargs["embed"].description
+    assert "HP 90" in edit_kwargs["embed"].description
+
+
+def test_stats_command_shows_no_view_when_there_are_no_close_matches():
+    records = [{
+        "name": "Abomasnow", "types": ["Grass", "Ice"],
+        "base_stats": {"hp": 90, "attack": 92, "defense": 75, "sp_attack": 92, "sp_defense": 85, "speed": 60},
+        "abilities": ["Snow Warning"], "learnset": ["Blizzard"], "legal_in": ["M-B"],
+    }]
+    _client, tree = build_client(records=records)
+    stats_cmd = tree.get_command("stats")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(stats_cmd.callback(interaction, name="Zzzznotarealpokemon"))
+
+    _args, kwargs = interaction.response.send_message.call_args
+    # Regression guard: the view kwarg must be genuinely ABSENT here, not just
+    # None -- discord.py 2.7.1 crashes on send_message(view=None) with
+    # AttributeError: 'NoneType' object has no attribute 'is_finished'.
+    assert "view" not in kwargs
+
+
+def test_moves_command_shows_a_suggestion_view_on_a_close_miss():
+    records = [{
+        "name": "Abomasnow", "types": ["Grass", "Ice"],
+        "base_stats": {"hp": 90, "attack": 92, "defense": 75, "sp_attack": 92, "sp_defense": 85, "speed": 60},
+        "abilities": ["Snow Warning"], "learnset": ["Blizzard"], "legal_in": ["M-B"],
+    }]
+    _client, tree = build_client(records=records)
+    moves_cmd = tree.get_command("moves")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(moves_cmd.callback(interaction, name="Abomasno"))
+
+    from bot.ui import NameSuggestionView
+
+    _args, kwargs = interaction.response.send_message.call_args
+    assert isinstance(kwargs["view"], NameSuggestionView)
 
 
 def test_tree_error_handler_gives_an_ephemeral_permission_message_on_check_failure():

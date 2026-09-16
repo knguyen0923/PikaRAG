@@ -22,8 +22,10 @@ from bot.commands.team import (
     scout_response,
     view_team_response,
 )
+from bot.pokemon_lookup import find_record, not_found_message, suggest_names
 from bot.pokepaste_fetch import PokepasteFetchError, resolve_pokepaste_text
 from bot.team_store import find_team_member, get_team, resolve_calc_overrides
+from bot.ui import NameSuggestionView
 from rag.answer import OFFLINE_MESSAGE, OllamaAnswerer
 from rag.circuit_breaker import CircuitBreaker
 from rag.embed import SentenceTransformerEmbedder
@@ -130,11 +132,37 @@ def build_client(
     @tree.command(name="stats", description="Look up a Pokemon's base stats, types, and abilities.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
     async def stats(interaction: discord.Interaction, name: str) -> None:
+        if find_record(records, name) is None:
+            suggestions = suggest_names(records, name)
+            if suggestions:
+                async def _on_select(inner_interaction: discord.Interaction, chosen: str) -> None:
+                    await inner_interaction.response.edit_message(
+                        embed=_embed("stats", stats_response(records, chosen, usage=usage)), view=None
+                    )
+
+                await interaction.response.send_message(
+                    embed=_embed("stats", not_found_message(records, name)),
+                    view=NameSuggestionView(interaction.user.id, suggestions, _on_select),
+                )
+                return
         await interaction.response.send_message(embed=_embed("stats", stats_response(records, name, usage=usage)))
 
     @tree.command(name="moves", description="Look up a Pokemon's legal moveset.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
     async def moves_command(interaction: discord.Interaction, name: str) -> None:
+        if find_record(records, name) is None:
+            suggestions = suggest_names(records, name)
+            if suggestions:
+                async def _on_select(inner_interaction: discord.Interaction, chosen: str) -> None:
+                    await inner_interaction.response.edit_message(
+                        embed=_embed("moves", moves_response(records, chosen, usage=usage)), view=None
+                    )
+
+                await interaction.response.send_message(
+                    embed=_embed("moves", not_found_message(records, name)),
+                    view=NameSuggestionView(interaction.user.id, suggestions, _on_select),
+                )
+                return
         await interaction.response.send_message(embed=_embed("moves", moves_response(records, name, usage=usage)))
 
     @tree.command(name="import", description="Import a full Pokemon team from Pokepaste text or a pokepast.es URL.")
@@ -180,6 +208,129 @@ def build_client(
     async def team(interaction: discord.Interaction, side: Literal["mine", "opponent"]) -> None:
         await interaction.response.send_message(embed=_embed("team", view_team_response(interaction.user.id, side)))
 
+    async def _calc_send(interaction: discord.Interaction, send_new_message: bool, embed, view=None) -> None:
+        if send_new_message:
+            if view is None:
+                await interaction.response.send_message(embed=embed)
+            else:
+                await interaction.response.send_message(embed=embed, view=view)
+        else:
+            await interaction.response.edit_message(embed=embed, view=view)
+
+    async def _run_calc(interaction: discord.Interaction, send_new_message: bool, **fields) -> None:
+        """fields holds /calc's parameters exactly as originally typed:
+        attacker, defender, move, attacker_evs, attacker_nature,
+        attacker_item, attacker_tera, defender_evs, defender_nature,
+        defender_item, defender_tera, defender_hp_percent, weather,
+        terrain, screen, spread. A suggestion pick re-invokes this with
+        exactly one field replaced and every other one untouched."""
+        attacker, defender, move = fields["attacker"], fields["defender"], fields["move"]
+
+        if find_record(records, attacker) is None:
+            suggestions = suggest_names(records, attacker)
+            message = not_found_message(records, attacker)
+            if not suggestions:
+                await _calc_send(interaction, send_new_message, _embed("calc", message))
+                return
+
+            async def _on_select(inner_interaction: discord.Interaction, chosen: str) -> None:
+                await _run_calc(inner_interaction, False, **{**fields, "attacker": chosen})
+
+            await _calc_send(
+                interaction, send_new_message, _embed("calc", message),
+                NameSuggestionView(interaction.user.id, suggestions, _on_select),
+            )
+            return
+
+        if find_record(records, defender) is None:
+            suggestions = suggest_names(records, defender)
+            message = not_found_message(records, defender)
+            if not suggestions:
+                await _calc_send(interaction, send_new_message, _embed("calc", message))
+                return
+
+            async def _on_select(inner_interaction: discord.Interaction, chosen: str) -> None:
+                await _run_calc(inner_interaction, False, **{**fields, "defender": chosen})
+
+            await _calc_send(
+                interaction, send_new_message, _embed("calc", message),
+                NameSuggestionView(interaction.user.id, suggestions, _on_select),
+            )
+            return
+
+        if find_record(moves, move) is None:
+            suggestions = suggest_names(moves, move)
+            message = not_found_message(moves, move, kind="move")
+            if not suggestions:
+                await _calc_send(interaction, send_new_message, _embed("calc", message))
+                return
+
+            async def _on_select(inner_interaction: discord.Interaction, chosen: str) -> None:
+                await _run_calc(inner_interaction, False, **{**fields, "move": chosen})
+
+            await _calc_send(
+                interaction, send_new_message, _embed("calc", message),
+                NameSuggestionView(interaction.user.id, suggestions, _on_select),
+            )
+            return
+
+        user_id = interaction.user.id
+        resolved_attacker_evs, resolved_attacker_nature, resolved_attacker_item, resolved_attacker_tera = (
+            resolve_calc_overrides(
+                user_id, attacker, fields["attacker_evs"], fields["attacker_nature"],
+                fields["attacker_item"], fields["attacker_tera"],
+            )
+        )
+        resolved_defender_evs, resolved_defender_nature, resolved_defender_item, resolved_defender_tera = (
+            resolve_calc_overrides(
+                user_id, defender, fields["defender_evs"], fields["defender_nature"],
+                fields["defender_item"], fields["defender_tera"],
+            )
+        )
+
+        if items:
+            if resolved_attacker_item and find_record(items, resolved_attacker_item) is None:
+                suggestions = suggest_names(items, resolved_attacker_item)
+                if suggestions:
+                    async def _on_select(inner_interaction: discord.Interaction, chosen: str) -> None:
+                        await _run_calc(inner_interaction, False, **{**fields, "attacker_item": chosen})
+
+                    await _calc_send(
+                        interaction, send_new_message,
+                        _embed("calc", not_found_message(items, resolved_attacker_item, kind="item")),
+                        NameSuggestionView(interaction.user.id, suggestions, _on_select),
+                    )
+                    return
+            if resolved_defender_item and find_record(items, resolved_defender_item) is None:
+                suggestions = suggest_names(items, resolved_defender_item)
+                if suggestions:
+                    async def _on_select(inner_interaction: discord.Interaction, chosen: str) -> None:
+                        await _run_calc(inner_interaction, False, **{**fields, "defender_item": chosen})
+
+                    await _calc_send(
+                        interaction, send_new_message,
+                        _embed("calc", not_found_message(items, resolved_defender_item, kind="item")),
+                        NameSuggestionView(interaction.user.id, suggestions, _on_select),
+                    )
+                    return
+
+        response = calc_response(
+            records, moves, attacker, defender, move, items=items,
+            attacker_evs=resolved_attacker_evs, attacker_nature=resolved_attacker_nature,
+            attacker_item=resolved_attacker_item, attacker_tera=resolved_attacker_tera,
+            defender_evs=resolved_defender_evs, defender_nature=resolved_defender_nature,
+            defender_item=resolved_defender_item, defender_tera=resolved_defender_tera,
+            defender_hp_percent=fields["defender_hp_percent"], weather=fields["weather"],
+            terrain=fields["terrain"], screen=fields["screen"], spread=fields["spread"],
+        )
+        # Only note stored-team usage on a successful calc -- not on an
+        # error, where the note would be misleading.
+        if not is_error_response(response):
+            stored_names = [name for name in (attacker, defender) if find_team_member(user_id, name)]
+            if stored_names:
+                response += f" (using stored data for: {', '.join(stored_names)})"
+        await _calc_send(interaction, send_new_message, _embed("calc", response))
+
     @tree.command(name="calc", description="Calculate a damage range for attacker's move vs defender.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
     async def calc(
@@ -201,41 +352,16 @@ def build_client(
         screen: Optional[str] = None,
         spread: bool = False,
     ) -> None:
-        user_id = interaction.user.id
-        resolved_attacker_evs, resolved_attacker_nature, resolved_attacker_item, resolved_attacker_tera = (
-            resolve_calc_overrides(user_id, attacker, attacker_evs, attacker_nature, attacker_item, attacker_tera)
+        await _run_calc(
+            interaction, True,
+            attacker=attacker, defender=defender, move=move,
+            attacker_evs=attacker_evs, attacker_nature=attacker_nature,
+            attacker_item=attacker_item, attacker_tera=attacker_tera,
+            defender_evs=defender_evs, defender_nature=defender_nature,
+            defender_item=defender_item, defender_tera=defender_tera,
+            defender_hp_percent=defender_hp_percent, weather=weather,
+            terrain=terrain, screen=screen, spread=spread,
         )
-        resolved_defender_evs, resolved_defender_nature, resolved_defender_item, resolved_defender_tera = (
-            resolve_calc_overrides(user_id, defender, defender_evs, defender_nature, defender_item, defender_tera)
-        )
-        response = calc_response(
-            records,
-            moves,
-            attacker,
-            defender,
-            move,
-            items=items,
-            attacker_evs=resolved_attacker_evs,
-            attacker_nature=resolved_attacker_nature,
-            attacker_item=resolved_attacker_item,
-            attacker_tera=resolved_attacker_tera,
-            defender_evs=resolved_defender_evs,
-            defender_nature=resolved_defender_nature,
-            defender_item=resolved_defender_item,
-            defender_tera=resolved_defender_tera,
-            defender_hp_percent=defender_hp_percent,
-            weather=weather,
-            terrain=terrain,
-            screen=screen,
-            spread=spread,
-        )
-        # Only note stored-team usage on a successful calc -- not on an
-        # error, where the note would be misleading.
-        if not is_error_response(response):
-            stored_names = [name for name in (attacker, defender) if find_team_member(user_id, name)]
-            if stored_names:
-                response += f" (using stored data for: {', '.join(stored_names)})"
-        await interaction.response.send_message(embed=_embed("calc", response))
 
     @client.event
     async def on_ready() -> None:
