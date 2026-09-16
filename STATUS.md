@@ -5,56 +5,66 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-15, after merging `worktree-team-button-ui-plan`
-into `main` (docs/CI only, nothing implemented yet).
+**Last updated:** 2026-09-15, after executing, reviewing, and merging all 7
+button-UI-backlog plans into `main` (commit `d90c432`, 511/511 tests
+passing).
 
-**Immediate next action:** all 6 design specs from the 2026-09-13
-brainstorm are shipped (eval-harness, retrieval-quality, grounding-trust,
-observability, reliability, ingestion-robustness). A separate,
-previously-undocumented session then ran a full planning pass on a
-`worktree-team-button-ui-plan` branch/worktree — pushed to origin, never
-merged, and never reflected here until this update. That branch has now
-been merged into `main` (docs/CI-only merge commit, no application code
-changed, 407/407 tests still passing). It contains **6 ready,
-not-yet-executed implementation plans and 1 new design spec**, none
-involving the LLM:
+**Immediate next action:** the 7 plans listed in the previous update (all
+of `worktree-team-button-ui-plan`'s planning output, none involving the
+LLM) have now all been executed and merged into `main`, in dependency
+order, with a full-suite test run after every merge:
 
-- `docs/superpowers/plans/2026-09-15-team-button-ui.md` — `/team` gets a
-  `TeamView` with "Your team"/"Opponent's team" buttons (Phase 1 of the
-  button-UI backlog item; spec: `2026-09-15-team-button-ui-design.md`).
-- `docs/superpowers/specs/2026-09-15-poketwo-style-ui-design.md` — a
-  broader cross-command Poketwo-style UI design, split into 4
-  independently-scoped slice plans:
-  - `2026-09-15-name-suggestion-dropdown.md` (Slice A) — typo-miss dropdown
-    for `/stats`, `/moves`, `/calc`'s 5 lookup points; adds `bot/ui.py`.
-  - `2026-09-15-stats-moves-tabbed-panel.md` (Slice B) — shared
-    Stats/Moves/Usage tab panel opened by `/stats` or `/moves`; adds
-    `bot/commands/pokemon_info.py`.
-  - `2026-09-15-import-confirmation-view-team-link.md` (Slice C) — `/import`
-    gains a Confirm/Cancel overwrite prompt + "View team" button.
-    **Depends on Task 1 of the team-button-ui plan** (constructs `TeamView`
-    directly) — does not require the rest of that plan.
-  - `2026-09-15-dex-browse-command.md` (Slice D) — new `/dex` Prev/Next
-    roster browser. Core browsing has no dependency on anything else; its
-    `start`-not-found fallback specifically needs Slice A's
-    `NameSuggestionView` implemented first.
-- `docs/superpowers/plans/2026-09-15-damage-calc-abilities.md` — no spec
-  (derived from an audit); adds Choice Scarf + threads `ability` through
-  `/calc` + implements 6 ability modifiers (Adaptability, Huge/Pure Power,
-  Multiscale/Shadow Shield, Filter/Solid Rock/Prism Armor, Thick Fat,
-  Tinted Lens).
-- `docs/superpowers/plans/2026-09-15-pipeline-error-handling.md` — no spec
-  (derived from a 2-pass `pipeline/` audit); adds network timeouts and
-  try/except hardening around fetch/refresh/atomic-swap/freshness-write
-  so a scheduled job degrades cleanly instead of crashing with a raw
-  traceback.
+1. `name-suggestion-dropdown` (Slice A) — shared `NameSuggestionView`
+   dropdown for `/stats`, `/moves`, `/calc` name misses. Clean merge.
+2. `dex-browse-command` (Slice D) — new `/dex` Prev/Next roster browser
+   (built on Slice A). Clean merge. (Finished this session — was left
+   uncommitted mid-task from an earlier interrupted run.)
+3. `team-button-ui` — `TeamView` with "Your team"/"Opponent's team"
+   buttons replacing `/team`'s `side` parameter. Clean merge.
+4. `import-confirmation-view-team-link` (Slice C) — Confirm/Cancel
+   overwrite prompt + "View team" button on `/import` (built on
+   `team-button-ui`'s `TeamView`). Clean merge. (Also finished this
+   session from an uncommitted mid-task state.)
+5. `damage-calc-abilities` — Choice Scarf + `ability` param threaded
+   through `/calc` + 6 ability modifiers. **Conflicted** in `bot/main.py`:
+   this plan was written against the old flat `/calc` handler, but Slice A
+   had since refactored it into `_run_calc`/`_calc_send` helpers (for the
+   suggestion-dropdown retry flow). Resolved by hand-threading
+   `attacker_ability`/`defender_ability` through the new helper structure
+   instead of picking either side wholesale.
+6. `pipeline-error-handling` — network timeouts + error hardening in
+   `pipeline/fetch_pokeapi.py` and `pipeline/refresh_job.py`. Clean merge
+   (fully independent of the bot/ changes).
+7. `stats-moves-tabbed-panel` (Slice B) — shared Stats/Moves/Usage tab
+   panel on `/stats` and `/moves`. **Conflicted** in `bot/main.py` for the
+   same reason as #5 (written against the pre-Slice-A handler bodies).
+   Resolved by attaching `PokemonInfoView` in both the direct-hit and
+   suggestion-picked paths — but the first resolution had a real bug
+   (unconditionally read `record["name"]` after a miss with no
+   suggestions, where `record` is `None`) caught by the test suite
+   (`test_stats_command_shows_no_view_when_there_are_no_close_matches`)
+   and fixed in a follow-up commit before moving on.
 
-None of these plans have been executed — per standing instruction, do not
-execute any of them without the user's explicit go-ahead each time.
+All 7 source `worktree-*` branches are still present locally (some also
+pushed to origin) and their `.worktrees/*`/`.claude/worktrees/*` working
+copies still exist on disk — neither the branches nor the worktrees have
+been cleaned up yet; that's a deliberate pause point, not an oversight.
+`main` itself has not been pushed to origin.
+
 Separately, and not blocking any of the above: Task 5 of the local LLM
 migration (physical hardware setup) is still open — see "Local LLM
 migration" section below for exact in-progress state and the specific
 network fix still needed on the Windows laptop.
+
+Also this session: found and fixed (with explicit user sign-off) that
+`.claude/settings.json` and `.claude/hooks/` were never tracked in git —
+a global `~/.gitignore_global` excludes `.claude/` in every repo on this
+machine, so the Stop/PostCompact hooks `.claude/settings.json` declares
+had no backing scripts in any of the 7 worktrees created this session,
+and the Stop hook failed silently (exit 127) every time it fired there.
+Force-added `.claude/settings.json` and `.claude/hooks/*.sh` to this repo
+specifically (commit `d90c432`); the global ignore is untouched for every
+other project.
 
 ## Grounding & trust — shipped
 
@@ -89,7 +99,7 @@ preserved in git history, `git log --oneline --grep=eval-harness` and
 itself to find two real retrieval-quality bugs and fixed them via
 entity-aware retrieval, and grounding & trust (see below). 329/329 tests
 passing throughout.
-<!-- STATUS_COMMIT: 2bce15b -->
+<!-- STATUS_COMMIT: d90c432 -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you

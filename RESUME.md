@@ -5,11 +5,15 @@ or right before a compaction) so work can pick back up without losing the
 thread. If this says "nothing in progress," there's no live handoff — just
 use `STATUS.md`.
 
-Nothing in progress. The observability feature (session of 2026-09-15) is
-done, reviewed, and merged to `main` — see `STATUS.md`'s "Observability"
-section for what shipped. The only still-open item is the local LLM
-migration's Task 5 (physical hardware setup), carried forward unchanged
-from 2026-09-14 below.
+Nothing in progress. All 7 button-UI-backlog plans (Slices A-D,
+team-button-ui, damage-calc-abilities, pipeline-error-handling) are
+executed, reviewed, and merged to `main` (commit `d90c432`, 511/511 tests
+passing) — see `STATUS.md`'s top section for what shipped and how each
+merge conflict was resolved. The 7 source worktrees/branches are still on
+disk, not yet cleaned up (deliberate pause point). The only still-open
+item unrelated to this batch is the local LLM migration's Task 5
+(physical hardware setup), carried forward unchanged from 2026-09-14
+below.
 
 ---
 
@@ -102,29 +106,14 @@ message) to close out Task 5.
   **not yet pushed to origin** as of this write; `main` is 1 commit ahead
   of `origin/main`).
 
-**In flight (not committed / not finished):**
-- Nothing uncommitted. Working tree should be clean — verify with `git
-  status` on resume regardless.
+(retrieval-quality and the other 5 design specs named above are all
+shipped now — see `STATUS.md`. The only genuinely open item from this
+historical entry is Task 5's hardware step described above.)
 
-**Next step:** Run the `superpowers:writing-plans` skill on
-`docs/superpowers/specs/2026-09-13-retrieval-quality-design.md` (already
-fully reviewed and fixed, carries real measured evidence — no more
-brainstorming needed). Then, **with the user's explicit go-ahead before
-spinning up any agents**, execute the resulting plan via
-`superpowers:subagent-driven-development` (same pattern used for the local
-LLM migration and eval harness plans this session: isolated worktree,
-per-task implementer + reviewer dispatch, squash to one commit, final
-whole-branch review, merge to `main`). After that, `STATUS.md`'s "Next up
-after that" section lists 4 more design specs ready for the same
-treatment (grounding-trust before observability specifically — the one
-real cross-spec dependency; reliability and ingestion-robustness anytime)
-— same approval gate applies each time before agents are spun up.
-
-**Open questions / decisions still needed:** None blocking — the path
-forward is unambiguous. The only standing preference to carry forward:
-this session's commit-cadence convention (implementers commit per task on
-an isolated branch, squashed to one commit before merging) and the
-established habit of pushing to origin only when explicitly asked, not
+**Standing preference to carry forward:** commit-cadence convention
+(implementers commit per task on an isolated branch, squashed or
+merge-commit into `main`), explicit go-ahead required before spinning up
+any agents, and push to origin only when explicitly asked, not
 automatically after every merge.
 
 ---
