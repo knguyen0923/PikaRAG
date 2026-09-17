@@ -5,9 +5,11 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-15, after executing, reviewing, and merging all 7
-button-UI-backlog plans into `main` (commit `d90c432`, 511/511 tests
-passing).
+**Last updated:** 2026-09-17, after implementing the pinned-deps CI check
+and brainstorming the rest of the improvement backlog (commit `25e1976`,
+517/517 tests passing). See "Improvement backlog" section below for full
+detail; the button-UI-backlog summary right after this line is from the
+prior 2026-09-15 update and still accurate for that work.
 
 **Immediate next action:** the 7 plans listed in the previous update (all
 of `worktree-team-button-ui-plan`'s planning output, none involving the
@@ -99,7 +101,7 @@ preserved in git history, `git log --oneline --grep=eval-harness` and
 itself to find two real retrieval-quality bugs and fixed them via
 entity-aware retrieval, and grounding & trust (see below). 329/329 tests
 passing throughout.
-<!-- STATUS_COMMIT: 5769afc -->
+<!-- STATUS_COMMIT: 25e1976 -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
@@ -463,8 +465,8 @@ Everything below is optional follow-up, none of it blocking:
 
 - **Rotate leaked Discord bot token** — still not done, deliberately deferred
   by the user. Do this regardless of implementation order on the rest.
-- **Pinned-deps CI check — implemented and merged-to-working-tree** (not yet
-  committed as of this write): `scripts/check_pinned_deps.py` +
+- **Pinned-deps CI check — implemented and committed** (`25e1976`):
+  `scripts/check_pinned_deps.py` +
   `.github/workflows/test.yml` step + documented pins in `requirements.txt` +
   `tests/test_check_pinned_deps.py`. 517/517 tests passing.
 - **Hybrid BM25+vector retrieval** and **ability/held-item interactions** —
