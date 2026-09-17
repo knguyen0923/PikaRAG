@@ -455,8 +455,30 @@ Everything below is optional follow-up, none of it blocking:
   is still private -- only matters if the bot is ever submitted somewhere
   that verifies those URLs (e.g. Discord's public bot verification).
 
+## Improvement backlog (2026-09-16, brainstormed 2026-09-17)
+
+`IMPROVEMENTS.md` — a prioritized portfolio-review backlog. Status as of
+2026-09-17: everything except local-LLM Task 5 has been brainstormed via
+`superpowers:brainstorming` (see `IMPROVEMENTS.md` for full detail per item).
+
+- **Rotate leaked Discord bot token** — still not done, deliberately deferred
+  by the user. Do this regardless of implementation order on the rest.
+- **Pinned-deps CI check — implemented and merged-to-working-tree** (not yet
+  committed as of this write): `scripts/check_pinned_deps.py` +
+  `.github/workflows/test.yml` step + documented pins in `requirements.txt` +
+  `tests/test_check_pinned_deps.py`. 517/517 tests passing.
+- **Hybrid BM25+vector retrieval** and **ability/held-item interactions** —
+  bounded designs approved in chat, not yet implemented (no spec files by
+  design — bounded path).
+- **Fine-tune vs. RAG comparison** and **agentic `/ask`+`/calc` tool-calling
+  loop** — architectural specs written:
+  `docs/superpowers/specs/2026-09-17-finetune-vs-rag-design.md` and
+  `docs/superpowers/specs/2026-09-17-agentic-tool-calling-design.md`. Next
+  step for either is `writing-plans`, not direct implementation.
+
 ## Useful pointers
 
+- `IMPROVEMENTS.md` — prioritized improvement backlog (portfolio review)
 - `pika-rag-project-plan.md` — architecture, scope, build-order checklist
 - `docs/DEPLOYMENT.md` — step-by-step deploy runbook (start here for next work)
 - `docs/superpowers/plans/` and `docs/superpowers/specs/` — design docs and

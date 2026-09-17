@@ -1,7 +1,21 @@
+# Pinned at scaffold time (commit 79d6c8d); no known compatibility
+# constraint beyond "this is the version the project was built against."
 requests==2.32.5
+# Pinned at scaffold time (commit 79d6c8d); no known compatibility
+# constraint beyond "this is the version the project was built against."
 pytest==8.3.3
+# Pinned when the bot skeleton was added (commit 338f167); no known
+# compatibility constraint beyond "this is the version the project was
+# built against."
 discord.py==2.7.1
+# Pinned when the Chroma index was added (commit 68923ea); no known
+# compatibility constraint beyond "this is the version the project was
+# built against."
 chromadb==1.5.9
+# An earlier pin (6.0.1) didn't exist on PyPI at all (latest was 5.1.2 at
+# the time), so deps silently never installed and RAG/bot test modules
+# silently failed to collect -- fixed in commit e06e6ae. Pinned to the
+# confirmed-real, confirmed-installable version.
 sentence-transformers==5.1.2
 # Pinned below the version sentence-transformers/pip would otherwise resolve
 # (2.14.0), which crashes on import: transformers' flex_attention integration

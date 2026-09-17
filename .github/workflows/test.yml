@@ -20,6 +20,8 @@ jobs:
           key: ${{ runner.os }}-hf-${{ hashFiles('requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-hf-
+      - name: Check every pinned dependency has an explanatory comment
+        run: python scripts/check_pinned_deps.py
       - run: pip install -r requirements.txt
       # A bad torch/transformers/sentence-transformers combo has crashed on
       # import before (see the comment above the torch pin in
