@@ -5,11 +5,13 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-17, after implementing the pinned-deps CI check
-and brainstorming the rest of the improvement backlog (commit `25e1976`,
-517/517 tests passing). See "Improvement backlog" section below for full
-detail; the button-UI-backlog summary right after this line is from the
-prior 2026-09-15 update and still accurate for that work.
+**Last updated:** 2026-09-18, after adding a "Quantifiable changes" section
+to `TAKEAWAYS.md` (commit `b849fcd`) — a docs-only change, no code/test
+impact. Prior substantive update was 2026-09-17's pinned-deps CI check and
+improvement-backlog brainstorm (commit `25e1976`, 517/517 tests passing).
+See "Improvement backlog" section below for full detail; the button-UI-backlog
+summary right after this line is from the prior 2026-09-15 update and still
+accurate for that work.
 
 **Immediate next action:** the 7 plans listed in the previous update (all
 of `worktree-team-button-ui-plan`'s planning output, none involving the
@@ -101,7 +103,7 @@ preserved in git history, `git log --oneline --grep=eval-harness` and
 itself to find two real retrieval-quality bugs and fixed them via
 entity-aware retrieval, and grounding & trust (see below). 329/329 tests
 passing throughout.
-<!-- STATUS_COMMIT: 2b4b4a0 -->
+<!-- STATUS_COMMIT: b849fcd -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
