@@ -170,6 +170,37 @@ process was itself worth learning from:
   **$0.003–0.007 per `/ask` query** (Claude Haiku), with a self-imposed
   spend cap plus an in-bot early-warning system as a second safety net
 
+## Quantifiable changes
+
+Numbers that moved, not just numbers that exist:
+
+- **Retrieval recall@5: 0.9583 → 1.0000 (46/48 → 48/48)** after adding
+  entity-aware filtering (`rag/entity.py`'s `detect_entity`, constraining
+  the Chroma query to a detected Pokémon/item's own chunks). Measured by
+  the eval harness's 48-entry golden Q&A set, gated in CI at `>= 0.9`.
+- That same change briefly *regressed* recall@5 to **0.8958** mid-rewrite
+  (fuzzy Pokémon-name matching firing before exact item matching) — caught
+  by a whole-branch review before merge, fixed by trying exact matches
+  across both vocabularies first. Worth keeping as a reminder that a fix
+  in progress can be measurably worse than the baseline it's replacing.
+- **Test suite: 262 tests at initial launch (2026-09-12) → 517 tests as
+  of this writing**, added across follow-on feature work (eval harness,
+  entity-aware retrieval, observability) that continued past the original
+  9-day build window this retrospective otherwise covers.
+- **Per-query cost: ~$0.003–0.007** (Claude Haiku 4.5, `/ask` only —
+  `/calc`, `/stats`, `/moves` are free, no LLM call) against **$0/month**
+  fixed hosting cost, i.e. the only variable cost in the whole system is
+  bounded per-query LLM spend, backstopped by a prepaid cap.
+- **3 Critical bugs** caught by one whole-branch review before the
+  retrieval-quality merge (a crash on letter-suffixed Mega forms, the
+  recall@5 regression above, and a silent wrong-item binding on ambiguous
+  Pokémon names) — all three fixed in a single coordinated rewrite rather
+  than three separate patches.
+- **3 compounding bugs** (not 1) found in the damage formula once a
+  review flag was checked against Bulbapedia's mechanics reference instead
+  of fixed from memory — a rounding-order issue, a misplaced modifier
+  stage, and a wrong constant.
+
 ## What I'd do differently / next
 
 - Add the ability check and a few more held-item/ability interactions the
