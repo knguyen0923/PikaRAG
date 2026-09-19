@@ -19,7 +19,8 @@ was brainstormed via `superpowers:brainstorming`. Current state:
   `Aegislash-stats`, is a real recall miss for pure vector search at k=5
   (confirmed against the live index) that BM25+RRF now recovers — the
   concrete, demonstrated benefit of hybrid retrieval, not just a smoke test.
-  535/535 tests passing.
+  536/536 tests passing (560/560 after merging with the ability/held-item
+  interactions branch).
 - **Fine-tune vs. RAG comparison** — architectural spec written and committed:
   `docs/superpowers/specs/2026-09-17-finetune-vs-rag-design.md`. Not yet
   implemented (needs `writing-plans` next). Key decisions: LoRA fine-tune of
@@ -46,7 +47,8 @@ was brainstormed via `superpowers:brainstorming`. Current state:
   damage; weather auto-derives from Drought/Drizzle/Sand Stream/Snow Warning and
   terrain from Electric Surge/Grassy Surge/Psychic Surge/Misty Surge (explicit
   `--weather`/`--terrain` params override); Intimidate models via stat-stage math.
-  541/541 tests passing.
+  541/541 tests passing (560/560 after merging with the hybrid BM25+vector
+  retrieval branch).
 - **Pinned-deps CI check — done.** `scripts/check_pinned_deps.py` fails CI if
   any `==`-pinned line in `requirements.txt` lacks a preceding explanatory
   comment; wired into `.github/workflows/test.yml`; all 5 existing pins
