@@ -5,9 +5,29 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-19, on the `finetune-vs-rag-comparison` branch
-(not yet merged to `main` — awaiting the user's merge/PR/keep decision),
-after implementing item 5 of the 9-item prioritized brainstorm backlog per
+**Last updated:** 2026-09-19, after merging items 6, 7, and 9 of the 9-item
+prioritized brainstorm backlog to `main` (bounded, no plan doc — see
+`superpowers:brainstorming`'s bounded path):
+
+- **Observability retention/prune + `/stats-summary`** (commit `b260f26`
+  at merge time, 592/592 tests passing): `rag/observability.py` gained
+  `prune_old_logs(cutoff_timestamp, db_path)` and `get_log_summary(db_path)`;
+  `scripts/prune_observability_log.py` is a manual/cron pruning script
+  (`--days`, default 90), mirroring `pipeline/refresh_job.py`'s
+  standalone-script pattern (not wired into the bot or CI); new owner-only
+  `/stats-summary` Discord command reports aggregate `/ask` stats, same
+  ephemeral-reply pattern as `/debug-last`.
+- **TAKEAWAYS.md staleness fix** (same commit): two "future work" bullets
+  (ability/held-item interactions, pinned-deps CI check) marked done with
+  strikethrough + pointers, since both shipped earlier this session.
+
+Only item 8 (agentic `/ask`+`/calc` tool-calling loop) remains of the
+9-item backlog. Its spec exists and is user-confirmed:
+`docs/superpowers/specs/2026-09-17-agentic-tool-calling-design.md`. Needs
+`superpowers:writing-plans` before implementation, same as item 5.
+
+Previous entry, on the `finetune-vs-rag-comparison` branch (now merged to
+`main`), after implementing item 5 per
 `docs/superpowers/plans/2026-09-19-finetune-vs-rag-comparison.md`:
 
 - **Fine-tune vs. RAG comparison — infrastructure done** (commit `749e6dd`
@@ -191,7 +211,7 @@ preserved in git history, `git log --oneline --grep=eval-harness` and
 itself to find two real retrieval-quality bugs and fixed them via
 entity-aware retrieval, and grounding & trust (see below). 329/329 tests
 passing throughout.
-<!-- STATUS_COMMIT: 749e6dd -->
+<!-- STATUS_COMMIT: b260f26 -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
