@@ -169,3 +169,58 @@ def test_ollama_answerer_exposes_its_configured_model():
     answerer = OllamaAnswerer(host="100.1.2.3:11434", model="phi3:mini")
 
     assert answerer.model == "phi3:mini"
+
+
+def test_answer_bare_returns_the_models_response_text():
+    client = _FakeOllamaClient(response_json={"message": {"content": "Gyarados has 95 base HP."}})
+    answerer = OllamaAnswerer(host="100.1.2.3:11434", client=client)
+
+    result = answerer.answer_bare("How bulky is Gyarados?")
+
+    assert result == "Gyarados has 95 base HP."
+
+
+def test_answer_bare_sends_only_the_question_no_context():
+    client = _FakeOllamaClient(response_json={"message": {"content": "anything"}})
+    answerer = OllamaAnswerer(host="100.1.2.3:11434", client=client)
+
+    answerer.answer_bare("How bulky is Gyarados?")
+
+    sent = client.calls[0]["json"]
+    user_message = sent["messages"][-1]["content"]
+    assert user_message == "How bulky is Gyarados?"
+
+
+def test_answer_bare_does_not_use_the_grounding_caveat_system_prompt():
+    client = _FakeOllamaClient(response_json={"message": {"content": "anything"}})
+    answerer = OllamaAnswerer(host="100.1.2.3:11434", client=client)
+
+    answerer.answer_bare("How bulky is Gyarados?")
+
+    sent = client.calls[0]["json"]
+    system_message = sent["messages"][0]["content"]
+    # answer()'s grounding prompt tells the model to say "I don't know" when
+    # context doesn't have the answer -- answer_bare has no context block at
+    # all, so that caveat would make a fine-tuned model refuse to answer from
+    # its own learned knowledge. Confirm it's a different, caveat-free prompt.
+    assert "only the information in the provided context" not in system_message.lower()
+
+
+def test_answer_bare_posts_to_the_configured_host_and_model():
+    client = _FakeOllamaClient(response_json={"message": {"content": "anything"}})
+    answerer = OllamaAnswerer(host="100.1.2.3:11434", model="pikarag-finetuned", client=client)
+
+    answerer.answer_bare("question")
+
+    call = client.calls[0]
+    assert call["url"] == "http://100.1.2.3:11434/api/chat"
+    assert call["json"]["model"] == "pikarag-finetuned"
+
+
+def test_answer_bare_returns_offline_message_on_connection_error():
+    client = _FakeOllamaClient(exception=requests.exceptions.ConnectionError("refused"))
+    answerer = OllamaAnswerer(host="100.1.2.3:11434", client=client)
+
+    result = answerer.answer_bare("question")
+
+    assert result == OFFLINE_MESSAGE

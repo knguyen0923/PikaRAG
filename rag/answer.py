@@ -8,6 +8,11 @@ SYSTEM_PROMPT = (
 
 OFFLINE_MESSAGE = "The knowledge assistant is offline right now -- try again later."
 
+BARE_SYSTEM_PROMPT = (
+    "You are a Pokemon VGC doubles assistant. Answer the user's question "
+    "directly and concisely, using what you know."
+)
+
 # Timeout for the /llmstatus health-check request (OllamaAnswerer.check_health).
 # Deliberately much shorter than the 30s default used for a real answer --
 # this is a liveness probe, not an inference call, so a slow response IS
@@ -43,6 +48,32 @@ class OllamaAnswerer:
                     "messages": [
                         {"role": "system", "content": SYSTEM_PROMPT},
                         {"role": "user", "content": f"Context:\n{context_block}\n\nQuestion: {question}"},
+                    ],
+                    "stream": False,
+                    "options": {"num_predict": 1024},
+                },
+                timeout=self._timeout,
+            )
+            response.raise_for_status()
+            return response.json()["message"]["content"]
+        except (requests.RequestException, KeyError, TypeError) as e:
+            print(f"OllamaAnswerer call failed: {e!r}")
+            return OFFLINE_MESSAGE
+
+    def answer_bare(self, question: str) -> str:
+        """Like answer(), but sends only the question -- no context block,
+        no grounding caveat in the system prompt. Used to benchmark a
+        fine-tuned model's learned knowledge directly, without RAG
+        retrieval layered on top (see
+        docs/superpowers/specs/2026-09-17-finetune-vs-rag-design.md)."""
+        try:
+            response = self._client.post(
+                f"http://{self._host}/api/chat",
+                json={
+                    "model": self._model,
+                    "messages": [
+                        {"role": "system", "content": BARE_SYSTEM_PROMPT},
+                        {"role": "user", "content": question},
                     ],
                     "stream": False,
                     "options": {"num_predict": 1024},
