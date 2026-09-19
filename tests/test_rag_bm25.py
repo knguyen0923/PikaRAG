@@ -50,7 +50,7 @@ def test_search_excludes_zero_score_chunks():
 
 
 def test_search_returns_chunk_dicts_with_text_and_metadata():
-    index = BM25Index([_ABOMASNOW])
+    index = BM25Index([_ABOMASNOW, _GYARADOS])
 
     results = index.search("Snow Warning", n_results=5)
 
