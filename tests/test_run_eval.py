@@ -1,4 +1,4 @@
-from scripts.run_eval import print_report, run_answer_quality
+from scripts.run_eval import print_report, run_answer_quality, run_answer_quality_finetuned
 from rag.answer import OFFLINE_MESSAGE
 
 
@@ -66,6 +66,47 @@ def test_run_answer_quality_handles_set_and_substring_match_types_too():
 
     assert results[0]["passed"] is True
     assert results[1]["passed"] is True
+
+
+class _FakeBareAnswerer:
+    def __init__(self, answers_by_question):
+        self._answers_by_question = answers_by_question
+        self.calls = []
+
+    def answer_bare(self, question):
+        self.calls.append(question)
+        return self._answers_by_question[question]
+
+
+def test_run_answer_quality_finetuned_marks_a_matching_answer_as_passed():
+    golden_set = [{"id": "q1", "question": "Does Kommo-o learn Close Combat?", "match_type": "exact", "expected": "Yes"}]
+    answerer = _FakeBareAnswerer({"Does Kommo-o learn Close Combat?": "Yes, it learns Close Combat."})
+
+    results = run_answer_quality_finetuned(answerer, golden_set)
+
+    assert results[0]["passed"] is True
+    assert results[0]["offline"] is False
+
+
+def test_run_answer_quality_finetuned_calls_answer_bare_not_answer():
+    golden_set = [{"id": "q1", "question": "q?", "match_type": "substring", "expected": "x"}]
+    answerer = _FakeBareAnswerer({"q?": "x"})
+
+    run_answer_quality_finetuned(answerer, golden_set)
+
+    # answer_bare takes only the question -- no context block was built or
+    # passed, confirming this path skips retrieval entirely.
+    assert answerer.calls == ["q?"]
+
+
+def test_run_answer_quality_finetuned_flags_offline_message():
+    golden_set = [{"id": "q1", "question": "q?", "match_type": "exact", "expected": "Yes"}]
+    answerer = _FakeBareAnswerer({"q?": OFFLINE_MESSAGE})
+
+    results = run_answer_quality_finetuned(answerer, golden_set)
+
+    assert results[0]["offline"] is True
+    assert results[0]["passed"] is False
 
 
 def test_print_report_runs_without_error_on_a_mixed_result_set(capsys):
