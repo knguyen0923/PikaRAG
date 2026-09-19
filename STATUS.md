@@ -5,7 +5,36 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-18, after merging both of today's bounded
+**Last updated:** 2026-09-19, after merging items 1-4 of the 9-item
+prioritized brainstorm backlog to `main`:
+
+- **Stored team persistence + `/ask` length cap** (commit `c596a88` at
+  merge time, 564/564 tests passing): `bot/team_store.py` now persists to
+  SQLite (`data/team_store.db`) instead of an in-memory dict, mirroring
+  `rag/observability.py`'s pattern; `/ask` rejects questions over 500 chars
+  before any embedding/LLM call (`bot/commands/ask.py`,
+  `MAX_QUESTION_LENGTH`). Post-review fix applied before merge: team_store's
+  public functions take `db_path: Optional[str] = None` and resolve it
+  against the module-level `DEFAULT_DB_PATH` inside the function body at
+  call time, instead of baking it into each function's `__defaults__` at
+  def-time -- so `tests/conftest.py`'s `_isolate_team_store` fixture only
+  needs to patch the module attribute, not enumerate every function by
+  name. Two other review findings deliberately parked (non-blocking,
+  judgment calls): team_store does synchronous SQLite I/O directly on the
+  asyncio event loop (matches `rag/observability.py`'s existing
+  convention, not a new risk); the `_connect`/`_CREATE_TABLE_SQL`/
+  `DEFAULT_DB_PATH` boilerplate is copy-pasted from `rag/observability.py`
+  rather than extracted into a shared helper.
+- **CI lint + coverage tooling** (commit `f790174` at merge time,
+  564/564 tests passing): `pyproject.toml` pins ruff's ruleset to
+  `E4,E7,E9,F` (the classic flake8-equivalent baseline) rather than
+  relying on ruff's shifting no-config defaults, which pull in unrelated
+  pyupgrade-style churn. `ruff==0.16.8` and `pytest-cov==7.1.0` pinned in
+  `requirements.txt`; `.github/workflows/test.yml` now runs `ruff check .`
+  and `pytest -q --cov --cov-report=term-missing` (coverage reported only,
+  no floor enforced yet -- currently 97% overall).
+
+Previous entry, after merging both of 2026-09-18's bounded
 improvement-backlog items to `main` via `subagent-driven-development`:
 
 - **Ability/held-item interactions** (commit `dc0ec62`, 541/541 tests
@@ -137,7 +166,7 @@ preserved in git history, `git log --oneline --grep=eval-harness` and
 itself to find two real retrieval-quality bugs and fixed them via
 entity-aware retrieval, and grounding & trust (see below). 329/329 tests
 passing throughout.
-<!-- STATUS_COMMIT: f8477cc -->
+<!-- STATUS_COMMIT: f790174 -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
