@@ -1,3 +1,5 @@
+import json
+
 import requests
 
 SYSTEM_PROMPT = (
@@ -12,6 +14,21 @@ BARE_SYSTEM_PROMPT = (
     "You are a Pokemon VGC doubles assistant. Answer the user's question "
     "directly and concisely, using what you know."
 )
+
+TOOLS_SYSTEM_PROMPT = (
+    "You are a Pokemon VGC doubles assistant with access to tools: a "
+    "deterministic damage calculator, stored-team lookup, and usage-rate "
+    "stats. Use tools to gather facts before answering. Never compute "
+    "damage yourself -- always call run_damage_calc for any damage "
+    "question. Give a concise final answer once you have what you need."
+)
+
+# Returned by answer_with_tools when the model's tool call is malformed or
+# hallucinated (unknown tool name, non-object arguments, or a dispatch
+# failure from missing/invalid required fields) -- signals the caller
+# (bot/agentic.py) to drop tool-calling and retry as a plain RAG answer.
+# A fixed sentinel string, same pattern as OFFLINE_MESSAGE.
+MALFORMED_TOOL_CALL_MESSAGE = "The assistant's tool call could not be understood -- falling back to a plain answer."
 
 # Timeout for the /llmstatus health-check request (OllamaAnswerer.check_health).
 # Deliberately much shorter than the 30s default used for a real answer --
@@ -82,6 +99,93 @@ class OllamaAnswerer:
             )
             response.raise_for_status()
             return response.json()["message"]["content"]
+        except (requests.RequestException, KeyError, TypeError) as e:
+            print(f"OllamaAnswerer call failed: {e!r}")
+            return OFFLINE_MESSAGE
+
+    def answer_with_tools(
+        self, question: str, tools: list, tool_dispatch: dict, max_rounds: int = 4
+    ) -> str:
+        """Drives Ollama's native tool-calling loop: send the question +
+        tool schemas, dispatch any tool call the model emits, append the
+        result as a tool-role message, repeat up to max_rounds. On hitting
+        the cap, forces one final non-tool call for a best-effort answer.
+
+        Returns MALFORMED_TOOL_CALL_MESSAGE (not an exception) if the model
+        emits an unknown tool name, non-object arguments, or a tool call
+        that fails to dispatch due to missing/invalid required fields --
+        the caller is expected to check for this sentinel and degrade to a
+        plain RAG answer. Returns OFFLINE_MESSAGE on any network/parsing
+        failure talking to Ollama itself, same as answer()/answer_bare()."""
+        messages = [
+            {"role": "system", "content": TOOLS_SYSTEM_PROMPT},
+            {"role": "user", "content": question},
+        ]
+
+        for _ in range(max_rounds):
+            try:
+                response = self._client.post(
+                    f"http://{self._host}/api/chat",
+                    json={
+                        "model": self._model,
+                        "messages": messages,
+                        "tools": tools,
+                        "stream": False,
+                        "options": {"num_predict": 1024},
+                    },
+                    timeout=self._timeout,
+                )
+                response.raise_for_status()
+                message = response.json()["message"]
+            except (requests.RequestException, KeyError, TypeError) as e:
+                print(f"OllamaAnswerer call failed: {e!r}")
+                return OFFLINE_MESSAGE
+
+            tool_calls = message.get("tool_calls")
+            if not tool_calls:
+                return message.get("content", "")
+
+            messages.append(message)
+            for call in tool_calls:
+                function = call.get("function") if isinstance(call, dict) else None
+                if not isinstance(function, dict):
+                    return MALFORMED_TOOL_CALL_MESSAGE
+
+                name = function.get("name")
+                arguments = function.get("arguments")
+                if isinstance(arguments, str):
+                    try:
+                        arguments = json.loads(arguments)
+                    except json.JSONDecodeError:
+                        return MALFORMED_TOOL_CALL_MESSAGE
+
+                if name not in tool_dispatch or not isinstance(arguments, dict):
+                    return MALFORMED_TOOL_CALL_MESSAGE
+
+                try:
+                    result = tool_dispatch[name](arguments)
+                except (KeyError, TypeError, ValueError):
+                    return MALFORMED_TOOL_CALL_MESSAGE
+
+                messages.append({"role": "tool", "content": str(result)})
+
+        messages.append({
+            "role": "user",
+            "content": "Give your best final answer now, using the tool results above.",
+        })
+        try:
+            response = self._client.post(
+                f"http://{self._host}/api/chat",
+                json={
+                    "model": self._model,
+                    "messages": messages,
+                    "stream": False,
+                    "options": {"num_predict": 1024},
+                },
+                timeout=self._timeout,
+            )
+            response.raise_for_status()
+            return response.json()["message"].get("content", "")
         except (requests.RequestException, KeyError, TypeError) as e:
             print(f"OllamaAnswerer call failed: {e!r}")
             return OFFLINE_MESSAGE
