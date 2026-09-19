@@ -39,15 +39,12 @@ was brainstormed via `superpowers:brainstorming`. Current state:
   wrapper around an existing pure function; capped at 4 tool-call
   round-trips; falls back to a plain RAG answer on any malformed/hallucinated
   tool call rather than erroring.
-- **Ability/held-item interactions** — bounded design approved in chat
-  (2026-09-17), not yet implemented. Scope: type-immunity/absorb abilities
-  (Levitate, Water Absorb, Flash Fire, Volt Absorb, Lightning Rod, Storm
-  Drain — force 0 damage instead of a wrong non-zero number), weather/terrain
-  auto-derivation from Drought/Drizzle/Sand Stream/Snow Warning + the 4
-  terrain-setters (explicit `--weather`/`--terrain` params still always win),
-  and Intimidate (folds into existing stat-stage math). Focus Sash explicitly
-  dropped from scope — it's a survival/KO-guarantee concept, not a damage
-  number, so it doesn't fit this calculator's output shape.
+- **Ability/held-item interactions — done.** 6 type-immunity abilities (Levitate,
+  Water Absorb, Flash Fire, Volt Absorb, Lightning Rod, Storm Drain) force 0
+  damage; weather auto-derives from Drought/Drizzle/Sand Stream/Snow Warning and
+  terrain from Electric Surge/Grassy Surge/Psychic Surge/Misty Surge (explicit
+  `--weather`/`--terrain` params override); Intimidate models via stat-stage math.
+  535/535 tests passing.
 - **Pinned-deps CI check — done.** `scripts/check_pinned_deps.py` fails CI if
   any `==`-pinned line in `requirements.txt` lacks a preceding explanatory
   comment; wired into `.github/workflows/test.yml`; all 5 existing pins
@@ -115,8 +112,8 @@ was brainstormed via `superpowers:brainstorming`. Current state:
 
 ## Priority 4 — lower priority, explicitly optional
 
-- Ability/held-item interactions in the damage calculator (already
-  deliberately scoped out per `TAKEAWAYS.md`, not a bug).
+- Ability/held-item interactions in the damage calculator — done (see summary
+  above).
 
 - A CI check that formally documents why pinned dependency versions
   are pinned, generalizing the existing hand-written `torch` comment in
