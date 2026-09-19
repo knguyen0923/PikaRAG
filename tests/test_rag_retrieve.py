@@ -283,3 +283,24 @@ def test_build_context_block_expands_the_vector_candidate_pool_when_bm25_index_i
     # Candidate pool must be at least n_results, and wider than a bare n_results=3
     # so fusion has real breadth to work with.
     assert index.queries[0]["n_results"] > 3
+
+
+def test_build_context_block_breaks_rrf_score_ties_deterministically_by_chunk_id():
+    # Both chunks sit at rank 1 in their own retriever, so their RRF scores
+    # are exactly equal -- a genuine tie that would otherwise fall back to
+    # unordered-set iteration order (hash-seed dependent, non-deterministic
+    # across processes/runs).
+    index = _FakeIndexNoWhere(matches=[
+        {"id": "z-vector-only", "text": "Vector only", "metadata": {"pokemon": "Z", "chunk_type": "stats"}, "distance": 0.5},
+    ])
+    bm25_index = _FakeBM25Index(results=[
+        {"id": "a-bm25-only", "text": "BM25 only", "pokemon": "A", "chunk_type": "stats"},
+    ])
+
+    result_1 = build_context_block(index, "A question", n_results=1, bm25_index=bm25_index)
+    result_2 = build_context_block(index, "A question", n_results=1, bm25_index=bm25_index)
+
+    # Deterministic: repeated calls with the same tied input always agree,
+    # and the winner is the lexicographically smaller chunk id.
+    assert result_1 == result_2
+    assert result_1["retrieved_chunks"] == [{"id": "a-bm25-only", "distance": 0.5}]

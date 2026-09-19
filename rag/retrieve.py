@@ -42,7 +42,7 @@ def _hybrid_matches(index, question: str, n_results: int, bm25_index) -> list:
         return score
 
     all_ids = set(vector_rank) | set(bm25_rank)
-    fused_ids = sorted(all_ids, key=rrf_score, reverse=True)[:n_results]
+    fused_ids = sorted(all_ids, key=lambda chunk_id: (-rrf_score(chunk_id), chunk_id))[:n_results]
 
     fused_matches = []
     for chunk_id in fused_ids:
