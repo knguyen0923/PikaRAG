@@ -44,7 +44,7 @@ was brainstormed via `superpowers:brainstorming`. Current state:
   damage; weather auto-derives from Drought/Drizzle/Sand Stream/Snow Warning and
   terrain from Electric Surge/Grassy Surge/Psychic Surge/Misty Surge (explicit
   `--weather`/`--terrain` params override); Intimidate models via stat-stage math.
-  535/535 tests passing.
+  541/541 tests passing.
 - **Pinned-deps CI check — done.** `scripts/check_pinned_deps.py` fails CI if
   any `==`-pinned line in `requirements.txt` lacks a preceding explanatory
   comment; wired into `.github/workflows/test.yml`; all 5 existing pins
