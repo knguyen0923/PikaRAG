@@ -20,6 +20,14 @@ GATE_MESSAGE = "I don't have solid information on that."
 # answerable question over catching every possible out-of-domain one.
 DISTANCE_THRESHOLD = 1.4
 
+# A real VGC question is a sentence or two; 500 characters is generous
+# headroom above that. Rejecting anything longer before any embedding/LLM
+# call runs guards the free-tier box against a pathological or malicious
+# question wasting compute on a query nobody actually needs answered in
+# full -- Discord's own slash-command string limit (6000 chars) is far too
+# permissive to serve as this guard on its own.
+MAX_QUESTION_LENGTH = 500
+
 
 def _format_sources(sources: list) -> str:
     return ", ".join(f"{s['name']} ({s['chunk_type']})" for s in sources)
@@ -44,6 +52,14 @@ def ask_response(
     extra_context: Optional[str] = None,
     bm25_index=None,
 ) -> dict:
+    if len(question) > MAX_QUESTION_LENGTH:
+        return {
+            "answer": f"That question is too long ({len(question)} characters) -- please keep it under {MAX_QUESTION_LENGTH}.",
+            "sources": [],
+            "retrieved_chunks": [],
+            "best_distance": None,
+        }
+
     context = build_context_block(
         index, question, records=records, items=items, n_results=n_results, bm25_index=bm25_index
     )

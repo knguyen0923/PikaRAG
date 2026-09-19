@@ -1,7 +1,7 @@
 import asyncio
 import time
 
-from bot.commands.ask import ask_response, ask_response_async, format_ask_response
+from bot.commands.ask import MAX_QUESTION_LENGTH, ask_response, ask_response_async, format_ask_response
 from rag.answer import OFFLINE_MESSAGE
 
 
@@ -305,3 +305,48 @@ def test_ask_response_async_forwards_bm25_index_to_build_context_block():
     asyncio.run(ask_response_async(index, answerer, "A question", bm25_index=bm25_index))
 
     assert bm25_index.received_questions == ["A question"]
+
+
+class _ExplodingIndex:
+    """query() raises if called -- proves the length check short-circuits
+    before any embedding/retrieval work happens, not just before the
+    answerer is called."""
+
+    def query(self, text, n_results=5, where=None):
+        raise AssertionError("index.query should not be called for an over-length question")
+
+
+def test_ask_response_rejects_a_question_over_the_max_length_without_querying_the_index():
+    index = _ExplodingIndex()
+    answerer = _FakeAnswerer(response_text="An answer.")
+    question = "x" * (MAX_QUESTION_LENGTH + 1)
+
+    result = ask_response(index, answerer, question)
+
+    assert answerer.calls == []
+    assert result["sources"] == []
+    assert result["retrieved_chunks"] == []
+    assert result["best_distance"] is None
+    assert str(MAX_QUESTION_LENGTH) in result["answer"]
+
+
+def test_ask_response_accepts_a_question_at_exactly_the_max_length():
+    index = _FakeIndex(context_matches=[_CLOSE_MATCH])
+    answerer = _FakeAnswerer(response_text="An answer.")
+    question = "x" * MAX_QUESTION_LENGTH
+
+    result = ask_response(index, answerer, question)
+
+    assert result["answer"] == "An answer."
+    assert len(answerer.calls) == 1
+
+
+def test_ask_response_async_also_rejects_an_over_length_question():
+    index = _ExplodingIndex()
+    answerer = _FakeAnswerer(response_text="An answer.")
+    question = "x" * (MAX_QUESTION_LENGTH + 1)
+
+    result = asyncio.run(ask_response_async(index, answerer, question))
+
+    assert answerer.calls == []
+    assert str(MAX_QUESTION_LENGTH) in result["answer"]
