@@ -100,13 +100,20 @@ def test_find_team_member_returns_none_when_not_found():
     assert find_team_member(303, "Nonexistent") is None
 
 
-def test_find_team_member_does_not_grow_the_store_for_unseen_users():
-    from bot.team_store import _store
+def test_find_team_member_does_not_create_a_row_for_unseen_users():
+    import sqlite3
+
+    from bot.team_store import DEFAULT_DB_PATH
 
     untouched_user_id = 888888
     find_team_member(untouched_user_id, "Nonexistent")
 
-    assert untouched_user_id not in _store
+    conn = sqlite3.connect(DEFAULT_DB_PATH)
+    try:
+        cursor = conn.execute("SELECT COUNT(*) FROM team WHERE user_id = ?", (untouched_user_id,))
+        assert cursor.fetchone()[0] == 0
+    finally:
+        conn.close()
 
 
 def test_resolve_calc_overrides_uses_neutral_defaults_when_nothing_stored_or_explicit():
@@ -138,3 +145,26 @@ def test_resolve_calc_overrides_explicit_value_wins_over_stored_team_member():
 
     assert item == "Choice Band"
     assert ability == "Sand Veil"
+
+
+def test_stored_teams_survive_a_fresh_connection_to_the_same_db_file():
+    """The whole point of backing this module with SQLite instead of an
+    in-memory dict: a stored team must be readable from a brand new
+    sqlite3.connect() call against the same file, simulating a bot restart
+    (a fresh process, no shared Python state) rather than just a fresh
+    dict lookup within the same process."""
+    import sqlite3
+
+    from bot.team_store import DEFAULT_DB_PATH
+
+    store_team(501, "mine", [_GARCHOMP])
+
+    conn = sqlite3.connect(DEFAULT_DB_PATH)
+    try:
+        cursor = conn.execute("SELECT members FROM team WHERE user_id = ? AND side = ?", (501, "mine"))
+        row = cursor.fetchone()
+        assert row is not None
+    finally:
+        conn.close()
+
+    assert get_team(501, "mine") == [_GARCHOMP]

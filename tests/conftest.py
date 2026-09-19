@@ -5,14 +5,31 @@ import rag.observability
 
 
 @pytest.fixture(autouse=True)
-def _isolate_team_store(monkeypatch):
-    """Reset bot.team_store's module-level _store dict to empty before each
-    test, so per-user team state stored by one test (e.g. via store_team or
-    merge_scout) can never leak into another test that happens to reuse the
-    same user id. Without this, two unrelated test files picking the same
-    user id can silently pollute each other (as happened between a TeamView
-    test and test_bot_main.py's stored-team fixture)."""
-    monkeypatch.setattr(bot.team_store, "_store", {})
+def _isolate_team_store(tmp_path, monkeypatch):
+    """Redirect every test's use of bot.team_store to a tmp_path-based
+    SQLite DB file, so running the suite never writes into the repo's real
+    data/team_store.db and so per-user team state stored by one test (e.g.
+    via store_team or merge_scout) can never leak into another test that
+    happens to reuse the same user id. Without this, two unrelated test
+    files picking the same user id can silently pollute each other (as
+    happened between a TeamView test and test_bot_main.py's stored-team
+    fixture).
+
+    Same __defaults__-patching mechanism as _isolate_observability_db below
+    (see its docstring for why patching the module-level DEFAULT_DB_PATH
+    name alone isn't enough) -- every public function in bot.team_store
+    declares `db_path: str = DEFAULT_DB_PATH` as its only default
+    parameter, so each one's __defaults__ is exactly (DEFAULT_DB_PATH,)."""
+    test_db_path = str(tmp_path / "team_store.db")
+    monkeypatch.setattr(bot.team_store, "DEFAULT_DB_PATH", test_db_path)
+    for fn in (
+        bot.team_store.store_team,
+        bot.team_store.get_team,
+        bot.team_store.merge_scout,
+        bot.team_store.find_team_member,
+        bot.team_store.resolve_calc_overrides,
+    ):
+        monkeypatch.setattr(fn, "__defaults__", (test_db_path,))
 
 
 @pytest.fixture(autouse=True)
