@@ -11,13 +11,15 @@ was brainstormed via `superpowers:brainstorming`. Current state:
 - **Rotate leaked Discord bot token** — still not done, deliberately deferred
   by the user until after design work. Do this regardless of anything else on
   this list — see Priority 1 below for the exact steps.
-- **Hybrid BM25+vector retrieval** — bounded design approved in chat
-  (2026-09-17), not yet implemented. Design: replace the unfiltered fallback
-  path in `rag/retrieve.py`'s `build_context_block` with Reciprocal Rank
-  Fusion over BM25 (`rank_bm25`, in-memory, 887 chunks) + the existing vector
-  query; add 3-5 new golden-set entries targeting the no-entity-detected gap
-  the golden set doesn't currently cover (current recall@5 is already 1.0,
-  so new eval cases are needed to actually demonstrate the benefit).
+- **Hybrid BM25+vector retrieval — done.** `rag/bm25.py`'s `BM25Index`
+  (in-memory, 887 chunks) is now fused with the existing vector query via
+  Reciprocal Rank Fusion in `rag/retrieve.py`'s `build_context_block`, wired
+  into the live bot's unfiltered/no-entity-detected fallback path. 4 new
+  golden-set entries target that previously-untested path; one of them,
+  `Aegislash-stats`, is a real recall miss for pure vector search at k=5
+  (confirmed against the live index) that BM25+RRF now recovers — the
+  concrete, demonstrated benefit of hybrid retrieval, not just a smoke test.
+  535/535 tests passing.
 - **Fine-tune vs. RAG comparison** — architectural spec written and committed:
   `docs/superpowers/specs/2026-09-17-finetune-vs-rag-design.md`. Not yet
   implemented (needs `writing-plans` next). Key decisions: LoRA fine-tune of
@@ -105,13 +107,14 @@ was brainstormed via `superpowers:brainstorming`. Current state:
   call still routes to the deterministic calculator, the LLM just decides
   when to invoke it.
 
-- **Add hybrid (BM25 + vector) retrieval.** Entity-aware filtering
+- **Add hybrid (BM25 + vector) retrieval — done.** Entity-aware filtering
   (`rag/entity.py`) already solves the case where a known Pokémon/item name
-  is detected in the question. Pure vector search can still misfire on exact
-  keyword matches when no entity is detected (e.g. specific item/move names
-  that don't hit the entity vocabulary). Layer keyword search alongside
-  vector search for the fallback path and measure the retrieval-quality
-  delta on the golden set.
+  is detected in the question. For the no-entity-detected fallback path,
+  `rag/bm25.py`'s `BM25Index` is now fused with vector search via Reciprocal
+  Rank Fusion in `rag/retrieve.py`'s `build_context_block`. 4 new golden-set
+  entries measure the retrieval-quality delta; `Aegislash-stats` is a real
+  case pure vector search misses at k=5 that BM25+RRF recovers. 535/535
+  tests passing.
 
 ## Priority 4 — lower priority, explicitly optional
 
