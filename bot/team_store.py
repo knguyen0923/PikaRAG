@@ -50,17 +50,18 @@ def _save(user_id: int, side: str, members: list, db_path: str) -> None:
         conn.close()
 
 
-def store_team(user_id: int, side: str, members: list, db_path: str = DEFAULT_DB_PATH) -> None:
+def store_team(user_id: int, side: str, members: list, db_path: Optional[str] = None) -> None:
     if len(members) > _MAX_TEAM_SIZE:
         raise ValueError(f"A team can have at most {_MAX_TEAM_SIZE} Pokemon, got {len(members)}.")
-    _save(user_id, side, list(members), db_path)
+    _save(user_id, side, list(members), db_path or DEFAULT_DB_PATH)
 
 
-def get_team(user_id: int, side: str, db_path: str = DEFAULT_DB_PATH) -> list:
-    return _load(user_id, side, db_path)
+def get_team(user_id: int, side: str, db_path: Optional[str] = None) -> list:
+    return _load(user_id, side, db_path or DEFAULT_DB_PATH)
 
 
-def merge_scout(user_id: int, side: str, member: dict, db_path: str = DEFAULT_DB_PATH) -> dict:
+def merge_scout(user_id: int, side: str, member: dict, db_path: Optional[str] = None) -> dict:
+    db_path = db_path or DEFAULT_DB_PATH
     team = _load(user_id, side, db_path)
     target = member["species"].strip().lower()
     for existing in team:
@@ -81,7 +82,8 @@ def merge_scout(user_id: int, side: str, member: dict, db_path: str = DEFAULT_DB
     return member
 
 
-def find_team_member(user_id: int, name: str, db_path: str = DEFAULT_DB_PATH) -> Optional[dict]:
+def find_team_member(user_id: int, name: str, db_path: Optional[str] = None) -> Optional[dict]:
+    db_path = db_path or DEFAULT_DB_PATH
     target = name.strip().lower()
     for side in ("mine", "opponent"):
         for member in _load(user_id, side, db_path):
@@ -98,9 +100,9 @@ def resolve_calc_overrides(
     explicit_item: Optional[str],
     explicit_tera: Optional[str],
     explicit_ability: Optional[str],
-    db_path: str = DEFAULT_DB_PATH,
+    db_path: Optional[str] = None,
 ) -> tuple:
-    member = find_team_member(user_id, name, db_path)
+    member = find_team_member(user_id, name, db_path or DEFAULT_DB_PATH)
 
     evs = explicit_evs
     if evs is None and member is not None:

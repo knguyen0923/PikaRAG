@@ -15,21 +15,15 @@ def _isolate_team_store(tmp_path, monkeypatch):
     happened between a TeamView test and test_bot_main.py's stored-team
     fixture).
 
-    Same __defaults__-patching mechanism as _isolate_observability_db below
-    (see its docstring for why patching the module-level DEFAULT_DB_PATH
-    name alone isn't enough) -- every public function in bot.team_store
-    declares `db_path: str = DEFAULT_DB_PATH` as its only default
-    parameter, so each one's __defaults__ is exactly (DEFAULT_DB_PATH,)."""
+    Unlike _isolate_observability_db below, bot.team_store's public
+    functions take `db_path: Optional[str] = None` and resolve it against
+    the module-level DEFAULT_DB_PATH inside the function body at call time
+    (not baked into __defaults__ at def time), so patching the module
+    attribute alone is sufficient here -- no per-function __defaults__
+    patching, and no list of functions to keep in sync as the module
+    grows."""
     test_db_path = str(tmp_path / "team_store.db")
     monkeypatch.setattr(bot.team_store, "DEFAULT_DB_PATH", test_db_path)
-    for fn in (
-        bot.team_store.store_team,
-        bot.team_store.get_team,
-        bot.team_store.merge_scout,
-        bot.team_store.find_team_member,
-        bot.team_store.resolve_calc_overrides,
-    ):
-        monkeypatch.setattr(fn, "__defaults__", (test_db_path,))
 
 
 @pytest.fixture(autouse=True)
