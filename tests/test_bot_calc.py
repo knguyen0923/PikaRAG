@@ -210,31 +210,31 @@ def test_calc_response_accepts_a_defender_ability():
 
 
 def test_calc_response_discloses_an_unmodeled_defender_ability():
-    # Levitate isn't one of the ~10 abilities this calculator models, so the
+    # Sturdy isn't one of the abilities this calculator models, so the
     # damage figure silently ignores it -- the response must say so.
     response = calc_response(
-        _RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam", defender_ability="Levitate"
+        _RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam", defender_ability="Sturdy"
     )
 
-    assert "(ability 'Levitate' is not modeled)" in response
+    assert "(ability 'Sturdy' is not modeled)" in response
 
 
 def test_calc_response_discloses_an_unmodeled_attacker_ability():
     response = calc_response(
-        _RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam", attacker_ability="Intimidate"
+        _RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam", attacker_ability="Sturdy"
     )
 
-    assert "(ability 'Intimidate' is not modeled)" in response
+    assert "(ability 'Sturdy' is not modeled)" in response
 
 
 def test_calc_response_discloses_both_unmodeled_abilities_when_both_are_set():
     response = calc_response(
         _RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam",
-        attacker_ability="Intimidate", defender_ability="Levitate",
+        attacker_ability="Sturdy", defender_ability="Regenerator",
     )
 
-    assert "(ability 'Intimidate' is not modeled)" in response
-    assert "(ability 'Levitate' is not modeled)" in response
+    assert "(ability 'Sturdy' is not modeled)" in response
+    assert "(ability 'Regenerator' is not modeled)" in response
 
 
 def test_calc_response_does_not_disclose_an_implemented_ability():
