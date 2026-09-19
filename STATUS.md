@@ -5,7 +5,40 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-19, after merging items 6, 7, and 9 of the 9-item
+**Last updated:** 2026-09-19, after merging item 8 (the last of the 9-item
+prioritized brainstorm backlog) to `main` per
+`docs/superpowers/plans/2026-09-19-agentic-tool-calling.md`:
+
+- **Agentic `/ask`+`/calc` tool-calling loop** (commit `b8ab5b9` at merge
+  time, 612/612 tests passing): new `/analyze` command (not an extension of
+  `/ask` — both `/ask` and `/calc` are untouched) lets the model orchestrate
+  3 tools over Ollama's native `/api/chat` tool-calling.
+  `OllamaAnswerer.answer_with_tools` (`rag/answer.py`) drives the round-trip
+  loop, capped at 4 rounds (forces a best-effort final answer on hitting the
+  cap rather than erroring). `bot/agentic.py` defines the 3 tool schemas
+  (`run_damage_calc`, `get_stored_team`, `get_usage_stats`) and
+  `build_tool_dispatch`, each a thin wrapper around an existing pure
+  function (`calc_response`, `get_team`, `usage_for_record`) — the model
+  never computes damage itself, only ever sees `run_damage_calc`'s
+  deterministic string output. `get_stored_team`'s schema takes no
+  arguments at all — `user_id` is bound from the real Discord interaction,
+  never from the model's tool-call arguments, so a confused or adversarial
+  prompt can't spoof whose stored team gets read. On a
+  malformed/hallucinated tool call, `answer_with_tools` returns the
+  `MALFORMED_TOOL_CALL_MESSAGE` sentinel and `analyze_response_async` falls
+  back to a plain RAG answer through the existing `ask_response_async`
+  path. `/analyze` calls `raw_answerer` directly (not the
+  `CircuitBreaker`-wrapped one, which only implements `.answer()`), same as
+  `/llmstatus` already does.
+
+**All 9 items of the prioritized brainstorm backlog are now done and merged
+to `main`.** Two pre-existing backlog items outside this batch remain open
+(both P1, both independent): rotating the leaked Discord bot token, and
+finishing the local-LLM migration Task 5 (blocked on Oracle-box ↔
+Windows-laptop Tailscale networking). See `IMPROVEMENTS.md` for detail on
+both.
+
+Previous entry, after merging items 6, 7, and 9 of the 9-item
 prioritized brainstorm backlog to `main` (bounded, no plan doc — see
 `superpowers:brainstorming`'s bounded path):
 
@@ -211,7 +244,7 @@ preserved in git history, `git log --oneline --grep=eval-harness` and
 itself to find two real retrieval-quality bugs and fixed them via
 entity-aware retrieval, and grounding & trust (see below). 329/329 tests
 passing throughout.
-<!-- STATUS_COMMIT: b260f26 -->
+<!-- STATUS_COMMIT: b8ab5b9 -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
