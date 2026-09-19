@@ -44,6 +44,17 @@ was brainstormed via `superpowers:brainstorming`. Current state:
   `--model rag` vs. `--model finetuned` comparison to get real accuracy
   numbers for the portfolio writeup — this plan built the infrastructure,
   not the trained model itself.
+- **Observability retention/prune + `/stats-summary` — done.** Bounded items
+  (no spec file, approved in chat during the 2026-09-17 brainstorming pass).
+  `rag/observability.py` gained `prune_old_logs(cutoff_timestamp, db_path)`
+  (deletes `ask_log` rows older than an ISO8601 cutoff, returns the count
+  deleted) and `get_log_summary(db_path)` (aggregate total/gate-fired/degraded
+  counts + average latency). `scripts/prune_observability_log.py` is a
+  manual/cron script (`--days`, default 90) mirroring `pipeline/refresh_job.py`'s
+  standalone-script pattern — not wired into the bot or CI, run periodically
+  on whichever machine hosts the live bot. New owner-only `/stats-summary`
+  command (`bot/commands/stats_summary.py`) reports the aggregate stats,
+  same ephemeral-reply pattern as `/debug-last`. 592/592 tests passing.
 - **Agentic `/ask`+`/calc` tool-calling loop** — architectural spec written
   and committed: `docs/superpowers/specs/2026-09-17-agentic-tool-calling-design.md`.
   Not yet implemented. Key decisions: new `/analyze` command (not an
