@@ -268,16 +268,41 @@ def test_calc_response_auto_derives_sun_weather_from_droughts_attacker():
 
 
 def test_calc_response_auto_derives_snow_weather_from_defenders_snow_warning():
-    # Snow Warning is Abomasnow's real ability in this fixture -- it doesn't
-    # boost/reduce any move type in this calculator (matching the real
-    # games, where Snow doesn't modify move damage), but passing it through
-    # to context must not error and must not be flagged "not modeled".
+    # Snow Warning is Abomasnow's real ability in this fixture. It doesn't
+    # boost/reduce any move TYPE's damage the way Rain/Sun do -- this
+    # calculator also doesn't model Gen 9 Snow's separate Ice-type Defense
+    # stat boost, so it correctly stays flagged as not modeled even though
+    # the weather value is still auto-derived into context.
     response = calc_response(
         _RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam", attacker_ability="Snow Warning"
     )
 
     assert not is_error_response(response)
-    assert "is not modeled" not in response
+    assert "(ability 'Snow Warning' is not modeled)" in response
+
+
+def test_calc_response_discloses_sand_stream_as_unmodeled():
+    # Sand Stream auto-derives "Sand" into context, but damage_calc.calc's
+    # weather_modifier only branches on Rain/Sun -- Sand changes nothing,
+    # so it must still be flagged not modeled.
+    response = calc_response(
+        _RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam", attacker_ability="Sand Stream"
+    )
+
+    assert not is_error_response(response)
+    assert "(ability 'Sand Stream' is not modeled)" in response
+
+
+def test_calc_response_discloses_misty_surge_as_unmodeled():
+    # Misty Surge auto-derives "Misty" into context, but _TERRAIN_TYPE_MAP
+    # has no "Misty" entry -- it changes nothing, so it must still be
+    # flagged not modeled.
+    response = calc_response(
+        _RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam", attacker_ability="Misty Surge"
+    )
+
+    assert not is_error_response(response)
+    assert "(ability 'Misty Surge' is not modeled)" in response
 
 
 def test_calc_response_explicit_weather_param_wins_over_ability_derived_weather():
@@ -365,3 +390,36 @@ def test_calc_response_does_not_disclose_a_terrain_setter_ability_as_unmodeled()
     )
 
     assert "is not modeled" not in response
+
+
+def test_calc_response_discloses_auto_derived_weather_source():
+    response = calc_response(
+        _RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam", attacker_ability="Drought"
+    )
+
+    assert "(Sun weather auto-derived from Drought)" in response
+
+
+def test_calc_response_does_not_disclose_auto_derivation_when_weather_is_explicit():
+    response = calc_response(
+        _RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam", attacker_ability="Drought", weather="Rain"
+    )
+
+    assert "auto-derived" not in response
+
+
+def test_calc_response_discloses_auto_derived_terrain_source():
+    response = calc_response(
+        _RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam", attacker_ability="Electric Surge"
+    )
+
+    assert "(Electric terrain auto-derived from Electric Surge)" in response
+
+
+def test_calc_response_does_not_disclose_auto_derivation_when_terrain_is_explicit():
+    response = calc_response(
+        _RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam",
+        attacker_ability="Electric Surge", terrain="Psychic",
+    )
+
+    assert "auto-derived" not in response

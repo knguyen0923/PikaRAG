@@ -16,27 +16,49 @@ _ERROR_PREFIXES = ("No ", "Invalid ")
 # Ability (either side) -> the weather/terrain it auto-sets, so a caller
 # doesn't have to type --weather/--terrain manually when they've already
 # told /calc which ability is in play. An explicit weather/terrain param
-# always wins -- see calc_response's `weather = weather or ...` below.
-_WEATHER_SETTER_ABILITY = {
+# always wins -- see calc_response's `weather if weather is not None else ...`
+# below.
+#
+# Weather/terrain setter abilities whose derived value the core damage
+# formula (damage_calc.calc) actually consumes -- excluded from the
+# "not modeled" warning below because they genuinely change the number.
+_MODELED_WEATHER_SETTER_ABILITY = {
     "Drought": "Sun",
     "Drizzle": "Rain",
-    "Sand Stream": "Sand",
-    "Snow Warning": "Snow",
 }
-_TERRAIN_SETTER_ABILITY = {
+_MODELED_TERRAIN_SETTER_ABILITY = {
     "Electric Surge": "Electric",
     "Grassy Surge": "Grassy",
     "Psychic Surge": "Psychic",
+}
+# Weather/terrain setter abilities that are still auto-derived into context
+# (harmless -- matches what the real games would set) but whose damage
+# effect damage_calc.calc does NOT model (no Sand-weather or Snow-weather
+# multiplier; no "Misty" entry in _TERRAIN_TYPE_MAP) -- these must still
+# trigger the "not modeled" warning, or the user has no way to know the
+# number is exactly as unaffected by them as it would be with no ability
+# at all.
+_UNMODELED_WEATHER_SETTER_ABILITY = {
+    "Sand Stream": "Sand",
+    "Snow Warning": "Snow",
+}
+_UNMODELED_TERRAIN_SETTER_ABILITY = {
     "Misty Surge": "Misty",
 }
+_WEATHER_SETTER_ABILITY = {**_MODELED_WEATHER_SETTER_ABILITY, **_UNMODELED_WEATHER_SETTER_ABILITY}
+_TERRAIN_SETTER_ABILITY = {**_MODELED_TERRAIN_SETTER_ABILITY, **_UNMODELED_TERRAIN_SETTER_ABILITY}
 _INTIMIDATE = "Intimidate"
 
 # Abilities realized at THIS layer (not inside damage_calc.calc, which only
 # knows about abilities that change the core damage formula itself) -- used
 # by _unmodeled_abilities below so these don't get spuriously flagged
-# "not modeled" even though damage_calc.calc never sees their names.
+# "not modeled" even though damage_calc.calc never sees their names. Only
+# the setter abilities that genuinely change the damage number belong here
+# -- Sand Stream/Snow Warning/Misty Surge are deliberately left out so they
+# still get flagged (see _UNMODELED_WEATHER_SETTER_ABILITY/
+# _UNMODELED_TERRAIN_SETTER_ABILITY above).
 _BOT_LEVEL_MODELED_ABILITIES = frozenset(
-    {_INTIMIDATE} | set(_WEATHER_SETTER_ABILITY) | set(_TERRAIN_SETTER_ABILITY)
+    {_INTIMIDATE} | set(_MODELED_WEATHER_SETTER_ABILITY) | set(_MODELED_TERRAIN_SETTER_ABILITY)
 )
 
 
@@ -139,7 +161,9 @@ def calc_response(
     screen: Optional[str] = None,
     spread: bool = False,
 ) -> str:
-    """Format a damage-range response, assuming level 50 / 31 IVs / neutral stat stages (VGC standard)."""
+    """Format a damage-range response, assuming level 50 / 31 IVs / neutral stat stages
+    (VGC standard), except when the defender's/attacker's Intimidate applies, which sets
+    a -1 Attack stage on the opposing side."""
     attacker_record = find_record(records, attacker_name)
     if attacker_record is None:
         return not_found_message(records, attacker_name)
@@ -212,11 +236,25 @@ def calc_response(
         or _ability_lookup(defender_ability, _TERRAIN_SETTER_ABILITY)
     )
 
+    derived_weather_source = None
+    if not weather:
+        if _ability_lookup(attacker_ability, _WEATHER_SETTER_ABILITY):
+            derived_weather_source = attacker_ability
+        elif _ability_lookup(defender_ability, _WEATHER_SETTER_ABILITY):
+            derived_weather_source = defender_ability
+
+    derived_terrain_source = None
+    if not terrain:
+        if _ability_lookup(attacker_ability, _TERRAIN_SETTER_ABILITY):
+            derived_terrain_source = attacker_ability
+        elif _ability_lookup(defender_ability, _TERRAIN_SETTER_ABILITY):
+            derived_terrain_source = defender_ability
+
     context = {
         "is_doubles": spread,
         "is_spread_target": spread,
-        "weather": weather or derived_weather,
-        "terrain": terrain or derived_terrain,
+        "weather": weather if weather is not None else derived_weather,
+        "terrain": terrain if terrain is not None else derived_terrain,
         "screen": screen,
     }
 
@@ -236,6 +274,11 @@ def calc_response(
     # damage_calc itself applies to recognized abilities.
     for unmodeled_ability in _unmodeled_abilities(attacker_ability, defender_ability):
         response += f" (ability '{unmodeled_ability}' is not modeled)"
+
+    if derived_weather_source and derived_weather:
+        response += f" ({derived_weather} weather auto-derived from {derived_weather_source})"
+    if derived_terrain_source and derived_terrain:
+        response += f" ({derived_terrain} terrain auto-derived from {derived_terrain_source})"
 
     return response
 
