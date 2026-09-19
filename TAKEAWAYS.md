@@ -203,11 +203,14 @@ Numbers that moved, not just numbers that exist:
 
 ## What I'd do differently / next
 
-- Add the ability check and a few more held-item/ability interactions the
-  calculator doesn't cover yet (this was scoped out deliberately, not missed)
-- A CI check that pins-and-explains dependency versions the way
-  `requirements.txt`'s `torch` comment does, so future upgrades don't
-  silently reintroduce the same class of import-time crash
+- ~~Add the ability check and a few more held-item/ability interactions the
+  calculator doesn't cover yet~~ — done 2026-09-18: 6 type-immunity
+  abilities, weather/terrain auto-derivation from setter abilities, and
+  Intimidate's stat-stage math. See
+  `docs/superpowers/plans/2026-09-18-ability-held-item-interactions.md`.
+- ~~A CI check that pins-and-explains dependency versions the way
+  `requirements.txt`'s `torch` comment does~~ — done: `scripts/check_pinned_deps.py`,
+  wired into `.github/workflows/test.yml`, enforces this on every pinned line.
 - ~~Revisit the Pikalytics scraping question formally (ToS compliance)~~ —
   checked: `robots.txt` explicitly allows the `/ai/` path this bot's
   pipeline hits for AI/bot user-agents, and Pikalytics' Privacy Policy (the
