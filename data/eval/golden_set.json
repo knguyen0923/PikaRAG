@@ -467,5 +467,33 @@
     "match_type": "substring",
     "expected": "Boosts the accuracy of the holder's moves by 10%.",
     "source_chunk_id": "item-Wide Lens"
+  },
+  {
+    "id": "no-entity-stance-change-question",
+    "question": "Which Pokemon changes from a defensive stance to an offensive stance via the Stance Change ability?",
+    "match_type": "substring",
+    "expected": "Stance Change",
+    "source_chunk_id": "Aegislash-stats"
+  },
+  {
+    "id": "no-entity-air-balloon-question",
+    "question": "What held item keeps its holder floating so it is immune to attacks from below, until it is hit once and pops?",
+    "match_type": "substring",
+    "expected": "immunity to Ground-type moves",
+    "source_chunk_id": "item-Air Balloon"
+  },
+  {
+    "id": "no-entity-levitate-attack-question",
+    "question": "Which Pokemon has the Levitate ability, 115 base Attack, and only 50 base Speed?",
+    "match_type": "set",
+    "expected": ["Attack 115", "Speed 50"],
+    "source_chunk_id": "Eelektross-stats"
+  },
+  {
+    "id": "no-entity-burn-cure-question",
+    "question": "What held item cures a burn and disappears after a single use?",
+    "match_type": "substring",
+    "expected": "Cures being burned",
+    "source_chunk_id": "item-Rawst Berry"
   }
 ]

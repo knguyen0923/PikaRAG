@@ -149,3 +149,53 @@ def test_a_sample_of_out_of_domain_questions_exceed_the_confidence_gate_threshol
         assert best_distance is None or best_distance > DISTANCE_THRESHOLD, (
             f"{question!r} scored {best_distance} -- expected it to exceed DISTANCE_THRESHOLD ({DISTANCE_THRESHOLD})"
         )
+
+
+from rag.bm25 import BM25Index
+from rag.retrieve import build_context_block
+
+
+def test_hybrid_retrieval_recovers_a_no_entity_detected_miss_that_pure_vector_search_misses():
+    """Aegislash-stats is a REAL miss for pure vector search at k=5 on this
+    question (confirmed directly against the live index while writing this
+    plan) -- BM25 ranks it #1 on the same question, so RRF fusion should
+    recover it. This is the concrete, demonstrated benefit of hybrid
+    retrieval, not just a smoke test."""
+    records = json.loads(RECORDS_PATH.read_text())
+    items = json.loads(ITEMS_PATH.read_text())
+    golden_by_id = {entry["id"]: entry for entry in json.loads(GOLDEN_SET_PATH.read_text())}
+    entry = golden_by_id["no-entity-stance-change-question"]
+
+    index = _build_real_index(records, items, client=chromadb.Client())
+    bm25_index = BM25Index(records, items)
+
+    # Confirm the premise: pure vector search at k=5 misses it.
+    vector_only_ids = {m["id"] for m in index.query(entry["question"], n_results=5)}
+    assert entry["source_chunk_id"] not in vector_only_ids, (
+        "premise check failed -- pure vector search no longer misses this question; "
+        "pick a different no-entity-detected golden entry that's still a real miss"
+    )
+
+    # Hybrid retrieval (through the actual build_context_block path) recovers it.
+    result = build_context_block(index, entry["question"], records=records, items=items, n_results=5, bm25_index=bm25_index)
+    hybrid_ids = {chunk["id"] for chunk in result["retrieved_chunks"]}
+    assert entry["source_chunk_id"] in hybrid_ids
+
+
+def test_new_no_entity_golden_entries_detect_no_entity():
+    """Confirms the premise these 4 entries were added for: none of them
+    should trigger entity-aware filtering, so they actually exercise the
+    unfiltered/hybrid retrieval path build_context_block falls back to."""
+    records = json.loads(RECORDS_PATH.read_text())
+    items = json.loads(ITEMS_PATH.read_text())
+    golden_by_id = {entry["id"]: entry for entry in json.loads(GOLDEN_SET_PATH.read_text())}
+
+    no_entity_ids = [
+        "no-entity-stance-change-question",
+        "no-entity-air-balloon-question",
+        "no-entity-levitate-attack-question",
+        "no-entity-burn-cure-question",
+    ]
+    for golden_id in no_entity_ids:
+        entity = detect_entity(golden_by_id[golden_id]["question"], records, items)
+        assert entity is None, f"{golden_id}: expected no entity detected, got {entity}"
