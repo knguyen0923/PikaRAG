@@ -42,8 +42,11 @@ def ask_response(
     items: Optional[list] = None,
     n_results: int = 5,
     extra_context: Optional[str] = None,
+    bm25_index=None,
 ) -> dict:
-    context = build_context_block(index, question, records=records, items=items, n_results=n_results)
+    context = build_context_block(
+        index, question, records=records, items=items, n_results=n_results, bm25_index=bm25_index
+    )
 
     if not extra_context and (context["best_distance"] is None or context["best_distance"] > DISTANCE_THRESHOLD):
         return {
@@ -82,6 +85,7 @@ async def ask_response_async(
     items: Optional[list] = None,
     n_results: int = 5,
     extra_context: Optional[str] = None,
+    bm25_index=None,
 ) -> dict:
     """Run ask_response in a worker thread so the caller's event loop stays free.
 
@@ -90,5 +94,5 @@ async def ask_response_async(
     whole call keeps discord.py's event loop responsive during either one.
     """
     return await asyncio.to_thread(
-        ask_response, index, answerer, question, records, items, n_results, extra_context
+        ask_response, index, answerer, question, records, items, n_results, extra_context, bm25_index
     )
