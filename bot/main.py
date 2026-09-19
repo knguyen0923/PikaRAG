@@ -35,6 +35,7 @@ from bot.ui import NameSuggestionView
 from rag.answer import OFFLINE_MESSAGE, OllamaAnswerer
 from rag.circuit_breaker import CircuitBreaker
 from rag.embed import SentenceTransformerEmbedder
+from rag.bm25 import BM25Index
 from rag.observability import get_last_ask_log, log_ask
 from rag.store import ChromaIndex
 
@@ -74,7 +75,8 @@ def _owner_only(interaction: discord.Interaction) -> bool:
 
 
 def build_client(
-    index=None, answerer=None, raw_answerer=None, records=None, moves=None, usage=None, items=None
+    index=None, answerer=None, raw_answerer=None, records=None, moves=None, usage=None, items=None,
+    bm25_index=None,
 ) -> tuple[discord.Client, app_commands.CommandTree]:
     intents = discord.Intents.default()
     client = discord.Client(intents=intents)
@@ -97,7 +99,8 @@ def build_client(
         extra_context = "\n\n".join(block for block in team_blocks if block) or None
         start_time = time.monotonic()
         result = await ask_response_async(
-            index, answerer, question, records=records, items=items, extra_context=extra_context
+            index, answerer, question, records=records, items=items, extra_context=extra_context,
+            bm25_index=bm25_index,
         )
         latency_ms = int((time.monotonic() - start_time) * 1000)
         try:
@@ -552,6 +555,7 @@ def main() -> None:
         moves=_load_moves(),
         usage=_load_usage(),
         items=items,
+        bm25_index=BM25Index(records, items),
     )
     client.run(token)
 
