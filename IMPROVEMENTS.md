@@ -55,15 +55,28 @@ was brainstormed via `superpowers:brainstorming`. Current state:
   on whichever machine hosts the live bot. New owner-only `/stats-summary`
   command (`bot/commands/stats_summary.py`) reports the aggregate stats,
   same ephemeral-reply pattern as `/debug-last`. 592/592 tests passing.
-- **Agentic `/ask`+`/calc` tool-calling loop** — architectural spec written
-  and committed: `docs/superpowers/specs/2026-09-17-agentic-tool-calling-design.md`.
-  Not yet implemented. Key decisions: new `/analyze` command (not an
-  extension of `/ask`); uses Ollama's native `/api/chat` tool-calling
-  (confirmed supported for `llama3.2:3b`, not hand-rolled); 3 tools
-  (`run_damage_calc`, `get_stored_team`, `get_usage_stats`), each a thin
-  wrapper around an existing pure function; capped at 4 tool-call
-  round-trips; falls back to a plain RAG answer on any malformed/hallucinated
-  tool call rather than erroring.
+- **Agentic `/ask`+`/calc` tool-calling loop — done.** New `/analyze` command
+  (not an extension of `/ask`) lets the model orchestrate 3 tools over
+  Ollama's native `/api/chat` tool-calling: `OllamaAnswerer.answer_with_tools`
+  (`rag/answer.py`) drives the round-trip loop, capped at 4 rounds (forces a
+  best-effort final answer on hitting the cap rather than erroring);
+  `bot/agentic.py` defines the 3 tool schemas (`run_damage_calc`,
+  `get_stored_team`, `get_usage_stats`) and `build_tool_dispatch`, each a
+  thin wrapper around an existing pure function (`calc_response`, `get_team`,
+  `usage_for_record`) -- the model never computes damage itself, only ever
+  sees `run_damage_calc`'s deterministic string output. `get_stored_team`'s
+  schema takes no arguments at all -- `user_id` is bound from the real
+  Discord interaction, never from the model's tool-call arguments, so a
+  confused or adversarial prompt can't spoof whose stored team gets read. On
+  a malformed/hallucinated tool call (unknown tool name, non-object
+  arguments, or a dispatch failure), `answer_with_tools` returns the
+  `MALFORMED_TOOL_CALL_MESSAGE` sentinel and `analyze_response_async` falls
+  back to a plain RAG answer through the existing `ask_response_async` path
+  rather than erroring. `/analyze` calls `raw_answerer` directly (not the
+  `CircuitBreaker`-wrapped one, which only implements `.answer()`), same as
+  `/llmstatus` already does. Full plan:
+  `docs/superpowers/plans/2026-09-19-agentic-tool-calling.md`. 612/612 tests
+  passing.
 - **Ability/held-item interactions — done.** 6 type-immunity abilities (Levitate,
   Water Absorb, Flash Fire, Volt Absorb, Lightning Rod, Storm Drain) force 0
   damage; weather auto-derives from Drought/Drizzle/Sand Stream/Snow Warning and
@@ -112,14 +125,9 @@ was brainstormed via `superpowers:brainstorming`. Current state:
 
 ## Priority 3 — solid extensions once the above are done
 
-- **Merge `/ask` and `/calc` into an agentic tool-calling loop.** Right
-  now they're cleanly separate (a good call for correctness — math should
-  never go through the LLM). The extension: let the model decide when to
-  call the damage calculator or pull live usage stats mid-conversation
-  (e.g. "is Landorus a good check to this team?" → looks up the stored team,
-  runs the calc against each member, reasons over the results) — the tool
-  call still routes to the deterministic calculator, the LLM just decides
-  when to invoke it.
+- **Agentic `/ask`+`/calc` tool-calling loop — done.** See the summary
+  bullet near the top of this file for what was built (new `/analyze`
+  command, not a merge of `/ask`/`/calc` themselves -- both stay untouched).
 
 - **Add hybrid (BM25 + vector) retrieval — done.** Entity-aware filtering
   (`rag/entity.py`) already solves the case where a known Pokémon/item name
