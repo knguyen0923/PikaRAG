@@ -193,3 +193,93 @@ def test_build_context_block_falls_back_to_unfiltered_when_filtered_query_return
     assert index.queries[0]["where"] == {"pokemon": "Abomasnow"}
     assert index.queries[1]["where"] is None
     assert "Unrelated chunk with no pokemon metadata" in result["text"]
+
+
+from rag.retrieve import build_context_block
+
+
+class _FakeBM25Index:
+    def __init__(self, results):
+        self._results = results
+        self.searches = []
+
+    def search(self, question, n_results=10):
+        self.searches.append((question, n_results))
+        return self._results[:n_results]
+
+
+class _FakeIndexNoWhere:
+    """Same as _FakeIndex above but records every call for pool-size assertions."""
+
+    def __init__(self, matches):
+        self._matches = matches
+        self.queries = []
+
+    def query(self, text, n_results=5):
+        self.queries.append({"text": text, "n_results": n_results})
+        return self._matches[:n_results]
+
+
+def test_build_context_block_ignores_bm25_index_by_default_unchanged_behavior():
+    index = _FakeIndexNoWhere(matches=[
+        {"id": "a-stats", "text": "a", "metadata": {"pokemon": "A", "chunk_type": "stats"}, "distance": 0.4},
+    ])
+
+    build_context_block(index, "Some question", n_results=3)
+
+    assert index.queries == [{"text": "Some question", "n_results": 3}]
+
+
+def test_build_context_block_fuses_a_bm25_only_hit_into_the_results():
+    # Vector search returns nothing relevant; BM25 finds the exact-keyword chunk.
+    index = _FakeIndexNoWhere(matches=[
+        {"id": "unrelated-stats", "text": "Unrelated chunk", "metadata": {"pokemon": "Unrelated", "chunk_type": "stats"}, "distance": 1.2},
+    ])
+    bm25_index = _FakeBM25Index(results=[
+        {"id": "Aegislash-stats", "text": "Aegislash is a Steel/Ghost-type Pokemon. Abilities: Stance Change.", "pokemon": "Aegislash", "chunk_type": "stats"},
+    ])
+
+    result = build_context_block(index, "Which Pokemon has Stance Change?", n_results=2, bm25_index=bm25_index)
+
+    ids = {chunk["id"] for chunk in result["retrieved_chunks"]}
+    assert "Aegislash-stats" in ids
+    assert "Aegislash is a Steel/Ghost-type Pokemon. Abilities: Stance Change." in result["text"]
+
+
+def test_build_context_block_bm25_only_hit_never_lowers_best_distance_below_the_real_vector_minimum():
+    index = _FakeIndexNoWhere(matches=[
+        {"id": "unrelated-stats", "text": "Unrelated chunk", "metadata": {"pokemon": "Unrelated", "chunk_type": "stats"}, "distance": 1.2},
+    ])
+    bm25_index = _FakeBM25Index(results=[
+        {"id": "Aegislash-stats", "text": "Aegislash text", "pokemon": "Aegislash", "chunk_type": "stats"},
+    ])
+
+    result = build_context_block(index, "Which Pokemon has Stance Change?", n_results=2, bm25_index=bm25_index)
+
+    assert result["best_distance"] == 1.2
+
+
+def test_build_context_block_ranks_a_chunk_found_by_both_retrievers_above_a_single_retriever_hit():
+    index = _FakeIndexNoWhere(matches=[
+        {"id": "both-stats", "text": "Found by both", "metadata": {"pokemon": "Both", "chunk_type": "stats"}, "distance": 0.5},
+        {"id": "vector-only-stats", "text": "Vector only", "metadata": {"pokemon": "VectorOnly", "chunk_type": "stats"}, "distance": 0.6},
+    ])
+    bm25_index = _FakeBM25Index(results=[
+        {"id": "both-stats", "text": "Found by both", "pokemon": "Both", "chunk_type": "stats"},
+        {"id": "bm25-only-stats", "text": "BM25 only", "pokemon": "BM25Only", "chunk_type": "stats"},
+    ])
+
+    result = build_context_block(index, "A question", n_results=1, bm25_index=bm25_index)
+
+    assert result["retrieved_chunks"] == [{"id": "both-stats", "distance": 0.5}]
+
+
+def test_build_context_block_expands_the_vector_candidate_pool_when_bm25_index_is_given():
+    index = _FakeIndexNoWhere(matches=[])
+    bm25_index = _FakeBM25Index(results=[])
+
+    build_context_block(index, "A question", n_results=3, bm25_index=bm25_index)
+
+    # Candidate pool must be at least n_results, and wider than a bare n_results=3
+    # so fusion has real breadth to work with.
+    assert index.queries[0]["n_results"] > 3
