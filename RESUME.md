@@ -5,149 +5,152 @@ or right before a compaction) so work can pick back up without losing the
 thread. If this says "nothing in progress," there's no live handoff — just
 use `STATUS.md`.
 
-Nothing in progress. All 7 button-UI-backlog plans (Slices A-D,
-team-button-ui, damage-calc-abilities, pipeline-error-handling) are
-executed, reviewed, and merged to `main` (commit `d90c432`, 511/511 tests
-passing) — see `STATUS.md`'s top section for what shipped and how each
-merge conflict was resolved. The 7 source worktrees/branches are still on
-disk, not yet cleaned up (deliberate pause point). The only still-open
-item unrelated to this batch is the local LLM migration's Task 5
-(physical hardware setup), carried forward unchanged from 2026-09-14
-below.
+**Paused at:** mid-session, working through a 9-item prioritized brainstorm
+backlog the user approved in full ("Do all of them, prioritized"). Token
+budget ran low mid-way through item 3 of 9. Safe to resume any time — no
+destructive state, everything below is either committed or cleanly
+uncommitted-but-described.
 
----
+## The 9-item backlog (in the order approved)
 
-## Local LLM migration Task 5 (2026-09-14, hardware) — still open
+1. **Stored team persistence** (P1) — DONE, committed, not yet merged.
+2. **`/ask` input length cap** (P1) — DONE, committed, not yet merged.
+3. **CI lint step (ruff)** (P2) — IN PROGRESS, uncommitted. See below.
+4. **Coverage tooling (pytest-cov)** (P2) — NOT STARTED.
+5. **Fine-tune vs. RAG comparison** (P2) — NOT STARTED. Spec already exists
+   and was re-confirmed with the user: `docs/superpowers/specs/2026-09-17-finetune-vs-rag-design.md`.
+   Next step: `writing-plans` skill, then `subagent-driven-development`
+   (matches every other plan's execution pattern this session).
+6. **`observability.db` retention/prune** (P3) — NOT STARTED.
+7. **`/stats-summary` command** (P3) — NOT STARTED.
+8. **Agentic `/ask`+`/calc` tool-calling loop** (P3) — NOT STARTED. Spec
+   already exists and was re-confirmed: `docs/superpowers/specs/2026-09-17-agentic-tool-calling-design.md`.
+   Sequenced after item 1 (team persistence) since `get_stored_team` is more
+   useful once teams survive a restart — item 1 is now done, so this is
+   unblocked. Same `writing-plans` → `subagent-driven-development` path as 5.
+9. **TAKEAWAYS.md staleness fix** (P4) — NOT STARTED. Trivial: two "future
+   work" bullets (ability/item interactions, pinned-deps CI check) are
+   already done and need to be updated/removed.
 
-**Paused at:** 2026-09-14, late evening (user asked to pivot to something
-else, not a token-budget pause — safe to resume any time).
-**Working on:** Local LLM migration Task 5 — physical hardware setup
-connecting the live Oracle bot to a Windows laptop running Ollama. This is
-**mid-troubleshooting, not finished** — see exact state below.
-**Why paused:** User asked to note down what happened so far and switch
-to a different task; this isn't a token-budget pause, just a deliberate
-break with a network issue left unresolved.
+Full context on *why* these 9 items, plus 2 already-open pre-existing
+backlog items not part of this batch (local-LLM Task 5 hardware networking,
+rotating the leaked Discord token — both P1, both untouched, both
+independent of this batch): see the conversation history / `IMPROVEMENTS.md`.
 
-**Done so far (Task 5, this session, 2026-09-14 evening):**
-- Windows laptop (Dell Inspiron 14 7435 2-in-1, no dedicated GPU): Ollama
-  installed via `winget`, pulled `llama3.2:latest` (3.2B Q4_K_M) and
-  `nomic-embed-text`; confirmed both work locally
-  (`curl localhost:11434/api/tags` from the laptop itself returns both).
-  Tailscale installed and connected; laptop's Tailscale IP is
-  `100.111.225.17`.
-- Oracle instance (`193.122.155.20`, SSH via
-  `ssh -i ~/.ssh/pikarag-oci.key ubuntu@193.122.155.20`): confirmed
-  running current `main`. Edited `/opt/pikarag/.env` (as the `pikarag`
-  user) to remove the stale unused `ANTHROPIC_API_KEY` line and add
-  `LLM_HOST=100.111.225.17:11434` / `LLM_MODEL=llama3.2:3b`. Tailscale was
-  **not previously installed** on this box (a gap versus what
-  `docs/DEPLOYMENT.md` assumes) — installed and connected it this
-  session. Restarted `pikarag-bot.service`; it comes up clean, connects to
-  Discord's Gateway, `/ping` responds correctly.
-- **Blocked on:** `curl http://100.111.225.17:11434/api/tags` run *from
-  the Oracle box* hangs/times out, even though both machines show as
-  connected peers on the same Tailscale network. Two suspected causes,
-  neither yet applied/verified:
-  1. Ollama defaults to binding only `127.0.0.1` — needs the Windows
-     laptop's `OLLAMA_HOST` user environment variable set to
-     `0.0.0.0:11434`, then Ollama restarted (quit + relaunch from the
-     tray/Start menu).
-  2. Windows Firewall likely blocking inbound TCP 11434 — needs, in an
-     elevated PowerShell on the laptop:
-     `New-NetFirewallRule -DisplayName "Ollama" -Direction Inbound
-     -Protocol TCP -LocalPort 11434 -Action Allow`
-- **Also flagged, not yet done:** the live Discord bot token got printed
-  in plaintext into this chat session (via a `cat .env` over SSH) — it
-  should be rotated in the Discord Developer Portal (Bot -> Reset Token)
-  and the new value updated in the Oracle `.env`, independent of the LLM
-  work.
-- **Separate unresolved oddity, may be moot once the network is fixed:**
-  earlier `/ask` attempts (before the missing-Tailscale-on-Oracle gap was
-  discovered) returned Discord's generic "application did not respond"
-  error with **zero corresponding lines** in
-  `journalctl -u pikarag-bot.service -f` — no traceback, nothing. Only one
-  bot process was confirmed running via `ps aux` (ruling out a
-  duplicate-token conflict). Worth re-checking after the network fix; if
-  `/ask` still fails silently with no server-side log output at all, that
-  needs a proper `systematic-debugging` pass rather than more ad hoc log
-  watching.
+## Item 1 & 2 — done, sitting in an unmerged worktree
 
-**Next step on resume:** on the Windows laptop, set
-`OLLAMA_HOST=0.0.0.0:11434` (user environment variable) and add the
-firewall rule above, restart Ollama, then from the Mac re-run
-`ssh -i ~/.ssh/pikarag-oci.key ubuntu@193.122.155.20 "curl
-http://100.111.225.17:11434/api/tags"` to confirm the Oracle box can now
-reach it. Once that curl succeeds, retry `/ask <question>` in Discord with
-`journalctl -u pikarag-bot.service -f` open on the Oracle box, and confirm
-a real model-generated answer comes back (not just the offline-fallback
-message) to close out Task 5.
+**Worktree:** `.worktrees/team-persistence-and-ask-hardening`
+**Branch:** `team-persistence-and-ask-hardening`
+**Commits:** `87c75a6` (team persistence → SQLite, mirrors `rag/observability.py`'s
+pattern exactly, including the `__defaults__`-patching test-isolation trick
+in `tests/conftest.py`), `913531f` (`/ask` 500-char length cap in
+`bot/commands/ask.py`, new `MAX_QUESTION_LENGTH` constant).
+**Status:** 564/564 tests passing in this worktree. The `code-review`
+subagent finished (result arrived just as this pause was being written) with
+3 findings, **none Critical/blocking, none yet triaged or fixed**:
 
-**Older, already-shipped work (this session, 2026-09-13 through
-2026-09-14), kept for context:**
-- Local LLM migration (code): shipped, merged, pushed. `/ask` uses a local
-  Ollama server instead of paid Claude Haiku. Full detail: `STATUS.md`'s
-  "Local LLM migration" section.
-- Eval harness: shipped, merged, pushed. `recall@5` gated in CI, measured
-  0.9583. Full detail: `STATUS.md`'s "Eval harness" section.
-- Verification + fix pass on all 6 unimplemented 2026-09-13 design specs
-  (`eval-harness`, `retrieval-quality`, `grounding-trust`, `observability`,
-  `reliability`, `ingestion-robustness`) — every one had real bugs, all now
-  fixed and committed. See git log for the commits (`git log --oneline
-  --all --grep="design specs"` or similar; committed 2026-09-14).
-- Investigated 2 real retrieval misses the eval harness surfaced
-  (`Abomasnow-moveset-learned-question`,
-  `Dragalge-moveset-not-learned-question`) using systematic-debugging:
-  root-caused to Mega Stone item chunks + stats chunks consistently
-  outranking the correct moveset chunk for "Does X learn Y?" questions
-  (confirmed via direct index queries, not guessed). Confirmed the
-  already-approved `retrieval-quality-design.md` spec's entity-aware
-  `where`-filter design fixes this exact failure mode. Added this evidence
-  to the spec's Purpose section (commit `3d3991e`, local `main` only —
-  **not yet pushed to origin** as of this write; `main` is 1 commit ahead
-  of `origin/main`).
+1. `tests/conftest.py:199` (Minor/Important?) — the `_isolate_team_store`
+   fixture manually enumerates all 5 public `bot.team_store` functions to
+   patch `__defaults__` on each; a future function added to that module
+   following the same `db_path: str = DEFAULT_DB_PATH` pattern but omitted
+   from this list would silently read/write the real `data/team_store.db`
+   during tests. Suggested deeper fix: resolve `db_path` lazily inside each
+   function body against the module attribute, or centralize through one
+   patchable connection factory, instead of a manually-synced tuple.
+2. `bot/team_store.py:22` (worth a judgment call, not obviously wrong) —
+   every team_store call now does synchronous SQLite I/O directly on
+   Discord's asyncio event loop, unlike `bot/main.py`'s other blocking calls
+   which get `asyncio.to_thread`-wrapped. Reviewer notes `rag/observability.py`'s
+   `log_ask` already has this same unwrapped pattern, so this is extending
+   an existing convention, not introducing a new risk — flagged as worth
+   confirming intent on rather than an automatic must-fix, given this bot's
+   traffic is low.
+3. `bot/team_store.py:22` (Minor) — the `_connect`/`_CREATE_TABLE_SQL`/
+   `DEFAULT_DB_PATH` boilerplate is copy-pasted verbatim from
+   `rag/observability.py` rather than extracted into a shared helper.
 
-(retrieval-quality and the other 5 design specs named above are all
-shipped now — see `STATUS.md`. The only genuinely open item from this
-historical entry is Task 5's hardware step described above.)
+**Next step for this worktree on resume:** decide whether to fix any of
+these (none are blocking — could reasonably ship as-is and park the rest,
+same adjudication pattern used throughout this session's SDD plan reviews),
+then proceed to the same merge flow used for the two SDD plans earlier this
+session (switch to main, `git merge team-persistence-and-ask-hardening --no-edit`,
+run full suite, resolve any STATUS.md conflict by hand — same pattern as
+the `hybrid-bm25-retrieval` merge — then `git worktree remove` + `git branch -d`).
 
-**Standing preference to carry forward:** commit-cadence convention
-(implementers commit per task on an isolated branch, squashed or
-merge-commit into `main`), explicit go-ahead required before spinning up
-any agents, and push to origin only when explicitly asked, not
-automatically after every merge.
+## Item 3 — in progress, uncommitted
 
----
+**Worktree:** `.worktrees/ci-quality-tooling`
+**Branch:** `ci-quality-tooling`
+**Done so far (uncommitted):**
+- Installed `ruff` (0.16.8) and `pytest-cov` locally in the shared `.venv`
+  (both installed via pip, NOT yet added to `requirements.txt` — that's
+  still needed).
+- Discovered ruff's true no-config default rule set on this version is
+  very broad (111 violations across the repo, mostly `UP045`
+  pyupgrade-style `Optional[X]` → `X | None` churn that would be unrelated
+  scope creep). Decided to pin an explicit, minimal ruleset instead of
+  relying on ruff's shifting defaults: `E4,E7,E9,F` (pyflakes + core
+  pycodestyle — the classic flake8-equivalent baseline). Under that
+  selection, real violations were 16, now fixed.
+- Fixed all 16 real violations (mechanical import-organization only, no
+  logic changes): moved scattered mid-file imports to the top of
+  `pipeline/fetch_pokeapi.py` (4 instances), `tests/test_bot_dex.py`,
+  `tests/test_bot_pokemon_info.py`, `tests/test_eval_retrieval.py`,
+  `tests/test_rag_retrieve.py`, `tests/test_fetch_pokeapi.py`; ruff
+  `--fix` auto-fixed 1 unused import (`tests/test_pokemon_lookup.py`) and
+  1 F811 redefinition (`tests/test_rag_retrieve.py`).
+- Verified: `ruff check . --select E4,E7,E9,F` → "All checks passed!"
+- Verified: full suite still 560/560 passing after the import reorg.
 
-## Prior resume point (2026-09-11, deployment) — historical, fully resolved
+**Next steps (not yet done):**
+1. Add a `pyproject.toml` (doesn't exist yet) with:
+   ```toml
+   [tool.ruff.lint]
+   select = ["E4", "E7", "E9", "F"]
+   ```
+   so the ruleset is pinned/reproducible regardless of ruff version drift,
+   not relying on CLI flags in CI.
+2. Pin `ruff==0.16.8` in `requirements.txt` with the project's established
+   pinned-deps comment convention (see `scripts/check_pinned_deps.py` — every
+   `==` pin needs a preceding explanatory comment, and `tests/test_check_pinned_deps.py`
+   enforces this in CI).
+3. Add a new step to `.github/workflows/test.yml` running `ruff check .`
+   (after the existing pinned-deps check step, before `pip install`, or
+   wherever fits — look at the existing step order).
+4. Commit this as item 3 (e.g. `feat: add ruff lint step to CI`).
+5. **Then item 4** (not started): pin `pytest-cov` in `requirements.txt`
+   the same way, wire `--cov` into the CI `pytest` invocation in
+   `.github/workflows/test.yml`, decide whether to set a coverage floor or
+   just report it, run locally to sanity-check the report looks reasonable,
+   commit.
+6. Run full suite + `check_pinned_deps.py` one more time, then this
+   worktree is ready for the same merge flow as item 1&2's worktree.
 
-**Paused at:** 2026-09-11, deployment essentially complete — just waiting on
-Discord's global slash-command propagation window (up to ~1hr).
-**Why paused:** Nothing left to do but wait for `/ping` to actually appear
-in Discord's slash-command picker. Resolved same day — `/ping` confirmed
-working live in Discord on 2026-09-12 (see `STATUS.md`).
+## Not yet started: items 5-9
 
-Full detail (Oracle Cloud instance recreation, `torch==2.6.0` pin fix,
-systemd units, Discord invite snags) preserved in git history and in
-memory `pikarag-oracle-deployment`/`pikarag-oracle-networking-gotchas` if
-ever needed again — not reproduced here since it's fully resolved and
-`STATUS.md` is the current source of truth for what's live.
+No files touched yet for any of these. Start items 5 and 8 with the
+`superpowers:writing-plans` skill (specs already exist and are
+user-confirmed, listed above) — each becomes its own worktree + SDD plan,
+matching this session's established pattern (see
+`docs/superpowers/plans/2026-09-18-*.md` for the two examples already
+executed this session: `hybrid-bm25-retrieval`,
+`ability-held-item-interactions` — both fully merged to `main`).
 
----
+Items 6, 7, 9 are bounded (no plan doc needed per `superpowers:brainstorming`'s
+bounded path) — implement directly via TDD like items 1-4, probably batched
+into one more worktree (e.g. `observability-retention-and-stats-summary`)
+since they're both small and touch the same file (`rag/observability.py`).
 
-## Template (overwrite the section above when pausing mid-task)
+## Repo state as of this pause
 
-**Paused at:** <date>, ~<N>% of context budget used
-**Working on:** <the task in one line>
-**Why paused:** <token budget / imminent compaction>
-
-**Done so far:**
-- <bullet per completed step, with file paths / commit hashes>
-
-**In flight (not committed / not finished):**
-- <file path>: <what's half-done in it>
-
-**Next step:** <the exact next action to take on resume — specific enough
-that no re-derivation of context is needed>
-
-**Open questions / decisions still needed:** <anything blocking that needs
-the user's input>
+- `main` HEAD: `73a4903` (docs: refresh STATUS_COMMIT marker after fixing
+  stale test counts) — clean, no uncommitted changes on main itself.
+- Three worktrees exist: `.worktrees/team-persistence-and-ask-hardening`
+  (done, unmerged), `.worktrees/ci-quality-tooling` (in progress,
+  uncommitted changes present), plus whatever the two now-deleted SDD plan
+  worktrees left behind (both `ability-held-item-interactions` and
+  `hybrid-bm25-retrieval` worktrees/branches were already cleaned up
+  earlier this session — not stale, just historical).
+- A `code-review` subagent may still be running/finished in the background
+  for the team-persistence-and-ask-hardening worktree — check
+  `ListAgents` on resume before assuming it needs to be relaunched.
