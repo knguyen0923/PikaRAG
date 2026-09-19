@@ -63,6 +63,40 @@ def log_ask(
         conn.close()
 
 
+def prune_old_logs(cutoff_timestamp: str, db_path: str = DEFAULT_DB_PATH) -> int:
+    """Delete ask_log rows older than cutoff_timestamp (an ISO8601 string,
+    comparable lexicographically since log_ask always writes
+    datetime.now(timezone.utc).isoformat()). Returns the number of rows
+    deleted, for the caller to report."""
+    conn = _connect(db_path)
+    try:
+        cursor = conn.execute("DELETE FROM ask_log WHERE timestamp < ?", (cutoff_timestamp,))
+        conn.commit()
+        return cursor.rowcount
+    finally:
+        conn.close()
+
+
+def get_log_summary(db_path: str = DEFAULT_DB_PATH) -> dict:
+    """Aggregate stats over every logged /ask call, for the /stats-summary
+    admin command. avg_latency_ms is 0.0 (not None) when the table is
+    empty, so callers don't need a None-check before formatting it."""
+    conn = _connect(db_path)
+    try:
+        cursor = conn.execute(
+            "SELECT COUNT(*), SUM(gate_fired), SUM(degraded), AVG(latency_ms) FROM ask_log"
+        )
+        total, gate_fired_count, degraded_count, avg_latency_ms = cursor.fetchone()
+        return {
+            "total_asks": total or 0,
+            "gate_fired_count": gate_fired_count or 0,
+            "degraded_count": degraded_count or 0,
+            "avg_latency_ms": avg_latency_ms if avg_latency_ms is not None else 0.0,
+        }
+    finally:
+        conn.close()
+
+
 def get_last_ask_log(db_path: str = DEFAULT_DB_PATH) -> Optional[dict]:
     conn = _connect(db_path)
     try:
