@@ -822,3 +822,99 @@ def test_tinted_lens_does_not_apply_on_neutral_or_super_effective_damage():
     tinted_lens = calculate_damage(move, attacker_tinted_lens, defender, _BASE_CONTEXT)
 
     assert tinted_lens.max_damage == baseline.max_damage
+
+
+def test_levitate_grants_immunity_to_ground_type_moves():
+    move = {"name": "Earthquake", "type": "Ground", "category": "Physical", "power": 100, "accuracy": 100, "pp": 10, "effect": None}
+    stats = {"hp": 100, "attack": 100, "defense": 100, "sp_attack": 100, "sp_defense": 100, "speed": 100}
+    attacker = _make_combatant(stats, types=["Ground"])
+    defender_levitate = _make_combatant(stats, types=["Water"], ability="Levitate")
+
+    result = calculate_damage(move, attacker, defender_levitate, _BASE_CONTEXT)
+
+    assert result.min_damage == 0
+    assert result.max_damage == 0
+    assert result.is_ko_chance is False
+
+
+def test_levitate_does_not_grant_immunity_to_non_ground_moves():
+    move = {"name": "Surf", "type": "Water", "category": "Special", "power": 90, "accuracy": 100, "pp": 15, "effect": None}
+    stats = {"hp": 100, "attack": 100, "defense": 100, "sp_attack": 100, "sp_defense": 100, "speed": 100}
+    attacker = _make_combatant(stats, types=["Water"])
+    defender_levitate = _make_combatant(stats, types=["Water"], ability="Levitate")
+
+    result = calculate_damage(move, attacker, defender_levitate, _BASE_CONTEXT)
+
+    assert result.max_damage > 0
+
+
+def test_water_absorb_grants_immunity_to_water_type_moves():
+    move = {"name": "Surf", "type": "Water", "category": "Special", "power": 90, "accuracy": 100, "pp": 15, "effect": None}
+    stats = {"hp": 100, "attack": 100, "defense": 100, "sp_attack": 100, "sp_defense": 100, "speed": 100}
+    attacker = _make_combatant(stats, types=["Water"])
+    defender = _make_combatant(stats, types=["Fire"], ability="Water Absorb")
+
+    result = calculate_damage(move, attacker, defender, _BASE_CONTEXT)
+
+    assert result.min_damage == 0
+    assert result.max_damage == 0
+
+
+def test_flash_fire_grants_immunity_to_fire_type_moves():
+    move = {"name": "Flamethrower", "type": "Fire", "category": "Special", "power": 90, "accuracy": 100, "pp": 15, "effect": None}
+    stats = {"hp": 100, "attack": 100, "defense": 100, "sp_attack": 100, "sp_defense": 100, "speed": 100}
+    attacker = _make_combatant(stats, types=["Fire"])
+    defender = _make_combatant(stats, types=["Grass"], ability="Flash Fire")
+
+    result = calculate_damage(move, attacker, defender, _BASE_CONTEXT)
+
+    assert result.min_damage == 0
+    assert result.max_damage == 0
+
+
+def test_volt_absorb_grants_immunity_to_electric_type_moves():
+    move = {"name": "Thunderbolt", "type": "Electric", "category": "Special", "power": 90, "accuracy": 100, "pp": 15, "effect": None}
+    stats = {"hp": 100, "attack": 100, "defense": 100, "sp_attack": 100, "sp_defense": 100, "speed": 100}
+    attacker = _make_combatant(stats, types=["Electric"])
+    defender = _make_combatant(stats, types=["Water"], ability="Volt Absorb")
+
+    result = calculate_damage(move, attacker, defender, _BASE_CONTEXT)
+
+    assert result.min_damage == 0
+    assert result.max_damage == 0
+
+
+def test_lightning_rod_grants_immunity_to_electric_type_moves():
+    move = {"name": "Thunderbolt", "type": "Electric", "category": "Special", "power": 90, "accuracy": 100, "pp": 15, "effect": None}
+    stats = {"hp": 100, "attack": 100, "defense": 100, "sp_attack": 100, "sp_defense": 100, "speed": 100}
+    attacker = _make_combatant(stats, types=["Electric"])
+    defender = _make_combatant(stats, types=["Water"], ability="Lightning Rod")
+
+    result = calculate_damage(move, attacker, defender, _BASE_CONTEXT)
+
+    assert result.min_damage == 0
+    assert result.max_damage == 0
+
+
+def test_storm_drain_grants_immunity_to_water_type_moves():
+    move = {"name": "Surf", "type": "Water", "category": "Special", "power": 90, "accuracy": 100, "pp": 15, "effect": None}
+    stats = {"hp": 100, "attack": 100, "defense": 100, "sp_attack": 100, "sp_defense": 100, "speed": 100}
+    attacker = _make_combatant(stats, types=["Water"])
+    defender = _make_combatant(stats, types=["Fire"], ability="Storm Drain")
+
+    result = calculate_damage(move, attacker, defender, _BASE_CONTEXT)
+
+    assert result.min_damage == 0
+    assert result.max_damage == 0
+
+
+def test_ability_matching_is_case_insensitive_for_type_immunity():
+    move = {"name": "Earthquake", "type": "Ground", "category": "Physical", "power": 100, "accuracy": 100, "pp": 10, "effect": None}
+    stats = {"hp": 100, "attack": 100, "defense": 100, "sp_attack": 100, "sp_defense": 100, "speed": 100}
+    attacker = _make_combatant(stats, types=["Ground"])
+    defender = _make_combatant(stats, types=["Water"], ability="levitate")
+
+    result = calculate_damage(move, attacker, defender, _BASE_CONTEXT)
+
+    assert result.min_damage == 0
+    assert result.max_damage == 0

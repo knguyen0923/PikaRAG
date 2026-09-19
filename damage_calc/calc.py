@@ -113,6 +113,19 @@ _FILTER_ABILITIES = {"Filter", "Solid Rock", "Prism Armor"}
 THICK_FAT_NUM = 2048  # 0.5x
 _THICK_FAT_TYPES = {"Fire", "Ice"}
 
+# Ability (defender) -> move type it grants full immunity to, forcing 0
+# damage instead of the wrong non-zero number the base type chart alone
+# would otherwise produce (e.g. a Ground-type move vs. a Water-type
+# defender with Levitate is normally neutral/super-effective).
+_ABILITY_IMMUNITY_TYPE = {
+    "Levitate": "Ground",
+    "Water Absorb": "Water",
+    "Flash Fire": "Fire",
+    "Volt Absorb": "Electric",
+    "Lightning Rod": "Electric",
+    "Storm Drain": "Water",
+}
+
 # Ability (attacker) -> doubles damage on a not-very-effective hit.
 TINTED_LENS_NUM = 8192  # 2.0x
 
@@ -127,6 +140,7 @@ _IMPLEMENTED_ABILITIES = frozenset(
     | _FILTER_ABILITIES
     | {"Thick Fat"}
     | {"Tinted Lens"}
+    | set(_ABILITY_IMMUNITY_TYPE)
 )
 
 
@@ -373,8 +387,10 @@ def calculate_damage(move: dict, attacker: dict, defender: dict, context: dict) 
     min_damage = _damage_at_roll(roll=MIN_ROLL, **chain)
     max_damage = _damage_at_roll(roll=MAX_ROLL, **chain)
 
+    ability_grants_immunity = _ABILITY_IMMUNITY_TYPE.get(defender_ability) == move["type"]
+
     # A fully immune matchup deals exactly zero; everything else deals at least 1.
-    if type_effectiveness == 0:
+    if type_effectiveness == 0 or ability_grants_immunity:
         min_damage = max_damage = 0
     else:
         min_damage = max(1, min_damage)
