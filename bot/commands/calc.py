@@ -13,6 +13,48 @@ _MAX_EV_PER_STAT = 252
 _MAX_EV_TOTAL = 508
 _ERROR_PREFIXES = ("No ", "Invalid ")
 
+# Ability (either side) -> the weather/terrain it auto-sets, so a caller
+# doesn't have to type --weather/--terrain manually when they've already
+# told /calc which ability is in play. An explicit weather/terrain param
+# always wins -- see calc_response's `weather = weather or ...` below.
+_WEATHER_SETTER_ABILITY = {
+    "Drought": "Sun",
+    "Drizzle": "Rain",
+    "Sand Stream": "Sand",
+    "Snow Warning": "Snow",
+}
+_TERRAIN_SETTER_ABILITY = {
+    "Electric Surge": "Electric",
+    "Grassy Surge": "Grassy",
+    "Psychic Surge": "Psychic",
+    "Misty Surge": "Misty",
+}
+_INTIMIDATE = "Intimidate"
+
+# Abilities realized at THIS layer (not inside damage_calc.calc, which only
+# knows about abilities that change the core damage formula itself) -- used
+# by _unmodeled_abilities below so these don't get spuriously flagged
+# "not modeled" even though damage_calc.calc never sees their names.
+_BOT_LEVEL_MODELED_ABILITIES = frozenset(
+    {_INTIMIDATE} | set(_WEATHER_SETTER_ABILITY) | set(_TERRAIN_SETTER_ABILITY)
+)
+
+
+def _ability_lookup(ability: Optional[str], table: dict) -> Optional[str]:
+    """Case-insensitive lookup of `ability` in `table` (an ability-name-keyed
+    dict), mirroring damage_calc.calc._canonicalize_ability's case-fold
+    matching style. Returns None if `ability` is falsy or not in `table`."""
+    if not ability:
+        return None
+    for known, value in table.items():
+        if ability.casefold() == known.casefold():
+            return value
+    return None
+
+
+def _has_ability(ability: Optional[str], name: str) -> bool:
+    return bool(ability) and ability.casefold() == name.casefold()
+
 
 def is_error_response(response: str) -> bool:
     """True if `response` is one of calc_response's error messages rather
@@ -43,7 +85,8 @@ def _is_valid_nature(nature: str) -> bool:
 
 
 def _build_combatant(
-    record: dict, evs: dict, nature: str, item: Optional[str], ability: Optional[str], tera_type: Optional[str]
+    record: dict, evs: dict, nature: str, item: Optional[str], ability: Optional[str], tera_type: Optional[str],
+    stat_stages: dict,
 ) -> dict:
     return {
         "record": record,
@@ -51,7 +94,7 @@ def _build_combatant(
         "evs": evs,
         "ivs": _MAX_IVS,
         "nature": nature,
-        "stat_stages": _NO_STAT_STAGES,
+        "stat_stages": stat_stages,
         "tera_type": tera_type,
         "item": item,
         "ability": ability,
@@ -143,19 +186,37 @@ def calc_response(
     if not 1 <= defender_hp_percent <= 100:
         return "Invalid defender HP percent. Must be between 1 and 100."
 
+    attacker_stat_stages = dict(_NO_STAT_STAGES)
+    if _has_ability(defender_ability, _INTIMIDATE):
+        attacker_stat_stages["attack"] = -1
+    defender_stat_stages = dict(_NO_STAT_STAGES)
+    if _has_ability(attacker_ability, _INTIMIDATE):
+        defender_stat_stages["attack"] = -1
+
     attacker = _build_combatant(
-        attacker_record, parsed_attacker_evs, attacker_nature, attacker_item, attacker_ability, attacker_tera
+        attacker_record, parsed_attacker_evs, attacker_nature, attacker_item, attacker_ability, attacker_tera,
+        attacker_stat_stages,
     )
     defender = _build_combatant(
-        defender_record, parsed_defender_evs, defender_nature, defender_item, defender_ability, defender_tera
+        defender_record, parsed_defender_evs, defender_nature, defender_item, defender_ability, defender_tera,
+        defender_stat_stages,
     )
     defender["current_hp_fraction"] = defender_hp_percent / 100
+
+    derived_weather = (
+        _ability_lookup(attacker_ability, _WEATHER_SETTER_ABILITY)
+        or _ability_lookup(defender_ability, _WEATHER_SETTER_ABILITY)
+    )
+    derived_terrain = (
+        _ability_lookup(attacker_ability, _TERRAIN_SETTER_ABILITY)
+        or _ability_lookup(defender_ability, _TERRAIN_SETTER_ABILITY)
+    )
 
     context = {
         "is_doubles": spread,
         "is_spread_target": spread,
-        "weather": weather,
-        "terrain": terrain,
+        "weather": weather or derived_weather,
+        "terrain": terrain or derived_terrain,
         "screen": screen,
     }
 
@@ -180,6 +241,9 @@ def calc_response(
 
 
 def _unmodeled_abilities(*abilities: Optional[str]) -> list:
-    """Abilities from `abilities` that are set but not in _IMPLEMENTED_ABILITIES."""
-    known = {name.casefold() for name in _IMPLEMENTED_ABILITIES}
+    """Abilities from `abilities` that are set but not in _IMPLEMENTED_ABILITIES
+    (modeled inside damage_calc.calc) or _BOT_LEVEL_MODELED_ABILITIES (modeled
+    one layer up, in this file -- weather/terrain auto-derivation and
+    Intimidate's stat-stage math)."""
+    known = {name.casefold() for name in _IMPLEMENTED_ABILITIES | _BOT_LEVEL_MODELED_ABILITIES}
     return [ability for ability in abilities if ability and ability.casefold() not in known]

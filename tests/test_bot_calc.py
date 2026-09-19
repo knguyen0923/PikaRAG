@@ -25,6 +25,10 @@ _TACKLE = {"name": "Tackle", "type": "Normal", "category": "Physical", "power": 
 _MOVES = [_ICE_BEAM, _TACKLE]
 
 
+def _max_damage(response: str) -> int:
+    return int(response.split(": ")[1].split("-")[1].split(" ")[0])
+
+
 def test_is_error_response_true_for_error_messages():
     assert is_error_response("No Pokemon found matching 'Abomasno'.") is True
     assert is_error_response("Invalid attacker EVs. Expected format: ...") is True
@@ -247,5 +251,117 @@ def test_calc_response_does_not_disclose_an_implemented_ability():
 
 def test_calc_response_does_not_disclose_anything_when_no_ability_given():
     response = calc_response(_RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam")
+
+    assert "is not modeled" not in response
+
+
+def test_calc_response_auto_derives_sun_weather_from_droughts_attacker():
+    move = {"name": "Ember", "type": "Fire", "category": "Special", "power": 40, "accuracy": 100, "pp": 25, "effect": None}
+    moves_with_ember = _MOVES + [move]
+
+    baseline = calc_response(_RECORDS, moves_with_ember, "Abomasnow", "Gyarados", "Ember")
+    with_sun = calc_response(
+        _RECORDS, moves_with_ember, "Abomasnow", "Gyarados", "Ember", attacker_ability="Drought"
+    )
+
+    assert _max_damage(with_sun) > _max_damage(baseline)
+
+
+def test_calc_response_auto_derives_snow_weather_from_defenders_snow_warning():
+    # Snow Warning is Abomasnow's real ability in this fixture -- it doesn't
+    # boost/reduce any move type in this calculator (matching the real
+    # games, where Snow doesn't modify move damage), but passing it through
+    # to context must not error and must not be flagged "not modeled".
+    response = calc_response(
+        _RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam", attacker_ability="Snow Warning"
+    )
+
+    assert not is_error_response(response)
+    assert "is not modeled" not in response
+
+
+def test_calc_response_explicit_weather_param_wins_over_ability_derived_weather():
+    move = {"name": "Ember", "type": "Fire", "category": "Special", "power": 40, "accuracy": 100, "pp": 25, "effect": None}
+    moves_with_ember = _MOVES + [move]
+
+    # Drought would auto-derive Sun (which boosts Fire); explicit Rain (which
+    # weakens Fire) must win instead.
+    response = calc_response(
+        _RECORDS, moves_with_ember, "Abomasnow", "Gyarados", "Ember",
+        attacker_ability="Drought", weather="Rain",
+    )
+    rain_damage = _max_damage(response)
+
+    neutral = calc_response(_RECORDS, moves_with_ember, "Abomasnow", "Gyarados", "Ember")
+    assert rain_damage < _max_damage(neutral)
+
+
+def test_calc_response_auto_derives_electric_terrain_from_electric_surge():
+    move = {"name": "Thunderbolt", "type": "Electric", "category": "Special", "power": 90, "accuracy": 100, "pp": 15, "effect": None}
+    moves_with_tbolt = _MOVES + [move]
+
+    baseline = calc_response(_RECORDS, moves_with_tbolt, "Abomasnow", "Gyarados", "Thunderbolt")
+    with_terrain = calc_response(
+        _RECORDS, moves_with_tbolt, "Abomasnow", "Gyarados", "Thunderbolt", attacker_ability="Electric Surge"
+    )
+
+    assert _max_damage(with_terrain) > _max_damage(baseline)
+
+
+def test_calc_response_explicit_terrain_param_wins_over_ability_derived_terrain():
+    move = {"name": "Thunderbolt", "type": "Electric", "category": "Special", "power": 90, "accuracy": 100, "pp": 15, "effect": None}
+    moves_with_tbolt = _MOVES + [move]
+
+    with_electric_surge = calc_response(
+        _RECORDS, moves_with_tbolt, "Abomasnow", "Gyarados", "Thunderbolt", attacker_ability="Electric Surge"
+    )
+    with_explicit_override = calc_response(
+        _RECORDS, moves_with_tbolt, "Abomasnow", "Gyarados", "Thunderbolt",
+        attacker_ability="Electric Surge", terrain="Psychic",
+    )
+
+    assert _max_damage(with_explicit_override) < _max_damage(with_electric_surge)
+
+
+def test_calc_response_defenders_intimidate_lowers_the_attackers_physical_damage():
+    baseline = calc_response(_RECORDS, _MOVES, "Gyarados", "Abomasnow", "Tackle")
+    with_intimidate = calc_response(
+        _RECORDS, _MOVES, "Gyarados", "Abomasnow", "Tackle", defender_ability="Intimidate"
+    )
+
+    assert _max_damage(with_intimidate) < _max_damage(baseline)
+
+
+def test_calc_response_attackers_intimidate_lowers_the_defenders_physical_damage_output_not_the_attackers_own():
+    # Intimidate lowers the OPPONENT's Attack, not the holder's own -- so as
+    # the attacker here, Gyarados's own outgoing damage must be unaffected.
+    baseline = calc_response(_RECORDS, _MOVES, "Gyarados", "Abomasnow", "Tackle")
+    with_own_intimidate = calc_response(
+        _RECORDS, _MOVES, "Gyarados", "Abomasnow", "Tackle", attacker_ability="Intimidate"
+    )
+
+    assert _max_damage(with_own_intimidate) == _max_damage(baseline)
+
+
+def test_calc_response_does_not_disclose_intimidate_as_unmodeled():
+    response = calc_response(
+        _RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam", attacker_ability="Intimidate"
+    )
+
+    assert "is not modeled" not in response
+
+
+def test_calc_response_does_not_disclose_a_weather_setter_ability_as_unmodeled():
+    response = calc_response(
+        _RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam", attacker_ability="Drought"
+    )
+
+    assert "is not modeled" not in response
+
+
+def test_calc_response_does_not_disclose_a_terrain_setter_ability_as_unmodeled():
+    response = calc_response(
+        _RECORDS, _MOVES, "Abomasnow", "Gyarados", "Ice Beam", attacker_ability="Electric Surge"
+    )
 
     assert "is not modeled" not in response
