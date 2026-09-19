@@ -33,9 +33,9 @@ from bot.pokepaste_fetch import PokepasteFetchError, resolve_pokepaste_text
 from bot.team_store import find_team_member, get_team, resolve_calc_overrides
 from bot.ui import NameSuggestionView
 from rag.answer import OFFLINE_MESSAGE, OllamaAnswerer
+from rag.bm25 import BM25Index
 from rag.circuit_breaker import CircuitBreaker
 from rag.embed import SentenceTransformerEmbedder
-from rag.bm25 import BM25Index
 from rag.observability import get_last_ask_log, log_ask
 from rag.store import ChromaIndex
 
