@@ -12,6 +12,7 @@ from discord import app_commands
 from bot.commands.ask import GATE_MESSAGE, ask_response_async, format_ask_response
 from bot.commands.calc import calc_response, is_error_response
 from bot.commands.debug import format_debug_last
+from bot.commands.stats_summary import format_stats_summary
 from bot.commands.dex import DexBrowseView, dex_page_response
 from bot.commands.llmstatus import format_llmstatus
 from bot.commands.moves import moves_response
@@ -36,7 +37,7 @@ from rag.answer import OFFLINE_MESSAGE, OllamaAnswerer
 from rag.bm25 import BM25Index
 from rag.circuit_breaker import CircuitBreaker
 from rag.embed import SentenceTransformerEmbedder
-from rag.observability import get_last_ask_log, log_ask
+from rag.observability import get_last_ask_log, get_log_summary, log_ask
 from rag.store import ChromaIndex
 
 PROCESSED_RECORDS_PATH = Path("data/processed/pokemon_records.json")
@@ -57,6 +58,7 @@ _COMMAND_COLORS = {
     "dex": discord.Color.magenta(),
     "debug": discord.Color.dark_grey(),
     "llmstatus": discord.Color.orange(),
+    "stats-summary": discord.Color.dark_grey(),
 }
 
 
@@ -124,6 +126,14 @@ def build_client(
     async def debug_last(interaction: discord.Interaction) -> None:
         row = get_last_ask_log()
         await interaction.response.send_message(embed=_embed("debug", format_debug_last(row)), ephemeral=True)
+
+    @tree.command(name="stats-summary", description="Show aggregate /ask call stats (bot owner only).")
+    @app_commands.check(_owner_only)
+    async def stats_summary(interaction: discord.Interaction) -> None:
+        summary = get_log_summary()
+        await interaction.response.send_message(
+            embed=_embed("stats-summary", format_stats_summary(summary)), ephemeral=True
+        )
 
     @tree.command(name="llmstatus", description="Check the local LLM's health and circuit breaker state (bot owner only).")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)

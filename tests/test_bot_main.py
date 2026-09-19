@@ -1071,6 +1071,52 @@ def test_debug_last_replies_ephemerally_so_it_is_not_leaked_to_the_channel(monke
     assert kwargs["ephemeral"] is True
 
 
+def test_stats_summary_command_is_registered_with_an_owner_only_check():
+    _client, tree = build_client()
+    command = tree.get_command("stats-summary")
+
+    assert command is not None
+    assert len(command.checks) >= 1
+
+
+def test_stats_summary_shows_the_aggregate_counts(monkeypatch):
+    monkeypatch.setenv("BOT_OWNER_ID", "12345")
+    monkeypatch.setattr(
+        "bot.main.get_log_summary",
+        lambda: {"total_asks": 4, "gate_fired_count": 1, "degraded_count": 2, "avg_latency_ms": 725.5},
+    )
+
+    _client, tree = build_client()
+    stats_summary_command = tree.get_command("stats-summary")
+    interaction = MagicMock()
+    interaction.user.id = 12345
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(stats_summary_command.callback(interaction))
+
+    sent_text = _extract_text(interaction.response.send_message)
+    assert "**Total /ask calls:** 4" in sent_text
+
+
+def test_stats_summary_replies_ephemerally(monkeypatch):
+    monkeypatch.setenv("BOT_OWNER_ID", "12345")
+    monkeypatch.setattr(
+        "bot.main.get_log_summary",
+        lambda: {"total_asks": 0, "gate_fired_count": 0, "degraded_count": 0, "avg_latency_ms": 0.0},
+    )
+
+    _client, tree = build_client()
+    stats_summary_command = tree.get_command("stats-summary")
+    interaction = MagicMock()
+    interaction.user.id = 12345
+    interaction.response.send_message = AsyncMock()
+
+    asyncio.run(stats_summary_command.callback(interaction))
+
+    _args, kwargs = interaction.response.send_message.call_args
+    assert kwargs["ephemeral"] is True
+
+
 def test_ask_command_logs_gate_fired_true_when_only_far_matches_are_retrieved(monkeypatch):
     # DISTANCE_THRESHOLD in bot/commands/ask.py is 1.4 -- a best match
     # farther than that (and no extra_context) should trip the confidence
