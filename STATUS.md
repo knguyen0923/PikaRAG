@@ -5,13 +5,16 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-18, after adding a "Quantifiable changes" section
-to `TAKEAWAYS.md` (commit `b849fcd`) — a docs-only change, no code/test
-impact. Prior substantive update was 2026-09-17's pinned-deps CI check and
-improvement-backlog brainstorm (commit `25e1976`, 517/517 tests passing).
-See "Improvement backlog" section below for full detail; the button-UI-backlog
-summary right after this line is from the prior 2026-09-15 update and still
-accurate for that work.
+**Last updated:** 2026-09-18 (this worktree, branch `hybrid-bm25-retrieval`)
+— mid-execution of `docs/superpowers/plans/2026-09-18-hybrid-bm25-retrieval.md`
+via `subagent-driven-development`, running in parallel with a sibling
+worktree (`ability-held-item-interactions`) implementing the other bounded
+backlog item. Not yet merged to `main`; `main`'s own STATUS.md is unaffected
+by this worktree's commits until merge. See this worktree's
+`.superpowers/sdd/2026-09-18-hybrid-bm25-retrieval/progress.md` for exact
+task-by-task progress. Everything below this point reflects `main`'s state
+as of `b849fcd`/`25e1976` (2026-09-18/2026-09-17), unaffected by this
+worktree.
 
 **Immediate next action:** the 7 plans listed in the previous update (all
 of `worktree-team-button-ui-plan`'s planning output, none involving the
@@ -103,7 +106,7 @@ preserved in git history, `git log --oneline --grep=eval-harness` and
 itself to find two real retrieval-quality bugs and fixed them via
 entity-aware retrieval, and grounding & trust (see below). 329/329 tests
 passing throughout.
-<!-- STATUS_COMMIT: b849fcd -->
+<!-- STATUS_COMMIT: 9f00f3a -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
