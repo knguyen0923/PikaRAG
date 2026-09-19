@@ -34,6 +34,13 @@ prioritized brainstorm backlog to `main`:
   and `pytest -q --cov --cov-report=term-missing` (coverage reported only,
   no floor enforced yet -- currently 97% overall).
 
+Item 5 (fine-tune vs. RAG comparison) has a full implementation plan now:
+`docs/superpowers/plans/2026-09-19-finetune-vs-rag-comparison.md` (7 tasks —
+training data generator, `OllamaAnswerer.answer_bare`, `--model rag|finetuned`
+on `scripts/run_eval.py`, `eval/report.py`, the Colab training notebook +
+serving doc, `IMPROVEMENTS.md` update). Not yet executed — awaiting a choice
+between subagent-driven vs. inline execution.
+
 Previous entry, after merging both of 2026-09-18's bounded
 improvement-backlog items to `main` via `subagent-driven-development`:
 
