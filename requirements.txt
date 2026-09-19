@@ -24,3 +24,6 @@ sentence-transformers==5.1.2
 # already registered in VariableBuilder's id dispatch map". 2.6.0 confirmed
 # import-safe with the same transformers/sentence-transformers versions above.
 torch==2.6.0
+# Added for hybrid BM25+vector retrieval (rag/bm25.py) -- confirmed
+# importable and installable at this exact version.
+rank_bm25==0.2.2
