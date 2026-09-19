@@ -5,8 +5,26 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-19, after merging items 1-4 of the 9-item
-prioritized brainstorm backlog to `main`:
+**Last updated:** 2026-09-19, on the `finetune-vs-rag-comparison` branch
+(not yet merged to `main` — awaiting the user's merge/PR/keep decision),
+after implementing item 5 of the 9-item prioritized brainstorm backlog per
+`docs/superpowers/plans/2026-09-19-finetune-vs-rag-comparison.md`:
+
+- **Fine-tune vs. RAG comparison — infrastructure done** (commit `749e6dd`
+  on this branch, 583/583 tests passing): `scripts/generate_finetune_data.py`
+  generates 4,172 template-based `(question, answer)` training pairs,
+  committed to `data/finetune/train.jsonl`; `OllamaAnswerer.answer_bare`
+  (`rag/answer.py`) calls a model with no context block/grounding caveat;
+  `scripts/run_eval.py` gained `--model rag|finetuned` and `--output`;
+  `eval/report.py` tabulates two `--output` result files side by side;
+  `notebooks/finetune_llama3.2.ipynb` documents the LoRA training run
+  (Colab T4, manual, off-repo); `docs/finetuned-model-serving.md` documents
+  the merge/GGUF-convert/quantize/`ollama create` deployment steps. Manual
+  follow-up still open: actually running the notebook and the real
+  `--model rag` vs. `--model finetuned` comparison for portfolio numbers.
+
+Previous entry, after merging items 1-4 of the 9-item prioritized
+brainstorm backlog to `main`:
 
 - **Stored team persistence + `/ask` length cap** (commit `c596a88` at
   merge time, 564/564 tests passing): `bot/team_store.py` now persists to
@@ -173,7 +191,7 @@ preserved in git history, `git log --oneline --grep=eval-harness` and
 itself to find two real retrieval-quality bugs and fixed them via
 entity-aware retrieval, and grounding & trust (see below). 329/329 tests
 passing throughout.
-<!-- STATUS_COMMIT: d739aba -->
+<!-- STATUS_COMMIT: 749e6dd -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
