@@ -2,6 +2,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
+from typing import Optional
 
 import chromadb
 
@@ -9,16 +10,26 @@ from bot.commands.ask import ask_response
 from bot.main import _build_answerer, _build_real_index
 from eval.matchers import matches
 from rag.answer import OFFLINE_MESSAGE
+from rag.bm25 import BM25Index
 
 GOLDEN_SET_PATH = Path("data/eval/golden_set.json")
 RECORDS_PATH = Path("data/processed/pokemon_records.json")
 ITEMS_PATH = Path("data/source/vgc_items.json")
 
 
-def run_answer_quality(index, answerer, golden_set: list[dict]) -> list[dict]:
+def run_answer_quality(
+    index,
+    answerer,
+    golden_set: list[dict],
+    records: Optional[list] = None,
+    items: Optional[list] = None,
+    bm25_index: Optional[BM25Index] = None,
+) -> list[dict]:
     results = []
     for entry in golden_set:
-        actual = ask_response(index, answerer, entry["question"])["answer"]
+        actual = ask_response(
+            index, answerer, entry["question"], records=records, items=items, bm25_index=bm25_index
+        )["answer"]
         offline = actual == OFFLINE_MESSAGE
         passed = (not offline) and matches(actual, entry["expected"], entry["match_type"])
         results.append({
@@ -64,8 +75,9 @@ def main() -> None:
 
     answerer = _build_answerer()
     index = _build_real_index(records, items, client=chromadb.Client())
+    bm25_index = BM25Index(records, items)
 
-    results = run_answer_quality(index, answerer, golden_set)
+    results = run_answer_quality(index, answerer, golden_set, records, items, bm25_index)
     print_report(results)
 
     failed_count = sum(1 for r in results if not r["passed"])

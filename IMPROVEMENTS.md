@@ -112,9 +112,16 @@ was brainstormed via `superpowers:brainstorming`. Current state:
   is detected in the question. For the no-entity-detected fallback path,
   `rag/bm25.py`'s `BM25Index` is now fused with vector search via Reciprocal
   Rank Fusion in `rag/retrieve.py`'s `build_context_block`. 4 new golden-set
-  entries measure the retrieval-quality delta; `Aegislash-stats` is a real
-  case pure vector search misses at k=5 that BM25+RRF recovers. 535/535
-  tests passing.
+  entries were added to measure the retrieval-quality delta; `Aegislash-stats`
+  is a real case pure vector search misses at k=5 that BM25+RRF recovers.
+  Growing the golden set to include that deliberately-hard no-entity case
+  slightly eroded the margins of the two pre-existing recall@5 tests that
+  don't exercise hybrid retrieval (raw unfiltered recall@5: 46/48=0.9583 →
+  49/52=0.9423, still above the 0.90 threshold; entity-aware recall@5:
+  48/48=1.0000 → 51/52=0.9808, still above its 0.9583 baseline) -- both
+  expected, since neither test passes a `bm25_index`. The number that
+  actually demonstrates the fix is recall@5 through the real
+  `build_context_block` hybrid path: 52/52=1.0000. 536/536 tests passing.
 
 ## Priority 4 — lower priority, explicitly optional
 

@@ -182,6 +182,43 @@ def test_hybrid_retrieval_recovers_a_no_entity_detected_miss_that_pure_vector_se
     assert entry["source_chunk_id"] in hybrid_ids
 
 
+def test_recall_at_5_through_hybrid_retrieval_does_not_regress():
+    """Regression guard for the actual production retrieval path: neither
+    test_recall_at_5_meets_the_threshold_against_the_real_index nor
+    test_recall_at_5_through_entity_aware_retrieval_does_not_regress ever
+    passes a bm25_index, so neither exercises hybrid (BM25+vector RRF)
+    retrieval -- the fallback build_context_block uses whenever no entity is
+    detected. This test routes every golden question through
+    build_context_block itself (the same detect-then-filter-then-hybrid-
+    fallback sequence it implements), with a real BM25Index supplied, and
+    asserts recall@5 through THAT path equals the measured baseline (1.0000
+    == 52/52) so any future regression is caught immediately."""
+    records = json.loads(RECORDS_PATH.read_text())
+    items = json.loads(ITEMS_PATH.read_text())
+    golden_set = json.loads(GOLDEN_SET_PATH.read_text())
+
+    index = _build_real_index(records, items, client=chromadb.Client())
+    bm25_index = BM25Index(records, items)
+
+    hits = 0
+    misses = []
+    for entry in golden_set:
+        result = build_context_block(
+            index, entry["question"], records=records, items=items, n_results=5, bm25_index=bm25_index
+        )
+        found_ids = {chunk["id"] for chunk in result["retrieved_chunks"]}
+        if entry["source_chunk_id"] in found_ids:
+            hits += 1
+        else:
+            misses.append(entry["id"])
+
+    score = hits / len(golden_set)
+    baseline = 1.0
+    assert score == baseline, (
+        f"hybrid recall@5 {score:.4f} dropped below the {baseline} measured baseline; misses: {misses}"
+    )
+
+
 def test_new_no_entity_golden_entries_detect_no_entity():
     """Confirms the premise these 4 entries were added for: none of them
     should trigger entity-aware filtering, so they actually exercise the
