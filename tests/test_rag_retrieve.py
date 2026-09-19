@@ -195,7 +195,6 @@ def test_build_context_block_falls_back_to_unfiltered_when_filtered_query_return
     assert "Unrelated chunk with no pokemon metadata" in result["text"]
 
 
-from rag.retrieve import build_context_block
 
 
 class _FakeBM25Index:

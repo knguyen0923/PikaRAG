@@ -1,4 +1,7 @@
-from bot.commands.dex import dex_page_response
+import asyncio
+from unittest.mock import AsyncMock, MagicMock
+
+from bot.commands.dex import DexBrowseView, dex_page_response
 
 _ABOMASNOW = {
     "name": "Abomasnow", "types": ["Grass", "Ice"],
@@ -34,12 +37,6 @@ def test_dex_page_response_includes_a_position_marker():
     response = dex_page_response(_RECORDS, 1)
 
     assert "(2/2)" in response
-
-
-import asyncio
-from unittest.mock import AsyncMock, MagicMock
-
-from bot.commands.dex import DexBrowseView
 
 
 def test_dex_browse_view_disables_prev_at_the_first_page():

@@ -6,7 +6,9 @@ import chromadb
 from bot.commands.ask import DISTANCE_THRESHOLD
 from bot.main import _build_real_index
 from eval.metrics import recall_at_k
+from rag.bm25 import BM25Index
 from rag.entity import detect_entity
+from rag.retrieve import build_context_block
 
 RECORDS_PATH = Path("data/processed/pokemon_records.json")
 ITEMS_PATH = Path("data/source/vgc_items.json")
@@ -149,10 +151,6 @@ def test_a_sample_of_out_of_domain_questions_exceed_the_confidence_gate_threshol
         assert best_distance is None or best_distance > DISTANCE_THRESHOLD, (
             f"{question!r} scored {best_distance} -- expected it to exceed DISTANCE_THRESHOLD ({DISTANCE_THRESHOLD})"
         )
-
-
-from rag.bm25 import BM25Index
-from rag.retrieve import build_context_block
 
 
 def test_hybrid_retrieval_recovers_a_no_entity_detected_miss_that_pure_vector_search_misses():

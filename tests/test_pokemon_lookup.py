@@ -1,4 +1,4 @@
-from bot.pokemon_lookup import find_record, not_found_message, suggest_names
+from bot.pokemon_lookup import find_record, suggest_names
 
 _RECORDS = [
     {"name": "Abomasnow", "types": ["Grass", "Ice"]},

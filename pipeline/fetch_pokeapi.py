@@ -1,4 +1,10 @@
+import json
 import re
+from pathlib import Path
+
+import requests
+
+from pipeline.cache_utils import simple_cache_filename
 
 # Generic noun words that the legal list appends to a form name but that PokeAPI
 # omits from its variety slugs: "Lycanroc [Dusk Form]" -> "lycanroc-dusk",
@@ -103,8 +109,6 @@ def resolve_pokeapi_name(display_name: str) -> str:
         slug += "-" + "-".join(bracket_words)
     return slug
 
-
-import requests
 
 POKEAPI_BASE_URL = "https://pokeapi.co/api/v2/pokemon"
 POKEAPI_SPECIES_URL = "https://pokeapi.co/api/v2/pokemon-species"
@@ -248,12 +252,6 @@ def fetch_pokemon_data(display_name: str, session=None) -> dict:
             f"Malformed response body for '{display_name}' (slug '{slug}'): {e}"
         ) from e
     return {"base_stats": base_stats, "learnset": learnset, "abilities": abilities}
-
-
-import json
-from pathlib import Path
-
-from pipeline.cache_utils import simple_cache_filename
 
 
 def fetch_all(legal_names: list, cache_dir, session=None) -> dict:

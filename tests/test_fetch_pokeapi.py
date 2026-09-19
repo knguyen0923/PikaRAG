@@ -1,9 +1,10 @@
-from pipeline.fetch_pokeapi import resolve_pokeapi_name
-from unittest.mock import MagicMock
-import pytest
-from pipeline.fetch_pokeapi import fetch_pokemon_data, PokeApiFetchError
 import json
+from unittest.mock import MagicMock
+
+import pytest
 import requests.exceptions
+
+from pipeline.fetch_pokeapi import PokeApiFetchError, fetch_all, fetch_pokemon_data, resolve_pokeapi_name
 
 def test_resolve_plain_name():
     assert resolve_pokeapi_name("Abomasnow") == "abomasnow"
@@ -125,8 +126,6 @@ def test_fetch_pokemon_data_raises_on_http_error():
     session.get.return_value = response
     with pytest.raises(PokeApiFetchError):
         fetch_pokemon_data("Nonexistent", session=session)
-
-from pipeline.fetch_pokeapi import fetch_all
 
 def test_fetch_all_writes_cache_and_reports_summary(tmp_path):
     session = _mock_session(_SAMPLE_POKEAPI_RESPONSE)

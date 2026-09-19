@@ -1,4 +1,7 @@
-from bot.commands.pokemon_info import usage_response
+import asyncio
+from unittest.mock import AsyncMock, MagicMock
+
+from bot.commands.pokemon_info import PokemonInfoView, usage_response
 
 _ABOMASNOW = {
     "name": "Abomasnow", "types": ["Grass", "Ice"],
@@ -43,12 +46,6 @@ def test_usage_response_omits_empty_sections():
     assert "Items:" not in response
     assert "Abilities: Snow Warning 98.5%" in response
     assert "Moves:" not in response
-
-
-import asyncio
-from unittest.mock import AsyncMock, MagicMock
-
-from bot.commands.pokemon_info import PokemonInfoView
 
 
 def test_pokemon_info_view_has_three_tabs_in_order():
