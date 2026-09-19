@@ -6,6 +6,7 @@ __pycache__/
 data/chroma/
 data/state/
 data/observability.db
+data/team_store.db
 data/processed/.last_refresh_pokeapi.json
 data/processed/.last_refresh_pikalytics.json
 .vscode/
