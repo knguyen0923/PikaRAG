@@ -29,4 +29,6 @@ jobs:
       # error instead of a confusing mid-test crash buried in pytest output.
       - name: Verify fragile ML dependencies import cleanly
         run: python -c "import torch, transformers, sentence_transformers, chromadb"
-      - run: python -m pytest -q
+      - name: Lint
+        run: ruff check .
+      - run: python -m pytest -q --cov --cov-report=term-missing

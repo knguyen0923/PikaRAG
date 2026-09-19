@@ -12,3 +12,4 @@ data/processed/.last_refresh_pikalytics.json
 .vscode/
 
 .worktrees/
+.coverage

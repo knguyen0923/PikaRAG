@@ -1,0 +1,6 @@
+[tool.ruff.lint]
+# Pinned to the classic flake8-equivalent baseline (pyflakes + core
+# pycodestyle errors) rather than relying on ruff's shifting no-config
+# defaults, which pull in broad pyupgrade-style rules (e.g. UP045) that
+# are unrelated scope creep for this project.
+select = ["E4", "E7", "E9", "F"]

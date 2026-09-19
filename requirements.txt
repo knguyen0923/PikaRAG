@@ -27,3 +27,10 @@ torch==2.6.0
 # Added for hybrid BM25+vector retrieval (rag/bm25.py) -- confirmed
 # importable and installable at this exact version.
 rank_bm25==0.2.2
+# Added for the CI lint step (ruff check .); pinned to the confirmed-real,
+# confirmed-installable version used to establish the pyproject.toml
+# ruleset and fix the resulting violations.
+ruff==0.16.8
+# Added for CI test-coverage reporting (pytest -q --cov); pinned to the
+# confirmed-real, confirmed-installable version.
+pytest-cov==7.1.0
