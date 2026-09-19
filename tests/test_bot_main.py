@@ -1476,3 +1476,37 @@ def test_import_command_cancel_button_leaves_the_stored_team_untouched():
     asyncio.run(cancel_button.callback(cancel_interaction))
 
     assert get_team(8004, "mine")[0]["species"] == "Absol"  # unchanged
+
+
+def test_build_client_forwards_bm25_index_to_the_ask_handler(monkeypatch):
+    captured = {}
+
+    async def fake_ask_response_async(
+        index, answerer, question, records=None, items=None, n_results=5, extra_context=None, bm25_index=None
+    ):
+        captured["bm25_index"] = bm25_index
+        return {"answer": "An answer.", "sources": [], "retrieved_chunks": [], "best_distance": 0.1}
+
+    monkeypatch.setattr("bot.main.ask_response_async", fake_ask_response_async)
+    sentinel_bm25_index = object()
+
+    class _FakeIndex:
+        def query(self, question, n_results=5, where=None):
+            return []
+
+    class _FakeAnswerer:
+        def answer(self, question, context_block):
+            return "an answer"
+
+    _client, tree = build_client(
+        index=_FakeIndex(), answerer=_FakeAnswerer(), bm25_index=sentinel_bm25_index
+    )
+    ask_command = tree.get_command("ask")
+    interaction = MagicMock()
+    interaction.user.id = 9300
+    interaction.response.defer = AsyncMock()
+    interaction.followup.send = AsyncMock()
+
+    asyncio.run(ask_command.callback(interaction, question="A question"))
+
+    assert captured["bm25_index"] is sentinel_bm25_index

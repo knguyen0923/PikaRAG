@@ -5,34 +5,47 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-18, after merging the **ability/held-item
-interactions** improvement-backlog item to `main` (commit `dc0ec62`,
-541/541 tests passing) via `subagent-driven-development`: 6 type-immunity
-abilities (Levitate, Water Absorb, Flash Fire, Volt Absorb, Lightning Rod,
-Storm Drain) now force 0 damage instead of a silently-wrong non-zero
-number; weather/terrain auto-derive from Drought/Drizzle/Electric
-Surge/Grassy Surge/Psychic Surge (genuinely modeled -- excluded from the
-"not modeled" ability warning) and from Sand Stream/Snow Warning/Misty
-Surge (still auto-derived into context but correctly still flagged "not
-modeled" since the core damage formula doesn't act on Sand/Snow/Misty);
-explicit `weather`/`terrain` params always win over ability-derived ones,
-and the response now discloses when a value was auto-derived (e.g. "(Sun
-weather auto-derived from Drought)"); Intimidate lowers the *opponent's*
-Attack stage via the calculator's existing stat-stage math. Full plan +
-final-review detail: `docs/superpowers/plans/2026-09-18-ability-held-item-interactions.md`;
-backlog entry: `IMPROVEMENTS.md`. One Minor gap deliberately parked (not
-fixed): `weather=""`/`terrain=""` (empty string, not reachable via the live
-Discord `/calc` command today) can produce a self-contradictory
-auto-derived-note vs. actual-value mismatch -- see the plan's final-review
-ledger for detail if this ever becomes reachable.
+**Last updated:** 2026-09-18, after merging both of today's bounded
+improvement-backlog items to `main` via `subagent-driven-development`:
 
-A sibling worktree (`hybrid-bm25-retrieval`) is still executing the other
-bounded backlog item (`docs/superpowers/plans/2026-09-18-hybrid-bm25-retrieval.md`)
-via the same `subagent-driven-development` process, not yet merged as of
-this update -- see that worktree's own `.superpowers/sdd/2026-09-18-hybrid-bm25-retrieval/progress.md`
-for its live task-by-task progress. Everything below this point reflects
-`main`'s state as of `b849fcd`/`25e1976` (2026-09-18/2026-09-17), predating
-both of today's improvement-backlog items.
+- **Ability/held-item interactions** (commit `dc0ec62`, 541/541 tests
+  passing at merge time): 6 type-immunity abilities (Levitate, Water
+  Absorb, Flash Fire, Volt Absorb, Lightning Rod, Storm Drain) now force 0
+  damage instead of a silently-wrong non-zero number; weather/terrain
+  auto-derive from Drought/Drizzle/Electric Surge/Grassy Surge/Psychic
+  Surge (genuinely modeled -- excluded from the "not modeled" ability
+  warning) and from Sand Stream/Snow Warning/Misty Surge (still
+  auto-derived into context but correctly still flagged "not modeled"
+  since the core damage formula doesn't act on Sand/Snow/Misty); explicit
+  `weather`/`terrain` params always win over ability-derived ones, and the
+  response now discloses when a value was auto-derived (e.g. "(Sun weather
+  auto-derived from Drought)"); Intimidate lowers the *opponent's* Attack
+  stage via the calculator's existing stat-stage math. Full plan +
+  final-review detail: `docs/superpowers/plans/2026-09-18-ability-held-item-interactions.md`.
+  One Minor gap deliberately parked (not fixed): `weather=""`/`terrain=""`
+  (empty string, not reachable via the live Discord `/calc` command today)
+  can produce a self-contradictory auto-derived-note vs. actual-value
+  mismatch -- see the plan's final-review ledger for detail if this ever
+  becomes reachable.
+- **Hybrid BM25+vector retrieval** (536/536 tests passing at merge time):
+  `rag/bm25.py`'s `BM25Index` (in-memory, 887 chunks) is fused with the
+  existing vector query via Reciprocal Rank Fusion in `rag/retrieve.py`'s
+  `build_context_block`, wired into the live bot's unfiltered/no-entity-detected
+  `/ask` fallback path. 4 new golden-set entries target that previously-untested
+  path; one, `Aegislash-stats`, is a real recall miss for pure vector
+  search at k=5 (confirmed against the live index) that BM25+RRF recovers
+  -- recall@5 through the real hybrid path measures 52/52=1.0000. Growing
+  the golden set to include that deliberately-hard case slightly eroded
+  the margins of the two pre-existing (non-hybrid) recall@5 tests, both
+  still comfortably above their thresholds; `scripts/run_eval.py` was also
+  updated to thread `records`/`items`/`bm25_index` through so it exercises
+  the same path. Full plan + final-review detail:
+  `docs/superpowers/plans/2026-09-18-hybrid-bm25-retrieval.md`.
+
+Both backlog entries: `IMPROVEMENTS.md`. Both branches' worktrees have been
+cleaned up post-merge. Everything below this point reflects `main`'s state
+as of `b849fcd`/`25e1976` (2026-09-18/2026-09-17), predating both of
+today's improvement-backlog items.
 
 **Immediate next action:** the 7 plans listed in the previous update (all
 of `worktree-team-button-ui-plan`'s planning output, none involving the

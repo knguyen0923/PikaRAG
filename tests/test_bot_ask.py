@@ -276,3 +276,32 @@ def test_format_ask_response_omits_the_sources_line_when_there_are_none():
     formatted = format_ask_response(result)
 
     assert formatted == "I don't have solid information on that."
+
+
+class _RecordingBM25Index:
+    def __init__(self):
+        self.received_questions = []
+
+    def search(self, question, n_results=10):
+        self.received_questions.append(question)
+        return []
+
+
+def test_ask_response_forwards_bm25_index_to_build_context_block():
+    index = _FakeIndex(context_matches=[])
+    answerer = _FakeAnswerer(response_text="An answer.")
+    bm25_index = _RecordingBM25Index()
+
+    ask_response(index, answerer, "A question", bm25_index=bm25_index)
+
+    assert bm25_index.received_questions == ["A question"]
+
+
+def test_ask_response_async_forwards_bm25_index_to_build_context_block():
+    index = _FakeIndex(context_matches=[])
+    answerer = _FakeAnswerer(response_text="An answer.")
+    bm25_index = _RecordingBM25Index()
+
+    asyncio.run(ask_response_async(index, answerer, "A question", bm25_index=bm25_index))
+
+    assert bm25_index.received_questions == ["A question"]
