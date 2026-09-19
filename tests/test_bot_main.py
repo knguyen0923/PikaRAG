@@ -58,6 +58,67 @@ def test_calc_command_is_registered_on_the_tree():
     assert "damage" in commands["calc"].description.lower()
 
 
+def test_analyze_command_is_registered_on_the_tree():
+    _client, tree = build_client()
+    commands = {command.name: command for command in tree.get_commands()}
+
+    assert "analyze" in commands
+    assert "question" in commands["analyze"].description.lower()
+
+
+def test_analyze_command_defers_and_sends_the_result(monkeypatch):
+    captured = {}
+
+    async def _fake_analyze_response_async(answerer, question, records, moves, items, usage, user_id, index=None, bm25_index=None):
+        captured["question"] = question
+        captured["user_id"] = user_id
+        return "the analysis result"
+
+    monkeypatch.setattr("bot.main.analyze_response_async", _fake_analyze_response_async)
+
+    _client, tree = build_client()
+    analyze_command = tree.get_command("analyze")
+    interaction = MagicMock()
+    interaction.user.id = 777
+    interaction.response.defer = AsyncMock()
+    interaction.followup.send = AsyncMock()
+
+    asyncio.run(analyze_command.callback(interaction, question="Is Incineroar a good check to this team?"))
+
+    interaction.response.defer.assert_awaited_once()
+    assert captured["question"] == "Is Incineroar a good check to this team?"
+    assert captured["user_id"] == 777
+    sent_text = _extract_text(interaction.followup.send)
+    assert sent_text == "the analysis result"
+
+
+def test_analyze_command_uses_raw_answerer_not_the_circuit_breaker(monkeypatch):
+    # CircuitBreaker only implements .answer(), not .answer_with_tools() --
+    # /analyze must be wired to raw_answerer, same as /llmstatus already is.
+    class _FakeBreaker:
+        def answer(self, question, context_block):
+            raise AssertionError("CircuitBreaker.answer() should never be called by /analyze")
+
+    class _FakeRawAnswerer:
+        def answer_with_tools(self, question, tools, tool_dispatch, max_rounds=4):
+            return "raw answerer was used correctly"
+
+        def answer(self, question, context_block):
+            return "raw answerer was used correctly"
+
+    _client, tree = build_client(answerer=_FakeBreaker(), raw_answerer=_FakeRawAnswerer())
+    analyze_command = tree.get_command("analyze")
+    interaction = MagicMock()
+    interaction.user.id = 1
+    interaction.response.defer = AsyncMock()
+    interaction.followup.send = AsyncMock()
+
+    asyncio.run(analyze_command.callback(interaction, question="q?"))
+
+    sent_text = _extract_text(interaction.followup.send)
+    assert sent_text == "raw answerer was used correctly"
+
+
 def test_calc_command_actually_uses_the_moves_data_not_the_moves_command():
     # Regression test: the /moves command handler used to be named `moves`,
     # which rebound the `moves` closure variable to that Command object --

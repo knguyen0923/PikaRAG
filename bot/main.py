@@ -9,6 +9,7 @@ from typing import Literal, Optional
 import discord
 from discord import app_commands
 
+from bot.agentic import analyze_response_async
 from bot.commands.ask import GATE_MESSAGE, ask_response_async, format_ask_response
 from bot.commands.calc import calc_response, is_error_response
 from bot.commands.debug import format_debug_last
@@ -59,6 +60,7 @@ _COMMAND_COLORS = {
     "debug": discord.Color.dark_grey(),
     "llmstatus": discord.Color.orange(),
     "stats-summary": discord.Color.dark_grey(),
+    "analyze": discord.Color.dark_teal(),
 }
 
 
@@ -486,6 +488,19 @@ def build_client(
             defender_hp_percent=defender_hp_percent, weather=weather,
             terrain=terrain, screen=screen, spread=spread,
         )
+
+    @tree.command(
+        name="analyze",
+        description="Ask an open-ended VGC question that may need the damage calculator, stored teams, or usage stats.",
+    )
+    @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
+    async def analyze(interaction: discord.Interaction, question: str) -> None:
+        await interaction.response.defer()
+        answer = await analyze_response_async(
+            raw_answerer, question, records, moves, items, usage, interaction.user.id,
+            index=index, bm25_index=bm25_index,
+        )
+        await interaction.followup.send(embed=_embed("analyze", answer))
 
     @client.event
     async def on_ready() -> None:
