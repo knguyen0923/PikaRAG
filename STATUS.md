@@ -6,7 +6,7 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 it's been a while.
 
 **Last updated:** 2026-09-18 (this worktree, branch `ability-held-item-interactions`,
-commit `83f9069`) — mid-execution of `docs/superpowers/plans/2026-09-18-ability-held-item-interactions.md`
+commit `159bc4f`, Task 1/4 complete) — mid-execution of `docs/superpowers/plans/2026-09-18-ability-held-item-interactions.md`
 via `subagent-driven-development`, running in parallel with a sibling
 worktree (`hybrid-bm25-retrieval`) implementing the other bounded backlog
 item. Not yet merged to `main`; `main`'s own STATUS.md is unaffected by
@@ -106,7 +106,7 @@ preserved in git history, `git log --oneline --grep=eval-harness` and
 itself to find two real retrieval-quality bugs and fixed them via
 entity-aware retrieval, and grounding & trust (see below). 329/329 tests
 passing throughout.
-<!-- STATUS_COMMIT: 83f9069 -->
+<!-- STATUS_COMMIT: 159bc4f -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
