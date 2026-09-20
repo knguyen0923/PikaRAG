@@ -46,7 +46,7 @@ class OllamaAnswerer:
     callers can swap in a fake for testing without a live Ollama server.
     """
 
-    def __init__(self, host: str, model: str = "llama3.2:3b", client=None, timeout: float = 30.0):
+    def __init__(self, host: str, model: str = "qwen3.5:9b", client=None, timeout: float = 30.0):
         self._client = client if client is not None else requests
         self._host = host
         self._model = model

@@ -70,21 +70,35 @@ while the first time (one request per legal species, rate-limited fetch).
 
 ## 3. Local LLM (Ollama + Tailscale)
 
-Sets up the laptop that runs `/ask`'s language model, and connects it
+Sets up the machine that runs `/ask`'s language model, and connects it
 privately to the Oracle Cloud instance -- no public IP, no port-forwarding.
 
-**On the laptop (Windows):**
+**Currently running on a MacBook** (`kenneths-macbook-pro`, Tailscale IP
+`100.94.16.44`) -- the original plan to use a Windows laptop was dropped in
+favor of this Mac, which was already set up for local development. Setup
+performed there:
 
-1. Install Tailscale: https://tailscale.com/download/windows, sign in,
-   `tailscale up` (or use the tray app's "Connect" button).
-2. Install Ollama: https://ollama.com/download/windows.
-3. Pull the model: `ollama pull llama3.2:3b` (roughly 2GB download; Ollama
-   runs as a background service afterward, listening on `localhost:11434`).
-4. Find the laptop's Tailscale IP: `tailscale ip` (prints something like
-   `100.64.1.2`). This is the value `LLM_HOST` needs, as `<that-ip>:11434`.
-5. Keep the laptop powered on, plugged in, and connected whenever `/ask`
-   should work -- Ollama does nothing until a request arrives, but it can't
-   answer one if the machine is asleep or off.
+1. Install Tailscale (`brew install --cask tailscale`), sign in via the
+   app's auth flow.
+2. Ollama was already installed and had `qwen3.5:9b` pulled.
+3. Ollama defaults to binding `localhost` only -- made it listen on all
+   interfaces with `launchctl setenv OLLAMA_HOST "0.0.0.0"`, then fully
+   killed and relaunched the Ollama app (quitting from the menu bar alone
+   left the old process running; had to `kill` the `Ollama`/`ollama`
+   processes directly and reopen the app). This only lasts until reboot/logout
+   -- **not yet made permanent** across restarts; if the Mac reboots, redo the
+   `launchctl setenv` + relaunch Ollama, or set up a LaunchAgent to persist it.
+4. Get the Tailscale IP: `tailscale ip -4`. That's the value `LLM_HOST`
+   needs, as `<that-ip>:11434`.
+5. Keep this Mac powered on, awake, and connected whenever `/ask` should
+   work -- Ollama does nothing until a request arrives, but it can't answer
+   one if the machine is asleep or off.
+
+**If switching back to a Windows laptop later,** it still needs from
+scratch: Tailscale installed and signed in, Ollama installed
+(https://ollama.com/download/windows), and `qwen3.5:9b` pulled
+(`ollama pull qwen3.5:9b`, ~6.6GB) -- none of that has been done on any
+Windows machine for this project.
 
 **On the Oracle Cloud instance:**
 

@@ -866,7 +866,7 @@ def test_build_answerer_defaults_model_when_unset(monkeypatch):
 
     _build_answerer().answer("question", "context")
 
-    assert calls[0]["json"]["model"] == "llama3.2:3b"
+    assert calls[0]["json"]["model"] == "qwen3.5:9b"
 
 
 def test_build_answerer_reads_llm_timeout_from_env(monkeypatch):
