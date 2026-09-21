@@ -37,7 +37,9 @@ One line each — see the plan/spec doc for implementation detail, or
   when the host is unreachable instead of paying a full timeout per call.
   Currently served from a MacBook (not the originally-planned Windows
   laptop), with a LaunchAgent making the required `OLLAMA_HOST=0.0.0.0`
-  setting survive reboot/logout — see `docs/DEPLOYMENT.md` section 3.
+  setting survive reboot/logout, and `scripts/llm_toggle.sh {on|off|status}`
+  for turning that host on/off on demand — see `docs/DEPLOYMENT.md`
+  section 3.
 - **Damage calculator** (`damage_calc/`) — ported `@smogon/calc` logic:
   spread moves, weather/terrain (including auto-derivation from setter
   abilities), screens, Tera types, 6 type-immunity abilities, Intimidate.
@@ -100,7 +102,7 @@ git status                   # anything in flight
 pytest -q                    # confirm the suite still passes
 ```
 
-<!-- STATUS_COMMIT: a1c1a3a -->
+<!-- STATUS_COMMIT: 4cb09dd -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
