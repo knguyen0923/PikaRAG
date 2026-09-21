@@ -2,6 +2,12 @@
 
 A Discord bot for **Pokémon Champions VGC (doubles)** that answers questions about stats, common EV/nature spreads, common movesets, and calculates battle damage — grounded in real competitive usage data and current regulation legality.
 
+**Note:** this is the original pre-build plan (2026-09-03), kept as a
+historical record of initial scope/architecture decisions. The "Tech
+Stack"/"Architecture" sections below describe the *original* design
+(Claude Haiku as the LLM) — since superseded by a self-hosted local LLM;
+see `README.md` and `STATUS.md` for the actual current architecture.
+
 ---
 
 ## Tech Stack
@@ -116,7 +122,9 @@ pika-rag/
 7. [x] **Refresh job** — scheduled scraper (`pipeline/refresh_job.py`, `pipeline/refresh_pikalytics_job.py`) + systemd timers
 8. [x] **Polish** — cooldowns, colored embeds, `on_tree_error` handling; CI (`pytest` workflow)
 
-All code-side work is done and merged to `main` (232 passing tests). What's left is deployment — see `docs/DEPLOYMENT.md`.
+All code-side work is done and merged to `main` (612 passing tests as of
+2026-09-21 — see `STATUS.md` for current state, this count will drift).
+Deployment is done too — see `docs/DEPLOYMENT.md` and `STATUS.md`.
 
 ---
 
@@ -124,5 +132,5 @@ All code-side work is done and merged to `main` (232 passing tests). What's left
 
 - [x] Decide exact chunking strategy — resolved: records merged per-Pokémon into `data/processed/pokemon_records.json`, no separate chunk types needed at current scale
 - [x] Define cron schedule for routine data refresh — resolved: `pikarag-refresh-pokeapi.timer` (weekly), `pikarag-refresh-pikalytics.timer` (monthly)
-- [ ] Confirm Pikalytics scraping is within their ToS, or find an alternative/API path — not formally revisited; pipeline is live and has been running against it
-- [ ] Set up Oracle Cloud free tier instance + confirm always-on ARM instance specs — not yet provisioned (see `docs/DEPLOYMENT.md` step 1.2)
+- [x] Confirm Pikalytics scraping is within their ToS — resolved 2026-09-15: `robots.txt` explicitly allows the `/ai/` path this pipeline hits for AI/bot user-agents, and their Privacy Policy (the only legal doc they publish) has no scraping/rate-limit/reuse restriction
+- [x] Set up Oracle Cloud free tier instance — done: `project-pikarag` (ARM, Always Free tier), live and serving the bot since 2026-09-12
