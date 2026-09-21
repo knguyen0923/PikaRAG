@@ -124,6 +124,14 @@ Set `LLM_HOST` in `.env` (section 2 above) to the Ollama host's Tailscale
 IP and port, e.g. `LLM_HOST=100.64.1.2:11434` (currently
 `100.94.16.44:11434`, this MacBook).
 
+**Turning the local LLM host on/off:** `scripts/llm_toggle.sh {on|off|status}`,
+run on the Ollama host machine, brings Tailscale + Ollama up or down
+together (Tailscale is toggled too since this project is the only thing
+on this Mac that uses it). The live bot already degrades gracefully to an
+offline message when this host is unreachable (`rag/circuit_breaker.py`),
+so turning it off requires no other action anywhere -- useful for not
+keeping this machine reachable/serving 24/7 when nobody's using `/ask`.
+
 ## 4. Install the systemd units
 
 ```bash
