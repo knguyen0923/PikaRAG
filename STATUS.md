@@ -32,6 +32,12 @@ One line each — see the plan/spec doc for implementation detail, or
 - **`/analyze`** — agentic variant of `/ask`: the model can call 3 tools
   (damage calc, stored-team lookup, usage stats) via Ollama's native
   tool-calling before answering. `docs/superpowers/plans/2026-09-19-agentic-tool-calling.md`.
+- **Conversational chat** — plain messages (no slash command) in
+  admin-designated channels (`CONVERSATION_CHANNEL_IDS` env var, off by
+  default) reuse `/analyze`'s tool-calling loop, extended with a short
+  rolling per-channel history for natural follow-ups. Requires Discord's
+  Message Content Intent, enabled for this bot.
+  `docs/superpowers/plans/2026-09-21-conversational-chat.md`.
 - **Local LLM, self-hosted** — `OllamaAnswerer` (`rag/answer.py`) replaced
   paid Claude Haiku entirely; a `CircuitBreaker` short-circuits `/ask`
   when the host is unreachable instead of paying a full timeout per call.
@@ -61,17 +67,7 @@ One line each — see the plan/spec doc for implementation detail, or
 
 ## What's left
 
-**In progress:** conversational chat — a second, opt-in interaction
-surface alongside the existing slash commands, so people can just talk to
-the bot in designated channels instead of using `/analyze`. Design
-(`docs/superpowers/specs/2026-09-21-conversational-chat-design.md`) and a
-5-task implementation plan
-(`docs/superpowers/plans/2026-09-21-conversational-chat.md`) are both
-written and pushed. Discord's Message Content Intent (the one manual
-prerequisite) is already enabled. Not yet implemented — next step is
-executing the plan (`subagent-driven-development` or `executing-plans`).
-
-Nothing else on `IMPROVEMENTS.md` — the one remaining backlog item
+Nothing on `IMPROVEMENTS.md` — the one remaining backlog item
 (fine-tune vs. RAG comparison) was decided against (2026-09-21): the
 local LLM is meant to stay generic, not fine-tuned to this project's
 domain. The infrastructure stays in the repo unused; see

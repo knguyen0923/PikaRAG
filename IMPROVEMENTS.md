@@ -23,6 +23,11 @@ Nothing open — see `STATUS.md` for current state.
 
 ## Done
 
+- **Conversational chat.** Plain messages (no slash command) in
+  admin-designated channels reuse `/analyze`'s tool-calling loop with a
+  short rolling per-channel history for natural follow-ups. Off by
+  default (`CONVERSATION_CHANNEL_IDS` env var unset).
+  `docs/superpowers/plans/2026-09-21-conversational-chat.md`.
 - **Local-LLM migration (Task 5).** `/ask` runs on self-hosted Ollama
   (`qwen3.5:9b`) instead of paid Claude Haiku — served from a MacBook
   (the originally-planned Windows laptop was dropped; never set up).
