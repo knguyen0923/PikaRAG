@@ -5,9 +5,45 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-19, after merging item 8 (the last of the 9-item
+**Last updated:** 2026-09-20, after switching the local LLM from
+`llama3.2:3b` to `qwen3.5:9b` and fixing two live deployment problems this
+surfaced (commit `32ea903`):
+
+- **Model switch:** `qwen3.5:9b` (pulled via Ollama, confirmed to support
+  `tools`) is now the default everywhere (`.env`, `.env.example`,
+  `rag/answer.py`, `bot/main.py`). It's a thinking model — `/api/chat`
+  responses carry a separate `message.thinking` field alongside
+  `message.content`; confirmed by direct testing that `content` stays clean
+  (no reasoning-trace leakage) and the existing `response.json()["message"]["content"]`
+  parsing in `rag/answer.py` needed no changes.
+- **Local-LLM migration Task 5 — done, but on a different machine than
+  planned.** The Windows laptop was dropped in favor of this MacBook
+  (already set up for local dev). Ollama's `OLLAMA_HOST` had to be set to
+  `0.0.0.0` (`launchctl setenv OLLAMA_HOST "0.0.0.0"`) to stop it
+  localhost-only-binding, and the Ollama app had to be force-killed and
+  relaunched (quitting from the menu bar alone left the old process
+  running). Oracle's `.env` now points `LLM_HOST` at the Mac's Tailscale IP
+  (`100.94.16.44:11434`). **Not yet persistent across reboot/logout** — see
+  `docs/DEPLOYMENT.md` section 3. If a Windows machine is used later, it
+  still needs Tailscale + Ollama + `qwen3.5:9b` pulled from scratch.
+- **Two credential items closed:** Discord bot token rotated (old one had
+  leaked into a terminal session) and the stale, unused `ANTHROPIC_API_KEY`
+  removed from both local and Oracle `.env` files.
+- **Bug found and fixed independently: Oracle's deployed code was 129
+  commits behind `origin/main`, and `origin/main` itself was 70 commits
+  behind local `main`** — the entire prioritized brainstorm backlog
+  (agentic tool-calling, hybrid BM25 retrieval, ability/item interactions,
+  observability pruning, etc.) had been committed locally but never
+  pushed to GitHub, so Oracle's `git pull` had nothing new to fetch. Pushed
+  everything to `origin/main` and pulled it on Oracle; `rank_bm25` (needed
+  for hybrid retrieval) had to be installed there via
+  `pip install -r requirements.txt`. **Lesson: verify `git push` actually
+  happened, not just that commits exist locally, before assuming a deployed
+  box will pick them up.**
+
+**Earlier: 2026-09-19, after merging item 8 (the last of the 9-item
 prioritized brainstorm backlog) to `main` per
-`docs/superpowers/plans/2026-09-19-agentic-tool-calling.md`:
+`docs/superpowers/plans/2026-09-19-agentic-tool-calling.md`:**
 
 - **Agentic `/ask`+`/calc` tool-calling loop** (commit `b8ab5b9` at merge
   time, 612/612 tests passing): new `/analyze` command (not an extension of
@@ -244,7 +280,7 @@ preserved in git history, `git log --oneline --grep=eval-harness` and
 itself to find two real retrieval-quality bugs and fixed them via
 entity-aware retrieval, and grounding & trust (see below). 329/329 tests
 passing throughout.
-<!-- STATUS_COMMIT: c12fd59 -->
+<!-- STATUS_COMMIT: 32ea903 -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you

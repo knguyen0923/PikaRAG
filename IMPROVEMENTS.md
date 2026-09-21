@@ -96,26 +96,32 @@ was brainstormed via `superpowers:brainstorming`. Current state:
 
 ## Priority 1 — do first (credibility, not new skills)
 
-- **Finish the local-LLM migration (Task 5).** Blocked on the Oracle box
-  not being able to reach the Windows laptop's Ollama server over Tailscale.
-  Two likely causes, neither yet applied:
-  - Ollama defaults to binding only `127.0.0.1` — set the Windows laptop's
-    `OLLAMA_HOST` user environment variable to `0.0.0.0:11434`, restart Ollama.
-  - Windows Firewall likely blocking inbound TCP 11434 — in an elevated
-    PowerShell: `New-NetFirewallRule -DisplayName "Ollama" -Direction Inbound
-    -Protocol TCP -LocalPort 11434 -Action Allow`.
-  - Once `curl http://<laptop-tailscale-ip>:11434/api/tags` succeeds from the
-    Oracle box, retry `/ask` end-to-end (including the offline-degradation
-    path) with `journalctl -u pikarag-bot.service -f` open. This closes out
-    "self-hosted inference, zero per-query cost" as an actually-true claim
-    instead of a half-migrated one.
+- **Finish the local-LLM migration (Task 5) — done, 2026-09-20, on a
+  different machine than planned.** The Windows laptop was dropped in favor
+  of the MacBook already used for local dev (Tailscale + Ollama installed
+  there instead). `OLLAMA_HOST` had to be set to `0.0.0.0` and Ollama
+  force-restarted (quitting from the menu bar left the old process running
+  bound to localhost only). Oracle's `.env` now points `LLM_HOST` at the
+  Mac's Tailscale IP; `LLM_TIMEOUT` raised from the 30s default to 90s
+  (qwen3.5:9b is a thinking model — slower per response than llama3.2:3b
+  was). Verified end-to-end: real `/ask` question in Discord returned a
+  real grounded answer. **Not yet persistent across the Mac's
+  reboot/logout** — see `docs/DEPLOYMENT.md` section 3 for the redo steps
+  if that happens. If a Windows machine is used later, it still needs
+  Tailscale + Ollama + `qwen3.5:9b` pulled from scratch — none of that
+  setup was ever done on a Windows box for this project.
+  - **Found and fixed along the way:** Oracle's deployed code was 129
+    commits behind `origin/main`, and `origin/main` was itself 70 commits
+    behind local `main` — the entire prior 9-item backlog had been
+    committed locally but never pushed to GitHub. Pushed everything and
+    re-pulled on Oracle; `rank_bm25` had to be installed there via
+    `pip install -r requirements.txt` for hybrid retrieval to work.
 
-- **Rotate the leaked Discord bot token.** The live token was printed in
-  plaintext into a terminal session during Task 5 troubleshooting (via
-  `cat .env` over SSH). Rotate it in the Discord Developer Portal (Bot →
-  Reset Token) and update the Oracle `.env`. This is a live credential
-  exposure, independent of everything else on this list — do it regardless
-  of priority order.
+- **Rotate the leaked Discord bot token — done, 2026-09-20.** Reset in the
+  Discord Developer Portal, updated in both local and Oracle `.env`; bot
+  restarted and confirmed connected under the new token. The stale, unused
+  `ANTHROPIC_API_KEY` (Haiku path was already deleted from the code) was
+  also removed from both `.env` files while in there.
 
 ## Priority 2 — fills a real skill gap
 
