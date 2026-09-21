@@ -11,12 +11,6 @@ is meant to stay generic, not fine-tuned to this project's domain. The
 already-built infrastructure stays in the repo, unused; see
 `IMPROVEMENTS.md`'s "Decided against" section.
 
-**Open, not urgent:** confirm the previously leaked `ANTHROPIC_API_KEY`
-was actually revoked at console.anthropic.com (removed from both `.env`
-files, but that alone doesn't invalidate a key); make the Mac's
-`OLLAMA_HOST=0.0.0.0` survive reboot/logout (currently `launchctl
-setenv`, session-only — see `docs/DEPLOYMENT.md` section 3).
-
 ## Session-standing preferences (apply going forward, not just this session)
 
 - Default to merging a finished feature branch/worktree to `main` locally

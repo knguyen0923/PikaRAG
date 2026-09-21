@@ -59,19 +59,19 @@ One line each — see the plan/spec doc for implementation detail, or
 
 ## What's left
 
-Nothing open on `IMPROVEMENTS.md` — the one remaining item (fine-tune vs.
-RAG comparison) was decided against (2026-09-21): the local LLM is meant
-to stay generic, not fine-tuned to this project's domain. The
-infrastructure stays in the repo unused; see `IMPROVEMENTS.md`.
+Nothing on `IMPROVEMENTS.md` — the one remaining item (fine-tune vs. RAG
+comparison) was decided against (2026-09-21): the local LLM is meant to
+stay generic, not fine-tuned to this project's domain. The infrastructure
+stays in the repo unused; see `IMPROVEMENTS.md`.
 
-Smaller/non-blocking:
+Only one known item left project-wide, and it's external:
 
-- Confirm the previously-leaked `ANTHROPIC_API_KEY` was revoked at
-  console.anthropic.com (removed from both `.env` files, but removal
-  alone doesn't invalidate a key).
 - **Known limitation, not fixable from this repo:** Pikalytics hasn't
   published a ranked-ladder format code for Regulation M-C yet, so two
-  species new to M-C (Farfetch'd, Sirfetch'd) have no usage data.
+  species new to M-C (Farfetch'd, Sirfetch'd) have no usage data. Re-check
+  once their M-C ladder has enough data to publish a format code, update
+  `PIKALYTICS_FORMAT_CODE` (`pipeline/fetch_pikalytics.py`), re-run
+  `refresh_pikalytics_job`.
 
 ## Useful pointers
 
