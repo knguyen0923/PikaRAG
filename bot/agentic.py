@@ -130,14 +130,18 @@ async def analyze_response_async(
     user_id: int,
     index=None,
     bm25_index=None,
+    history: Optional[list] = None,
 ) -> str:
     """Runs the agentic tool-calling loop, then falls back to a plain RAG
     /ask-style answer if the model's tool call was malformed or
     hallucinated. `answerer` must support answer_with_tools (pass
     raw_answerer, not a CircuitBreaker-wrapped one -- CircuitBreaker only
-    implements .answer())."""
+    implements .answer()). `history`, if given, is a list of prior
+    {"role", "content"} turns from the same conversation (used by
+    conversational chat; the /analyze slash command omits it -- each call
+    is single-turn)."""
     tool_dispatch = build_tool_dispatch(records, moves, items, usage, user_id)
-    answer = answerer.answer_with_tools(question, TOOLS, tool_dispatch)
+    answer = answerer.answer_with_tools(question, TOOLS, tool_dispatch, history=history)
 
     if answer == MALFORMED_TOOL_CALL_MESSAGE:
         result = await ask_response_async(

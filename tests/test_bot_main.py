@@ -100,7 +100,7 @@ def test_analyze_command_uses_raw_answerer_not_the_circuit_breaker(monkeypatch):
             raise AssertionError("CircuitBreaker.answer() should never be called by /analyze")
 
     class _FakeRawAnswerer:
-        def answer_with_tools(self, question, tools, tool_dispatch, max_rounds=4):
+        def answer_with_tools(self, question, tools, tool_dispatch, max_rounds=4, history=None):
             return "raw answerer was used correctly"
 
         def answer(self, question, context_block):

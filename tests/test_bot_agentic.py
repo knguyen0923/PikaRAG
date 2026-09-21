@@ -100,7 +100,8 @@ class _FakeAnswerer:
     def __init__(self, tool_result):
         self._tool_result = tool_result
 
-    def answer_with_tools(self, question, tools, tool_dispatch, max_rounds=4):
+    def answer_with_tools(self, question, tools, tool_dispatch, max_rounds=4, history=None):
+        self.last_history = history
         return self._tool_result
 
     def answer(self, question, context_block):
@@ -139,3 +140,26 @@ def test_analyze_response_async_falls_back_to_plain_rag_on_a_malformed_tool_call
     ))
 
     assert result == "plain RAG fallback answer"
+
+
+def test_analyze_response_async_threads_history_through_to_answer_with_tools():
+    answerer = _FakeAnswerer("an answer")
+    history = [{"role": "user", "content": "earlier question"}]
+
+    asyncio.run(analyze_response_async(
+        answerer, "new question", _RECORDS, _MOVES, _ITEMS, _USAGE, user_id=1,
+        index=_FakeIndex(), bm25_index=None, history=history,
+    ))
+
+    assert answerer.last_history == history
+
+
+def test_analyze_response_async_defaults_history_to_none_when_omitted():
+    answerer = _FakeAnswerer("an answer")
+
+    asyncio.run(analyze_response_async(
+        answerer, "new question", _RECORDS, _MOVES, _ITEMS, _USAGE, user_id=1,
+        index=_FakeIndex(), bm25_index=None,
+    ))
+
+    assert answerer.last_history is None
