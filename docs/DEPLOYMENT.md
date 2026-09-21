@@ -85,9 +85,17 @@ performed there:
    interfaces with `launchctl setenv OLLAMA_HOST "0.0.0.0"`, then fully
    killed and relaunched the Ollama app (quitting from the menu bar alone
    left the old process running; had to `kill` the `Ollama`/`ollama`
-   processes directly and reopen the app). This only lasts until reboot/logout
-   -- **not yet made permanent** across restarts; if the Mac reboots, redo the
-   `launchctl setenv` + relaunch Ollama, or set up a LaunchAgent to persist it.
+   processes directly and reopen the app). **Made permanent 2026-09-21**
+   via a LaunchAgent (`~/Library/LaunchAgents/com.pikarag.ollama-env.plist`,
+   not tracked in this repo -- it's local machine config, not project code):
+   on every login it runs `launchctl setenv OLLAMA_HOST "0.0.0.0"`, then
+   force-restarts Ollama so it actually picks up the setting (a login-item
+   launch of Ollama that races ahead of this agent would otherwise still
+   bind to `localhost`). Verified working: `launchctl load -w` triggers it
+   immediately too, and it correctly restarted Ollama with `*:11434`
+   listening. If this Mac is ever wiped/replaced, recreate the plist with
+   `RunAtLoad=true` running that same command, then `launchctl load -w`
+   it.
 4. Get the Tailscale IP: `tailscale ip -4`. That's the value `LLM_HOST`
    needs, as `<that-ip>:11434`.
 5. Keep this Mac powered on, awake, and connected whenever `/ask` should

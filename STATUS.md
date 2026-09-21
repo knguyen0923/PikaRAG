@@ -36,8 +36,8 @@ One line each — see the plan/spec doc for implementation detail, or
   paid Claude Haiku entirely; a `CircuitBreaker` short-circuits `/ask`
   when the host is unreachable instead of paying a full timeout per call.
   Currently served from a MacBook (not the originally-planned Windows
-  laptop) — see `docs/DEPLOYMENT.md` section 3 for the exact setup and the
-  one still-open gap (`OLLAMA_HOST=0.0.0.0` doesn't survive reboot yet).
+  laptop), with a LaunchAgent making the required `OLLAMA_HOST=0.0.0.0`
+  setting survive reboot/logout — see `docs/DEPLOYMENT.md` section 3.
 - **Damage calculator** (`damage_calc/`) — ported `@smogon/calc` logic:
   spread moves, weather/terrain (including auto-derivation from setter
   abilities), screens, Tera types, 6 type-immunity abilities, Intimidate.
@@ -69,8 +69,6 @@ Smaller/non-blocking:
 - Confirm the previously-leaked `ANTHROPIC_API_KEY` was revoked at
   console.anthropic.com (removed from both `.env` files, but removal
   alone doesn't invalidate a key).
-- Make the MacBook's `OLLAMA_HOST=0.0.0.0` survive reboot/logout — see
-  `docs/DEPLOYMENT.md` section 3.
 - **Known limitation, not fixable from this repo:** Pikalytics hasn't
   published a ranked-ladder format code for Regulation M-C yet, so two
   species new to M-C (Farfetch'd, Sirfetch'd) have no usage data.
