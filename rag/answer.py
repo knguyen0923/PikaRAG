@@ -1,4 +1,5 @@
 import json
+from typing import Optional
 
 import requests
 
@@ -104,12 +105,18 @@ class OllamaAnswerer:
             return OFFLINE_MESSAGE
 
     def answer_with_tools(
-        self, question: str, tools: list, tool_dispatch: dict, max_rounds: int = 4
+        self, question: str, tools: list, tool_dispatch: dict, max_rounds: int = 4,
+        history: Optional[list] = None,
     ) -> str:
         """Drives Ollama's native tool-calling loop: send the question +
         tool schemas, dispatch any tool call the model emits, append the
         result as a tool-role message, repeat up to max_rounds. On hitting
         the cap, forces one final non-tool call for a best-effort answer.
+
+        history, if given, is a list of prior {"role", "content"} turns
+        inserted between the system prompt and the new question -- used by
+        conversational chat to carry short-term context across messages in
+        the same channel.
 
         Returns MALFORMED_TOOL_CALL_MESSAGE (not an exception) if the model
         emits an unknown tool name, non-object arguments, or a tool call
@@ -117,10 +124,10 @@ class OllamaAnswerer:
         the caller is expected to check for this sentinel and degrade to a
         plain RAG answer. Returns OFFLINE_MESSAGE on any network/parsing
         failure talking to Ollama itself, same as answer()/answer_bare()."""
-        messages = [
-            {"role": "system", "content": TOOLS_SYSTEM_PROMPT},
-            {"role": "user", "content": question},
-        ]
+        messages = [{"role": "system", "content": TOOLS_SYSTEM_PROMPT}]
+        if history:
+            messages.extend(history)
+        messages.append({"role": "user", "content": question})
 
         for _ in range(max_rounds):
             try:

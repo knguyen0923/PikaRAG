@@ -285,6 +285,34 @@ def test_answer_with_tools_sends_the_tools_schema_on_every_call():
     assert client.calls[0]["json"]["tools"] == tools
 
 
+def test_answer_with_tools_inserts_history_between_the_system_prompt_and_the_new_question():
+    client = _FakeSequentialOllamaClient([_final_response("answer")])
+    answerer = OllamaAnswerer(host="100.1.2.3:11434", client=client)
+    history = [
+        {"role": "user", "content": "earlier question"},
+        {"role": "assistant", "content": "earlier answer"},
+    ]
+
+    answerer.answer_with_tools("new question", tools=[], tool_dispatch={}, history=history)
+
+    sent_messages = client.calls[0]["json"]["messages"]
+    assert sent_messages[0]["role"] == "system"
+    assert sent_messages[1] == {"role": "user", "content": "earlier question"}
+    assert sent_messages[2] == {"role": "assistant", "content": "earlier answer"}
+    assert sent_messages[3] == {"role": "user", "content": "new question"}
+
+
+def test_answer_with_tools_omitting_history_reproduces_todays_exact_message_shape():
+    client = _FakeSequentialOllamaClient([_final_response("answer")])
+    answerer = OllamaAnswerer(host="100.1.2.3:11434", client=client)
+
+    answerer.answer_with_tools("new question", tools=[], tool_dispatch={})
+
+    sent_messages = client.calls[0]["json"]["messages"]
+    assert len(sent_messages) == 2
+    assert sent_messages[1] == {"role": "user", "content": "new question"}
+
+
 def test_answer_with_tools_forces_a_final_answer_after_hitting_the_round_cap():
     # 4 rounds of "still calling a tool", then one final forced call with no
     # more tools offered.
