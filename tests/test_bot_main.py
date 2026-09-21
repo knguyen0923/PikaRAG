@@ -142,10 +142,11 @@ class _FakeConvChannel:
 
 
 class _FakeConversationMessage:
-    def __init__(self, channel_id: int, content: str, user_id: int = 1, is_bot: bool = False):
+    def __init__(self, channel_id: int, content: str, user_id: int = 1, is_bot: bool = False, mentions=None):
         self.channel = _FakeConvChannel(channel_id)
         self.author = _FakeConvAuthor(user_id, is_bot=is_bot)
         self.content = content
+        self.mentions = mentions or []
         self.reply = AsyncMock()
 
 
@@ -347,6 +348,87 @@ def test_on_message_drops_a_second_message_while_one_is_in_flight(monkeypatch):
         first_message.reply.assert_awaited_once_with("slow answer")
 
     asyncio.run(_scenario())
+
+
+def test_build_client_requests_message_content_intent_when_only_mentions_configured(monkeypatch):
+    monkeypatch.delenv("CONVERSATION_CHANNEL_IDS", raising=False)
+    monkeypatch.setenv("MENTION_CHANNEL_IDS", "100")
+    client, _tree = build_client()
+
+    assert client.intents.message_content is True
+
+
+def test_on_message_replies_when_mentioned_in_a_mention_channel(monkeypatch):
+    monkeypatch.delenv("CONVERSATION_CHANNEL_IDS", raising=False)
+    monkeypatch.setenv("MENTION_CHANNEL_IDS", "100")
+
+    async def _fake_analyze_response_async(*args, **kwargs):
+        return "a mention answer"
+
+    monkeypatch.setattr("bot.main.analyze_response_async", _fake_analyze_response_async)
+    _client, _tree = build_client()
+    _client._connection.user = _FakeConvAuthor(42)
+    message = _FakeConversationMessage(
+        channel_id=100, content="<@42> what's the best tera type?", mentions=[_client.user],
+    )
+
+    asyncio.run(_client.on_message(message))
+
+    message.reply.assert_awaited_once_with("a mention answer")
+
+
+def test_on_message_ignores_a_mention_outside_the_mention_allowlist(monkeypatch):
+    monkeypatch.delenv("CONVERSATION_CHANNEL_IDS", raising=False)
+    monkeypatch.setenv("MENTION_CHANNEL_IDS", "100")
+    _client, _tree = build_client()
+    _client._connection.user = _FakeConvAuthor(42)
+    message = _FakeConversationMessage(
+        channel_id=999, content="<@42> hello", mentions=[_client.user],
+    )
+
+    asyncio.run(_client.on_message(message))
+
+    message.reply.assert_not_called()
+
+
+def test_on_message_ignores_plain_messages_in_a_mention_channel(monkeypatch):
+    monkeypatch.delenv("CONVERSATION_CHANNEL_IDS", raising=False)
+    monkeypatch.setenv("MENTION_CHANNEL_IDS", "100")
+    _client, _tree = build_client()
+    _client._connection.user = _FakeConvAuthor(42)
+    message = _FakeConversationMessage(channel_id=100, content="hello", mentions=[])
+
+    asyncio.run(_client.on_message(message))
+
+    message.reply.assert_not_called()
+
+
+def test_on_message_mention_answers_do_not_persist_history(monkeypatch):
+    monkeypatch.delenv("CONVERSATION_CHANNEL_IDS", raising=False)
+    monkeypatch.setenv("MENTION_CHANNEL_IDS", "100")
+    captured = {}
+
+    async def _fake_analyze_response_async(answerer, question, records, moves, items, usage, user_id, index=None, bm25_index=None, history=None):
+        captured["question"] = question
+        captured["history_seen"] = history
+        return "first mention answer"
+
+    monkeypatch.setattr("bot.main.analyze_response_async", _fake_analyze_response_async)
+    _client, _tree = build_client()
+    _client._connection.user = _FakeConvAuthor(42)
+
+    first_message = _FakeConversationMessage(
+        channel_id=100, content="<@42> first question", mentions=[_client.user],
+    )
+    asyncio.run(_client.on_message(first_message))
+    assert captured["question"] == "first question"
+
+    second_message = _FakeConversationMessage(
+        channel_id=100, content="<@42> second question", mentions=[_client.user],
+    )
+    asyncio.run(_client.on_message(second_message))
+
+    assert captured["history_seen"] == []
 
 
 def test_calc_command_actually_uses_the_moves_data_not_the_moves_command():

@@ -79,6 +79,12 @@ the connection outright and the bot fails to start. See
 `docs/superpowers/specs/2026-09-21-conversational-chat-design.md` for the
 full design.
 
+Set `MENTION_CHANNEL_IDS` the same way to let people ask the bot a
+question by @mentioning it (e.g. `@PikaRAG what's the best tera type?`)
+in channels where you don't want it replying to every message. Each
+mention is answered on its own, with no rolling history. Same "Message
+Content Intent" requirement as above.
+
 ## 3. Local LLM (Ollama + Tailscale)
 
 Sets up the machine that runs `/ask`'s language model, and connects it

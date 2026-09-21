@@ -13,7 +13,7 @@ from bot.agentic import analyze_response_async
 from bot.commands.ask import GATE_MESSAGE, ask_response_async, format_ask_response
 from bot.commands.calc import calc_response, is_error_response
 from bot.commands.debug import format_debug_last
-from bot.conversation import ConversationHistory, should_respond
+from bot.conversation import ConversationHistory, should_respond, should_respond_to_mention, strip_bot_mention
 from bot.commands.stats_summary import format_stats_summary
 from bot.commands.dex import DexBrowseView, dex_page_response
 from bot.commands.llmstatus import format_llmstatus
@@ -96,22 +96,27 @@ def build_client(
     index=None, answerer=None, raw_answerer=None, records=None, moves=None, usage=None, items=None,
     bm25_index=None,
 ) -> tuple[discord.Client, app_commands.CommandTree]:
-    conversation_channel_ids: set[int] = set()
-    for channel_id in os.environ.get("CONVERSATION_CHANNEL_IDS", "").split(","):
-        channel_id = channel_id.strip()
-        if not channel_id:
-            continue
-        try:
-            conversation_channel_ids.add(int(channel_id))
-        except ValueError:
-            print(f"Ignoring invalid CONVERSATION_CHANNEL_IDS entry: {channel_id!r}")
+    def _parse_channel_ids(env_var: str) -> set[int]:
+        channel_ids: set[int] = set()
+        for channel_id in os.environ.get(env_var, "").split(","):
+            channel_id = channel_id.strip()
+            if not channel_id:
+                continue
+            try:
+                channel_ids.add(int(channel_id))
+            except ValueError:
+                print(f"Ignoring invalid {env_var} entry: {channel_id!r}")
+        return channel_ids
+
+    conversation_channel_ids = _parse_channel_ids("CONVERSATION_CHANNEL_IDS")
+    mention_channel_ids = _parse_channel_ids("MENTION_CHANNEL_IDS")
 
     intents = discord.Intents.default()
     # Message Content is a privileged intent -- Discord refuses the whole
     # gateway connection if it's requested without being enabled in the
     # Developer Portal, so only ask for it when conversational chat is
     # actually configured.
-    if conversation_channel_ids:
+    if conversation_channel_ids or mention_channel_ids:
         intents.message_content = True
     client = discord.Client(intents=intents)
     tree = app_commands.CommandTree(client)
@@ -538,27 +543,33 @@ def build_client(
     async def on_ready() -> None:
         await tree.sync()
 
-    @client.event
-    async def on_message(message: discord.Message) -> None:
-        if not should_respond(message, conversation_channel_ids):
-            return
+    async def _respond_in_channel(message: discord.Message, question: str, use_history: bool) -> None:
         if conversation_locks.get(message.channel.id):
             return
         conversation_locks[message.channel.id] = True
         try:
             async with message.channel.typing():
-                history = conversation_history.get(message.channel.id)
+                history = conversation_history.get(message.channel.id) if use_history else []
                 answer = await analyze_response_async(
-                    raw_answerer, message.content, records, moves, items, usage,
+                    raw_answerer, question, records, moves, items, usage,
                     message.author.id, index=index, bm25_index=bm25_index,
                     history=history,
                 )
             await message.reply(_truncate_for_reply(answer))
-            if answer not in (OFFLINE_MESSAGE, MALFORMED_TOOL_CALL_MESSAGE, GATE_MESSAGE):
-                conversation_history.append(message.channel.id, "user", message.content)
+            if use_history and answer not in (OFFLINE_MESSAGE, MALFORMED_TOOL_CALL_MESSAGE, GATE_MESSAGE):
+                conversation_history.append(message.channel.id, "user", question)
                 conversation_history.append(message.channel.id, "assistant", answer)
         finally:
             conversation_locks[message.channel.id] = False
+
+    @client.event
+    async def on_message(message: discord.Message) -> None:
+        if should_respond(message, conversation_channel_ids):
+            await _respond_in_channel(message, message.content, use_history=True)
+            return
+        if should_respond_to_mention(message, mention_channel_ids, client.user):
+            question = strip_bot_mention(message.content, client.user.id)
+            await _respond_in_channel(message, question, use_history=False)
 
     @tree.error
     async def on_tree_error(interaction: discord.Interaction, error: app_commands.AppCommandError) -> None:

@@ -33,3 +33,25 @@ def should_respond(message, conversation_channel_ids: Iterable[int]) -> bool:
     if not message.content.strip():
         return False
     return message.channel.id in conversation_channel_ids
+
+
+def strip_bot_mention(content: str, bot_user_id: int) -> str:
+    """Remove the bot's own mention token (with or without the nickname
+    '!' variant Discord sometimes sends) so the remainder is just the
+    asked question."""
+    for token in (f"<@{bot_user_id}>", f"<@!{bot_user_id}>"):
+        content = content.replace(token, "")
+    return content.strip()
+
+
+def should_respond_to_mention(message, mention_channel_ids: Iterable[int], bot_user) -> bool:
+    """True only if the channel opted into mention-triggered answers, the
+    author isn't a bot, the bot was actually @mentioned (not just named in
+    text), and there's a question left over once the mention is stripped."""
+    if message.author.bot:
+        return False
+    if message.channel.id not in mention_channel_ids:
+        return False
+    if bot_user not in message.mentions:
+        return False
+    return bool(strip_bot_mention(message.content, bot_user.id))
