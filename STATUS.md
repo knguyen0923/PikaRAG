@@ -5,8 +5,36 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-21, after retargeting the fine-tune-vs-RAG
-comparison notebook from Llama3.2-3B to Qwen3.5-9B (commit `8c64787`):
+**Last updated:** 2026-09-21, after a repo-wide accuracy polish pass
+(commit `6d756ca`), prompted by "is there anything left in the repo we
+can update/change/polish?":
+
+- **`TAKEAWAYS.md` (the portfolio writeup) was substantially stale.** Its
+  "By the numbers"/tech-stack/architecture sections still described the
+  bot as running paid Claude Haiku with a per-query cost and spend cap —
+  that path was deleted entirely back on 2026-09-14. Updated to reflect
+  the actual current state: self-hosted `qwen3.5:9b` over Tailscale, $0
+  per query, and refreshed the commit/test counts (96/262 → 299/612).
+- **`README.md`'s command table was missing `/analyze`, `/dex`, and
+  `/stats-summary`** — all three exist in `bot/main.py` but were never
+  added to the table. Fixed, and the owner-gated-commands note in
+  `.env.example` (which also only mentioned two of the three
+  `BOT_OWNER_ID`-gated commands) was fixed the same way.
+- **`.env.example`'s `LLM_TIMEOUT=30` default was actively wrong** given
+  qwen3.5:9b's thinking-model latency (30s isn't enough — 90s is the
+  confirmed-working production value; both `.env` files and
+  `.env.example` now say 90). Also swept "the laptop" wording out of
+  `.env.example` and `docs/DEPLOYMENT.md` (two spots this session's
+  earlier MacBook-retarget edit had missed).
+- Nothing code-level changed; 612/612 tests still passing, CI green.
+
+**Nothing else outstanding from this pass.** The last real open item
+project-wide remains the fine-tune-vs-RAG comparison's manual follow-up
+(see below and `IMPROVEMENTS.md`) — user is running the retargeted
+notebook on Colab.
+
+**Earlier: 2026-09-21, after retargeting the fine-tune-vs-RAG
+comparison notebook from Llama3.2-3B to Qwen3.5-9B (commit `8c64787`):**
 
 - The last open item from `IMPROVEMENTS.md` (fine-tune vs. RAG comparison
   manual follow-up) was about to be run, but its notebook
@@ -303,7 +331,7 @@ preserved in git history, `git log --oneline --grep=eval-harness` and
 itself to find two real retrieval-quality bugs and fixed them via
 entity-aware retrieval, and grounding & trust (see below). 329/329 tests
 passing throughout.
-<!-- STATUS_COMMIT: e325c5a -->
+<!-- STATUS_COMMIT: 6d756ca -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
