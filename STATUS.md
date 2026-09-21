@@ -16,9 +16,16 @@ which is more specific than this snapshot.
 Deployed and live: Discord bot on Oracle Cloud (Always Free tier, systemd,
 always-on, $0/month), `/ask` served by self-hosted Ollama (`qwen3.5:9b`,
 a thinking model) on a MacBook reached over Tailscale, $0 per query — no
-metered API anywhere in the system. 637/637 tests passing, CI green
+metered API anywhere in the system. 648/648 tests passing, CI green
 (lint + coverage + pinned-dep checks). Data current for Regulation M-C
 (345 legal Pokémon, 197 items).
+
+Added mention-triggered Q&A (2026-09-21, commit `88fcbef`): a new
+`MENTION_CHANNEL_IDS` env var lets people @mention the bot for a one-off
+answer (`bot/conversation.py`'s `should_respond_to_mention`/
+`strip_bot_mention`) in channels separate from the always-on
+`CONVERSATION_CHANNEL_IDS` chat channels — no rolling history kept for
+mention answers. Not yet deployed to the live Oracle instance.
 
 A code-review polish pass (2026-09-20/21, commit `db24ca3`) fixed 6 bugs
 in the conversational chat feature: the privileged `message_content`
@@ -57,6 +64,11 @@ One line each — see the plan/spec doc for implementation detail, or
   rolling per-channel history for natural follow-ups. Requires Discord's
   Message Content Intent, enabled for this bot.
   `docs/superpowers/plans/2026-09-21-conversational-chat.md`.
+- **Mention-triggered Q&A** — `@bot "question"` in channels listed in
+  `MENTION_CHANNEL_IDS` gets a one-off answer via the same tool-calling
+  loop, with no persisted history (each mention stands alone). Separate
+  opt-in from `CONVERSATION_CHANNEL_IDS`; same Message Content Intent
+  requirement.
 - **Local LLM, self-hosted** — `OllamaAnswerer` (`rag/answer.py`) replaced
   paid Claude Haiku entirely; a `CircuitBreaker` short-circuits `/ask`
   when the host is unreachable instead of paying a full timeout per call.
@@ -124,7 +136,7 @@ git status                   # anything in flight
 pytest -q                    # confirm the suite still passes
 ```
 
-<!-- STATUS_COMMIT: db24ca3 -->
+<!-- STATUS_COMMIT: 88fcbef -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
