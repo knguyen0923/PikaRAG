@@ -1,5 +1,11 @@
 # Fine-tune vs. RAG comparison — design
 
+**Decided against 2026-09-21:** the infrastructure below was built, but the
+user decided not to actually run the comparison against the live model —
+the local LLM is meant to stay generic, not narrowed to this project's
+domain via fine-tuning. Kept as a demonstrated technique, not an active
+plan. See `IMPROVEMENTS.md`'s "Decided against" section.
+
 Source: `IMPROVEMENTS.md` Priority 2. Portfolio-review backlog item — the one
 ML technique (model adaptation, vs. pure retrieval/prompting) missing across
 the whole project, benchmarked rigorously against the existing RAG pipeline

@@ -59,13 +59,10 @@ One line each — see the plan/spec doc for implementation detail, or
 
 ## What's left
 
-See `IMPROVEMENTS.md` for full detail on the one open item:
-
-- **Fine-tune vs. RAG comparison** — infrastructure built
-  (`notebooks/finetune_qwen3.5.ipynb`, `scripts/run_eval.py --model
-  rag|finetuned`, `eval/report.py`), not yet run. User is running the
-  notebook on Colab now; next steps once it produces a merged model are in
-  `docs/finetuned-model-serving.md`.
+Nothing open on `IMPROVEMENTS.md` — the one remaining item (fine-tune vs.
+RAG comparison) was decided against (2026-09-21): the local LLM is meant
+to stay generic, not fine-tuned to this project's domain. The
+infrastructure stays in the repo unused; see `IMPROVEMENTS.md`.
 
 Smaller/non-blocking:
 

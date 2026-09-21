@@ -7,17 +7,18 @@ for those.
 
 ## Open
 
-- **Fine-tune vs. RAG comparison — infrastructure done, not yet run.**
-  `scripts/generate_finetune_data.py` generates training pairs from the
-  same data RAG uses; `OllamaAnswerer.answer_bare` calls a fine-tuned
-  model directly (no context/grounding prompt); `scripts/run_eval.py
-  --model rag|finetuned` and `eval/report.py` do the head-to-head
-  comparison. `notebooks/finetune_qwen3.5.ipynb` (LoRA via
-  `peft`/`transformers`/`bitsandbytes` on a free Colab T4) and
-  `docs/finetuned-model-serving.md` (GGUF convert/quantize/`ollama
-  create`) cover training and deployment. **Manual follow-up, at the
-  user's convenience:** run the notebook, deploy `pikarag-finetuned`, run
-  the real comparison for portfolio numbers. Design:
+Nothing open — see `STATUS.md` for current state.
+
+## Decided against
+
+- **Fine-tune vs. RAG comparison — infrastructure built, deliberately not
+  run.** User's call (2026-09-21): the local LLM is meant to stay generic,
+  not narrowed to this project's domain via fine-tuning. The full
+  infrastructure remains in the repo as a demonstrated technique
+  (`scripts/generate_finetune_data.py`, `OllamaAnswerer.answer_bare`,
+  `scripts/run_eval.py --model rag|finetuned`, `eval/report.py`,
+  `notebooks/finetune_qwen3.5.ipynb`, `docs/finetuned-model-serving.md`)
+  but won't be executed against the live model. Design:
   `docs/superpowers/specs/2026-09-17-finetune-vs-rag-design.md`.
 
 ## Done

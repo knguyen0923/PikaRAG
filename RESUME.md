@@ -5,21 +5,17 @@ or right before a compaction) so work can pick back up without losing the
 thread. If this says "nothing in progress," there's no live handoff — just
 use `STATUS.md`.
 
-**In progress:** the fine-tune vs. RAG comparison, the one open item on
-`IMPROVEMENTS.md`. Notebook retargeted from Llama3.2-3B to
-`Qwen/Qwen3.5-9B` (`notebooks/finetune_qwen3.5.ipynb`) — user is running
-it manually on Colab now. **Next steps once they have a merged model:**
-follow `docs/finetuned-model-serving.md` (convert to GGUF, quantize,
-`ollama create pikarag-finetuned`), then `scripts/run_eval.py --model
-rag` vs. `--model finetuned`, then `eval/report.py` for the side-by-side
-numbers.
+**Nothing in progress.** The fine-tune vs. RAG comparison (the one open
+item on `IMPROVEMENTS.md`) was decided against 2026-09-21 — the local LLM
+is meant to stay generic, not fine-tuned to this project's domain. The
+already-built infrastructure stays in the repo, unused; see
+`IMPROVEMENTS.md`'s "Decided against" section.
 
-**Open, not urgent, independent of the above:** confirm the previously
-leaked `ANTHROPIC_API_KEY` was actually revoked at console.anthropic.com
-(removed from both `.env` files, but that alone doesn't invalidate a
-key); make the Mac's `OLLAMA_HOST=0.0.0.0` survive reboot/logout
-(currently `launchctl setenv`, session-only — see `docs/DEPLOYMENT.md`
-section 3).
+**Open, not urgent:** confirm the previously leaked `ANTHROPIC_API_KEY`
+was actually revoked at console.anthropic.com (removed from both `.env`
+files, but that alone doesn't invalidate a key); make the Mac's
+`OLLAMA_HOST=0.0.0.0` survive reboot/logout (currently `launchctl
+setenv`, session-only — see `docs/DEPLOYMENT.md` section 3).
 
 ## Session-standing preferences (apply going forward, not just this session)
 
