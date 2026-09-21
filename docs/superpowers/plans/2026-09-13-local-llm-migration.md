@@ -1,5 +1,12 @@
 # Local LLM Migration Implementation Plan
 
+**Superseded 2026-09-20:** the "dedicated laptop" (Task 5, hardware setup)
+was ultimately a MacBook, not the Windows laptop this plan and its spec
+assumed — see the spec's own superseded note
+(`docs/superpowers/specs/2026-09-13-local-llm-migration-design.md`) and
+`docs/DEPLOYMENT.md` section 3 for what's actually running. Tasks 1-4
+(the code, below) shipped as written and are unaffected.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Replace `/ask`'s paid Claude Haiku call with a free, locally-run Ollama model on a dedicated laptop, reached over Tailscale from the always-on Oracle Cloud bot host — eliminating the last paid dependency in PikaRAG.

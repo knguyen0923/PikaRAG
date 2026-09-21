@@ -3,6 +3,15 @@
 Status: Approved
 Date: 2026-09-13
 
+**Superseded 2026-09-20:** this design's central hardware assumption (an
+8GB RAM, CPU-only Windows laptop, ruling out 7B+ models) never actually
+got built — the Windows laptop was dropped in favor of a MacBook already
+set up for local dev, which runs a 9.7B model (`qwen3.5:9b`) fine. The
+mechanism this doc designed (Tailscale networking, `OllamaAnswerer`,
+graceful degradation, no paid fallback) is exactly what's live today,
+unchanged — only the "worst-case hardware" framing and model-size math
+below are stale. See `docs/DEPLOYMENT.md` section 3 for the current setup.
+
 ## Purpose
 
 Eliminate the one remaining paid dependency in PikaRAG. Hosting (Oracle Cloud
