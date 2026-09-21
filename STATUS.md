@@ -16,9 +16,28 @@ which is more specific than this snapshot.
 Deployed and live: Discord bot on Oracle Cloud (Always Free tier, systemd,
 always-on, $0/month), `/ask` served by self-hosted Ollama (`qwen3.5:9b`,
 a thinking model) on a MacBook reached over Tailscale, $0 per query — no
-metered API anywhere in the system. 612/612 tests passing, CI green
+metered API anywhere in the system. 637/637 tests passing, CI green
 (lint + coverage + pinned-dep checks). Data current for Regulation M-C
 (345 legal Pokémon, 197 items).
+
+A code-review polish pass (2026-09-20/21, commit `db24ca3`) fixed 6 bugs
+in the conversational chat feature: the privileged `message_content`
+intent was requested unconditionally instead of only when
+`CONVERSATION_CHANNEL_IDS` is set (would have crashed the whole bot's
+gateway connection on any deployment upgrading without a matching portal
+change), unguarded `int()` parsing of that env var, `on_message` replies
+with no 2000-char truncation or empty-content guard, `GATE_MESSAGE`
+missing from the history-exclusion check, `should_respond` not filtering
+content-less messages, and a blocking `answer_with_tools` call left
+un-threaded on the event loop. Pulled and restarted on the live Oracle
+instance same-day; gateway reconnect confirmed clean in
+`journalctl -u pikarag-bot.service`.
+
+Also noted but **not yet investigated**: a `/ask` call in the live logs
+failed with `Could not resolve authentication method... api_key/
+auth_token/credentials` (looks like a ChromaDB client auth error) —
+unrelated to the chat fixes above, pre-existing, needs a follow-up
+session.
 
 ## Shipped features
 
@@ -73,6 +92,11 @@ local LLM is meant to stay generic, not fine-tuned to this project's
 domain. The infrastructure stays in the repo unused; see
 `IMPROVEMENTS.md`.
 
+- **Needs investigation:** a ChromaDB auth error
+  (`Could not resolve authentication method...`) surfaced on a live
+  `/ask` call in the Oracle instance's logs, pre-dating the 2026-09-21
+  polish pass. Not yet root-caused.
+
 Only one other known item, and it's external:
 
 - **Known limitation, not fixable from this repo:** Pikalytics hasn't
@@ -100,7 +124,7 @@ git status                   # anything in flight
 pytest -q                    # confirm the suite still passes
 ```
 
-<!-- STATUS_COMMIT: 28b22c4 -->
+<!-- STATUS_COMMIT: db24ca3 -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
