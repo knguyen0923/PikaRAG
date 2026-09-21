@@ -5,9 +5,32 @@ This is a snapshot, not a source of truth — always re-verify against the repo
 (`git log`, `git status`, `pytest -q`) rather than trusting this blindly if
 it's been a while.
 
-**Last updated:** 2026-09-20, after switching the local LLM from
+**Last updated:** 2026-09-21, after retargeting the fine-tune-vs-RAG
+comparison notebook from Llama3.2-3B to Qwen3.5-9B (commit `8c64787`):
+
+- The last open item from `IMPROVEMENTS.md` (fine-tune vs. RAG comparison
+  manual follow-up) was about to be run, but its notebook
+  (`notebooks/finetune_llama3.2.ipynb`, now renamed
+  `notebooks/finetune_qwen3.5.ipynb`) still targeted Llama3.2-3B — stale
+  since 2026-09-20's model switch made that no longer the model serving
+  `/ask`. Retargeted to `Qwen/Qwen3.5-9B` (the instruct variant, not
+  `-Base`) so the comparison stays apples-to-apples: ChatML training-text
+  format (matches Qwen's own chat template), and training sized down for
+  the larger 9.7B model on a free Colab T4 (per-device batch 4→2 with
+  accumulation 4→8 to keep the same effective batch, plus gradient
+  checkpointing and an 8-bit paged optimizer). `docs/finetuned-model-serving.md`
+  and the original design spec's base-model bullet were updated to match.
+  612/612 tests passing (no code touched, notebook/docs only).
+- **Not yet done: actually running the notebook.** User is running it
+  manually on Colab now — see `docs/finetuned-model-serving.md` for the
+  deploy-to-Ollama steps once it produces a merged model, and
+  `IMPROVEMENTS.md` Priority 2 for the full remaining checklist (deploy
+  `pikarag-finetuned`, run `scripts/run_eval.py --model rag` vs.
+  `--model finetuned`, get real comparison numbers).
+
+**Earlier: 2026-09-20, after switching the local LLM from
 `llama3.2:3b` to `qwen3.5:9b` and fixing two live deployment problems this
-surfaced (commit `32ea903`):
+surfaced:**
 
 - **Model switch:** `qwen3.5:9b` (pulled via Ollama, confirmed to support
   `tools`) is now the default everywhere (`.env`, `.env.example`,
@@ -280,7 +303,7 @@ preserved in git history, `git log --oneline --grep=eval-harness` and
 itself to find two real retrieval-quality bugs and fixed them via
 entity-aware retrieval, and grounding & trust (see below). 329/329 tests
 passing throughout.
-<!-- STATUS_COMMIT: 2f13265 -->
+<!-- STATUS_COMMIT: 8c64787 -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you

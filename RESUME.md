@@ -5,8 +5,17 @@ or right before a compaction) so work can pick back up without losing the
 thread. If this says "nothing in progress," there's no live handoff — just
 use `STATUS.md`.
 
-**Nothing in progress.** As of 2026-09-20 (commit `32ea903`), both
-remaining P1 items from `IMPROVEMENTS.md` are done:
+**In progress:** the fine-tune vs. RAG comparison (last item on
+`IMPROVEMENTS.md`, Priority 2). Notebook retargeted from Llama3.2-3B to
+`Qwen/Qwen3.5-9B` and pushed (commit `8c64787`,
+`notebooks/finetune_qwen3.5.ipynb`) — user is now running it manually on
+Colab. **Next steps once they have a merged model:** follow
+`docs/finetuned-model-serving.md` (convert to GGUF, quantize, `ollama
+create pikarag-finetuned`), then `scripts/run_eval.py --model rag` vs.
+`--model finetuned`, then `eval/report.py` for the side-by-side numbers.
+
+As of 2026-09-20 (commit `32ea903`), both P1 items from `IMPROVEMENTS.md`
+were already done:
 
 1. **Discord bot token rotated**, both local and Oracle `.env` updated, bot
    confirmed reconnected. Stale unused `ANTHROPIC_API_KEY` also removed
