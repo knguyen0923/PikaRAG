@@ -46,7 +46,7 @@ sudo -u pikarag .venv/bin/pip install -r requirements.txt
 sudo -u pikarag cp .env.example .env
 sudo -u pikarag $EDITOR .env   # fill in DISCORD_TOKEN; leave LLM_HOST blank
                                 # for now -- section 3 below tells you what
-                                # value goes there once the laptop is set up.
+                                # value goes there once the Ollama host is set up.
                                 # Also set BOT_OWNER_ID to your own Discord
                                 # user ID to enable the admin-only
                                 # /debug-last and /llmstatus commands
@@ -112,8 +112,9 @@ out, same as the bot's existing Discord/PokeAPI/Pikalytics traffic) --
 consistent with this instance's "no inbound ports needed" setup from
 section 1.
 
-Set `LLM_HOST` in `.env` (section 2 above) to the laptop's Tailscale IP
-and port, e.g. `LLM_HOST=100.64.1.2:11434`.
+Set `LLM_HOST` in `.env` (section 2 above) to the Ollama host's Tailscale
+IP and port, e.g. `LLM_HOST=100.64.1.2:11434` (currently
+`100.94.16.44:11434`, this MacBook).
 
 ## 4. Install the systemd units
 

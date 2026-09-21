@@ -25,13 +25,16 @@ updated and `pipeline.refresh_pikalytics_job` re-run.
 |---|---|
 | `/ping` | Check that the bot is responsive. |
 | `/ask` | Ask a question about VGC Pokemon stats and movesets. |
+| `/analyze` | Like `/ask`, but lets the model call tools (damage calc, stored team, usage stats) before answering. |
 | `/stats` | Look up a Pokemon's base stats, types, and abilities. |
 | `/moves` | Look up a Pokemon's legal moveset. |
+| `/dex` | Browse the current regulation's legal Pokemon roster, Pokedex-style. |
 | `/calc` | Calculate a damage range for attacker's move vs defender. |
 | `/import` | Import a full Pokemon team from Pokepaste text or a pokepast.es URL. |
 | `/scout` | Add or update one Pokemon in a stored team with only what you currently know. |
 | `/team` | View the Pokemon currently stored for your team or the opponent's team. |
 | `/debug-last` | Show the most recent `/ask` call's full retrieval/answer detail (bot owner only). |
+| `/stats-summary` | Show aggregate `/ask` call stats (bot owner only). |
 | `/llmstatus` | Check the local LLM's health and circuit breaker state (bot owner only). |
 
 `/import`/`/scout`/`/team` feed stored team data into `/calc` and `/ask`, so
@@ -81,8 +84,8 @@ pytest -q
   (`tests/test_eval_retrieval.py`) — no live LLM involved, just the
   embedding model and Chroma.
 - **Answer quality** exercises the full `/ask` path against a live Ollama
-  model, on demand (not run in CI, since CI has no Tailscale access to the
-  laptop):
+  model, on demand (not run in CI, since CI has no Tailscale access to
+  whichever machine is serving Ollama):
   ```bash
   .venv/bin/python -m scripts.run_eval --with-answers
   ```

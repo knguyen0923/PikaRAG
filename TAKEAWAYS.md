@@ -24,14 +24,14 @@ decision in the project, and it held up all the way through.
 
 | Layer | Choice | Why |
 |---|---|---|
-| LLM | Claude Haiku 4.5 | Cheap enough for a hobby project's per-query cost (~$0.003–0.007), prepaid spend cap as a hard ceiling |
+| LLM | Local Ollama (`qwen3.5:9b`), reached over Tailscale | Originally Claude Haiku 4.5 (~$0.003–0.007/query); migrated 2026-09-14 to self-hosted inference to make the whole system $0/month, not just capped-low |
 | Embeddings | `sentence-transformers` (local) | Runs on the bot host, no extra API dependency or per-embedding cost |
 | Vector store | ChromaDB | File-based, zero ops, plenty for a few hundred Pokémon |
 | RAG "framework" | Raw Python | No LangChain/LlamaIndex — deliberately hand-rolled retrieval + prompting to actually learn how the pieces fit, not just call a library |
 | Damage engine | Hand-ported `@smogon/calc` (JS → Python) | A pure function, verified against Bulbapedia's own mechanics reference, not an LLM guess |
 | Bot framework | `discord.py` (slash commands) | Native Discord integration, typed command params |
 | Hosting | Oracle Cloud Free Tier (ARM, Ubuntu) | Always-on, $0/month, systemd-managed |
-| Testing | `pytest`, TDD throughout | 262 tests, more test code than source code |
+| Testing | `pytest`, TDD throughout | 612 tests, more test code than source code |
 | CI | GitHub Actions | Runs the full suite on every push |
 
 ## Architecture
@@ -50,10 +50,11 @@ discord.py bot (Oracle Cloud, systemd, always-on)
       │  /team               (feeds /calc and /ask so you can say "my
       │                       Landorus" instead of a full spread)
       │
-      └─ /ask              → Chroma retrieval (local embeddings)
+      └─ /ask              → Chroma + BM25 hybrid retrieval (local embeddings)
                                    │
                                    ▼
-                            Claude Haiku (prompt + retrieved context only)
+                     Local Ollama, qwen3.5:9b (prompt + retrieved context only,
+                     reached over Tailscale — no metered API in the loop)
                                    │
                                    ▼
                             Response → Discord
@@ -159,16 +160,21 @@ process was itself worth learning from:
 
 ## By the numbers
 
-- **96 commits**, empty repo to live deployment, over 9 days
-- **262 automated tests**, ~3,300 lines of test code vs. ~2,100 lines of
-  source (more test code than implementation — a deliberate TDD habit, not
-  an accident)
+- **96 commits, 262 tests** at the original 9-day build's initial launch
+  (2026-09-12) — **299 commits, 612 tests** as of this writing, across
+  follow-on feature work (local-LLM migration off paid Claude, eval
+  harness, entity-aware retrieval, hybrid BM25 retrieval, observability,
+  agentic tool-calling) that continued well past that original window
 - **345 legal Pokémon**, 197 items, and a full VGC doubles-aware damage
   formula (spread-move reduction, weather, terrain, screens, Tera types,
   items, abilities-adjacent effects) covered by the calculator
-- **$0/month** hosting (Oracle Cloud Always Free tier) and roughly
-  **$0.003–0.007 per `/ask` query** (Claude Haiku), with a self-imposed
-  spend cap plus an in-bot early-warning system as a second safety net
+- **$0/month, fully self-hosted:** Oracle Cloud Always Free tier for the
+  bot, a local Ollama instance (`qwen3.5:9b`) for `/ask` inference reached
+  over Tailscale — no metered API in the loop at all. This is a change
+  from the original launch, which ran `/ask` through paid Claude Haiku at
+  ~$0.003–0.007/query with a self-imposed spend cap; migrated to local
+  inference specifically to eliminate that as a cost, per
+  `docs/superpowers/specs/2026-09-13-local-llm-migration-design.md`.
 
 ## Quantifiable changes
 
@@ -183,14 +189,17 @@ Numbers that moved, not just numbers that exist:
   by a whole-branch review before merge, fixed by trying exact matches
   across both vocabularies first. Worth keeping as a reminder that a fix
   in progress can be measurably worse than the baseline it's replacing.
-- **Test suite: 262 tests at initial launch (2026-09-12) → 517 tests as
-  of this writing**, added across follow-on feature work (eval harness,
-  entity-aware retrieval, observability) that continued past the original
+- **Test suite: 262 tests at initial launch (2026-09-12) → 612 tests as
+  of this writing**, added across follow-on feature work (local-LLM
+  migration, eval harness, entity-aware retrieval, hybrid BM25 retrieval,
+  observability, agentic tool-calling) that continued past the original
   9-day build window this retrospective otherwise covers.
-- **Per-query cost: ~$0.003–0.007** (Claude Haiku 4.5, `/ask` only —
-  `/calc`, `/stats`, `/moves` are free, no LLM call) against **$0/month**
-  fixed hosting cost, i.e. the only variable cost in the whole system is
-  bounded per-query LLM spend, backstopped by a prepaid cap.
+- **Per-query cost: ~$0.003–0.007 (Claude Haiku) → $0** after the
+  2026-09-14 local-LLM migration moved `/ask` inference to a
+  self-hosted Ollama instance reached over Tailscale — the
+  `CircuitBreaker`/degrade-to-offline-message pattern originally built for
+  Haiku failures carried over unchanged, now guarding against the local
+  host being asleep/unreachable instead of a paid API outage.
 - **3 Critical bugs** caught by one whole-branch review before the
   retrieval-quality merge (a crash on letter-suffixed Mega forms, the
   recall@5 regression above, and a silent wrong-item binding on ambiguous
