@@ -93,7 +93,7 @@ git status                   # anything in flight
 pytest -q                    # confirm the suite still passes
 ```
 
-<!-- STATUS_COMMIT: e1dc556 -->
+<!-- STATUS_COMMIT: 8e118f4 -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
