@@ -68,6 +68,15 @@ sudo -u pikarag /opt/pikarag/.venv/bin/python -m pipeline.refresh_pikalytics_job
 Both are idempotent and safe to re-run; expect the Pikalytics one to take a
 while the first time (one request per legal species, rate-limited fetch).
 
+**Optional: conversational chat.** Set `CONVERSATION_CHANNEL_IDS` in
+`.env` to let people talk to the bot in plain messages (no slash command)
+in specific channels, instead of using `/analyze`. Requires enabling
+Discord's privileged "Message Content Intent" for this bot first (Bot ->
+Privileged Gateway Intents in the Developer Portal) -- without it, no
+message content reaches the bot regardless of this setting. See
+`docs/superpowers/specs/2026-09-21-conversational-chat-design.md` for the
+full design.
+
 ## 3. Local LLM (Ollama + Tailscale)
 
 Sets up the machine that runs `/ask`'s language model, and connects it

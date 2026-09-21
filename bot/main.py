@@ -13,6 +13,7 @@ from bot.agentic import analyze_response_async
 from bot.commands.ask import GATE_MESSAGE, ask_response_async, format_ask_response
 from bot.commands.calc import calc_response, is_error_response
 from bot.commands.debug import format_debug_last
+from bot.conversation import ConversationHistory, should_respond
 from bot.commands.stats_summary import format_stats_summary
 from bot.commands.dex import DexBrowseView, dex_page_response
 from bot.commands.llmstatus import format_llmstatus
@@ -34,7 +35,7 @@ from bot.pokemon_lookup import find_record, not_found_message, suggest_names
 from bot.pokepaste_fetch import PokepasteFetchError, resolve_pokepaste_text
 from bot.team_store import find_team_member, get_team, resolve_calc_overrides
 from bot.ui import NameSuggestionView
-from rag.answer import OFFLINE_MESSAGE, OllamaAnswerer
+from rag.answer import MALFORMED_TOOL_CALL_MESSAGE, OFFLINE_MESSAGE, OllamaAnswerer
 from rag.bm25 import BM25Index
 from rag.circuit_breaker import CircuitBreaker
 from rag.embed import SentenceTransformerEmbedder
@@ -83,8 +84,16 @@ def build_client(
     bm25_index=None,
 ) -> tuple[discord.Client, app_commands.CommandTree]:
     intents = discord.Intents.default()
+    intents.message_content = True
     client = discord.Client(intents=intents)
     tree = app_commands.CommandTree(client)
+
+    conversation_channel_ids = {
+        int(channel_id) for channel_id in os.environ.get("CONVERSATION_CHANNEL_IDS", "").split(",")
+        if channel_id.strip()
+    }
+    conversation_history = ConversationHistory()
+    conversation_locks: dict[int, bool] = {}
 
     @tree.command(name="ping", description="Check that the bot is responsive.")
     @app_commands.checks.cooldown(1, _COOLDOWN_SECONDS)
@@ -505,6 +514,28 @@ def build_client(
     @client.event
     async def on_ready() -> None:
         await tree.sync()
+
+    @client.event
+    async def on_message(message: discord.Message) -> None:
+        if not should_respond(message, conversation_channel_ids):
+            return
+        if conversation_locks.get(message.channel.id):
+            return
+        conversation_locks[message.channel.id] = True
+        try:
+            async with message.channel.typing():
+                history = conversation_history.get(message.channel.id)
+                answer = await analyze_response_async(
+                    raw_answerer, message.content, records, moves, items, usage,
+                    message.author.id, index=index, bm25_index=bm25_index,
+                    history=history,
+                )
+            await message.reply(answer)
+            if answer not in (OFFLINE_MESSAGE, MALFORMED_TOOL_CALL_MESSAGE):
+                conversation_history.append(message.channel.id, "user", message.content)
+                conversation_history.append(message.channel.id, "assistant", answer)
+        finally:
+            conversation_locks[message.channel.id] = False
 
     @tree.error
     async def on_tree_error(interaction: discord.Interaction, error: app_commands.AppCommandError) -> None:

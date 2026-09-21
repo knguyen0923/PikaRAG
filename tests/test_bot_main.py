@@ -119,6 +119,149 @@ def test_analyze_command_uses_raw_answerer_not_the_circuit_breaker(monkeypatch):
     assert sent_text == "raw answerer was used correctly"
 
 
+class _FakeConvAuthor:
+    def __init__(self, user_id: int, is_bot: bool = False):
+        self.id = user_id
+        self.bot = is_bot
+
+
+class _FakeTypingContext:
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, *exc_info):
+        return False
+
+
+class _FakeConvChannel:
+    def __init__(self, channel_id: int):
+        self.id = channel_id
+
+    def typing(self):
+        return _FakeTypingContext()
+
+
+class _FakeConversationMessage:
+    def __init__(self, channel_id: int, content: str, user_id: int = 1, is_bot: bool = False):
+        self.channel = _FakeConvChannel(channel_id)
+        self.author = _FakeConvAuthor(user_id, is_bot=is_bot)
+        self.content = content
+        self.reply = AsyncMock()
+
+
+def test_on_message_ignores_channels_outside_the_conversation_allowlist(monkeypatch):
+    monkeypatch.delenv("CONVERSATION_CHANNEL_IDS", raising=False)
+    _client, _tree = build_client()
+    message = _FakeConversationMessage(channel_id=100, content="hello")
+
+    asyncio.run(_client.on_message(message))
+
+    message.reply.assert_not_called()
+
+
+def test_on_message_ignores_messages_from_bots(monkeypatch):
+    monkeypatch.setenv("CONVERSATION_CHANNEL_IDS", "100")
+    _client, _tree = build_client()
+    message = _FakeConversationMessage(channel_id=100, content="hello", is_bot=True)
+
+    asyncio.run(_client.on_message(message))
+
+    message.reply.assert_not_called()
+
+
+def test_on_message_replies_in_a_designated_channel(monkeypatch):
+    monkeypatch.setenv("CONVERSATION_CHANNEL_IDS", "100")
+
+    async def _fake_analyze_response_async(*args, **kwargs):
+        return "a conversational answer"
+
+    monkeypatch.setattr("bot.main.analyze_response_async", _fake_analyze_response_async)
+    _client, _tree = build_client()
+    message = _FakeConversationMessage(channel_id=100, content="hello")
+
+    asyncio.run(_client.on_message(message))
+
+    message.reply.assert_awaited_once_with("a conversational answer")
+
+
+def test_on_message_passes_and_updates_channel_history(monkeypatch):
+    monkeypatch.setenv("CONVERSATION_CHANNEL_IDS", "100")
+    captured = {}
+
+    async def _fake_analyze_response_async(answerer, question, records, moves, items, usage, user_id, index=None, bm25_index=None, history=None):
+        captured["history_seen"] = history
+        return "second answer"
+
+    monkeypatch.setattr("bot.main.analyze_response_async", _fake_analyze_response_async)
+    _client, _tree = build_client()
+
+    first_message = _FakeConversationMessage(channel_id=100, content="first question")
+    asyncio.run(_client.on_message(first_message))
+    second_message = _FakeConversationMessage(channel_id=100, content="second question")
+    asyncio.run(_client.on_message(second_message))
+
+    assert captured["history_seen"] == [
+        {"role": "user", "content": "first question"},
+        {"role": "assistant", "content": "second answer"},
+    ]
+
+
+def test_on_message_does_not_record_offline_message_into_history(monkeypatch):
+    monkeypatch.setenv("CONVERSATION_CHANNEL_IDS", "100")
+
+    async def _fake_analyze_response_async(*args, **kwargs):
+        return rag.answer.OFFLINE_MESSAGE
+
+    monkeypatch.setattr("bot.main.analyze_response_async", _fake_analyze_response_async)
+    _client, _tree = build_client()
+
+    asyncio.run(_client.on_message(_FakeConversationMessage(channel_id=100, content="q")))
+
+    captured = {}
+
+    async def _capture_history(answerer, question, records, moves, items, usage, user_id, index=None, bm25_index=None, history=None):
+        captured["history_seen"] = history
+        return "a real answer"
+
+    monkeypatch.setattr("bot.main.analyze_response_async", _capture_history)
+    asyncio.run(_client.on_message(_FakeConversationMessage(channel_id=100, content="q2")))
+
+    assert captured["history_seen"] == []
+
+
+def test_on_message_drops_a_second_message_while_one_is_in_flight(monkeypatch):
+    monkeypatch.setenv("CONVERSATION_CHANNEL_IDS", "100")
+    _client, _tree = build_client()
+
+    async def _scenario():
+        # Constructed inside the running loop -- asyncio.Event() on
+        # Python 3.9 binds to the current loop at construction time and
+        # raises "no current event loop" if built outside one.
+        started = asyncio.Event()
+        finish = asyncio.Event()
+
+        async def _slow_analyze_response_async(*args, **kwargs):
+            started.set()
+            await finish.wait()
+            return "slow answer"
+
+        monkeypatch.setattr("bot.main.analyze_response_async", _slow_analyze_response_async)
+
+        first_message = _FakeConversationMessage(channel_id=100, content="first")
+        first_task = asyncio.create_task(_client.on_message(first_message))
+        await started.wait()
+
+        second_message = _FakeConversationMessage(channel_id=100, content="second, while first is in flight")
+        await _client.on_message(second_message)
+        second_message.reply.assert_not_called()
+
+        finish.set()
+        await first_task
+        first_message.reply.assert_awaited_once_with("slow answer")
+
+    asyncio.run(_scenario())
+
+
 def test_calc_command_actually_uses_the_moves_data_not_the_moves_command():
     # Regression test: the /moves command handler used to be named `moves`,
     # which rebound the `moves` closure variable to that Command object --
