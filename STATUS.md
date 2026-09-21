@@ -59,12 +59,21 @@ One line each — see the plan/spec doc for implementation detail, or
 
 ## What's left
 
-Nothing on `IMPROVEMENTS.md` — the one remaining item (fine-tune vs. RAG
-comparison) was decided against (2026-09-21): the local LLM is meant to
-stay generic, not fine-tuned to this project's domain. The infrastructure
-stays in the repo unused; see `IMPROVEMENTS.md`.
+**In progress:** conversational chat — a second, opt-in interaction
+surface alongside the existing slash commands, so people can just talk to
+the bot in designated channels instead of using `/analyze`. Design
+written and pushed:
+`docs/superpowers/specs/2026-09-21-conversational-chat-design.md`. Next
+step is `writing-plans`, not implementation yet — user hasn't reviewed
+the written spec.
 
-Only one known item left project-wide, and it's external:
+Nothing else on `IMPROVEMENTS.md` — the one remaining backlog item
+(fine-tune vs. RAG comparison) was decided against (2026-09-21): the
+local LLM is meant to stay generic, not fine-tuned to this project's
+domain. The infrastructure stays in the repo unused; see
+`IMPROVEMENTS.md`.
+
+Only one other known item, and it's external:
 
 - **Known limitation, not fixable from this repo:** Pikalytics hasn't
   published a ranked-ladder format code for Regulation M-C yet, so two
@@ -91,7 +100,7 @@ git status                   # anything in flight
 pytest -q                    # confirm the suite still passes
 ```
 
-<!-- STATUS_COMMIT: 594e69f -->
+<!-- STATUS_COMMIT: 76a4b76 -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
