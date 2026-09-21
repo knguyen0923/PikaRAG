@@ -31,7 +31,11 @@ production replacement — see "Out of scope."
   already serving the live RAG path (`OllamaAnswerer`, per
   `2026-09-13-local-llm-migration-design.md`), for an apples-to-apples
   comparison, accepting a slower/heavier free-tier training run than a 1.5B
-  model would need.
+  model would need. **Superseded 2026-09-21:** the live RAG path switched to
+  `qwen3.5:9b`; the notebook (`notebooks/finetune_qwen3.5.ipynb`) and
+  `docs/finetuned-model-serving.md` were retargeted to `Qwen/Qwen3.5-9B` to
+  keep this comparison apples-to-apples with whatever model `/ask` actually
+  runs. This bullet is kept for history, not re-litigated.
 - Comparison re-uses the existing eval harness (`scripts/run_eval.py`,
   `data/eval/golden_set.json`) rather than building separate side-by-side
   tooling — extend, don't duplicate.

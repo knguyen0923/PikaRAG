@@ -31,10 +31,14 @@ was brainstormed via `superpowers:brainstorming`. Current state:
   via `eval.matchers.matches`, not recall@5, which doesn't apply without a
   retrieval step) and `--output <path>` to dump raw per-question results;
   `eval/report.py` tabulates two such result files (one per `--model` run)
-  side by side. `notebooks/finetune_llama3.2.ipynb` documents the actual
-  LoRA fine-tune of Llama3.2-3B via `peft`/`transformers`/`bitsandbytes` on a
-  free-tier Colab T4 GPU; `docs/finetuned-model-serving.md` documents the
-  merge/GGUF-convert/quantize/`ollama create` steps to deploy the result as
+  side by side. `notebooks/finetune_qwen3.5.ipynb` (retargeted 2026-09-21
+  from an original Llama3.2-3B version after the live RAG path switched
+  models — see `docs/superpowers/specs/2026-09-17-finetune-vs-rag-design.md`)
+  documents the actual LoRA fine-tune of `Qwen/Qwen3.5-9B` via
+  `peft`/`transformers`/`bitsandbytes` on a free-tier Colab T4 GPU, sized
+  down (smaller per-device batch, gradient checkpointing, 8-bit paged
+  optimizer) to fit the larger 9.7B model in 16GB;
+  `docs/finetuned-model-serving.md` documents the
   `pikarag-finetuned`, run manually on whichever machine serves Ollama.
   MLX/M4-Pro local training was considered and explicitly rejected in favor
   of the portable peft/transformers stack — revisit only if the cloud-GPU

@@ -1,17 +1,22 @@
 # Serving the fine-tuned model locally via Ollama
 
 Run this on whichever machine currently serves Ollama for the project
-(the Windows laptop, per `2026-09-13-local-llm-migration-design.md`; a
-future M4 Pro Mac is a documented option, not built around). These are
-manual, one-time steps per notebook run -- not automated, not run in CI.
+(the MacBook, as of 2026-09-20 -- see `docs/DEPLOYMENT.md` section 3).
+These are manual, one-time steps per notebook run -- not automated, not
+run in CI.
 
 ## Prerequisites
 
 - The merged model directory downloaded from
-  `notebooks/finetune_llama3.2.ipynb`'s final zip/download cell, unzipped
+  `notebooks/finetune_qwen3.5.ipynb`'s final zip/download cell, unzipped
   locally.
 - [llama.cpp](https://github.com/ggerganov/llama.cpp) cloned and built
-  locally, for `convert_hf_to_gguf.py` and `llama-quantize`.
+  locally, for `convert_hf_to_gguf.py` and `llama-quantize`. Needs a build
+  recent enough to recognize Qwen3.5's architecture (GGUF conversions of
+  `Qwen/Qwen3.5-9B` already exist on Hugging Face, e.g.
+  `unsloth/Qwen3.5-9B-GGUF`, confirming current llama.cpp supports it) --
+  `git pull` and rebuild if `convert_hf_to_gguf.py` errors on an unknown
+  architecture.
 - Ollama already installed and running (it already is -- this is the same
   host serving the live `/ask` RAG path).
 
@@ -26,7 +31,7 @@ manual, one-time steps per notebook run -- not automated, not run in CI.
      --outtype f16
    ```
 
-2. Quantize, matching the existing `llama3.2:latest` quantization already
+2. Quantize, matching the existing `qwen3.5:9b` quantization already
    in use for the RAG path's model:
 
    ```bash
@@ -54,7 +59,7 @@ manual, one-time steps per notebook run -- not automated, not run in CI.
    ollama list
    ```
 
-   `pikarag-finetuned` should now appear alongside `llama3.2:latest`.
+   `pikarag-finetuned` should now appear alongside `qwen3.5:9b`.
 
 ## Running the comparison
 
