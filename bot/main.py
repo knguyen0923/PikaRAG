@@ -69,6 +69,19 @@ def _embed(command_name: str, description: str) -> discord.Embed:
     return discord.Embed(description=description, color=_COMMAND_COLORS[command_name])
 
 
+# Discord rejects empty messages and anything over 2000 characters for a
+# plain (non-embed) reply.
+_DISCORD_MESSAGE_LIMIT = 2000
+
+
+def _truncate_for_reply(answer: str) -> str:
+    if not answer.strip():
+        return "(no answer)"
+    if len(answer) > _DISCORD_MESSAGE_LIMIT:
+        return answer[: _DISCORD_MESSAGE_LIMIT - 1] + "…"
+    return answer
+
+
 def _owner_only(interaction: discord.Interaction) -> bool:
     owner_id = os.environ.get("BOT_OWNER_ID")
     if owner_id is None:
@@ -83,15 +96,25 @@ def build_client(
     index=None, answerer=None, raw_answerer=None, records=None, moves=None, usage=None, items=None,
     bm25_index=None,
 ) -> tuple[discord.Client, app_commands.CommandTree]:
+    conversation_channel_ids: set[int] = set()
+    for channel_id in os.environ.get("CONVERSATION_CHANNEL_IDS", "").split(","):
+        channel_id = channel_id.strip()
+        if not channel_id:
+            continue
+        try:
+            conversation_channel_ids.add(int(channel_id))
+        except ValueError:
+            print(f"Ignoring invalid CONVERSATION_CHANNEL_IDS entry: {channel_id!r}")
+
     intents = discord.Intents.default()
-    intents.message_content = True
+    # Message Content is a privileged intent -- Discord refuses the whole
+    # gateway connection if it's requested without being enabled in the
+    # Developer Portal, so only ask for it when conversational chat is
+    # actually configured.
+    if conversation_channel_ids:
+        intents.message_content = True
     client = discord.Client(intents=intents)
     tree = app_commands.CommandTree(client)
-
-    conversation_channel_ids = {
-        int(channel_id) for channel_id in os.environ.get("CONVERSATION_CHANNEL_IDS", "").split(",")
-        if channel_id.strip()
-    }
     conversation_history = ConversationHistory()
     conversation_locks: dict[int, bool] = {}
 
@@ -530,8 +553,8 @@ def build_client(
                     message.author.id, index=index, bm25_index=bm25_index,
                     history=history,
                 )
-            await message.reply(answer)
-            if answer not in (OFFLINE_MESSAGE, MALFORMED_TOOL_CALL_MESSAGE):
+            await message.reply(_truncate_for_reply(answer))
+            if answer not in (OFFLINE_MESSAGE, MALFORMED_TOOL_CALL_MESSAGE, GATE_MESSAGE):
                 conversation_history.append(message.channel.id, "user", message.content)
                 conversation_history.append(message.channel.id, "assistant", answer)
         finally:

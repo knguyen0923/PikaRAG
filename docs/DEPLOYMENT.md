@@ -70,10 +70,12 @@ while the first time (one request per legal species, rate-limited fetch).
 
 **Optional: conversational chat.** Set `CONVERSATION_CHANNEL_IDS` in
 `.env` to let people talk to the bot in plain messages (no slash command)
-in specific channels, instead of using `/analyze`. Requires enabling
+in specific channels, instead of using `/analyze`. This requires enabling
 Discord's privileged "Message Content Intent" for this bot first (Bot ->
-Privileged Gateway Intents in the Developer Portal) -- without it, no
-message content reaches the bot regardless of this setting. See
+Privileged Gateway Intents in the Developer Portal) -- the bot only
+requests this intent when `CONVERSATION_CHANNEL_IDS` is set, but if you
+enable the setting without enabling the portal toggle, Discord refuses
+the connection outright and the bot fails to start. See
 `docs/superpowers/specs/2026-09-21-conversational-chat-design.md` for the
 full design.
 

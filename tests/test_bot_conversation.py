@@ -53,9 +53,10 @@ class _FakeChannel:
 
 
 class _FakeMessage:
-    def __init__(self, channel_id: int, is_bot: bool):
+    def __init__(self, channel_id: int, is_bot: bool, content: str = "hello there"):
         self.channel = _FakeChannel(channel_id)
         self.author = _FakeAuthor(bot=is_bot)
+        self.content = content
 
 
 def test_should_respond_true_for_a_human_author_in_a_designated_channel():
@@ -80,3 +81,9 @@ def test_should_respond_false_when_the_allowlist_is_empty():
     message = _FakeMessage(channel_id=100, is_bot=False)
 
     assert should_respond(message, conversation_channel_ids=set()) is False
+
+
+def test_should_respond_false_for_a_message_with_no_text_content():
+    message = _FakeMessage(channel_id=100, is_bot=False, content="   ")
+
+    assert should_respond(message, conversation_channel_ids={100, 200}) is False

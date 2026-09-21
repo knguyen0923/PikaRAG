@@ -1,3 +1,4 @@
+import asyncio
 import json
 from typing import Callable, Optional
 
@@ -141,7 +142,12 @@ async def analyze_response_async(
     conversational chat; the /analyze slash command omits it -- each call
     is single-turn)."""
     tool_dispatch = build_tool_dispatch(records, moves, items, usage, user_id)
-    answer = answerer.answer_with_tools(question, TOOLS, tool_dispatch, history=history)
+    # answer_with_tools makes blocking requests.post() calls -- run it in a
+    # worker thread so the event loop stays free (same pattern as
+    # ask_response_async).
+    answer = await asyncio.to_thread(
+        answerer.answer_with_tools, question, TOOLS, tool_dispatch, history=history
+    )
 
     if answer == MALFORMED_TOOL_CALL_MESSAGE:
         result = await ask_response_async(

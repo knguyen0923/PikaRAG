@@ -24,9 +24,12 @@ class ConversationHistory:
 
 
 def should_respond(message, conversation_channel_ids: Iterable[int]) -> bool:
-    """True only if the message's channel is in the configured allowlist
-    and the author isn't a bot (covers this bot's own messages and any
-    other bot in the channel, preventing response loops)."""
+    """True only if the message's channel is in the configured allowlist,
+    the author isn't a bot (covers this bot's own messages and any other
+    bot in the channel, preventing response loops), and the message has
+    actual text (an attachment/sticker-only message has nothing to answer)."""
     if message.author.bot:
+        return False
+    if not message.content.strip():
         return False
     return message.channel.id in conversation_channel_ids

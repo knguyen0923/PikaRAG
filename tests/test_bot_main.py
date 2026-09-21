@@ -149,6 +149,34 @@ class _FakeConversationMessage:
         self.reply = AsyncMock()
 
 
+def test_build_client_does_not_request_message_content_intent_when_unconfigured(monkeypatch):
+    # Message Content is a privileged intent -- requesting it when the
+    # Developer Portal toggle isn't enabled fails the whole gateway
+    # connection, so it must stay off unless conversational chat is
+    # actually configured.
+    monkeypatch.delenv("CONVERSATION_CHANNEL_IDS", raising=False)
+    client, _tree = build_client()
+
+    assert client.intents.message_content is False
+
+
+def test_build_client_requests_message_content_intent_when_configured(monkeypatch):
+    monkeypatch.setenv("CONVERSATION_CHANNEL_IDS", "100")
+    client, _tree = build_client()
+
+    assert client.intents.message_content is True
+
+
+def test_build_client_ignores_invalid_conversation_channel_id_entries(monkeypatch):
+    # Should not raise on the malformed entry, and the valid ids around it
+    # should still be honored (message_content only turns on when at least
+    # one valid channel id is configured).
+    monkeypatch.setenv("CONVERSATION_CHANNEL_IDS", "100,not-a-number,200")
+    client, _tree = build_client()
+
+    assert client.intents.message_content is True
+
+
 def test_on_message_ignores_channels_outside_the_conversation_allowlist(monkeypatch):
     monkeypatch.delenv("CONVERSATION_CHANNEL_IDS", raising=False)
     _client, _tree = build_client()
@@ -227,6 +255,65 @@ def test_on_message_does_not_record_offline_message_into_history(monkeypatch):
     asyncio.run(_client.on_message(_FakeConversationMessage(channel_id=100, content="q2")))
 
     assert captured["history_seen"] == []
+
+
+def test_on_message_does_not_record_gate_message_into_history(monkeypatch):
+    monkeypatch.setenv("CONVERSATION_CHANNEL_IDS", "100")
+
+    from bot.commands.ask import GATE_MESSAGE
+
+    async def _fake_gate(*args, **kwargs):
+        return GATE_MESSAGE
+
+    monkeypatch.setattr("bot.main.analyze_response_async", _fake_gate)
+    _client, _tree = build_client()
+
+    asyncio.run(_client.on_message(_FakeConversationMessage(channel_id=100, content="q")))
+
+    captured = {}
+
+    async def _capture_history(answerer, question, records, moves, items, usage, user_id, index=None, bm25_index=None, history=None):
+        captured["history_seen"] = history
+        return "a real answer"
+
+    monkeypatch.setattr("bot.main.analyze_response_async", _capture_history)
+    asyncio.run(_client.on_message(_FakeConversationMessage(channel_id=100, content="q2")))
+
+    assert captured["history_seen"] == []
+
+
+def test_on_message_truncates_a_reply_over_discords_message_limit(monkeypatch):
+    monkeypatch.setenv("CONVERSATION_CHANNEL_IDS", "100")
+    long_answer = "x" * 2500
+
+    async def _fake_analyze_response_async(*args, **kwargs):
+        return long_answer
+
+    monkeypatch.setattr("bot.main.analyze_response_async", _fake_analyze_response_async)
+    _client, _tree = build_client()
+    message = _FakeConversationMessage(channel_id=100, content="hello")
+
+    asyncio.run(_client.on_message(message))
+
+    sent_text = message.reply.call_args[0][0]
+    assert len(sent_text) <= 2000
+
+
+def test_on_message_replaces_an_empty_reply_with_a_placeholder(monkeypatch):
+    monkeypatch.setenv("CONVERSATION_CHANNEL_IDS", "100")
+
+    async def _fake_analyze_response_async(*args, **kwargs):
+        return ""
+
+    monkeypatch.setattr("bot.main.analyze_response_async", _fake_analyze_response_async)
+    _client, _tree = build_client()
+    message = _FakeConversationMessage(channel_id=100, content="hello")
+
+    asyncio.run(_client.on_message(message))
+
+    message.reply.assert_awaited_once()
+    sent_text = message.reply.call_args[0][0]
+    assert sent_text.strip() != ""
 
 
 def test_on_message_drops_a_second_message_while_one_is_in_flight(monkeypatch):
