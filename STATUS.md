@@ -64,10 +64,12 @@ One line each — see the plan/spec doc for implementation detail, or
 **In progress:** conversational chat — a second, opt-in interaction
 surface alongside the existing slash commands, so people can just talk to
 the bot in designated channels instead of using `/analyze`. Design
-written and pushed:
-`docs/superpowers/specs/2026-09-21-conversational-chat-design.md`. Next
-step is `writing-plans`, not implementation yet — user hasn't reviewed
-the written spec.
+(`docs/superpowers/specs/2026-09-21-conversational-chat-design.md`) and a
+5-task implementation plan
+(`docs/superpowers/plans/2026-09-21-conversational-chat.md`) are both
+written and pushed. Discord's Message Content Intent (the one manual
+prerequisite) is already enabled. Not yet implemented — next step is
+executing the plan (`subagent-driven-development` or `executing-plans`).
 
 Nothing else on `IMPROVEMENTS.md` — the one remaining backlog item
 (fine-tune vs. RAG comparison) was decided against (2026-09-21): the
@@ -102,7 +104,7 @@ git status                   # anything in flight
 pytest -q                    # confirm the suite still passes
 ```
 
-<!-- STATUS_COMMIT: 4cb09dd -->
+<!-- STATUS_COMMIT: 2739d4d -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
