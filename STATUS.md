@@ -20,6 +20,13 @@ metered API anywhere in the system. 648/648 tests passing, CI green
 (lint + coverage + pinned-dep checks). Data current for Regulation M-C
 (345 legal Pokémon, 197 items).
 
+Bot presence now set explicitly on connect (2026-09-22, commit `5c43eb0`):
+`on_ready` calls `client.change_presence(status=online, activity=Game("/ask"))`
+in `bot/main.py`, so the bot shows online with a "Playing /ask" status while
+the process is running and flips to offline automatically when it exits —
+purely cosmetic, no change to connect/disconnect behavior (still
+`client.run(token)`, blocking until the process is killed).
+
 Added mention-triggered Q&A (2026-09-21, commit `88fcbef`): a new
 `MENTION_CHANNEL_IDS` env var lets people @mention the bot for a one-off
 answer (`bot/conversation.py`'s `should_respond_to_mention`/
@@ -136,7 +143,7 @@ git status                   # anything in flight
 pytest -q                    # confirm the suite still passes
 ```
 
-<!-- STATUS_COMMIT: 88fcbef -->
+<!-- STATUS_COMMIT: 5c43eb0 -->
 <!-- This HTML comment is machine-read by a Stop hook (.claude/settings.json)
      that nags to refresh this file whenever HEAD moves past this hash.
      Update it to the current `git rev-parse --short HEAD` every time you
