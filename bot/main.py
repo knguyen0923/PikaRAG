@@ -541,6 +541,10 @@ def build_client(
 
     @client.event
     async def on_ready() -> None:
+        await client.change_presence(
+            status=discord.Status.online,
+            activity=discord.Game(name="/ask"),
+        )
         await tree.sync()
 
     async def _respond_in_channel(message: discord.Message, question: str, use_history: bool) -> None:
